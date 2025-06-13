@@ -113,11 +113,7 @@ main {
   width: 100%;
 }
 
-.about {
-  background-color: blue;
-  height: 100vh;
-  width: 100%;
-}
+
 header{
   width: 100%;
   height: 5%;
@@ -194,6 +190,7 @@ header nav ul li button:hover{
 .landing .sky .cloud4 {
   opacity: 0;
   top: 40%;
+  z-index: 1;
   animation: cloudanimation 10s linear 3s infinite;
 }
 
@@ -215,5 +212,9 @@ header nav ul li button:hover{
     }
     
   }
-
+.about {
+  background-color: #a8e15e;
+  height: 100vh;
+  width: 100%;
+}
 </style>
