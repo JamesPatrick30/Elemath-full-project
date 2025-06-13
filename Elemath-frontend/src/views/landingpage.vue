@@ -30,7 +30,12 @@
 
 <style scoped>
 
-
+main{
+ 
+  background-color: antiquewhite;
+  width: 100%;
+  height: 100%;
+}
 .landing {
     background: linear-gradient(180deg, #a8f5ff 0%, #d8feff 100%);
   height: 100vh;
