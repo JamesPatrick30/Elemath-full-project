@@ -72,40 +72,87 @@
             
             <div class="grass">
               <div class="tree-container">
-                <svg width="150" height="310" viewBox="0 0 150 300">
-                  <!-- Tree Body (now really fat at the bottom) -->
-                  <path
-                    d="M75 250 
-                      C 40 250, 10 210, 20 150 
-                      C 20 80, 50 20, 75 20 
-                      C 100 20, 130 80, 130 150 
-                      C 140 210, 110 250, 75 250 Z"
-                    fill="#FFEB5A"
-                    stroke="#FFEB5A"
-                    stroke-width="2"
-                  />
+               
+                  <TreeComponent class="tree" style="
+                    position: absolute;
+                    top: 20%;
+                    left: 40%;
+                    width: 70px;
+                    height: 200px;
+                  "/>
 
-                  <ellipse cx="75" cy="290" rx="25" ry="10" fill="#A2C662"/>
-                  <!-- Main Trunk -->
-                  <line x1="75" y1="40" x2="75" y2="290" stroke="#D0905A" stroke-width="4" stroke-linecap="round"/>
+                  <TreeComponent2 class="tree" style="
+                    position: absolute;
+                    top: 5%;
+                    left: 20%;
+                    width: 70px;
+                    height: 200px;
+                  "/>
 
-                  <!-- Branches (same as before) -->
-                  <path d="M75 200 C75 180, 60 170, 60 150" stroke="#D0905A" stroke-width="4" fill="none" stroke-linecap="round"/>
-                  <path d="M75 140 C75 120, 90 110, 90 90" stroke="#D0905A" stroke-width="4" fill="none" stroke-linecap="round"/>
+                  <TreeComponent class="tree" style="
+                    position: absolute;
+                    top: -10%;
+                    left: 70%;
+                    width: 70px;
+                    height: 200px;
+                  "/>
 
-                  <!-- Grass -->
-                  
-                </svg>
+                  <TreeComponent class="tree" style="
+                    position: absolute;
+                    top: -20%;
+                    left: 90%;
+                    width: 70px;
+                    height: 200px;
+                  "/>
+
+                  <TreeComponent class="tree" style="
+                    position: absolute;
+                    top: -30%;
+                    left: 40%;
+                    width: 70px;
+                    height: 200px;
+                  "/>
+
+                  <TreeComponent2 class="tree" style="
+                    position: absolute;
+                    top: -35%;
+                    left: 60%;
+                    width: 70px;
+                    height: 200px;
+                  "/>
+
+                  <TreeComponent2 class="tree" style="
+                    position: absolute;
+                    top: 30%;
+                    left: 80%;
+                    width: 70px;
+                    height: 200px;
+                  "/>
+
+                  <TreeComponent class="tree" style="
+                    position: absolute;
+                    top: 0%;
+                    left: 50%;
+                    width: 70px;
+                    height: 200px;
+                  "/>
+
+                  <TreeComponent2 class="tree" style="
+                    position: absolute;
+                    top: 15%;
+                    left: 60%;
+                    width: 70px;
+                    height: 200px;
+                  "/>
+
+
               </div>
             </div>
             <div class="background-blue"></div>
-            
-            
           </section>
 
           <section class="about">
-            hello
-            
+           second
           </section>
     </div>
     
@@ -113,9 +160,16 @@
 </template>
 
 <script>
+import TreeComponent from '@/components/IconTree1.vue';
+import TreeComponent2 from '@/components/IconTree2.vue';
 export default {
-  name: "SimpleTree"
+  name: "SimpleTree",
+  components: {
+    TreeComponent,
+    TreeComponent2
+  }
 }
+
 </script>
 
 <style scoped>
@@ -292,10 +346,22 @@ header h1 {
   font-family: 'BubbleBody Neue', sans-serif;
 }
 
-.tree-container {
-  margin-left: 10%;
-  display: flex;
-  height: auto;
-  width: 100px;
+
+.tree:hover {
+  transform: scale(1.2) rotate(10deg);
+}
+@keyframes treeMovement {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    
+  transform: skewX(20deg);
+
+  }
+  
 }
 </style>
