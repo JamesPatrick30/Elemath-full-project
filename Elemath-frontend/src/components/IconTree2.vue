@@ -25,13 +25,13 @@
 }
 @keyframes treeMovement {
   0% {
-    transform: rotate(-3deg) skewX(-1deg);
+    transform: rotate(-5deg) skewX(-1deg);
   }
   50% {
     transform: rotate(0deg) skewX(0deg);
   }
   100% {
-    transform: rotate(-3deg) skewX(-1deg);
+    transform: rotate(-5deg) skewX(-1deg);
   }
   
 }

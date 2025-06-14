@@ -144,8 +144,9 @@
                     width: 70px;
                     height: 200px;
                   "/>
-
-
+                  <div class="moving-number">
+                    1
+                  </div>
               </div>
             </div>
             <div class="background-blue"></div>
@@ -363,5 +364,29 @@ header h1 {
 
   }
   
+}
+.moving-number {
+  font-size: 3rem;
+  font-weight: 800;
+  color: #4a7c59;
+  display: inline-block;
+
+  /* allow scaling */
+  transform-origin: center;
+  
+  /* animate bending */
+  animation: bendText 5s infinite linear;
+}
+
+@keyframes bendText {
+  0% {
+    transform: rotate(-3deg) skewX(-1deg);
+  }
+  50% {
+    transform: rotate(0deg) skewX(0deg);
+  }
+  100% {
+    transform: rotate(3deg) skewX(1deg);
+  }
 }
 </style>
