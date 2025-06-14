@@ -3,12 +3,7 @@
     <div class="horizontal-scroll">
       <section class="landing">
             <header>
-              <nav>
-                <ul>
-                  <li><button>Sign In</button></li>
-                  <li><button>Sign Out</button></li>
-                </ul>
-              </nav>
+              <h1>Ele<span style="color: #7789fe;">math</span> </h1>
             </header>
             <div class="sky">
               
@@ -58,11 +53,51 @@
                         C80,110 60,100 60,80Z"
                       fill="#ffffff" stroke="#888" stroke-width="2"/>
               </svg>
-
-
-
             </div>
-            <div class="grass"></div>
+            <div class="tagline-contaner">
+              <h3>
+                Ready to power up your brain? <br>
+                Let’s play and learn!
+              </h3> 
+              <p class="sentence">
+                Join exciting math challenges, explore fun worlds, and sharpen your skills with every question. Elemath makes learning math an adventure you’ll love!
+              </p>
+              <nav>
+                <ul>
+                  <li><button>Sign In</button></li>
+                  <li><button>Sign Out</button></li>
+                </ul>
+              </nav>
+            </div>
+            
+            <div class="grass">
+              <div class="tree-container">
+                <svg width="150" height="310" viewBox="0 0 150 300">
+                  <!-- Tree Body (now really fat at the bottom) -->
+                  <path
+                    d="M75 250 
+                      C 40 250, 10 210, 20 150 
+                      C 20 80, 50 20, 75 20 
+                      C 100 20, 130 80, 130 150 
+                      C 140 210, 110 250, 75 250 Z"
+                    fill="#FFEB5A"
+                    stroke="#FFEB5A"
+                    stroke-width="2"
+                  />
+
+                  <ellipse cx="75" cy="290" rx="25" ry="10" fill="#A2C662"/>
+                  <!-- Main Trunk -->
+                  <line x1="75" y1="40" x2="75" y2="290" stroke="#D0905A" stroke-width="4" stroke-linecap="round"/>
+
+                  <!-- Branches (same as before) -->
+                  <path d="M75 200 C75 180, 60 170, 60 150" stroke="#D0905A" stroke-width="4" fill="none" stroke-linecap="round"/>
+                  <path d="M75 140 C75 120, 90 110, 90 90" stroke="#D0905A" stroke-width="4" fill="none" stroke-linecap="round"/>
+
+                  <!-- Grass -->
+                  
+                </svg>
+              </div>
+            </div>
             <div class="background-blue"></div>
             
             
@@ -77,7 +112,22 @@
   </main>
 </template>
 
+<script>
+export default {
+  name: "SimpleTree"
+}
+</script>
+
 <style scoped>
+@font-face {
+  font-family: 'BubbleBody Neue';
+  src: url('fonts/BubbleBodyNeue.woff2') format('woff2'),
+       url('fonts/BubbleBodyNeue.woff') format('woff'),
+       url('fonts/BubbleBodyNeue.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 *{
   margin: 0;
   padding: 0;
@@ -118,31 +168,7 @@ header{
   width: 100%;
   height: 5%;
 }
-header nav ul{
-  display: flex;
-  justify-content: flex-end;
-  gap: 0px;
-}
-header nav ul li{
-  list-style: none;
-}
-header nav ul li button{
-  background-color: #1ad0d0;
-  color: white;
-  border: none;
-  padding: 10px;
-  cursor: pointer;
-  height: 100%;
-  transition: 500ms;
-  border-radius: 5px;
-}
-header nav ul li button:hover{
-  background-color: #15aaaa;
-  transition: 500ms;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-}
+
 .landing {
   background-color: aqua;
   height: 100vh;
@@ -180,12 +206,12 @@ header nav ul li button:hover{
 .landing .sky .cloud2 {
   opacity: 0;
   top: 30%;
-  animation: cloudanimation 10s linear 2s infinite;
+  animation: cloudanimation 10s linear 6s infinite;
 }
 .landing .sky .cloud3 {
   opacity: 0;
   top: 20%;
-  animation: cloudanimation 10s linear 4s infinite;
+  animation: cloudanimation 10s linear 5s infinite;
 }
 .landing .sky .cloud4 {
   opacity: 0;
@@ -199,8 +225,12 @@ header nav ul li button:hover{
 
   @keyframes cloudanimation {
     0% {
-      opacity: 1;
+      opacity: 0;
       margin-left: 74%;
+    }
+    10% {
+      opacity: 1;
+      
     }
     90%{
       opacity: 0.8;
@@ -216,5 +246,56 @@ header nav ul li button:hover{
   background-color: #a8e15e;
   height: 100vh;
   width: 100%;
+}
+.tagline-contaner {
+  position: absolute;
+  top: 20%;
+  left: 5%;
+  color: #464c84;
+  z-index: 2;
+  font-size: 30px;
+  font-family: 'BubbleBody Neue', sans-serif;
+}
+.tagline-contaner nav ul{
+  display: flex;
+  justify-content: center;
+  gap: 0px;
+}
+.tagline-contaner nav ul li{
+  list-style: none;
+}
+.tagline-contaner nav ul li button{
+  background-color: #1ad0d0;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  height: 100%;
+  transition: 500ms;
+  border-radius: 20px;
+  padding: 10px;
+  font-size: 22px;
+  margin: 10px;
+  width: 150px;
+  font-family: 'BubbleBody Neue','Poppins', sans-serif;
+}
+.tagline-contaner nav ul li button:hover{
+  background-color: #15aaaa;
+  transition: 500ms;
+}
+header h1 {
+  margin-left: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 20px;
+  color: #feec77;
+  font-family: 'BubbleBody Neue', sans-serif;
+}
+
+.tree-container {
+  margin-left: 10%;
+  display: flex;
+  height: auto;
+  width: 100px;
 }
 </style>
