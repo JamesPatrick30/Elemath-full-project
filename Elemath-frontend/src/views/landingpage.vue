@@ -73,55 +73,19 @@
             <div class="grass">
               <div class="tree-container">
                
-                  <TreeComponent class="tree" style="
-                    position: absolute;
-                    top: 20%;
-                    left: 40%;
-                    width: 70px;
-                    height: 200px;
-                  "/>
+                  <TreeComponent class="tree tree1"/>
 
-                  <TreeComponent2 class="tree" style="
-                    position: absolute;
-                    top: 5%;
-                    left: 20%;
-                    width: 70px;
-                    height: 200px;
-                  "/>
+                  <TreeComponent2 class="tree tree2" />
 
-                  <TreeComponent class="tree" style="
-                    position: absolute;
-                    top: -10%;
-                    left: 70%;
-                    width: 70px;
-                    height: 200px;
-                  "/>
+                  <TreeComponent class="tree tree3" />
 
-                  <TreeComponent class="tree" style="
-                    position: absolute;
-                    top: -20%;
-                    left: 90%;
-                    width: 70px;
-                    height: 200px;
-                  "/>
+                  <TreeComponent class="tree tree4" />
 
-                  <TreeComponent class="tree" style="
-                    position: absolute;
-                    top: -30%;
-                    left: 40%;
-                    width: 70px;
-                    height: 200px;
-                  "/>
+                  <TreeComponent class="tree tree5" />
 
-                  <TreeComponent2 class="tree" style="
-                    position: absolute;
-                    top: -35%;
-                    left: 60%;
-                    width: 70px;
-                    height: 200px;
-                  "/>
+                  <TreeComponent2 class="tree tree6" />
 
-                  <TreeComponent2 class="tree" style="
+                  <TreeComponent2 class="tree7" style="
                     position: absolute;
                     top: 30%;
                     left: 80%;
@@ -129,15 +93,9 @@
                     height: 200px;
                   "/>
 
-                  <TreeComponent class="tree" style="
-                    position: absolute;
-                    top: 0%;
-                    left: 50%;
-                    width: 70px;
-                    height: 200px;
-                  "/>
+                  <TreeComponent class="tree tree8" />
 
-                  <TreeComponent2 class="tree" style="
+                  <TreeComponent2 class="tree tree9" style="
                     position: absolute;
                     top: 15%;
                     left: 60%;
@@ -344,13 +302,11 @@ header h1 {
   text-transform: uppercase;
   font-size: 20px;
   color: #feec77;
-  font-family: 'BubbleBody Neue', sans-serif;
+  font-family: 'BubbleBody Neue', 'Poppins',sans-serif;
 }
 
 
-.tree:hover {
-  transform: scale(1.2) rotate(10deg);
-}
+
 @keyframes treeMovement {
   0% {
     transform: translateY(0);
@@ -364,6 +320,58 @@ header h1 {
 
   }
   
+}
+.tree1{
+
+  position: absolute;
+  top: 20%;
+  left: 40%;
+  width: 70px;
+  height: 200px;
+                  
+}
+.tree2{
+  position: absolute;
+  top: 5%;
+  left: 20%;
+  width: 70px;
+  height: 200px;
+}
+.tree3{
+  position: absolute;
+  top: -10%;
+  left: 70%;
+  width: 70px;
+  height: 200px;
+}
+.tree4{
+  position: absolute;
+  top: -20%;
+  left: 90%;
+  width: 70px;
+  height: 200px;
+}
+.tree5{
+  position: absolute;
+  top: -30%;
+  left: 70%;
+  width: 70px;
+  height: 200px;
+  z-index: 1;
+}
+.tree6{
+  position: absolute;
+  top: -35%;
+  left: 50%;
+  width: 70px;
+  height: 200px;
+}
+.tree8{
+  position: absolute;
+  top: 0%;
+  left: 50%;
+  width: 70px;
+  height: 200px;
 }
 .moving-number {
   font-size: 3rem;
@@ -388,5 +396,132 @@ header h1 {
   100% {
     transform: rotate(3deg) skewX(1deg);
   }
+}
+
+@media screen and (min-width: 768px) {
+  .tagline-contaner {
+    top: 30%;
+    left: 10%;
+    font-size: 40px;
+  }
+  header h1 {
+    font-size: 30px;
+    font-weight: bold;
+  }
+  .tagline-contaner nav ul li button {
+    width: 200px;
+    font-size: 26px;
+  }
+}
+@media screen and (min-width: 1024px) {
+  /* Large desktop specific styles */
+  .tagline-contaner {
+    width: 50%;
+    top: 40%;
+    left: 10%;
+    font-size: 35px;
+  }
+  .tagline-contaner nav ul {
+    justify-content: right;
+  }
+  .tagline-contaner nav ul li button {
+    width: 200px;
+    font-size: 20px;
+    
+  }
+  .tree1{
+    position: absolute;
+    top: 10%;
+    left: 95%;
+    width: 70px;
+    height: 200px;
+    z-index: 5;
+  }
+  .tree2{
+    position: absolute;
+    top: 5%;
+    left: 50%;
+    width: 70px;
+    height: 200px;
+  }
+  .tree3{
+    position: absolute;
+    top: -10%;
+    left: 80%;
+    width: 70px;
+    height: 200px;
+  }
+  .tree4{
+    position: absolute;
+    top: -20%;
+    left: 90%;
+    width: 70px;
+    height: 200px;
+  }
+  .tree5{
+    position: absolute;
+    top: -30%;
+    left: 70%;
+    width: 70px;
+    height: 200px;
+    z-index: 1;
+  }
+  .tree6{
+    position: absolute;
+    top: -35%;
+    left: 60%;
+    width: 70px;
+    height: 200px;
+  }
+  .tree8{
+    position: absolute;
+    top: 0%;
+    left: 75%;
+    width: 70px;
+    height: 200px;
+  }
+  .landing .sky .cloud1 {
+  opacity: 0;
+  left: 10%;
+  top: 10%;
+  animation: cloudanimation 20s linear infinite;
+}
+
+.landing .sky .cloud2 {
+  opacity: 0;
+  top: 30%;
+  animation: cloudanimation 17s linear 6s infinite;
+}
+.landing .sky .cloud3 {
+  opacity: 0;
+  top: 20%;
+  animation: cloudanimation 17s linear 5s infinite;
+}
+.landing .sky .cloud4 {
+  opacity: 0;
+  top: 40%;
+  z-index: 1;
+  animation: cloudanimation 17s linear 7s infinite;
+}
+  @keyframes cloudanimation {
+    0% {
+      opacity: 0;
+      margin-left: 100%;
+    }
+    10% {
+      opacity: 1;
+      
+    }
+    90%{
+      opacity: 0.8;
+    }
+    100% {
+      margin-left: -30%;
+      opacity: 0;
+     
+    }
+    
+  }
+
 }
 </style>
