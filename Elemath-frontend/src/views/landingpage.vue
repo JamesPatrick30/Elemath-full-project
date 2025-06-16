@@ -574,9 +574,7 @@ header h1 {
     }
     
   }
-  .sand-background{
-    margin-top: 40%;
-  }
+
 
 }
 </style>
