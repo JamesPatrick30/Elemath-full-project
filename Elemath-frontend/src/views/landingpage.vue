@@ -112,6 +112,24 @@
 
           <section class="about">
            second
+           <div class="sand-background">
+                <svg viewBox="0 0 1542 321" width="100%" height="auto" preserveAspectRatio="none">
+                  <path
+                    d="M0,50 
+                      C 200,0 400,80 600,50 
+                      C 800,20 1000,70 1200,40 
+                      C 1350,20 1450,60 1542,50 
+                      L 1542,321 
+                      L 0,321 
+                      Z"
+                    fill="#ffff99"
+                  />
+                </svg>
+              </div>
+          </section>
+          <section class="info">
+            third
+              
           </section>
     </div>
     
@@ -176,7 +194,11 @@ main {
   width: 100%;
 }
 
-
+.info {
+  background-color: #ffff99;
+  height: 100vh;
+  width: 100%;
+}
 header{
   width: 100%;
   height: 5%;
@@ -373,6 +395,9 @@ header h1 {
   width: 70px;
   height: 200px;
 }
+.sand-background{
+  margin-bottom: 0%;
+}
 .moving-number {
   font-size: 3rem;
   font-weight: 800;
@@ -521,6 +546,9 @@ header h1 {
      
     }
     
+  }
+  .sand-background{
+    margin-top: 40%;
   }
 
 }
