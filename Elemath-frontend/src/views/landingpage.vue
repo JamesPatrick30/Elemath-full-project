@@ -111,44 +111,34 @@
           </section>
 
           <section class="about">
-           second
+           <!-- <TreeComponent class="tree tree10"/> -->
+            <TreeComponent2 class="tree tree10" />
+
            <div class="sand-background">
-                <svg viewBox="0 0 1542 321" width="100%" height="auto" preserveAspectRatio="none">
-                  <path
-                    d="M0,50 
-                      C 200,0 400,80 600,50 
-                      C 800,20 1000,70 1200,40 
-                      C 1350,20 1450,60 1542,50 
-                      L 1542,321 
-                      L 0,321 
-                      Z"
-                    fill="#ffff99"
-                  />
-                </svg>
+                <sandbackground />
               </div>
+            
+            <div class="about-contaner">
+              <div class="item1">
+                <img :src="gameimage" alt="">
+                <img :src="gameimage2" alt="">
+                <img :src="gameimage3" alt="">
+              </div>
+              <div class="item2">
+                <h1>About Elemath </h1>
+                <p>
+                  Elemath is a web-based quiz game tailored for Grade 5 and 6 students, aligned with the DepEd’s Matatag Curriculum. It focuses on math practice through <span class="highlight">interactive quizzes and performance tracking — not teaching.</span> 
+                  <br><br>
+                  The system is designed for <span>quiz engagement, student growth monitoring, and classroom integration,</span> making math practice simple, structured, and enjoyable.
+
+                </p>
+              </div>
+            </div>
           </section>
           <section class="info">
             third
               <div class="beach-background">
-                <svg viewBox="0 0 1511 364" width="100%" height="auto" preserveAspectRatio="none">
-                  <defs>
-                    <linearGradient id="beachGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stop-color="#A2F2FF" />
-                      <stop offset="100%" stop-color="#47C7FF" />
-                    </linearGradient>
-                  </defs>
-
-                  <path
-                    d="M0,50
-                      C 150,20 400,80 600,60 
-                      C 800,40 1000,70 1200,50 
-                      C 1350,40 1450,80 1511,50 
-                      L 1511,364 
-                      L 0,364 
-                      Z"
-                    fill="url(#beachGradient)"
-                  />
-                </svg>
+                <beachbackground  />
               </div>
           </section>
           <section class="key-features"></section>
@@ -158,33 +148,87 @@
 </template>
 
 <script>
-import TreeComponent from '@/components/IconTree1.vue';
-import TreeComponent2 from '@/components/IconTree2.vue';
+import TreeComponent from '@/components/svg/IconTree1.vue';
+import TreeComponent2 from '@/components/svg/IconTree2.vue';
+import sandbackground from '@/components/svg/sandbackground.vue';
+import beachbackground from '@/components/svg/bluebackground.vue';
+import cloud from '@/components/svg/cloud.vue';
+import gameimage from '/images/1.png';
+import gameimage2 from '/images/2.png';
+import gameimage3 from '/images/3.png';
 export default {
   name: "SimpleTree",
   components: {
     TreeComponent,
-    TreeComponent2
-  }
+    TreeComponent2,
+    sandbackground,
+    beachbackground,
+    cloud
+  },
+  data() {
+    return {
+      gameimage: gameimage,
+      gameimage2: gameimage2,
+      gameimage3: gameimage3
+    };
+  },
 }
 
 </script>
 
 <style scoped>
-@font-face {
+/* @font-face {
   font-family: 'BubbleBody Neue';
   src: url('fonts/BubbleBodyNeue.woff2') format('woff2'),
        url('fonts/BubbleBodyNeue.woff') format('woff'),
        url('fonts/BubbleBodyNeue.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
-}
+} */
 
 *{
   margin: 0;
   padding: 0;
 }
+.about-contaner{
+  display: grid;
+  grid-template-columns: repeat(1, 1fr); /* 2 columns of equal width */
+}
 
+
+.about-contaner .item1{
+  display: flex;
+  padding: 20px;
+  flex-wrap: wrap; /* allow items to wrap */
+  justify-content: center; /* center items horizontally */
+  gap:10px; /* space between images */
+}
+.about-contaner .item2 p{
+  /* text-emphasis: underline; */
+  padding: 20px;
+  text-align: left;
+  color: #464c84;
+  font-weight: bold;
+  font-family: 'BubbleBody Neue','Poppins', sans-serif;
+}
+.about-contaner .item2 h1{
+  padding: 20px;
+  text-align: center;
+  color: #464c84;
+  font-weight: bold;
+  font-family: 'BubbleBody Neue','Poppins', sans-serif;
+}
+.about-contaner .item2 p span {
+  font-weight: 900;
+  color: #30387c;
+  font-family: 'BubbleBody Neue','Poppins', sans-serif;
+}
+img{
+  height: 250px;
+  width: auto;
+  box-shadow: #464c84 0px 0px 10px;
+  transform: rotate(40deg);
+}
 .background-blue {
   position: absolute;
   bottom: 0;
@@ -315,7 +359,7 @@ header{
   color: #464c84;
   z-index: 2;
   font-size: 30px;
-  font-family: 'BubbleBody Neue', sans-serif;
+  font-family: 'BubbleBody Neue','Poppins', sans-serif;
 }
 .tagline-contaner nav ul{
   display: flex;
@@ -532,29 +576,29 @@ header h1 {
     width: 70px;
     height: 200px;
   }
-  .landing .sky .cloud1 {
-  opacity: 0;
-  left: 10%;
-  top: 10%;
-  animation: cloudanimation 20s linear infinite;
-}
+    .landing .sky .cloud1 {
+    opacity: 0;
+    left: 10%;
+    top: 10%;
+    animation: cloudanimation 20s linear infinite;
+  }
 
-.landing .sky .cloud2 {
-  opacity: 0;
-  top: 30%;
-  animation: cloudanimation 17s linear 6s infinite;
-}
-.landing .sky .cloud3 {
-  opacity: 0;
-  top: 20%;
-  animation: cloudanimation 17s linear 5s infinite;
-}
-.landing .sky .cloud4 {
-  opacity: 0;
-  top: 40%;
-  z-index: 1;
-  animation: cloudanimation 17s linear 7s infinite;
-}
+  .landing .sky .cloud2 {
+    opacity: 0;
+    top: 30%;
+    animation: cloudanimation 17s linear 6s infinite;
+  }
+  .landing .sky .cloud3 {
+    opacity: 0;
+    top: 20%;
+    animation: cloudanimation 17s linear 5s infinite;
+  }
+  .landing .sky .cloud4 {
+    opacity: 0;
+    top: 40%;
+    z-index: 1;
+    animation: cloudanimation 17s linear 7s infinite;
+  }
   @keyframes cloudanimation {
     0% {
       opacity: 0;
@@ -574,6 +618,34 @@ header h1 {
     }
     
   }
+ .sand-background {
+    top: 90%;
+    position: relative;
+  }
+  .background-blue {
+    position: absolute;
+    bottom: 0;
+    height: 400px;
+    width: 100%;
+    background-color: #80deff;
+    border-radius: 50% 50% 0 0 ;
+    overflow: hidden;
+    z-index: 0;
+    transform: scaleX(0.8);
+    left: 30%;
+  }
+  .about-contaner{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columns of equal width */
+  }
+  .tree10{
+    position: absolute;
+    top: 110%;
+    left: 20%;
+    width: 70px;
+    height: 200px;
+  }
+
 
 
 }
