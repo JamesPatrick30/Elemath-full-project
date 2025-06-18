@@ -532,29 +532,29 @@ header h1 {
     width: 70px;
     height: 200px;
   }
-  .landing .sky .cloud1 {
-  opacity: 0;
-  left: 10%;
-  top: 10%;
-  animation: cloudanimation 20s linear infinite;
-}
+    .landing .sky .cloud1 {
+    opacity: 0;
+    left: 10%;
+    top: 10%;
+    animation: cloudanimation 20s linear infinite;
+  }
 
-.landing .sky .cloud2 {
-  opacity: 0;
-  top: 30%;
-  animation: cloudanimation 17s linear 6s infinite;
-}
-.landing .sky .cloud3 {
-  opacity: 0;
-  top: 20%;
-  animation: cloudanimation 17s linear 5s infinite;
-}
-.landing .sky .cloud4 {
-  opacity: 0;
-  top: 40%;
-  z-index: 1;
-  animation: cloudanimation 17s linear 7s infinite;
-}
+  .landing .sky .cloud2 {
+    opacity: 0;
+    top: 30%;
+    animation: cloudanimation 17s linear 6s infinite;
+  }
+  .landing .sky .cloud3 {
+    opacity: 0;
+    top: 20%;
+    animation: cloudanimation 17s linear 5s infinite;
+  }
+  .landing .sky .cloud4 {
+    opacity: 0;
+    top: 40%;
+    z-index: 1;
+    animation: cloudanimation 17s linear 7s infinite;
+  }
   @keyframes cloudanimation {
     0% {
       opacity: 0;
@@ -574,9 +574,12 @@ header h1 {
     }
     
   }
-  .sand-background{
-    margin-top: 40%;
+  
+ .sand-background {
+    top: 90%;
+    position: relative;
   }
+
 
 }
 </style>
