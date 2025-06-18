@@ -113,18 +113,7 @@
           <section class="about">
            second
            <div class="sand-background">
-                <svg viewBox="0 0 1542 321" width="100%" height="auto" preserveAspectRatio="none">
-                  <path
-                    d="M0,50 
-                      C 200,0 400,80 600,50 
-                      C 800,20 1000,70 1200,40 
-                      C 1350,20 1450,60 1542,50 
-                      L 1542,321 
-                      L 0,321 
-                      Z"
-                    fill="#ffff99"
-                  />
-                </svg>
+                <sandbackground />
               </div>
           </section>
           <section class="info">
@@ -160,11 +149,13 @@
 <script>
 import TreeComponent from '@/components/IconTree1.vue';
 import TreeComponent2 from '@/components/IconTree2.vue';
+import sandbackground from '@/components/svg/sandbackground.vue';
 export default {
   name: "SimpleTree",
   components: {
     TreeComponent,
-    TreeComponent2
+    TreeComponent2,
+    sandbackground
   }
 }
 
@@ -315,7 +306,7 @@ header{
   color: #464c84;
   z-index: 2;
   font-size: 30px;
-  font-family: 'BubbleBody Neue', sans-serif;
+  font-family: 'BubbleBody Neue','Poppins', sans-serif;
 }
 .tagline-contaner nav ul{
   display: flex;
@@ -579,6 +570,18 @@ header h1 {
     top: 90%;
     position: relative;
   }
+  .background-blue {
+  position: absolute;
+  bottom: 0;
+  height: 400px;
+  width: 100%;
+  background-color: #80deff;
+  border-radius: 50% 50% 0 0 ;
+  overflow: hidden;
+  z-index: 0;
+  transform: scaleX(0.8);
+  left: 30%;
+}
 
 
 }
