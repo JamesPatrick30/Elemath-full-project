@@ -618,7 +618,6 @@ header h1 {
     }
     
   }
-  
  .sand-background {
     top: 90%;
     position: relative;
@@ -646,6 +645,7 @@ header h1 {
     width: 70px;
     height: 200px;
   }
+
 
 
 }
