@@ -112,8 +112,7 @@
 
           <section class="about">
            <!-- <TreeComponent class="tree tree10"/> -->
-            <TreeComponent2 class="tree tree10" />
-
+            
            <div class="sand-background">
                 <sandbackground />
               </div>
@@ -134,6 +133,10 @@
                 </p>
               </div>
             </div>
+            <TreeComponent2 class="tree tree10" />
+            <TreeComponent2 class="tree tree11" />
+            <TreeComponent class="tree tree12" />
+            <TreeComponent class="tree tree13" />
           </section>
           <section class="info">
             third
@@ -204,7 +207,7 @@ export default {
   gap:10px; /* space between images */
 }
 .about-contaner .item2 p{
-  /* text-emphasis: underline; */
+  z-index: 10;
   padding: 20px;
   text-align: left;
   color: #464c84;
@@ -465,9 +468,45 @@ header h1 {
   width: 70px;
   height: 200px;
 }
-.sand-background,.beach-background{
+.tree10{
+  position: absolute;
+  top: 100%;
+  left: 10%;
+  width: 70px;
+  height: 200px;
+  z-index: 0;
+}
+.tree11{
+  position: absolute;
+  top: 150%;
+  left: 50%;
+  width: 70px;
+  height: 200px;
+  z-index: 0;
+}
+.tree12{
+  position: absolute;
+  top: 100%;
+  left: 10%;
+  width: 70px;
+  height: 200px;
+  z-index: 0;
+}
+.tree13{
+  position: absolute;
+  top: 100%;
+  left: 10%;
+  width: 70px;
+  height: 200px;
+  z-index: 0;
+}
+.beach-background{
   top: 89%;
   position: relative;
+}
+.sand-background{
+  top: 93%;
+  position: relative; 
 }
 .moving-number {
   font-size: 3rem;
