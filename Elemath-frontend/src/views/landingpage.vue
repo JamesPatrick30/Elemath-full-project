@@ -139,11 +139,14 @@
             <TreeComponent class="tree tree13" />
           </section>
           <section class="info">
-            <h1>Who is Elemath for ?</h1>
-            <div class="info-contaner">
-              <item1></item1>
-              <item2></item2>
+            <div class="content">
+              <h1>Who is Elemath for ?</h1>
+              <div class="info-contaner">
+                <div class="item1"><p>Students (Grades 5 & 6): Improve your skills by playing fun and competitive quizzes that match your lessons in school.</p></div>
+                <div class="item2"><p>Teachers: Easily track your students’ quiz results and monitor their progress without manual checking.</p></div>
+              </div>
             </div>
+            
               <div class="beach-background">
                 <beachbackground  />
               </div>
@@ -197,12 +200,46 @@ export default {
   margin: 0;
   padding: 0;
 }
-.about-contaner,.info-contaner {
+.about-contaner{
   display: grid;
   grid-template-columns: repeat(1, 1fr); /* 2 columns of equal width */
-  z-index: 10;
+  
 }
+.info .content{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+.info .content .info-contaner{
+  width: 90%;
+  height: 50%;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(1, 1fr); /* 2 columns of equal width */
+}
+.info .content .info-contaner .item1,
+.info .content .info-contaner .item2 {
 
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background-color: white;
+  color: #464c84;
+  border-radius: 10px;
+}
+.info .info-contaner .item1 p,
+.info .info-contaner .item2 p {
+  text-align: center;
+  font-weight: bold;
+  font-family: 'BubbleBody Neue','Poppins', sans-serif;
+  color: #464c84;
+}
 
 .about-contaner .item1{
   display: flex;
@@ -219,7 +256,7 @@ export default {
   font-weight: bold;
   font-family: 'BubbleBody Neue','Poppins', sans-serif;
 }
-.about-contaner .item2 h1{
+.about-contaner .item2 h1,.info h1{
   padding: 20px;
   text-align: center;
   color: #464c84;
@@ -231,12 +268,7 @@ export default {
   color: #30387c;
   font-family: 'BubbleBody Neue','Poppins', sans-serif;
 }
-.info h1{
-  color: #30387c;
-  font-family: 'BubbleBody Neue','Poppins',sans-serif;
-  font-weight: bold;
-  font-size: 35px;
-}
+
 img{
   height: 250px;
   width: auto;
@@ -515,6 +547,7 @@ header h1 {
 }
 .beach-background{
   top: 89%;
+  width: 100%;
   position: relative;
 }
 .sand-background{
@@ -686,9 +719,27 @@ header h1 {
     transform: scaleX(0.8);
     left: 30%;
   }
-  .about-contaner,.info-contaner{
+  .about-contaner{
     display: grid;
     grid-template-columns: repeat(2, 1fr); /* 2 columns of equal width */
+  }
+  .info .content .info-contaner{
+    width: 80%;
+    gap: 20px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columns of equal width */
+  }
+  .info .content .info-contaner .item1,
+  .info .content .info-contaner .item2 {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background-color:  white;
+    color: #464c84;
+    border-radius: 50px;
   }
   .tree10{
     position: absolute;
