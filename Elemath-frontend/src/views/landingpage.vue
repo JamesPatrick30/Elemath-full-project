@@ -151,7 +151,24 @@
                 <beachbackground  />
               </div>
           </section>
-          <section class="key-features"></section>
+          <section class="key-features">
+            <div class="content">
+              <p>Key Features
+                <br><br>
+                Curriculum-aligned quizzes (Grade 5–6 Math)<br><br>
+
+                Real-time multiplayer quiz battles<br><br>
+
+                Trackable student progress and performance<br><br>
+
+                Engaging ocean-themed design for a fun learning experience<br><br>
+
+                Teacher dashboard for class monitoring<br><br>
+
+                Rewards, avatars, and level-up system to motivate learners<br><br>
+              </p>
+            </div>
+          </section>
     </div>
     
   </main>
@@ -205,19 +222,57 @@ export default {
   grid-template-columns: repeat(1, 1fr); /* 2 columns of equal width */
   
 }
+
+.about-contaner .item1{
+  display: flex;
+  padding: 20px;
+  flex-wrap: wrap; /* allow items to wrap */
+  justify-content: center; /* center items horizontally */
+  gap:10px; /* space between images */
+}
+.about-contaner .item1 img{
+  width: 100px;
+  height: auto;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: #464c84 0px 0px 10px;
+}
+.about-contaner .item2 p{
+  z-index: 10;
+  padding: 20px;
+  text-align: left;
+  color: #464c84;
+  font-weight: bold;
+  font-family: 'BubbleBody Neue','Poppins', sans-serif;
+}
+.about-contaner .item2 h1,.info h1{
+  padding: 20px;
+  text-align: center;
+  color: #464c84;
+  font-weight: bold;
+  font-family: 'BubbleBody Neue','Poppins', sans-serif;
+}
+.about-contaner .item2 p span {
+  font-weight: 900;
+  color: #30387c;
+  font-family: 'BubbleBody Neue','Poppins', sans-serif;
+}
+.info {
+  justify-content: center;
+}
 .info .content{
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100%;
-  width: 100%;
+  width: 80%;
 }
 .info .content .info-contaner{
   width: 90%;
   height: 50%;
   display: grid;
-  gap: 10px;
+  
   grid-template-columns: repeat(1, 1fr); /* 2 columns of equal width */
 }
 .info .content .info-contaner .item1,
@@ -239,34 +294,6 @@ export default {
   font-weight: bold;
   font-family: 'BubbleBody Neue','Poppins', sans-serif;
   color: #464c84;
-}
-
-.about-contaner .item1{
-  display: flex;
-  padding: 20px;
-  flex-wrap: wrap; /* allow items to wrap */
-  justify-content: center; /* center items horizontally */
-  gap:10px; /* space between images */
-}
-.about-contaner .item2 p{
-  z-index: 10;
-  padding: 20px;
-  text-align: left;
-  color: #464c84;
-  font-weight: bold;
-  font-family: 'BubbleBody Neue','Poppins', sans-serif;
-}
-.about-contaner .item2 h1,.info h1{
-  padding: 20px;
-  text-align: center;
-  color: #464c84;
-  font-weight: bold;
-  font-family: 'BubbleBody Neue','Poppins', sans-serif;
-}
-.about-contaner .item2 p span {
-  font-weight: 900;
-  color: #30387c;
-  font-family: 'BubbleBody Neue','Poppins', sans-serif;
 }
 
 img{
@@ -315,6 +342,16 @@ main {
   background-color: #4fc4f7;
   height: 100vh;
   width: 100%;
+}
+.key-features .content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 50%;
+  color: white;
+  font-family: 'BubbleBody Neue', 'Poppins', sans-serif;
 }
 header{
   width: 100%;
@@ -546,13 +583,14 @@ header h1 {
   z-index: 1;
 }
 .beach-background{
-  top: 89%;
+  top: -10%;
   width: 100%;
   position: relative;
 }
 .sand-background{
-  top: 93%;
+  top: 95%;
   position: relative; 
+  z-index: 0;
 }
 .moving-number {
   font-size: 3rem;
