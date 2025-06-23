@@ -3,7 +3,7 @@
 @font-face {
   font-family: 'BubbleBody Neue';
   src: url('@/assets/fonts/BubbleBodyNeue-Regular.ttf') format('truetype');
-  font-weight: 400;
+  font-weight: 700;
 }
 
 @font-face {

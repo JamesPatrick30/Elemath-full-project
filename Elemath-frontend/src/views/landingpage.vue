@@ -139,7 +139,11 @@
             <TreeComponent class="tree tree13" />
           </section>
           <section class="info">
-            third
+            <h1>Who is Elemath for ?</h1>
+            <div class="info-contaner">
+              <item1></item1>
+              <item2></item2>
+            </div>
               <div class="beach-background">
                 <beachbackground  />
               </div>
@@ -180,22 +184,23 @@ export default {
 </script>
 
 <style scoped>
-/* @font-face {
+@font-face {
   font-family: 'BubbleBody Neue';
   src: url('fonts/BubbleBodyNeue.woff2') format('woff2'),
        url('fonts/BubbleBodyNeue.woff') format('woff'),
        url('fonts/BubbleBodyNeue.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
-} */
+}
 
 *{
   margin: 0;
   padding: 0;
 }
-.about-contaner{
+.about-contaner,.info-contaner {
   display: grid;
   grid-template-columns: repeat(1, 1fr); /* 2 columns of equal width */
+  z-index: 10;
 }
 
 
@@ -225,6 +230,12 @@ export default {
   font-weight: 900;
   color: #30387c;
   font-family: 'BubbleBody Neue','Poppins', sans-serif;
+}
+.info h1{
+  color: #30387c;
+  font-family: 'BubbleBody Neue','Poppins',sans-serif;
+  font-weight: bold;
+  font-size: 35px;
 }
 img{
   height: 250px;
@@ -266,6 +277,7 @@ main {
   background-color: #ffff99;
   height: 100vh;
   width: 100%;
+  justify-items: center;
 }
 .key-features {
   background-color: #4fc4f7;
@@ -351,6 +363,7 @@ header{
     
   }
 .about {
+  overflow: hidden;
   background-color: #a8e15e;
   height: 100vh;
   width: 100%;
@@ -478,27 +491,27 @@ header h1 {
 }
 .tree11{
   position: absolute;
-  top: 150%;
+  top: 175%;
   left: 50%;
   width: 70px;
   height: 200px;
-  z-index: 0;
+
 }
 .tree12{
   position: absolute;
-  top: 100%;
-  left: 10%;
+  top: 170%;
+  left: 90%;
   width: 70px;
   height: 200px;
   z-index: 0;
 }
 .tree13{
   position: absolute;
-  top: 100%;
-  left: 10%;
+  top: 95%;
+  left: 80%;
   width: 70px;
   height: 200px;
-  z-index: 0;
+  z-index: 1;
 }
 .beach-background{
   top: 89%;
@@ -673,7 +686,7 @@ header h1 {
     transform: scaleX(0.8);
     left: 30%;
   }
-  .about-contaner{
+  .about-contaner,.info-contaner{
     display: grid;
     grid-template-columns: repeat(2, 1fr); /* 2 columns of equal width */
   }
