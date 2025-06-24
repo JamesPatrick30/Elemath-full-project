@@ -64,7 +64,7 @@
               </p>
               <nav>
                 <ul>
-                  <li><button @click="goToSignIn()">Sign In</button></li>
+                  <li><button @click="oncluster()">Sign In</button></li>
                   <li><button>Sign Out</button></li>
                 </ul>
               </nav>
@@ -172,6 +172,18 @@
     </div>
     
   </main>
+  <div class="signin" v-if="cluster"> 
+    <div class="studentorteacher">
+      <h1>Sign In</h1>
+      <button class="btn-x">X</button>
+      <p>Are you a student or a teacher?</p>
+      <div class="btn-contaner">
+        <button @click="goToSignIn()">Student</button>
+        <button @click="goToSignIn()">Teacher</button>
+      </div>
+      
+    </div>
+  </div>
 </template>
 
 <script>
@@ -196,19 +208,82 @@ export default {
     return {
       gameimage: gameimage,
       gameimage2: gameimage2,
-      gameimage3: gameimage3
+      gameimage3: gameimage3,
+      cluster: false
     };
   },
   methods: {
     goToSignIn() {
       this.$router.push({ name: 'signin' });
     },
+    oncluster(){
+      this.cluster = true;
+    }
   }
 }
 
 </script>
 
 <style scoped>
+.signin{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.signin .studentorteacher{
+  background-color: white;
+  width: 70%;
+  height: 300px;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  border: #30387c 5px solid;
+}
+.signin .studentorteacher h1{
+  color: #30387c;
+  font-weight: bold;
+  font-family: 'BubbleBody Neue','Poppins', sans-serif;
+}
+.signin .studentorteacher .btn-contaner{
+  position: relative;
+  top: 10%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.signin .studentorteacher .btn-contaner .btn-x{
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: transparent;
+  color: #30387c;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+.signin .studentorteacher .btn-contaner button{
+  background-color: #30387c;
+  color: white;
+  border: none;
+  padding: 100px;
+  cursor: pointer;
+  height: 100%;
+  width: 200px;
+  transition: 500ms;
+  border-radius: 20px;
+  padding: 10px;
+  font-size: 15px;
+  margin: 10px;
+  font-family: 'BubbleBody Neue','Poppins', sans-serif;
+} 
 /* @font-face {
   font-family: 'BubbleBody Neue';
   src: url('fonts/BubbleBodyNeue.woff2') format('woff2'),
@@ -834,6 +909,33 @@ header h1 {
   padding: 20px;
   line-height: 1.5;
 }
+.signin .studentorteacher{
+  background-color: white;
+  width: 400px;
+  height: 300px;
+  padding: 20px;
+  border-radius: 30px;
+  text-align: center;
+  border: #30387c 5px solid;
+}
+.signin .studentorteacher .btn-contaner{
+  display: flex;
+  flex-direction: column;
+}
+.signin .studentorteacher .btn-contaner button{
+  background-color: #30387c;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  height: 100%;
+  width: 300px;
+  transition: 500ms;
+  border-radius: 20px;
+  padding: 10px;
+  font-size: 22px;
+  margin: 10px;
+} 
 
 
 }
