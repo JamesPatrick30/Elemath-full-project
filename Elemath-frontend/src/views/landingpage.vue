@@ -204,14 +204,14 @@ export default {
 </script>
 
 <style scoped>
-@font-face {
+/* @font-face {
   font-family: 'BubbleBody Neue';
   src: url('fonts/BubbleBodyNeue.woff2') format('woff2'),
        url('fonts/BubbleBodyNeue.woff') format('woff'),
        url('fonts/BubbleBodyNeue.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
-}
+} */
 
 *{
   margin: 0;
@@ -439,11 +439,28 @@ header{
 }
 .tagline-contaner {
   position: absolute;
-  top: 20%;
+
   left: 5%;
   color: #464c84;
   z-index: 2;
+  font-size: 10px;
+  font-family: 'BubbleBody Neue','Poppins', sans-serif;
+}
+.tagline-contaner .sentence {
+  font-size: 20px;
+  color: #464c84;
+
+  margin-top: 10px;
+  text-align: left;
+  width: 80%;
+    font-family: 'BubbleBody Neue','Poppins', sans-serif;
+}
+.tagline-contaner h3 {
   font-size: 30px;
+  color: #464c84;
+  font-weight: bold;
+  text-align: left;
+  margin-top: 20px;
   font-family: 'BubbleBody Neue','Poppins', sans-serif;
 }
 .tagline-contaner nav ul{
