@@ -64,7 +64,7 @@
               </p>
               <nav>
                 <ul>
-                  <li><button>Sign In</button></li>
+                  <li><button @click="goToSignIn()">Sign In</button></li>
                   <li><button>Sign Out</button></li>
                 </ul>
               </nav>
@@ -199,6 +199,11 @@ export default {
       gameimage3: gameimage3
     };
   },
+  methods: {
+    goToSignIn() {
+      this.$router.push({ name: 'signin' });
+    },
+  }
 }
 
 </script>
