@@ -341,15 +341,17 @@ main {
 .key-features {
   background-color: #4fc4f7;
   height: 100vh;
-  width: 100%;
+  width: 100vh;
+
 }
 .key-features .content {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  text-align: center;
   height: 100%;
-  width: 50%;
+  width: 48%;
   color: white;
   font-family: 'BubbleBody Neue', 'Poppins', sans-serif;
 }
@@ -439,7 +441,7 @@ header{
 }
 .tagline-contaner {
   position: absolute;
-
+  top: 20%;
   left: 5%;
   color: #464c84;
   z-index: 2;
@@ -603,6 +605,7 @@ header h1 {
   top: -10%;
   width: 100%;
   position: relative;
+  z-index: 0;
 }
 .sand-background{
   top: 95%;
@@ -730,6 +733,7 @@ header h1 {
   }
   .landing .sky .cloud3 {
     opacity: 0;
+    z-index: 1;
     top: 20%;
     animation: cloudanimation 17s linear 5s infinite;
   }
