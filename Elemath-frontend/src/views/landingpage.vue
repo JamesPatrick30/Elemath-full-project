@@ -342,7 +342,6 @@ main {
   background-color: #4fc4f7;
   height: 100vh;
   width: 100vh;
-
 }
 .key-features .content {
   display: flex;
@@ -807,7 +806,29 @@ header h1 {
     width: 70px;
     height: 200px;
   }
-
+  .key-features {
+  background-color: #4fc4f7;
+  height: 100vh;
+  width: 100%;
+}
+.key-features .content {
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 100%;
+  width: 100%;
+  color: white;
+  font-family: 'BubbleBody Neue', 'Poppins', sans-serif;
+}
+.key-features .content p {
+  z-index: 2;
+  font-size: 20px;
+  padding: 20px;
+  line-height: 1.5;
+}
 
 
 }
