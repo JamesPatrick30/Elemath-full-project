@@ -172,10 +172,11 @@
     </div>
     
   </main>
-  <div class="signin" v-if="cluster"> 
+  <div class="signin" v-if="cluster" @click="closeCluster()"> 
+  
     <div class="studentorteacher">
+      <button class="btn-x" @click="closeCluster()">X</button>
       <h1>Sign In</h1>
-      <button class="btn-x">X</button>
       <p>Are you a student or a teacher?</p>
       <div class="btn-contaner">
         <button @click="goToSignIn()">Student</button>
@@ -218,6 +219,9 @@ export default {
     },
     oncluster(){
       this.cluster = true;
+    },
+    closeCluster() {
+      this.cluster = false;
     }
   }
 }
@@ -259,10 +263,10 @@ export default {
   align-items: center;
   justify-content: center;
 }
-.signin .studentorteacher .btn-contaner .btn-x{
-  position: absolute;
-  top: 10px;
-  right: 10px;
+.signin .studentorteacher .btn-x{
+  position: relative;
+  top: -10px;
+  left: 50%;
   background-color: transparent;
   color: #30387c;
   border: none;
