@@ -54,7 +54,7 @@ export default {
 <style scoped>
 main {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 100vh;
@@ -84,7 +84,8 @@ main {
     justify-items: center;
     text-align: center;
     max-width: 400px;
-    border-left: #464c84 5px solid;
+    border-top: #464c84 5px solid;
+    
       font-family: 'BubbleBody Neue', 'Poppins', sans-serif;
 }
 .form  {
@@ -134,12 +135,12 @@ main {
     scale: .95;
     transition: 200ms;
 }
-@media screen and (max-width: 1024px) {
+@media screen and (min-width: 1024px) {
     main {
         width: 100%;
         height: 100%;
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         align-items: center;
         justify-content: center;
         gap: 200px;
@@ -148,7 +149,8 @@ main {
     .form {
         width: 100%;
         max-width: 400px;
-        background-color: #4a39e9;
+        border-left: #464c84 5px solid;
+        border-top: none;
     }
     
 }
