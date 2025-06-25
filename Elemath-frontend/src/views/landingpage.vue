@@ -65,7 +65,7 @@
               <nav>
                 <ul>
                   <li><button @click="oncluster()">Sign In</button></li>
-                  <li><button>Sign Out</button></li>
+                  <li><button @click="openSignUpCluster()">Sign Up</button></li>
                 </ul>
               </nav>
             </div>
@@ -179,12 +179,22 @@
       <h1>Sign In</h1>
       <p>Are you a student or a teacher?</p>
       <div class="btn-contaner">
-        <button @click="goToSignIn()">Student</button>
-        <button @click="goToSignIn()">Teacher</button>
+        <button @click="goToSignIn('student')">Student</button>
+        <button @click="goToSignIn('teacher')">Teacher</button>
       </div>
-      
     </div>
   </div>
+  <div class="signin" v-if="SignUpcluster" @click="closeSignUpCluster()">
+      <div class="studentorteacher">
+        <button class="btn-x" @click="closeSignUpCluster()">X</button>
+        <h1>Sign Up</h1>
+        <p>Are you a student or a teacher?</p>
+        <div class="btn-contaner">
+          <button @click="goToSignUp('student')">Student</button>
+          <button @click="goToSignUp('teacher')">Teacher</button>
+        </div>
+      </div>
+    </div>
 </template>
 
 <script>
@@ -210,19 +220,29 @@ export default {
       gameimage: gameimage,
       gameimage2: gameimage2,
       gameimage3: gameimage3,
-      cluster: false
+      cluster: false,
+      SignUpcluster:false
     };
   },
   methods: {
-    goToSignIn() {
-      this.$router.push({ name: 'signin' });
+    goToSignIn(role) {
+      this.$router.push({ name: 'signin',query: { role: role } });
     },
     oncluster(){
       this.cluster = true;
     },
     closeCluster() {
       this.cluster = false;
-    }
+    },
+    closeSignUpCluster() {
+      this.SignUpcluster = false;
+    },
+    openSignUpCluster() {
+      this.SignUpcluster = true;
+    },
+    goToSignUp(role) {
+      this.$router.push({ name: 'signup',query: { role: role } });
+    },
   }
 }
 
