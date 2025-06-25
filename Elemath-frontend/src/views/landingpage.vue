@@ -322,6 +322,9 @@ export default {
   padding: 0;
 }
 .about-contaner{
+  position: relative;
+  z-index: 10;
+  width: 90%;
   display: grid;
   grid-template-columns: repeat(1, 1fr); /* 2 columns of equal width */
   
