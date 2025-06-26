@@ -24,9 +24,9 @@
                     </svg>
                 </button>
             </div><div class="passwordcontaner">
-                <input id= "password"type="password" placeholder="Confirm Password" required />
-                <button class="btn" @click="see()">
-                    <svg v-if="!showPassword" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <input id= "confirmPassword"type="password" placeholder="Confirm Password" required />
+                <button class="btn" @click="confirmSee()">
+                    <svg v-if="!showconfirmPassword" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/>
                         <circle cx="12" cy="12" r="3"/>
                     </svg>
@@ -38,7 +38,7 @@
                 </button>
             </div>
             
-            <button class="submit" type="submit">Sign In</button>
+            <button class="submit" type="submit" @click="submitForm()">Sign In</button>
             
             
         </div>
@@ -50,6 +50,7 @@ export default {
     data() {
         return {
             showPassword: false,
+            showconfirmPassword: false,
             role: this.$route.query.role , // Default to 'student' if no role is provided
         };
     },
@@ -58,6 +59,23 @@ export default {
         see(){
             this.showPassword = !this.showPassword;
             document.getElementById("password").type = document.getElementById("password").type === "password" ? "text" : "password";
+        },
+        confirmSee(){
+            this.showconfirmPassword = !this.showconfirmPassword;
+            document.getElementById("confirmPassword").type = document.getElementById("confirmPassword").type === "password" ? "text" : "password";
+        },
+        submitForm() {
+            // Handle form submission logic here
+            const password = document.getElementById("password").value;
+            const confirmPassword = document.getElementById("confirmPassword").value;
+
+            if (password !== confirmPassword) {
+                alert("Passwords do not match!");
+                return;
+            }
+
+            // Proceed with the sign-up logic, e.g., API call
+            console.log("Form submitted with password:", password);
         }
     },
     mounted() {
@@ -138,7 +156,8 @@ main {
     outline: none;
     box-shadow: 0 0 5px #4a39e9;
 }
-.form #password:focus {
+.form #password:focus,
+.form #confirmPassword:focus {
     outline: none;
 }
 .form .submit:hover {
