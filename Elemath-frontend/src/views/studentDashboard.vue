@@ -21,11 +21,15 @@
             </div>
             <div class="practicecontaner">
                 <div class="practice-test">
-
+                    <h2>Practice Test</h2>
                 </div>
                 <div class="window-card">
-                    
+                    <h2>Window Card</h2>
                 </div>
+            </div>
+            <div class="did-you-know">
+                <h2>Did you know?</h2>
+                <p>Math is not just about numbers, it's about problem-solving and critical thinking!</p>
             </div>
         </div>
     </main>
@@ -139,5 +143,50 @@ nav ul {
     position: relative;
     left: -270px;
     top: -100px;
+}
+.practicecontaner {
+    width: 90%;
+    height: 150px;
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    font-family: 'BubbleBody Neue', 'Poppins', sans-serif;
+}
+.practicecontaner .practice-test {
+    width: 45%;
+    height: 100%;
+    background-color: #dce466;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.practicecontaner .window-card {
+    width: 45%;
+    height: 100%;
+    background-color: #4fc4f7;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.did-you-know {
+    width: 90%;
+    height: 200px;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f7c4c4;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #333;
+    font-family: 'BubbleBody Neue', 'Poppins', sans-serif;
 }
 </style>
