@@ -1,5 +1,9 @@
 <template>
+            <div class="nav123">
+                <button @click="SeeNav()">...</button>
+            </div>
     <main>
+        
         <nav>
             <ul>
                 <li class="item1">Home</li>
@@ -9,7 +13,7 @@
             </ul>
         </nav>
         <div class="content">
-
+            
             <div class="info">
                  <h2>{{ name }}</h2>
                  <h4>{{ lrn }}</h4>
@@ -51,18 +55,23 @@ export default {
         };
     },
     methods: {
-   
+        SeeNav() {
+            // Logic to toggle navigation visibility
+            const nav = document.querySelector('nav');
+            nav.style.display = nav.style.display === 'none' ? 'flex' : 'none';
+        }
     },
     mounted() {
         
     }
 };
 </script>
-<style>
+<style scoped>
+@import url('https://fonts.googleapis.com/css2?family=BubbleBody+Neue:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap');
 main {
     display: flex;
     width: 100%;
-    height: 100vh;
+    height: 95vh;
     background-color: #f9f9f9;
 }
 nav {
@@ -83,13 +92,14 @@ nav ul {
         font-family: 'BubbleBody Neue', 'Poppins', sans-serif;
 }
 .content{
-    width: 80%;
+    width: 100%;
     height: 100%;
     padding: 20px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     }
 .info {
     display: flex;
@@ -144,6 +154,33 @@ nav ul {
     left: -270px;
     top: -100px;
 }
+.nav123 {
+    
+
+    width: 100%;
+    height: 5vh;
+    margin-top: 0;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+}
+.nav123 button {
+    position: relative;
+    margin-top: 5px;
+    margin-left: 10px;
+    width: 30px;
+    height: 30px;
+    background-color: #4fc4f7;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 .practicecontaner {
     width: 90%;
     height: 150px;
@@ -179,14 +216,15 @@ nav ul {
     height: 200px;
     margin-top: 10px;
     padding: 10px;
-    background-color: #f7c4c4;
+    background-color: #fde6b3;
     border-radius: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    color: #333;
+    color: white;
     font-family: 'BubbleBody Neue', 'Poppins', sans-serif;
 }
+
 </style>
