@@ -1,10 +1,13 @@
 <template>
             <div class="nav123">
+                <img class="logonav" src="/images/logo.jpg" alt="">
                 <button @click="SeeNav()">...</button>
+                
             </div>
     <main>
         
-        <nav>
+        <nav v-show="isNavVisible">
+            <img class="logo" src="/images/logo.jpg" alt="">
             <ul>
                 <li class="item1">Home</li>
                 <li class="item2">Profile</li>
@@ -21,6 +24,7 @@
             <div class="joinQuiz">
                 <TreeComponent class="tree1"/>
                 <TreeComponent2 class="tree2"/>
+                <img class="frog" src="/images/frog2.png" alt="">
                 <h1>JoinQuiz</h1>
             </div>
             <div class="practicecontaner">
@@ -51,23 +55,41 @@ export default {
     data() {
         return {
             name: 'John Doe', // Replace with actual data
-            lrn: '1234567890' // Replace with actual data
+            lrn: '1234567890', // Replace with actual data
+            isNavVisible: window.matchMedia('(min-width: 623px)').matches // Responsive nav visibility
         };
     },
     methods: {
         SeeNav() {
-            // Logic to toggle navigation visibility
-            const nav = document.querySelector('nav');
-            nav.style.display = nav.style.display === 'none' ? 'flex' : 'none';
+            this.isNavVisible = !this.isNavVisible;
+        },
+        handleResize() {
+            this.isNavVisible = window.matchMedia('(min-width: 623px)').matches;
         }
     },
     mounted() {
-        
+        window.addEventListener('resize', this.handleResize);
+        this.handleResize();
+    },
+    beforeDestroy() {
+        window.removeEventListener('resize', this.handleResize);
     }
 };
 </script>
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=BubbleBody+Neue:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+.logo{
+    height: auto;
+    width: 100%;
+    margin-top: 0%;
+    margin-bottom: 10px;
+}
+.frog{
+    position: absolute;
+    
+    left: 80%;
+    height: 200px;
+}
 main {
     display: flex;
     width: 100%;
@@ -75,21 +97,42 @@ main {
     background-color: #f9f9f9;
 }
 nav {
+    
     width: 20%;
     height: 100%;
     background-color: #ffffff;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: baseline;
 }
 nav ul {
+    margin-top: 20px;
     list-style: none;
     padding: 0;
     margin: 0;
     display: flex;
     flex-direction: column;
     gap: 20px;
-        font-family: 'BubbleBody Neue', 'Poppins', sans-serif;
+    width: 100%;
+    font-family: 'BubbleBody Neue', 'Poppins', sans-serif;
+}
+nav ul li{
+    width: 100%;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    color: #4fc4f7;
+    font-weight: bold;
+    font-family: 'BubbleBody Neue', 'Poppins', sans-serif;
+    transition: 0.3s;
+}
+nav ul li:hover{
+    transition: 0.3s;
+    background-color: #4fc4f7;
+    color: white;
 }
 .content{
     width: 100%;
@@ -139,9 +182,16 @@ nav ul {
     justify-content: center;
     align-items: center;
     font-family: 'BubbleBody Neue', 'Poppins', sans-serif;
+    cursor: pointer;
+    transition: 0.3s linear;
+}
+.joinQuiz:hover{
+    background-color: #bbe781;
+    transition: 0.3s linear;
+    color: #82b342;
 }
 .joinQuiz .tree1{
-    width: 70px;
+    width: 80px;
     height: 90px;
     position: relative;
     left: -270px;
@@ -156,11 +206,10 @@ nav ul {
 }
 .nav123 {
     
-
     width: 100%;
     height: 5vh;
     margin-top: 0;
-    display: flex;
+    display: none;
     justify-content: left;
     align-items: center;
 }
@@ -226,5 +275,140 @@ nav ul {
     color: white;
     font-family: 'BubbleBody Neue', 'Poppins', sans-serif;
 }
+/* @media screen and (max-width: 1024px){
+    main{
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        justify-content: center;
+        align-items: center;
+    }
+    .info{
+        width: 100%;
+        padding: 0;
+    }
+} */
 
+/* Mobile styles */
+@media screen and (max-width: 623px) {
+    main {
+        flex-direction: column;
+        width: 100vw;
+        height: auto;
+        min-height: 100vh;
+        padding: 0;
+    }
+    nav {
+        display: none;
+        width: 100vw;
+        height: auto;
+        margin-top: 0%;
+        min-height: 60px;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 0;
+    }
+    nav ul {
+        flex-direction: column;
+        gap: 10px;
+        width: 100vw;
+        justify-content: center;
+        align-items: center;
+        font-size: 14px;
+        color: #4fc4f7;
+        padding: 5px;
+    }
+    nav ul li{
+        padding: 5px;
+        text-align: center;
+        justify-content: center;
+    }
+    nav ul li:hover{
+        width: 100%;
+        height: 30px;
+        
+        
+        background-color: #4fc4f7;
+        color: white;
+    }
+    .content {
+        width: 100vw;
+        padding: 10px 0;
+    }
+    .info,
+    .joinQuiz,
+    .practicecontaner,
+    .did-you-know {
+        width: 96vw;
+        min-width: 0;
+        margin: 8px auto;
+        padding: 10px;
+    }
+    .joinQuiz {
+        flex-direction: column;
+        height: auto;
+        min-height: 100px;
+    }
+    .joinQuiz .tree1{
+        position: static;
+        width: 50px;
+        height: 50px;
+        margin-right: 70%;
+        margin-bottom: 5px;
+        left: 0;
+        top: 0;
+    }
+    
+    .joinQuiz .tree2 {
+        position: static;
+        margin-right: 50%;
+        width: 40px;
+        height: 50px;
+        margin-bottom: 5px;
+        left: 0;
+        top: 0;
+    }
+
+    .practicecontaner {
+        flex-direction: column;
+        height: auto;
+        gap: 10px;
+    }
+    .practicecontaner .practice-test,
+    .practicecontaner .window-card {
+        width: 100%;
+        height: 60px;
+    }
+    .did-you-know {
+        height: auto;
+        min-height: 100px;
+        color: #333;
+    }
+    .nav123 {
+        display: flex;
+        justify-content: end;
+        align-items: center;
+        width: 100vw;
+        /* height: 40px;
+        min-height: 40px; */
+    }
+    .nav123 button {
+        margin-right: 20px;
+        width: 28px;
+        height: 28px;
+        font-size: 20px;
+        
+    }
+    .logo{
+        display: none;
+    }
+    .logonav{
+        position: absolute;
+        left: 2%;
+        height: 30px;
+    }
+}
 </style>
