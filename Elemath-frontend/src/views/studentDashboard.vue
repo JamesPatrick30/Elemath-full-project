@@ -113,11 +113,13 @@ nav ul {
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 10px;
     width: 100%;
     font-family: 'BubbleBody Neue', 'Poppins', sans-serif;
 }
 nav ul li{
+    border-radius: 30px;
+    cursor: pointer;
     width: 100%;
     height: 40px;
     display: flex;
