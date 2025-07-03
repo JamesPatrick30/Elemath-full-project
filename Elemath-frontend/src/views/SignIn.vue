@@ -1,7 +1,7 @@
 <template>
     <main>
         <div class="logo">
-            <h1>logo</h1>
+            <img class="img-logo" src="/images/logo.jpg" alt="">
         </div>
         <div class="form">
             <header>
@@ -32,6 +32,7 @@
     </main>
 </template>
 <script>
+
 export default {
     name: 'SignIn',
     data() {
@@ -52,6 +53,15 @@ export default {
 };
 </script>
 <style scoped>
+.logo{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px;
+}
+.img-logo{
+    height: 200px;
+}
 main {
     display: flex;
     flex-direction: column;
