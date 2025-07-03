@@ -46,16 +46,34 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="item4" id="item"></div>
+                <div class="item4" id="item">
+                    <div class="chart1"  id="chart">
+                        <Doughnut :data="donutData" :options="donutOptions" style="width:100%`;height:100%`;" />
+                    </div>
+                    <div class="chart2"  id="chart"></div>
+                    <div class="chart3" id="chart"></div>
+                    <div class="chart4" id="chart"></div>
+                    <div class="chart5" id="chart"></div>
+                    
+                </div>
             </div>
             
         </main>
     </body>
 </template>
 <script>
-export default{
-    data(){
-        return{
+import { defineComponent } from 'vue'
+import { Doughnut } from 'vue-chartjs'
+import { Chart, ArcElement, Tooltip, Legend } from 'chart.js'
+Chart.register(ArcElement, Tooltip, Legend)
+
+export default defineComponent({
+    name: 'TeacherDashboard',
+    components: {
+        Doughnut
+    },
+    data() {
+        return {
             students: [
                 { name: "Alice", average: 85.2 },
                 { name: "Bob", average: 92.5 },
@@ -77,15 +95,43 @@ export default{
                 { name: "Rachel", average: 93.4 },
                 { name: "Sam", average: 82.1 },
                 { name: "Tina", average: 88.0 }
-            ].sort((a, b) => b.average - a.average)
+            ].sort((a, b) => b.average - a.average),
+
+            donutData: {
+                labels: ['Red', 'Green', 'Blue'],
+                datasets: [{
+                    data: [10, 20, 30],
+                    backgroundColor: ['#f87979', '#7acbf9', '#ffe066'],
+                }]
+            },
+            donutOptions: {
+                cutout: '70%',
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
         }
     }
-}
+})
 </script>
 <style scoped>
 *{
     color: #464c84;
     font-family: 'BubbleBody Neue', 'Poppins', sans-serif;
+}
+#chart{
+    background-color: #4548e0;
+}
+.item4{
+    display: grid;
+    grid-template-rows: 100px;
+    grid-template-columns: 1fr 1fr ;
+    grid-area: 
+        'cart1 chart2'
+        'chart3 chart4'
+        'chart5 chart5';
+        gap: 30px;
 }
 .item3 .header{
     height: 50px;
