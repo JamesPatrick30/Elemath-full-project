@@ -26,7 +26,11 @@
 
                 </div>
                 <div class="item3" id="item" >
-                    <h3>students</h3>
+                    <div class="header">
+                        <h5 class="title">students</h5>
+                        <h5 class="count">{{ students.length }}</h5>
+                    </div>
+                    
                     <table>
                         <thead>
                             <tr>
@@ -83,6 +87,17 @@ export default{
     color: #464c84;
     font-family: 'BubbleBody Neue', 'Poppins', sans-serif;
 }
+.item3 .header{
+    height: 50px;
+    text-align: center;
+}
+.item3 .header .title{
+    margin-left: 20px;
+}
+.item3 .header .count{
+    margin-left: auto;
+    margin-right: 20px;
+}
 td{
     text-align: center;
     margin-top: 8px;
@@ -101,6 +116,7 @@ td{
     scroll-behavior: none; */
 }
 .item3 table {
+    height: 100%;
     width: 100%;
     border-collapse: collapse;
 }
@@ -108,8 +124,34 @@ td{
 .item3 tbody {
     display: block;
     max-height: 250px; /* Adjust as needed */
-    overflow-y: auto;
+    overflow-y: hidden;
     width: 100%;
+    scrollbar-width: thin;
+    scrollbar-color: #4548e0 #f9f9f9;
+    transition: overflow-y 0.5s;
+}
+
+.item3 tbody:hover {
+    overflow-y: auto;
+    transition: 5s;
+}
+
+/* For Chrome, Edge, and Safari */
+.item3 tbody::-webkit-scrollbar {
+    width: 8px;
+    background: #f9f9f9;
+}
+
+.item3 tbody::-webkit-scrollbar-thumb {
+    background: #796bf5;
+    border-radius: 8px;
+}
+
+/* Remove scrollbar arrows (buttons) */
+.item3 tbody::-webkit-scrollbar-button {
+    display: none;
+    height: 0;
+    width: 0;
 }
 
 .item3 thead, .item3 tbody tr {
