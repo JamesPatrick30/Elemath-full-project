@@ -2,10 +2,10 @@
     <body class="body">
         <nav>
             <ul>
-                <li class="item1">Home</li>
-                <li class="item2">Profile</li>
-                <li class="item3">History</li>
-                <li class="item4">Settings</li>
+                <li >Home</li>
+                <li >Profile</li>
+                <li >History</li>
+                <li >Settings</li>
             </ul>
         </nav>
         <main>
