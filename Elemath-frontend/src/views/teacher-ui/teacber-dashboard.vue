@@ -48,7 +48,7 @@
                 </div>
                 <div class="item4" id="item">
                     <div class="chart1"  id="chart">
-                        <Doughnut :data="donutData" :options="donutOptions" style="width:100%`;height:100%`;" />
+                        <Doughnut :data="donutData" :options="donutOptions" style="width:100%;height:100%;" />
                     </div>
                     <div class="chart2"  id="chart"></div>
                     <div class="chart3" id="chart"></div>
