@@ -47,13 +47,16 @@
                     </table>
                 </div>
                 <div class="item4" id="item">
-                    <div class="chart1"  id="chart">
-                        <Doughnut :data="donutData" :options="donutOptions" style="width:100%;height:100%;" />
+                    <div class="con-ch">
+                        <div class="chart1"  id="chart" style="grid-area: chart1;">
+                            <Doughnut :data="donutData" :options="donutOptions" style="width: 30px; height: 30px;" />
+                        </div>
+                        <div class="chart2"  id="chart" style="grid-area: chart2;">1</div>
+                        <div class="chart3" id="chart" style="grid-area: chart3;">2</div>
+                        <div class="chart4" id="chart" style="grid-area: chart4;">3</div>
+                        <div class="chart5" id="chart" style="grid-area: chart5;">4</div>
                     </div>
-                    <div class="chart2"  id="chart"></div>
-                    <div class="chart3" id="chart"></div>
-                    <div class="chart4" id="chart"></div>
-                    <div class="chart5" id="chart"></div>
+                    
                     
                 </div>
             </div>
@@ -98,7 +101,7 @@ export default defineComponent({
             ].sort((a, b) => b.average - a.average),
 
             donutData: {
-                labels: ['Red', 'Green', 'Blue'],
+                // labels: ['Red', 'Green', 'Blue'],
                 datasets: [{
                     data: [10, 20, 30],
                     backgroundColor: ['#f87979', '#7acbf9', '#ffe066'],
@@ -121,17 +124,23 @@ export default defineComponent({
     font-family: 'BubbleBody Neue', 'Poppins', sans-serif;
 }
 #chart{
-    background-color: #4548e0;
+    background-color: #b8b8d4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
 }
-.item4{
+.con-ch{
+    height: 100%;
+    width: 100%;
     display: grid;
-    grid-template-rows: 100px;
+    grid-template-rows: 1fr 1fr 2fr;
     grid-template-columns: 1fr 1fr ;
-    grid-area: 
-        'cart1 chart2'
+    grid-template-areas: 
+        'chart1 chart2'
         'chart3 chart4'
         'chart5 chart5';
-        gap: 30px;
+    gap: 1em;
 }
 .item3 .header{
     height: 50px;
