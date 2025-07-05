@@ -5,6 +5,7 @@ import SignUp from '@/views/SignUp.vue'
 import studentDashboard from '@/views/studentDashboard.vue'
 
 import teacberDashboard from '@/views/teacher-ui/teacber-dashboard.vue'
+import teacherUi from '@/views/teacher-ui/teacher-ui.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -32,6 +33,11 @@ const router = createRouter({
       path: '/t',
       name: 'teacher-dashboard',
       component: teacberDashboard
+    },
+    {
+      path: '/th',
+      name: 'teacher-ui',
+      component :teacherUi
     }
 
   ],

@@ -46,15 +46,21 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="item4" id="item">
+                <div class="item4" id="item9">
                     <div class="con-ch">
                         <div class="chart1"  id="chart" style="grid-area: chart1;">
-                            <Doughnut :data="donutData" :options="donutOptions" style="width: 30px; height: 30px;" />
+                         
+                            <h6>failed</h6>
+                            <strong>10%</strong>
+                            <!-- <Doughnut :data="donutData" :options="donutOptions" style="width: 30px; height: 30px;" /> -->
                         </div>
                         <div class="chart2"  id="chart" style="grid-area: chart2;">1</div>
                         <div class="chart3" id="chart" style="grid-area: chart3;">2</div>
                         <div class="chart4" id="chart" style="grid-area: chart4;">3</div>
                         <div class="chart5" id="chart" style="grid-area: chart5;">4</div>
+
+                        <div class="chart3" id="chart" style="grid-area: chart6;">5</div>
+                        <div class="chart4" id="chart" style="grid-area: chart7;">6</div>
                     </div>
                     
                     
@@ -118,28 +124,44 @@ export default defineComponent({
     }
 })
 </script>
+
 <style scoped>
 *{
     color: #464c84;
     font-family: 'BubbleBody Neue', 'Poppins', sans-serif;
 }
+.chart1{
+    
+    background: linear-gradient(135deg, #f77979 0%, #fbc2eb 100%);
+}
+.chart1 h6{
+    color: white;
+    position: relative;
+    margin-top: 0%;
+    margin-left: 20px;
+}
+.chart2{
+    background: linear-gradient(135deg, #97fa9a 0%, #cdf5cf 100%);
+}
+strong{
+    display: block;
+    text-align: center;
+    margin-bottom: 20px ;
+}
 #chart{
-    background-color: #b8b8d4;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 20px;
+    border-radius: 15px;
+    padding: 10px;
 }
 .con-ch{
     height: 100%;
     width: 100%;
     display: grid;
     grid-template-rows: 1fr 1fr 2fr;
-    grid-template-columns: 1fr 1fr ;
+    grid-template-columns: 1fr 1fr 1fr;
     grid-template-areas: 
-        'chart1 chart2'
-        'chart3 chart4'
-        'chart5 chart5';
+        'chart1 chart2 chart6'
+        'chart3 chart4 chart7'
+        'chart5 chart5 chart5';
     gap: 1em;
 }
 .item3 .header{
