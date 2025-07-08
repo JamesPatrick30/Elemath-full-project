@@ -1,3 +1,34 @@
+<script>
+export default{
+    data(){
+        return{
+            students:[
+                {name:'james',lrn:'875465423'},
+                {name:'james',lrn:'875465423'},
+                {name:'james',lrn:'875465423'},
+                {name:'james',lrn:'875465423'},
+                {name:'james',lrn:'875465423'},
+                {name:'james',lrn:'875465423'},
+                {name:'james',lrn:'875465423'},
+                {name:'james',lrn:'875465423'},
+                {name:'james',lrn:'875465423'},
+                {name:'james',lrn:'875465423'},
+                {name:'james',lrn:'875465423'},
+                {name:'james',lrn:'875465423'},
+                {name:'james',lrn:'875465423'},
+                {name:'james',lrn:'875465423'},
+                {name:'james',lrn:'875465423'},
+                {name:'james',lrn:'875465423'},
+                {name:'james',lrn:'875465423'},
+                {name:'james',lrn:'875465423'},
+                {name:'james',lrn:'875465423'},
+                {name:'james',lrn:'875465423'},
+
+            ]
+        }
+    }
+}
+</script>
 <template>
     <body>
         <nav>
@@ -40,7 +71,13 @@
                 </div>
                 
             </div>
-            <div class="list" style="grid-area: list;"></div>
+            <div class="list" style="grid-area: list;">
+                <ul>
+                    <li v-for="student in students" :key="student">
+                        {{ student }}
+                    </li>
+                </ul>
+            </div>
             <div id="item" style="grid-area: statistic;"></div>
         </div>
         </main>
@@ -55,6 +92,10 @@
     background-color: #a8f5ff;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
     border-radius: 20px;
+
+    overflow-y: scroll;
+    scrollbar-width: 5px;
+    scrollbar-color: black;
 }
 .teach{
     position: relative;
