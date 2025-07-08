@@ -28,15 +28,19 @@
                         <h1>QUIZ MODE</h1>
                     </div>
                     <div id="mode" class="windowcard" style="grid-area: windowcard;">
-                        <h1>windowcard</h1>
+                        <h1>Window Card</h1>
                         <img class="teach" src="/images/teach.png" alt="">
                     </div>
-                    <div id="mode" class="challenge" style="grid-area: challenge;">3</div>
-                    <div id="mode" class="lesson" style="grid-area: lesson;">6</div>
+                    <div id="mode" class="challenge" style="grid-area: challenge;">
+                        <h1>Challenge Mode</h1>
+                    </div>
+                    <div id="mode" class="lesson" style="grid-area: lesson;">
+                        <h1>Lessons</h1>
+                    </div>
                 </div>
                 
             </div>
-            <div id="item" style="grid-area: list;"></div>
+            <div class="list" style="grid-area: list;"></div>
             <div id="item" style="grid-area: statistic;"></div>
         </div>
         </main>
@@ -46,6 +50,11 @@
 <style scoped>
 *{
     font-family: 'BubbleBody Neue','Poppins', sans-serif;
+}
+.list{
+    background-color: #a8f5ff;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    border-radius: 20px;
 }
 .teach{
     position: relative;
