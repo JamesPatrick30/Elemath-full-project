@@ -1,5 +1,9 @@
 <script>
+import { Pie } from 'vue-chartjs'
 export default{
+    components:{
+        Pie
+    },
     data(){
         return{
             students:[
@@ -25,7 +29,17 @@ export default{
                 {name:'abigail',lrn:'875465442'},
               
 
-            ]
+            ],
+            pieData: {
+                labels: ['Red', 'Blue', 'Yellow'],
+                datasets: [
+                    {
+                        label: 'Sample Pie',
+                        data: [10, 20, 30],
+                        backgroundColor: ['#fbaaa6', '#2d8bba', '#e7bb41'],
+                    }
+                ]
+            }
         }
     }
 }
@@ -91,7 +105,9 @@ export default{
                     </table>
                 </div>
             </div>
-            <div id="item" style="grid-area: statistic;"></div>
+            <div class="statistic" style="grid-area: statistic;">
+                 <Pie class="pie" :data="pieData" />
+            </div>
         </div>
         </main>
         
@@ -100,6 +116,16 @@ export default{
 <style scoped>
 *{
     font-family: 'BubbleBody Neue','Poppins', sans-serif;
+}
+.pie{
+    height: 200px;
+}
+.statistic{
+    height: 300px;
+    margin: auto;
+    background-color: white;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    border-radius: 20px;
 }
 .table-scroll {
     max-height: 300px;
