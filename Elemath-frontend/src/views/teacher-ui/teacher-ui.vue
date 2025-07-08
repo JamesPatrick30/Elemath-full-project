@@ -11,13 +11,18 @@
         </nav>
         <main>
             <div class="con-m">
-            <div id="item" style="grid-area: header;"></div>
+            <div class="header" style="grid-area: header;">
+                <h3>welcome back. james</h3>
+                <h5>ID : 664232443</h5>
+            </div>
             <div class="body"  style="grid-area: body;">
                 <div class="con-b">
-                    <div id="games" style="grid-area: quizmode;">3</div>
-                    <div id="games" style="grid-area: windowcard;">4</div>
-                    <div id="games" style="grid-area: challenge;">3</div>
-                    <div id="games" style="grid-area: lesson;">6</div>
+                    <div class="quiz" style="grid-area: quizmode;">
+                        <h1>QUIZ MODE</h1>
+                    </div>
+                    <div class="windowcard" style="grid-area: windowcard;">4</div>
+                    <div class="challenge" style="grid-area: challenge;">3</div>
+                    <div class="lesson" style="grid-area: lesson;">6</div>
                 </div>
                 
             </div>
@@ -29,8 +34,42 @@
     </body>
 </template>
 <style scoped>
+*{
+    font-family: 'BubbleBody Neue','Poppins', sans-serif;
+}
+.header{
+    color: white;
+    padding: 20px;
+    background-color: #fbaaa6;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    border-radius: 20px;
+}
+.lesson{
+    background-color: #dc7556;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+.challenge{
+    background-color: #e7bb41;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+.quiz{
+    background-color: #2a713d;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+.windowcard{
+    padding: 20px;
+    background-color: #2d8bba;
+    border-radius: 20px;
+       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
 #games{
-    background-color: white;
+
     border-radius: 20px;
        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 }
