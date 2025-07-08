@@ -4,25 +4,26 @@ export default{
         return{
             students:[
                 {name:'james',lrn:'875465423'},
-                {name:'james',lrn:'875465423'},
-                {name:'james',lrn:'875465423'},
-                {name:'james',lrn:'875465423'},
-                {name:'james',lrn:'875465423'},
-                {name:'james',lrn:'875465423'},
-                {name:'james',lrn:'875465423'},
-                {name:'james',lrn:'875465423'},
-                {name:'james',lrn:'875465423'},
-                {name:'james',lrn:'875465423'},
-                {name:'james',lrn:'875465423'},
-                {name:'james',lrn:'875465423'},
-                {name:'james',lrn:'875465423'},
-                {name:'james',lrn:'875465423'},
-                {name:'james',lrn:'875465423'},
-                {name:'james',lrn:'875465423'},
-                {name:'james',lrn:'875465423'},
-                {name:'james',lrn:'875465423'},
-                {name:'james',lrn:'875465423'},
-                {name:'james',lrn:'875465423'},
+                {name:'sophia',lrn:'875465424'},
+                {name:'liam',lrn:'875465425'},
+                {name:'olivia',lrn:'875465426'},
+                {name:'noah',lrn:'875465427'},
+                {name:'emma',lrn:'875465428'},
+                {name:'lucas',lrn:'875465429'},
+                {name:'ava',lrn:'875465430'},
+                {name:'elijah',lrn:'875465431'},
+                {name:'mia',lrn:'875465432'},
+                {name:'logan',lrn:'875465433'},
+                {name:'amelia',lrn:'875465434'},
+                {name:'ethan',lrn:'875465435'},
+                {name:'charlotte',lrn:'875465436'},
+                {name:'mason',lrn:'875465437'},
+                {name:'harper',lrn:'875465438'},
+                {name:'jacob',lrn:'875465439'},
+                {name:'evelyn',lrn:'875465440'},
+                {name:'michael',lrn:'875465441'},
+                {name:'abigail',lrn:'875465442'},
+              
 
             ]
         }
@@ -72,11 +73,23 @@ export default{
                 
             </div>
             <div class="list" style="grid-area: list;">
-                <ul>
-                    <li v-for="student in students" :key="student">
-                        {{ student }}
-                    </li>
-                </ul>
+                <h1>Students</h1>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>LRN</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="student in students" :key="student.lrn">
+                                <td>{{ student.name }}</td>
+                                <td>{{ student.lrn }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <div id="item" style="grid-area: statistic;"></div>
         </div>
@@ -88,14 +101,34 @@ export default{
 *{
     font-family: 'BubbleBody Neue','Poppins', sans-serif;
 }
+.table-scroll {
+    max-height: 300px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #2d8bba #e0f7fa;
+}
+
+/* For Chrome, Edge, and Safari */
+.table-scroll::-webkit-scrollbar {
+    width: 8px;
+    border-radius: 10px;
+    background: #e0f7fa;
+}
+
+.table-scroll::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #2d8bba 40%, #a8f5ff 100%);
+    border-radius: 10px;
+    border: 2px solid #e0f7fa;
+}
+
+.table-scroll::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #2d8bba 60%, #fbaaa6 100%);
+}
+
 .list{
     background-color: #a8f5ff;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
     border-radius: 20px;
-
-    overflow-y: scroll;
-    scrollbar-width: 5px;
-    scrollbar-color: black;
 }
 .teach{
     position: relative;
