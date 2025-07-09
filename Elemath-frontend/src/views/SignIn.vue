@@ -1,35 +1,38 @@
 <template>
-    <main>
-        <div class="logo">
-            <img class="img-logo" src="/images/logo.jpg" alt="">
-        </div>
-        <div class="form">
-            <header>
-                <h1>Sign In</h1>
-                <h3>{{ role }}</h3>
-            </header>
-            
-            <input class="text" type="text" placeholder="Email" required />
-            <div class="passwordcontaner">
-                <input id= "password"type="password" placeholder="Password" required />
-                <button class="btn" @click="see()">
-                    <svg v-if="!showPassword" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/>
-                        <circle cx="12" cy="12" r="3"/>
-                    </svg>
-                    <svg v-else width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a21.77 21.77 0 0 1 5.06-6.06"/>
-                        <path d="M1 1l22 22"/>
-                        <path d="M9.53 9.53A3 3 0 0 0 12 15a3 3 0 0 0 2.47-5.47"/>
-                    </svg>
-                </button>
+    <body>
+         <main>
+            <div class="logo">
+                <img class="img-logo" src="/images/logo.jpg" alt="">
             </div>
-            
-            <button class="submit" type="submit">Sign In</button>
-            
-            
-        </div>
-    </main>
+            <div class="form">
+                <header>
+                    <h1>Sign In</h1>
+                    <h3>{{ role }}</h3>
+                </header>
+                
+                <input class="text" type="text" placeholder="Email" required />
+                <div class="passwordcontaner">
+                    <input id= "password"type="password" placeholder="Password" required />
+                    <button class="btn" @click="see()">
+                        <svg v-if="!showPassword" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                        <svg v-else width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a21.77 21.77 0 0 1 5.06-6.06"/>
+                            <path d="M1 1l22 22"/>
+                            <path d="M9.53 9.53A3 3 0 0 0 12 15a3 3 0 0 0 2.47-5.47"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <button class="submit" type="submit">Sign In</button>
+                
+                
+            </div>
+        </main>
+    </body>
+   
 </template>
 <script>
 
@@ -60,15 +63,20 @@ export default {
     margin: 10px;
 }
 .img-logo{
-    height: 200px;
+    height: 400px;
+}
+body{
+    background-image: url('../backgrounds/bgImage.png');
+    background-size: cover;
+  background-position: center;
 }
 main {
+    background-color: rgba(255, 255, 255, 0.5);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 100vh;
-    
 }
 .passwordcontaner{
     width: 86%;
