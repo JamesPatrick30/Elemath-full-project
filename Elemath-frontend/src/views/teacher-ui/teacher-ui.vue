@@ -1,5 +1,6 @@
 <script>
 import { Pie } from 'vue-chartjs'
+import VueApexCharts from 'vue3-apexcharts';
 export default{
     components:{
         Pie
@@ -39,7 +40,9 @@ export default{
                         backgroundColor: ['#fbaaa6', '#2d8bba', '#e7bb41'],
                     }
                 ]
-            }
+            },
+            pieseries:[10,20,15],
+            pieoption:{labels:['asf','uj0','ouh']}
         }
     }
 }
@@ -47,12 +50,12 @@ export default{
 <template>
     <body>
         <nav>
+            <img class="logo" src="/images/logo.jpg" alt="">
             <ul>
-                <li>1</li>
-                <li>2</li>
-                <li>3</li>
-                <li>4</li>
-                <li>5</li>
+                <li class="item1">Home</li>
+                <li class="item2">Profile</li>
+                <li class="item3">History</li>
+                <li class="item4">Settings</li>
             </ul>
         </nav>
         <main>
@@ -106,7 +109,18 @@ export default{
                 </div>
             </div>
             <div class="statistic" style="grid-area: statistic;">
-                 <Pie class="pie" :data="pieData" />
+            <h3>Class Chart</h3>
+            <div class="con-ch">
+                 <apexChart
+                    class="pie"
+                    type="pie"
+                    :series="pieseries"
+                    :options="pieoption"
+                    width="300"
+                    height="300"
+                 />
+            </div>
+                
             </div>
         </div>
         </main>
@@ -117,12 +131,31 @@ export default{
 *{
     font-family: 'BubbleBody Neue','Poppins', sans-serif;
 }
+.logo{
+    height: auto;
+    width: 100%;
+    margin-top: 0%;
+    margin-bottom: 10px;
+}
+.con-ch{
+
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: end;
+}
 .pie{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
     height: 200px;
+    width: 200px;
+    
 }
 .statistic{
-    height: 300px;
-    margin: auto;
+
+    padding: 10px;
     background-color: white;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
     border-radius: 20px;
@@ -152,6 +185,7 @@ export default{
 }
 
 .list{
+    overflow: hidden;
     background-color: #a8f5ff;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
     border-radius: 20px;
@@ -198,6 +232,7 @@ export default{
     border-radius: 20px;
 }
 .lesson{
+    color: white;
     background-color: #dc7556;
     padding: 20px;
     border-radius: 20px;
@@ -206,6 +241,7 @@ export default{
     transition: 0.1s linear;
 }
 .challenge{
+    color: white;
     background-color: #e7bb41;
     padding: 20px;
     border-radius: 20px;
@@ -223,6 +259,7 @@ export default{
     transition: 0.1s linear;
 }
 .windowcard{
+    color: white;
     padding: 20px;
     background-color: #2d8bba;
     border-radius: 20px;
@@ -272,9 +309,44 @@ main{
     align-items: center;
     justify-content: center;
 }
-nav{
+nav {
+    
+    width: 20%;
     height: 100%;
-    width: 250px;
-    background-color: aqua;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: baseline;
+}
+nav ul {
+    margin-top: 20px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    font-family: 'BubbleBody Neue', 'Poppins', sans-serif;
+}
+nav ul li{
+    border-radius: 30px;
+    cursor: pointer;
+    width: 100%;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    color: #4fc4f7;
+    font-weight: bold;
+    font-family: 'BubbleBody Neue', 'Poppins', sans-serif;
+    transition: 0.3s;
+}
+nav ul li:hover{
+    transition: 0.3s;
+    background-color: #4fc4f7;
+    color: white;
 }
 </style>
