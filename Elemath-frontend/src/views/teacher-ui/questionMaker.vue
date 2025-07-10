@@ -201,7 +201,7 @@ export default{
                 // { Q: 'How many sides does a hexagon have?', type: 'input answer', answerType: 'number', answer: '6' },
                 // { Q: 'What is the product of 3 and 9?', type: 'multiple choices', answer: '27', choices: ['36', '18', '27', '30'] }
             ],
-            CostumeQuestion:{Q:'',type:'',answer:'',answerType:'',choices:['','','','']}
+            CostumeQuestion:{Q:'',type:'',answer:'',answerType:'',choices:[]}
         }
     },
     methods:{
@@ -235,14 +235,38 @@ export default{
                 break;
             }
         },
-        addQuestion(){
-            this.questions.push({Q:this.CostumeQuestion.Q,type:this.CostumeQuestion.type,answerType:'',answer:this.CostumeQuestion.answer,choices:this.CostumeQuestion.choices});
+        addQuestion() {
+            // Validate inputs
+            if (!this.CostumeQuestion.Q || !this.CostumeQuestion.answer) {
+                alert('Please fill in both the Question and the Answer.');
+                return;
+            }
+
+            // Push the new question
+            this.questions.push({
+                Q: this.CostumeQuestion.Q,
+                type: this.CostumeQuestion.type,
+                answerType: '',
+                answer: this.CostumeQuestion.answer,
+                choices: this.CostumeQuestion.choices
+            });
+
+            // Scroll to the new question after DOM updates
             this.$nextTick(() => {
                 const index = this.questions.length - 1;
                 const el = document.getElementById(index.toString());
                 if (el) el.scrollIntoView({ behavior: 'smooth' });
             });
-        }
+
+            // Reset form (CostumeQuestion)
+            this.CostumeQuestion = {
+                Q: '',
+                type: 'multiple choices', // or whatever default
+                answer: '',
+                choices: []
+            };
+            }
+
     }
 }
 </script>
