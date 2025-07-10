@@ -9,7 +9,7 @@
                 </ul>
             </nav>
             <div class="con-settings" v-if="btnActive.setting">
-                1
+                <input type="text" placeholder="Time" class="input-a">
             </div>
             <div class="con-Questions" v-if="btnActive.Question">
                 <select name="" id="" v-model="questionOption" >
@@ -80,7 +80,7 @@
                         <select class="t-o-q" v-model="CostumeQuestion.answer"  >
 
                         <option disabled value="">-- Select a Answer --</option>
-                            <option v-for="Choice in CostumeQuestion?.choices" :key="Choice" :value="Choice" >{{ Choice }}</option>
+                            <option v-for="Choice in CostumeQuestion?.choices.filter(choice => choice.trim() !== '')" :key="Choice" :value="Choice" >{{ Choice }}</option>
                             
                         </select>
                     </div>
