@@ -48,7 +48,7 @@
                         <option value="Speed, Distance, and Time">Speed, Distance, and Time</option>
                         <option value="Problem Solving with Multi-step Word Problems">Problem Solving with Multi-step Word Problems</option>
                     </select>
-                    <button>Generate!</button>
+                    <button class="generate-btn">Generate!</button>
                 </div>
                 <div v-if="questionOption === 'Costumize'">Costumize</div>
             </div>
@@ -149,6 +149,22 @@ export default{
 }
 </script>
 <style scoped>
+.generate-btn{
+    border: none;
+    width: 100px;
+    height: 50px;
+    border-radius: 10px;
+    background-color: #82d7f5;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s linear;
+}
+.generate-btn:hover{
+    background-color: #6ea6bb;
+    transform: scale(1.1);
+    transition: 0.3s linear;
+}
 .t-o-q{
     width: 50%;
 }
