@@ -248,7 +248,7 @@ export default{
                 type: this.CostumeQuestion.type,
                 answerType: '',
                 answer: this.CostumeQuestion.answer,
-                choices: this.CostumeQuestion.choices
+                choices: this.CostumeQuestion.choices.filter(choice => choice.trim() !== '')
             });
 
             // Scroll to the new question after DOM updates
@@ -265,7 +265,7 @@ export default{
                 answer: '',
                 choices: []
             };
-            }
+        }
 
     }
 }
