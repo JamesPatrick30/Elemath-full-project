@@ -36,12 +36,24 @@
         </div>
       <div class="con-lobby">
         <nav>
-                <ul>
-                    <li><button @click="navLobby('players')" :class="btnLobby.playes? 'activeBtn' : 'not-active'">Players</button></li>
-                    <li><button @click="navLobby('questions')" :class="btnLobby.Question? 'activeBtn' : 'not-active'" >Question</button></li>
-                    
-                </ul>
-            </nav>
+            <ul>
+                <li><button @click="navLobby('players')" :class="btnLobby.playes? 'activeBtn' : 'not-active'">Players</button></li>
+                <li><button @click="navLobby('questions')" :class="btnLobby.Question? 'activeBtn' : 'not-active'" >Question</button></li>
+                
+            </ul>
+        </nav>
+        <div v-if="btnLobby.playes" class="con-p">
+            <h3>Players : {{ players.length }}</h3>
+            <div class="con-w-p" >
+                <div class="players"v-for="(player, index) in players" :key="index">{{ player.name }}</div>
+                 
+                
+            </div>
+            
+        </div>
+        <div v-if="btnLobby.Question" class="con-qs">
+            questions
+        </div>
       </div>
     </main>
     
@@ -52,7 +64,30 @@ export default{
         return{
             btnActive:{setting:true,Question:false,file:false},
             btnLobby:{playes:false,Question:true},
-            questionOption:'Costumize'
+            questionOption:'Costumize',
+
+            players : [
+                { name: 'James Patrick', lrn: '864178547844' },
+                { name: 'Alyssa Mae', lrn: '712345678901' },
+                { name: 'Marco Antonio', lrn: '623498713250' },
+                { name: 'Elaine Grace', lrn: '912378452167' },
+                { name: 'Jared Anthony', lrn: '834512967340' },
+                { name: 'Sophia Heart', lrn: '789431258610' },
+                { name: 'Liam Gabriel', lrn: '675849123045' },
+                { name: 'Chloe Anne', lrn: '702134958712' },
+                { name: 'Daniel Reyes', lrn: '834159762380' },
+                { name: 'Isabella Cruz', lrn: '912367845912' },
+                { name: 'Nathaniel Kyle', lrn: '691237845981' },
+                { name: 'Mikaela Joy', lrn: '710298345712' },
+                { name: 'Adrian Blake', lrn: '843215967124' },
+                { name: 'Bianca Rose', lrn: '764839125601' },
+                { name: 'Ethan Cruz', lrn: '875312964178' },
+                { name: 'Alexa Faith', lrn: '793415289031' },
+                { name: 'Zachary Neil', lrn: '681235794601' },
+                { name: 'Jasmine Rae', lrn: '904378214678' },
+                { name: 'Caleb Shawn', lrn: '823745190623' },
+                { name: 'Nicole Bea', lrn: '745931280147' },
+                ].sort((a, b) => a.name.localeCompare(b.name))
         }
     },
     methods:{
@@ -90,6 +125,36 @@ export default{
 }
 </script>
 <style scoped>
+.player{
+    border-collapse: collapse;
+    margin-top: 3px;
+    background-color: white;
+    height: 50px;
+    padding: 1px;
+    border-radius: 5px;
+}
+.con-p{
+    height: inherit;
+}
+.players{
+    border-radius: 10px;
+    padding: 5px;
+    height: 50px;
+    background-color: white;
+    margin-bottom: 5px;
+
+    font-family: 'BubbleBody Neue', 'Poppins', sans-serif;
+    font-weight: bold;
+    text-align:start;
+    align-items: center;
+    justify-items: center;
+}
+.con-w-p,.con-qs {
+    
+    height: inherit;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
 .con-generate{
     display: flex;
     flex-direction: column;
