@@ -22,7 +22,7 @@
                 <div class="con-generate" v-if="questionOption === 'Generate'">
                     <select class="t-o-q" v-model="questionGenerateSetting.type"  >
                         <option disabled value="">-- Select a type --</option>
-                        <option value="Multiple Choice">Multiple Choice</option>
+                        <option value="multiple choices">Multiple Choice</option>
                         <option value="Costumize">Costumize</option>
                     </select>
                     <select name="Topic" class="t-o-q" v-model="questionGenerateSetting.topic" >
@@ -68,11 +68,11 @@
                     <textarea  class="q-input" id="" placeholder="Question.." v-model="CostumeQuestion.Q"></textarea>
                     <select class="t-o-q" v-model="CostumeQuestion.type"  >
                         <option disabled value="">-- Select a type --</option>
-                        <option value="Multiple Choice">Multiple Choice</option>
+                        <option value="multiple choices">Multiple Choice</option>
                         <option value="input answer">input answer</option>
                     </select>
                     <br>
-                    <div class="multi" v-if="CostumeQuestion.type === 'Multiple Choice'">
+                    <div class="multi" v-if="CostumeQuestion.type === 'multiple choices'">
                         <input class="input-c" type="text" v-model="CostumeQuestion.choices[0]" placeholder="choices...">
                         <input class="input-c" type="text" v-model="CostumeQuestion.choices[1]" placeholder="choices...">
                         <input class="input-c" type="text" v-model="CostumeQuestion.choices[2]" placeholder="choices...">
@@ -80,16 +80,16 @@
                         <select class="t-o-q" v-model="CostumeQuestion.answer"  >
 
                         <option disabled value="">-- Select a Answer --</option>
-                            <option v-for="Choice in CostumeQuestion.choices" :key="Choice" value="{{ Choice }}" >{{ Choice }}</option>
+                            <option v-for="Choice in CostumeQuestion?.choices" :key="Choice" :value="Choice" >{{ Choice }}</option>
                             
                         </select>
                     </div>
-                    <div class="con-input-a">
-                        <input type="text" class="input-a" placeholder="Answer..">
+                    <div class="con-input-a" v-else-if="CostumeQuestion.type==='input answer'">
+                        <input type="text" class="input-a" placeholder="Answer.." v-model="CostumeQuestion.answer">
                     </div>
                     
                 </div>
-                <button class="btn-add">Add..</button>
+                <button class="btn-add" @click="addQuestion()">Add..</button>
             </div>
             <div class="con-file" v-if="btnActive.file">
                 <label for="moduleFile" class="upload-label">
@@ -124,12 +124,12 @@
         </div>
         <div v-if="btnLobby.Question" class="con-qs">
             <h3>Questions : {{ questions.length }}</h3>
-            <div class="question" v-for="(question,index) in questions" :key="question">
+            <div class="question" v-for="(question,index) in questions" :key="question" :id="index">
                 <h4>No.{{ index + 1 }}</h4>
                 <p class="type">{{ question.type }}</p>
                 <p>{{ question.Q }}</p>
                 <div class="multi" v-if="question.type==='multiple choices'">
-                    <div class="choices" v-for="Choice in question.choices" :key="Choice" :class="(Choice===question.answer)? 'r-answer':'w-answer'" v-if="!Choice">
+                    <div class="choices" v-for="Choice in question.choices" :key="Choice" :class="(Choice===question.answer)? 'r-answer':'w-answer'" >
                         {{ Choice }}
                     </div>
                 </div>
@@ -180,28 +180,28 @@ export default{
             questionGenerateSetting:{type:'',topic:'',lang:'',difficulty:''},
 
             questions:[
-                { Q: 'What is 5 + 3?', type: 'input answer', answerType: 'number', answer: '8' },
-                { Q: 'What is 12 - 4?', type: 'input answer', answerType: 'number', answer: '8' },
-                { Q: 'What is the place value of 7 in 374?', type: 'input answer', answerType: 'number', answer: '70' },
-                { Q: 'What is the shape with 3 sides?', type: 'multiple choices', answer: 'Triangle', choices: ['Circle', 'Rectangle', 'Triangle', 'Square'] },
-                { Q: 'Which number is even?', type: 'multiple choices', answer: '8', choices: ['3', '5', '7', '8'] },
-                { Q: 'What is 4 × 6?', type: 'input answer', answerType: 'number', answer: '24' },
-                { Q: 'What is 30 ÷ 5?', type: 'input answer', answerType: 'number', answer: '6' },
-                { Q: 'Which number is greater?', type: 'multiple choices', answer: '45', choices: ['12', '20', '45', '33'] },
-                { Q: 'What is the missing number: 3, 6, __, 12?', type: 'input answer', answerType: 'number', answer: '9' },
-                { Q: 'What is 100 - 75?', type: 'multiple choices', answer: '25', choices: ['35', '25', '50', '30'] },
-                { Q: 'What is 9 + 8?', type: 'input answer', answerType: 'number', answer: '17' },
-                { Q: 'Which of the following is a quadrilateral?', type: 'multiple choices', answer: 'Rectangle', choices: ['Circle', 'Rectangle', 'Triangle', 'Cone'] },
-                { Q: 'What is 10 more than 65?', type: 'input answer', answerType: 'number', answer: '75' },
-                { Q: 'Which shows a correct fraction: ½?', type: 'multiple choices', answer: 'Half', choices: ['Whole', 'One-third', 'Half', 'Zero'] },
-                { Q: 'What is 7 × 5?', type: 'input answer', answerType: 'number', answer: '35' },
-                { Q: 'What is the perimeter of a square with side 4?', type: 'input answer', answerType: 'number', answer: '16' },
-                { Q: 'Which is a unit of length?', type: 'multiple choices', answer: 'Meter', choices: ['Liter', 'Gram', 'Meter', 'Kilogram'] },
-                { Q: 'What is 9 less than 20?', type: 'input answer', answerType: 'number', answer: '11' },
-                { Q: 'How many sides does a hexagon have?', type: 'input answer', answerType: 'number', answer: '6' },
-                { Q: 'What is the product of 3 and 9?', type: 'multiple choices', answer: '27', choices: ['36', '18', '27', '30'] }
+                // { Q: 'What is 5 + 3?', type: 'input answer', answerType: 'number', answer: '8' },
+                // { Q: 'What is 12 - 4?', type: 'input answer', answerType: 'number', answer: '8' },
+                // { Q: 'What is the place value of 7 in 374?', type: 'input answer', answerType: 'number', answer: '70' },
+                // { Q: 'What is the shape with 3 sides?', type: 'multiple choices', answer: 'Triangle', choices: ['Circle', 'Rectangle', 'Triangle', 'Square'] },
+                // { Q: 'Which number is even?', type: 'multiple choices', answer: '8', choices: ['3', '5', '7', '8'] },
+                // { Q: 'What is 4 × 6?', type: 'input answer', answerType: 'number', answer: '24' },
+                // { Q: 'What is 30 ÷ 5?', type: 'input answer', answerType: 'number', answer: '6' },
+                // { Q: 'Which number is greater?', type: 'multiple choices', answer: '45', choices: ['12', '20', '45', '33'] },
+                // { Q: 'What is the missing number: 3, 6, __, 12?', type: 'input answer', answerType: 'number', answer: '9' },
+                // { Q: 'What is 100 - 75?', type: 'multiple choices', answer: '25', choices: ['35', '25', '50', '30'] },
+                // { Q: 'What is 9 + 8?', type: 'input answer', answerType: 'number', answer: '17' },
+                // { Q: 'Which of the following is a quadrilateral?', type: 'multiple choices', answer: 'Rectangle', choices: ['Circle', 'Rectangle', 'Triangle', 'Cone'] },
+                // { Q: 'What is 10 more than 65?', type: 'input answer', answerType: 'number', answer: '75' },
+                // { Q: 'Which shows a correct fraction: ½?', type: 'multiple choices', answer: 'Half', choices: ['Whole', 'One-third', 'Half', 'Zero'] },
+                // { Q: 'What is 7 × 5?', type: 'input answer', answerType: 'number', answer: '35' },
+                // { Q: 'What is the perimeter of a square with side 4?', type: 'input answer', answerType: 'number', answer: '16' },
+                // { Q: 'Which is a unit of length?', type: 'multiple choices', answer: 'Meter', choices: ['Liter', 'Gram', 'Meter', 'Kilogram'] },
+                // { Q: 'What is 9 less than 20?', type: 'input answer', answerType: 'number', answer: '11' },
+                // { Q: 'How many sides does a hexagon have?', type: 'input answer', answerType: 'number', answer: '6' },
+                // { Q: 'What is the product of 3 and 9?', type: 'multiple choices', answer: '27', choices: ['36', '18', '27', '30'] }
             ],
-            CostumeQuestion:{Q:'',type:'',answer:'',answerType:'',choices:[]}
+            CostumeQuestion:{Q:'',type:'',answer:'',answerType:'',choices:['','','','']}
         }
     },
     methods:{
@@ -234,6 +234,14 @@ export default{
                     this.btnLobby.Question=true;
                 break;
             }
+        },
+        addQuestion(){
+            this.questions.push({Q:this.CostumeQuestion.Q,type:this.CostumeQuestion.type,answerType:'',answer:this.CostumeQuestion.answer,choices:this.CostumeQuestion.choices});
+            this.$nextTick(() => {
+                const index = this.questions.length - 1;
+                const el = document.getElementById(index.toString());
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+            });
         }
     }
 }
@@ -380,6 +388,16 @@ export default{
     border-radius: 10px;
     padding: 10px;
     margin-bottom: 5px;
+    animation: new 1s linear ;
+}
+@keyframes new{
+    from{
+        background-color: #91eea5;
+    }
+    to{
+        background-color: white;
+    }
+
 }
 .generate-btn{
     border: none;
