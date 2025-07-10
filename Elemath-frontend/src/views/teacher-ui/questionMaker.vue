@@ -19,14 +19,36 @@
 
 
                 <div class="con-generate" v-if="questionOption === 'Generate'">
-                    <select name="" id="" v-model="questionGenerateSetting.topic" >
-                    <option value="Multiple Choice">Multiple Choice</option>
-                    <option value="Costumize">Costumize</option>
-                </select>
-                <select name="Topic" id="" v-model="questionGenerateSetting.topic" >
-                    <option value="Generate">Generate</option>
-                    <option value="Costumize">Costumize</option>
-                </select>
+                    <select class="t-o-q" v-model="questionGenerateSetting.type"  >
+                        <option disabled value="">-- Select a type --</option>
+                        <option value="Multiple Choice">Multiple Choice</option>
+                        <option value="Costumize">Costumize</option>
+                    </select>
+                    <select name="Topic" class="t-o-q" v-model="questionGenerateSetting.topic" >
+                        <option disabled value="">-- Select a Math Topic --</option>
+                        <!-- Grade 5 Topics -->
+                        <option disabled>Grade 5 Topics</option>
+                        <option value="Place Value and Rounding">Place Value and Rounding</option>
+                        <option value="Multiplying and Dividing Fractions">Multiplying and Dividing Fractions</option>
+                        <option value="Operations on Decimals">Operations on Decimals</option>
+                        <option value="Measurement (Length, Mass, Capacity)">Measurement (Length, Mass, Capacity)</option>
+                        <option value="Volume and Surface Area of Solids">Volume and Surface Area of Solids</option>
+                        <option value="Simple and Compound Interest">Simple and Compound Interest</option>
+                        <option value="Interpreting Data and Graphs">Interpreting Data and Graphs</option>
+                        <option value="Angles and Triangles">Angles and Triangles</option>
+
+                        <!-- Grade 6 Topics -->
+                        <option disabled>Grade 6 Topics</option>
+                        <option value="Ratio and Proportion">Ratio and Proportion</option>
+                        <option value="Percent and Its Applications">Percent and Its Applications</option>
+                        <option value="Algebraic Expressions">Algebraic Expressions</option>
+                        <option value="Patterns and Number Sequences">Patterns and Number Sequences</option>
+                        <option value="Geometry of Solids">Geometry of Solids</option>
+                        <option value="Statistics and Probability">Statistics and Probability</option>
+                        <option value="Speed, Distance, and Time">Speed, Distance, and Time</option>
+                        <option value="Problem Solving with Multi-step Word Problems">Problem Solving with Multi-step Word Problems</option>
+                    </select>
+                    <button>Generate!</button>
                 </div>
                 <div v-if="questionOption === 'Costumize'">Costumize</div>
             </div>
@@ -127,6 +149,9 @@ export default{
 }
 </script>
 <style scoped>
+.t-o-q{
+    width: 50%;
+}
 .player{
     border-collapse: collapse;
     margin-top: 3px;
@@ -213,7 +238,7 @@ nav ul{
 li{
     list-style: none;
 }
-button{
+li button{
     border: none;
     background: none;
 }
