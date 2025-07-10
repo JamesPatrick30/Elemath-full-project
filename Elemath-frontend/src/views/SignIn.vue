@@ -68,7 +68,7 @@ export default {
 body{
     background-image: url('../backgrounds/bgImage.png');
     background-size: cover;
-  background-position: center;
+    background-position: center;
 }
 main {
     background-color: rgba(255, 255, 255, 0.5);

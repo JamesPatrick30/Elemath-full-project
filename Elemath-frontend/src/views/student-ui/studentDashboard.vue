@@ -93,8 +93,25 @@ export default {
 main {
     display: flex;
     width: 100%;
-    height: 95vh;
-    background-color: #f9f9f9;
+    height: 100vh;
+    /* background-image: url('/images/bg.png');
+    background-size: cover;
+    background-position: center;
+    background-color: rgba(255, 255, 255, 0.7); */
+    /* background-color: #f9f9f9; */
+}
+main::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/images/bg.png'); /* Use public/ folder path */
+  background-size: cover;
+  background-position: center;
+  opacity: 0.8;
+  z-index: -1;
 }
 nav {
     
