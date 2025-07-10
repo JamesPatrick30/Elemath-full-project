@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import landingpage from '@/views/landingpage.vue'
 import signin from '@/views/SignIn.vue'
 import SignUp from '@/views/SignUp.vue'
-import studentDashboard from '@/views/studentDashboard.vue'
+import studentDashboard from '@/views/student-ui/studentDashboard.vue'
 
 import teacberDashboard from '@/views/teacher-ui/teacber-dashboard.vue'
 import teacherUi from '@/views/teacher-ui/teacher-ui.vue'
@@ -26,7 +26,7 @@ const router = createRouter({
       component: SignUp
     },
     {
-      path: '/student-dashboard',
+      path: '/sd',
       name: 'studentDashboard',
       component: studentDashboard
     },
