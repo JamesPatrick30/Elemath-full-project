@@ -70,19 +70,33 @@
                 <div class="players"v-for="(player, index) in players" :key="index" :draggable="true">
                     {{ player.name }}
                 </div>
-                 
-                
             </div>
             
         </div>
         <div v-if="btnLobby.Question" class="con-qs">
-            questions
+            <h3>Questions : {{ questions.length }}</h3>
+            <div class="question" v-for="question in questions" :key="question">
+                <p class="type">{{ question.type }}</p>
+                <p>{{ question.Q }}</p>
+                <div class="multi" v-if="question.type==='multiple choices'">
+                    <div class="choices" v-for="Choice in question.choices" :key="Choice" :class="(Choice===question.answer)? 'r-answer':'w-answer' ">
+                        {{ Choice }}
+                    </div>
+                </div>
+                <div class="con-input-a" v-else-if="question.type=== 'input answer'">
+                    <div class="input-answer" >
+                      Answer:{{ question.answer }}
+                    </div>
+                </div>
+                
+            </div>
         </div>
       </div>
     </main>
     
 </template>
 <script>
+
 export default{
     data(){
         return{
@@ -174,6 +188,70 @@ export default{
 }
 </script>
 <style scoped>
+.con-input-a{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.input-answer{
+    background-color: #54de63;
+    border-radius: 10px;
+    color: white;
+    font-weight: bold;
+    width: 70%;
+    display: flex;
+    text-align: center;
+    height: 50px;
+    align-items: center;
+    justify-content: center;
+}
+.type{
+    background-color: #41b8d5;
+    color: white;
+    font-size: smaller;
+    font-weight: bold;
+    width: fit-content;
+
+    position: relative;
+    justify-self: end;
+}
+.choices{
+    font-weight: 800;
+
+    height: 40px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+
+    border-radius: 10px;
+    
+}
+.multi{
+ 
+    width: inherit;
+    display: grid;
+    grid-template-columns: 200px 200px;
+    gap: 1em;
+    align-items: center;
+    justify-content: center;
+}
+.r-answer{
+    background-color: #54de63;
+    color: white;
+}
+.w-answer{
+    background-color: #f58282;
+    color: white;
+}
+.question{
+    background-color: white;
+    color: #41b8d5;
+    font-weight: 400;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 5px;
+}
 .generate-btn{
     border: none;
     width: 100px;
@@ -197,7 +275,7 @@ export default{
 .con-p{
     height: inherit;
 }
-.con-p h3{
+.con-p h3,.con-qs h3{
     color: white;
 }
 .players{color: #41b8d5;
