@@ -65,8 +65,31 @@
                     <button class="generate-btn">Generate!</button>
                 </div>
                 <div v-if="questionOption === 'Costumize'" class="Costumize">
-                    <textarea  class="q-input" id="" placeholder="Question"></textarea>
+                    <textarea  class="q-input" id="" placeholder="Question.." v-model="CostumeQuestion.Q"></textarea>
+                    <select class="t-o-q" v-model="CostumeQuestion.type"  >
+                        <option disabled value="">-- Select a type --</option>
+                        <option value="Multiple Choice">Multiple Choice</option>
+                        <option value="input answer">input answer</option>
+                    </select>
+                    <br>
+                    <div class="multi" v-if="CostumeQuestion.type === 'Multiple Choice'">
+                        <input class="input-c" type="text" v-model="CostumeQuestion.choices[0]" placeholder="choices...">
+                        <input class="input-c" type="text" v-model="CostumeQuestion.choices[1]" placeholder="choices...">
+                        <input class="input-c" type="text" v-model="CostumeQuestion.choices[2]" placeholder="choices...">
+                        <input class="input-c" type="text" v-model="CostumeQuestion.choices[3]" placeholder="choices...">
+                        <select class="t-o-q" v-model="CostumeQuestion.answer"  >
+
+                        <option disabled value="">-- Select a Answer --</option>
+                            <option v-for="Choice in CostumeQuestion.choices" :key="Choice" value="{{ Choice }}" >{{ Choice }}</option>
+                            
+                        </select>
+                    </div>
+                    <div class="con-input-a">
+                        <input type="text" class="input-a" placeholder="Answer..">
+                    </div>
+                    
                 </div>
+                <button class="btn-add">Add..</button>
             </div>
             <div class="con-file" v-if="btnActive.file">
                 <label for="moduleFile" class="upload-label">
@@ -106,7 +129,7 @@
                 <p class="type">{{ question.type }}</p>
                 <p>{{ question.Q }}</p>
                 <div class="multi" v-if="question.type==='multiple choices'">
-                    <div class="choices" v-for="Choice in question.choices" :key="Choice" :class="(Choice===question.answer)? 'r-answer':'w-answer' ">
+                    <div class="choices" v-for="Choice in question.choices" :key="Choice" :class="(Choice===question.answer)? 'r-answer':'w-answer'" v-if="!Choice">
                         {{ Choice }}
                     </div>
                 </div>
@@ -177,7 +200,8 @@ export default{
                 { Q: 'What is 9 less than 20?', type: 'input answer', answerType: 'number', answer: '11' },
                 { Q: 'How many sides does a hexagon have?', type: 'input answer', answerType: 'number', answer: '6' },
                 { Q: 'What is the product of 3 and 9?', type: 'multiple choices', answer: '27', choices: ['36', '18', '27', '30'] }
-            ]
+            ],
+            CostumeQuestion:{Q:'',type:'',answer:'',answerType:'',choices:[]}
         }
     },
     methods:{
@@ -215,6 +239,35 @@ export default{
 }
 </script>
 <style scoped>
+.btn-add{
+    width: 120px;
+    height: 40px;
+    background-color:#96faa2 ;
+    border: none;
+    color:white;
+    font-weight: 800;
+    border-radius: 20px;
+
+    position:relative;
+    justify-self: end;
+    align-self: flex-end;
+    cursor: pointer;
+}
+.input-a{
+    border: #54de63 solid;
+    font-size: 15px;
+    border-radius: 10px;
+    height: 40px;
+    width: 300px;
+}
+.input-a:focus{
+    outline: none;
+}
+.input-c{
+    height: 30px;
+    border-radius: 6px;
+    border: #91eea5 1px solid;
+}
 .q-input{
     height: 100px;
     width: 300px;
@@ -229,6 +282,9 @@ export default{
     border-radius: 10px;
 }
 .Costumize{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
     padding: 10px;
     width: 100%;
     height: inherit;
