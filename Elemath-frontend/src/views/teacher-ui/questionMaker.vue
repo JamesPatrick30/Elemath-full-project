@@ -64,7 +64,9 @@
                     </select>
                     <button class="generate-btn">Generate!</button>
                 </div>
-                <div v-if="questionOption === 'Costumize'">Costumize</div>
+                <div v-if="questionOption === 'Costumize'" class="Costumize">
+                    <textarea  class="q-input" id="" placeholder="Question"></textarea>
+                </div>
             </div>
             <div class="con-file" v-if="btnActive.file">
                 <label for="moduleFile" class="upload-label">
@@ -99,7 +101,8 @@
         </div>
         <div v-if="btnLobby.Question" class="con-qs">
             <h3>Questions : {{ questions.length }}</h3>
-            <div class="question" v-for="question in questions" :key="question">
+            <div class="question" v-for="(question,index) in questions" :key="question">
+                <h4>No.{{ index + 1 }}</h4>
                 <p class="type">{{ question.type }}</p>
                 <p>{{ question.Q }}</p>
                 <div class="multi" v-if="question.type==='multiple choices'">
@@ -212,6 +215,24 @@ export default{
 }
 </script>
 <style scoped>
+.q-input{
+    height: 100px;
+    width: 300px;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    resize: none;
+    background-color: white;
+    padding: 3px;
+    outline: none;
+    border: none;
+    font-style: oblique;
+    border-radius: 10px;
+}
+.Costumize{
+    padding: 10px;
+    width: 100%;
+    height: inherit;
+}
 .file-upload {
   display: flex;
   flex-direction: column;
@@ -265,6 +286,7 @@ export default{
 
     position: relative;
     justify-self: end;
+    bottom: 60px;
 }
 .choices{
     font-weight: 800;
