@@ -16,6 +16,7 @@
                     <option value="Generate">Generate</option>
                     <option value="Costumize">Costumize</option>
                 </select>
+                
 
 
                 <div class="con-generate" v-if="questionOption === 'Generate'">
@@ -48,12 +49,35 @@
                         <option value="Speed, Distance, and Time">Speed, Distance, and Time</option>
                         <option value="Problem Solving with Multi-step Word Problems">Problem Solving with Multi-step Word Problems</option>
                     </select>
+                    <select class="t-o-q" v-model="questionGenerateSetting.lang"  >
+                        <option disabled value="">-- Language --</option>
+                        <option value="English">English</option>
+                        <option value="Tagalog">Tagalog</option>
+                    </select>
+
+                    <select class="t-o-q" v-model="questionGenerateSetting.difficulty"  >
+                        <option disabled value="">-- Select Difficulty --</option>
+                        <option value="easy">Easy</option>
+                        <option value="medium">Medium</option>
+                        <option value="hard">Hard</option>
+                        <option value="very-hard">Very Hard</option>
+                    </select>
                     <button class="generate-btn">Generate!</button>
                 </div>
                 <div v-if="questionOption === 'Costumize'">Costumize</div>
             </div>
             <div class="con-file" v-if="btnActive.file">
-                3
+                <label for="moduleFile" class="upload-label">
+                    📄 Upload Module / Lesson File
+                    <input
+                        type="file"
+                        id="moduleFile"
+                        accept=".pdf,.doc,.docx,.txt"
+                        @change="handleFileUpload"
+                        hidden
+                    />
+                    </label>
+                    <p v-if="fileName" class="file-name">Selected: {{ fileName }}</p>
             </div>
         </div>
       <div class="con-lobby">
@@ -127,7 +151,7 @@ export default{
                 { name: 'Nicole Bea', lrn: '745931280147' },
                 ].sort((a, b) => a.name.localeCompare(b.name)),
             
-            questionGenerateSetting:{type:'',topic:''},
+            questionGenerateSetting:{type:'',topic:'',lang:'',difficulty:''},
 
             questions:[
                 { Q: 'What is 5 + 3?', type: 'input answer', answerType: 'number', answer: '8' },
@@ -188,6 +212,33 @@ export default{
 }
 </script>
 <style scoped>
+.file-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px;
+}
+
+.upload-label {
+  background-color: #007bff;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-weight: bold;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.upload-label:hover {
+  background-color: #0056b3;
+}
+
+.file-name {
+  margin-top: 10px;
+  font-style: italic;
+  color: #333;
+}
 .con-input-a{
     display: flex;
     align-items: center;
@@ -297,12 +348,12 @@ export default{
 .players:hover{
     color: #e7faff;
   background-color: rgb(219, 219, 219);
-  transform: translateY(-2px); /* optional lift effect */
+  transform: translateY(-2px) scale(1.1); /* optional lift effect */
 }
 .con-w-p,.con-qs {
     
     height: inherit;
-    overflow-y: auto;
+    overflow-x: auto;
     scrollbar-width: none;
 }
 .con-generate{
