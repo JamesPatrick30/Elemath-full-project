@@ -19,11 +19,11 @@
 
 
                 <div class="con-generate" v-if="questionOption === 'Generate'">
-                    <select name="" id="" v-model="questionOption" >
-                    <option value="Generate">Generate</option>
+                    <select name="" id="" v-model="questionGenerateSetting.topic" >
+                    <option value="Multiple Choice">Multiple Choice</option>
                     <option value="Costumize">Costumize</option>
                 </select>
-                <select name="" id="" v-model="questionOption" >
+                <select name="Topic" id="" v-model="questionGenerateSetting.topic" >
                     <option value="Generate">Generate</option>
                     <option value="Costumize">Costumize</option>
                 </select>
@@ -45,7 +45,7 @@
         <div v-if="btnLobby.playes" class="con-p">
             <h3>Players : {{ players.length }}</h3>
             <div class="con-w-p" >
-                <div class="players"v-for="(player, index) in players" :key="index">{{ player.name }}</div>
+                <div class="players"v-for="(player, index) in players" :key="index" :draggable="true">{{ player.name }}</div>
                  
                 
             </div>
@@ -87,7 +87,9 @@ export default{
                 { name: 'Jasmine Rae', lrn: '904378214678' },
                 { name: 'Caleb Shawn', lrn: '823745190623' },
                 { name: 'Nicole Bea', lrn: '745931280147' },
-                ].sort((a, b) => a.name.localeCompare(b.name))
+                ].sort((a, b) => a.name.localeCompare(b.name)),
+            
+            questionGenerateSetting:{type:'',topic:''}
         }
     },
     methods:{
@@ -148,6 +150,13 @@ export default{
     text-align:start;
     align-items: center;
     justify-items: center;
+    transition: background-color 0.4s ease, transform 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+
+}
+.players:hover{
+  background-color: rgb(219, 219, 219);
+  transform: translateY(-2px); /* optional lift effect */
 }
 .con-w-p,.con-qs {
     
@@ -208,7 +217,19 @@ button{
     border: none;
     background: none;
 }
-
+main::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/images/bg.png'); /* Use public/ folder path */
+  background-size: cover;
+  background-position: center;
+  opacity: 0.8;
+  z-index: -1;
+}
 main{
     height: 100vh;
     width: 100%;
@@ -223,6 +244,8 @@ main{
     padding: 20px;
     border-radius: 20px;
     background-color: #a7ddea;
+
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 *{
     font-family: 'BubbleBody Neue','Poppins', sans-serif;
