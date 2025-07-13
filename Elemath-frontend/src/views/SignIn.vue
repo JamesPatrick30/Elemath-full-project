@@ -63,7 +63,7 @@ export default {
     margin: 10px;
 }
 .img-logo{
-    height: 400px;
+    height: 350px;
 }
 body{
     background-image: url('../backgrounds/bgImage.png');

@@ -5,6 +5,7 @@ import SignUp from '@/views/SignUp.vue'
 import studentDashboard from '@/views/student-ui/studentDashboard.vue'
 
 import teacberDashboard from '@/views/teacher-ui/teacber-dashboard.vue'
+import teacherCreateClass from '@/views/teacher-ui/teacher-createClass.vue'
 import teacherUi from '@/views/teacher-ui/teacher-ui.vue'
 import questionMaker from '@/views/teacher-ui/questionMaker.vue'
 const router = createRouter({
@@ -44,6 +45,11 @@ const router = createRouter({
       path:'/qm',
       name:'question-ui',
       component: questionMaker
+    },
+    {
+      path: '/tc',
+      name: 'teacher-create-class',
+      component: teacherCreateClass
     }
 
   ],

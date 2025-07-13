@@ -190,7 +190,7 @@
         <h1>Sign Up</h1>
         <p>Are you a student or a teacher?</p>
         <div class="btn-contaner">
-          <button @click="goToSignUp('student')">Student</button>
+          <!-- <button @click="goToSignUp('student')">Student</button> -->
           <button @click="goToSignUp('teacher')">Teacher</button>
         </div>
       </div>
