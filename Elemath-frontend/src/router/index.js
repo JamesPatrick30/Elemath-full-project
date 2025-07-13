@@ -3,6 +3,7 @@ import landingpage from '@/views/landingpage.vue'
 import signin from '@/views/SignIn.vue'
 import SignUp from '@/views/SignUp.vue'
 import studentDashboard from '@/views/student-ui/studentDashboard.vue'
+import waitingLobby from '@/views/student-ui/waitingLobby.vue'
 
 import teacberDashboard from '@/views/teacher-ui/teacber-dashboard.vue'
 import teacherCreateClass from '@/views/teacher-ui/teacher-createClass.vue'
@@ -50,6 +51,11 @@ const router = createRouter({
       path: '/tc',
       name: 'teacher-create-class',
       component: teacherCreateClass
+    },
+    {
+      path: '/wl',
+      name: 'waiting-lobby',
+      component: waitingLobby
     }
 
   ],
