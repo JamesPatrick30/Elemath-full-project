@@ -1,5 +1,6 @@
 <template>
     <main>
+        <button class="btn-back">Back</button>
         <div class="con-q">
             <nav>
                 <ul>
@@ -142,6 +143,7 @@
             </div>
         </div>
       </div>
+      <button class="btn-start">start</button>
     </main>
     
 </template>
@@ -274,6 +276,39 @@ export default{
 }
 </script>
 <style scoped>
+.btn-start{
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background-color: #41b8d5;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 800;
+    font-size: 16px;
+
+    transition: 0.2s;
+}
+.btn-back:hover,
+.btn-start:hover{
+    transform: scale(1.1);
+    transition: 0.2s;
+}
+.btn-back{
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background-color: #41b8d5;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+
+    transition: 0.2s;
+}
 .btn-add{
     width: 120px;
     height: 40px;
