@@ -62,6 +62,7 @@ app.post('/api/login', (req, res) => {
       maxAge: 15 * 60 * 1000 // 15 mins
     });
     res.status(200).json({ message: 'Login successful', accessToken: createToken({ username }).accessToken });
+    console.log('Login successful:', username);
 });
 app.post('createAccount', (req, res) => {
     const { username, password } = req.body;
