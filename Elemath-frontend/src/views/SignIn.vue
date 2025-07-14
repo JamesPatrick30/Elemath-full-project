@@ -10,9 +10,9 @@
                     <h3>{{ role }}</h3>
                 </header>
                 
-                <input class="text" type="text" placeholder="Email" required />
+                <input class="text" type="text" placeholder="Email" v-model="email" required />
                 <div class="passwordcontaner">
-                    <input id= "password"type="password" placeholder="Password" required />
+                    <input id= "password"type="password" placeholder="Password" v-model="password"  required />
                     <button class="btn" @click="see()">
                         <svg v-if="!showPassword" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/>
@@ -26,7 +26,7 @@
                     </button>
                 </div>
                 
-                <button class="submit" type="submit">Sign In</button>
+                <button class="submit" type="submit" @click="login()">Sign In</button>
                 
                 
             </div>
@@ -35,13 +35,15 @@
    
 </template>
 <script>
-
+import api from '@/axios';
 export default {
     name: 'SignIn',
     data() {
         return {
             showPassword: false,
             role: this.$route.query.role , // Default to 'student' if no role is provided
+            email: '',
+            password: '',
         };
     },
     methods: {
@@ -49,6 +51,24 @@ export default {
         see(){
             this.showPassword = !this.showPassword;
             document.getElementById("password").type = document.getElementById("password").type === "password" ? "text" : "password";
+        },
+        async login(){
+            try {
+                const response = await api.post('/api/login', {
+                    username: this.email,
+                    password: this.password,
+                    
+                });
+                if (response.status === 200) {
+                    // Handle successful login, e.g., redirect to dashboard
+                    this.$router.push({ name: 'teacher-ui' });
+                }
+            } catch (error) {
+                console.error('Login failed:', error);
+                alert(error.response.data.message || 'Login failed. Please try again.');
+                // Handle login error, e.g., show an error message
+            }
+            
         }
     },
     mounted() {

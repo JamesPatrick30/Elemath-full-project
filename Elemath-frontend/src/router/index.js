@@ -5,6 +5,7 @@ import SignUp from '@/views/SignUp.vue'
 import studentDashboard from '@/views/student-ui/studentDashboard.vue'
 import waitingLobby from '@/views/student-ui/waitingLobby.vue'
 
+import setting from '@/views/teacher-ui/setting.vue'
 import teacberDashboard from '@/views/teacher-ui/teacber-dashboard.vue'
 import teacherCreateClass from '@/views/teacher-ui/teacher-createClass.vue'
 import teacherUi from '@/views/teacher-ui/teacher-ui.vue'
@@ -56,7 +57,12 @@ const router = createRouter({
       path: '/wl',
       name: 'waiting-lobby',
       component: waitingLobby
-    }
+    },
+    {
+      path: '/ts',
+      name: 'setting',
+      component: setting
+    },
 
   ],
 })
