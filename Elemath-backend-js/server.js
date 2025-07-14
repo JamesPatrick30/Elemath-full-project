@@ -13,11 +13,14 @@ const uri = process.env.MONGODB_URL;
 const cookieParser = require('cookie-parser');
 // import auth from './security/auth.js';
 const { createToken, verifyToken, verifyRefreshToken } = require('./security/createToken.js');
-
+const auth = require('./security/auth.js');
 // Load environment variables from .env file
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5173', // or whatever port your frontend uses
+  credentials: true
+}));
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -63,6 +66,23 @@ app.post('/api/login', (req, res) => {
     });
     res.status(200).json({ message: 'Login successful', accessToken: createToken({ username }).accessToken });
     console.log('Login successful:', username);
+});
+app.post('/api/logout', (req, res) => {
+    console.log("Logout request cookies:", req.cookies);
+  res.clearCookie('access_token', {
+    httpOnly: true,
+    sameSite: 'Strict',
+    secure: false // use true if HTTPS
+  });
+  res.clearCookie('refresh_token', {
+    httpOnly: true,
+    sameSite: 'Strict',
+    secure: false
+  });
+  console.log('User logged out');
+
+  res.status(200).json({ message: 'Logged out successfully' });
+  
 });
 app.post('createAccount', (req, res) => {
     const { username, password } = req.body;

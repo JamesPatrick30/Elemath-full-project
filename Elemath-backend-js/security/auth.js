@@ -1,7 +1,6 @@
-const jwt = require('jsonwebtoken');
-const dotenv = require('dotenv');
-dotenv.config();
-import { verifyToken } from './createToken.js';
+// const dotenv = require('dotenv');
+// dotenv.config();
+const { verifyToken } = require('./createToken.js'); // ✅ Use require
 
 function auth(req, res, next) {
   const token = req.cookies.access_token;
@@ -23,4 +22,5 @@ function verifyRefreshToken(req, res, next) {
   if (!refreshToken) return res.status(401).json({ message: 'Refresh token not found' });
 
 }
-module.exports = auth;
+
+module.exports = auth; // ✅ Valid for CommonJS

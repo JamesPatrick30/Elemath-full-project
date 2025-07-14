@@ -55,7 +55,7 @@ export default{
                 <li class="item1">Home</li>
                 <li class="item2">Profile</li>
                 <li class="item3">History</li>
-                <li class="item4">Settings</li>
+                <li class="item4" @click="this.$router.push('/ts')">Settings</li>
             </ul>
         </nav>
         <main>
