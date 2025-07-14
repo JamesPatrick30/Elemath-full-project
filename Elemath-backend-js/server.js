@@ -5,13 +5,16 @@ const dotenv = require('dotenv');
 const app = express();
 const http = require('http');
 const mongoose = require('mongoose');
-
-// Load environment variables from .env file
 dotenv.config();
+
 const PORT = process.env.PORT || 3000;
 const uri = process.env.MONGODB_URL;
-const jwt = require('jsonwebtoken');
+// const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
+// import auth from './security/auth.js';
+const { createToken, verifyToken, verifyRefreshToken } = require('./security/createToken.js');
+
+// Load environment variables from .env file
 
 // Middleware
 app.use(cors());
@@ -37,10 +40,33 @@ app.get('/api', (req, res) => {
 app.post('/api/login', (req, res) => {
     const { username, password } = req.body;
 
+    if (!username || !password) {
+        return res.status(400).json({ message: 'Username and password are required' });
+    }
+
+    // Here you would typically check the username and password against your database
+    if (username !== 'testuser' && password !== 'testpassword') {
+        return res.status(401).json({ message: 'Invalid username or password' });
+    }
+
+    res.cookie('access_token', createToken({ username }).accessToken, {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'lax',
+        maxAge: 15 * 60 * 1000 // 15 mins
+    });
+    res.cookie('refresh_token', createToken({ username }).refreshToken, {
+        httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      maxAge: 15 * 60 * 1000 // 15 mins
+    });
+    res.status(200).json({ message: 'Login successful', accessToken: createToken({ username }).accessToken });
 });
 app.post('createAccount', (req, res) => {
     const { username, password } = req.body;
 });
+
 // Start the server
 // app.listen(PORT, () => {
 //     console.log(`Server is running on port ${PORT}`);
