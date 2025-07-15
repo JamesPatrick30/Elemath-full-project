@@ -17,13 +17,22 @@
                 <header class="section-header">Basic Info</header>
                 <div class="basic-info">
                     <div class="input-container">
+                        <label for="Name">First Name</label>
+                        <input class="input-basic" type="text" id="Name" placeholder="Name" v-model="infoName" readonly>
+                    </div>
+                    <div class="input-container">
+                        <label for="Name"> Middle Name</label>
+                        <input class="input-basic" type="text" id="Name" placeholder="Name" v-model="infoName" readonly>
+                    </div>
+                    <div class="input-container">
+                        <label for="Name"> Last Name</label>
+                        <input class="input-basic" type="text" id="Name" placeholder="Name" v-model="infoName" readonly>
+                    </div>
+                    <div class="input-container">
                         <label for="Name">Name</label>
                         <input class="input-basic" type="text" id="Name" placeholder="Name" v-model="infoName" readonly>
                     </div>
                     
-                    <input class="input-basic" type="text" id="Name" placeholder="Name" v-model="infoName" readonly>
-                    <input class="input-basic" type="text" id="Name" placeholder="Name" v-model="infoName" readonly>
-                    <input class="input-basic" type="text" id="Name" placeholder="Name" v-model="infoName" readonly>
                 </div>
                 <div class="update-container">
                     <button class="update-btn" @click="btnBasicInfo()">Update</button>

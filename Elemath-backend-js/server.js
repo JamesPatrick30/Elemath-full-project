@@ -7,6 +7,7 @@ const http = require('http');
 const mongoose = require('mongoose');
 dotenv.config();
 
+const teacher_accoount = require('./models/teacher.js');
 const PORT = process.env.PORT || 3000;
 const uri = process.env.MONGODB_URL;
 // const jwt = require('jsonwebtoken');
@@ -84,9 +85,60 @@ app.post('/api/logout', (req, res) => {
   res.status(200).json({ message: 'Logged out successfully' });
   
 });
-app.post('createAccount', (req, res) => {
-    const { username, password } = req.body;
+app.post('/sign-up', async (req, res) => {
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res.status(400).json({ message: 'Username and password are required' });
+  }
+
+  try {
+    // Check if user already exists by email
+    const existingUser = await teacher_accoount.findOne({ Email: username });
+    if (existingUser) {
+      return res.status(409).json({ message: 'Username already exists' }); // 409 = Conflict
+    }
+
+    // Hash the password
+    // const hashedPassword = await bcrypt.hash(password, 12);
+
+    // Save new user
+    const newUser = new teacher_accoount({
+      Email: username,
+      password: password,
+    });
+
+    await newUser.save();
+    res.status(201).json({ message: 'User created successfully' });
+
+  } catch (error) {
+    console.error('Error creating user:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 });
+// app.post('/sign-up', async (req, res) => {
+//     const { username, password } = req.body;
+//     if (!username || !password) {
+//         return res.status(400).json({ message: 'Username and password are required' });
+//     }
+//     const user = await teacher_accoount.findOne({ Email: username })
+//     if (!user) {
+//         return res.status(401).json({ message: 'username already exist' });
+//     }
+    
+//     const newUser = new teacher_accoount({
+//         Email: username,
+//         password: password,
+//     });
+//     try {
+//         await newUser.save();
+//         res.status(201).json({ message: 'User created successfully' });
+//     } catch (error) {
+//         console.error('Error creating user:', error);
+//         res.status(500).json({ message: 'Internal server error' });
+//     }
+
+// });
 
 // Start the server
 // app.listen(PORT, () => {

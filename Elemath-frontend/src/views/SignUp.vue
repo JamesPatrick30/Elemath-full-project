@@ -10,9 +10,9 @@
                     <h3>{{ role }}</h3>
                 </header>
                 
-                <input class="text" type="text" placeholder="Teacher ID" required />
+                <input class="text" type="text" placeholder="Teacher ID" v-model="username" required />
                 <div class="passwordcontaner">
-                    <input id= "password"type="password" placeholder="Password" required />
+                    <input id= "password"type="password" placeholder="Password" v-model="password" required />
                     <button class="btn" @click="see()">
                         <svg v-if="!showPassword" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/>
@@ -48,10 +48,13 @@
     
 </template>
 <script>
+import api from '@/axios';
 export default {
     name: 'SignIn',
     data() {
         return {
+            username: '',
+            password: '',
             showPassword: false,
             showconfirmPassword: false,
             role: this.$route.query.role , // Default to 'student' if no role is provided
@@ -67,8 +70,20 @@ export default {
             this.showconfirmPassword = !this.showconfirmPassword;
             document.getElementById("confirmPassword").type = document.getElementById("confirmPassword").type === "password" ? "text" : "password";
         },
-        submitForm() {
-            // Handle form submission logic here
+        // submitForm() {
+        //     // Handle form submission logic here
+        //     const password = document.getElementById("password").value;
+        //     const confirmPassword = document.getElementById("confirmPassword").value;
+
+        //     if (password !== confirmPassword) {
+        //         alert("Passwords do not match!");
+        //         return;
+        //     }
+
+        //     // Proceed with the sign-up logic, e.g., API call
+        //     console.log("Form submitted with password:", password);
+        // },
+        async submitForm() {
             const password = document.getElementById("password").value;
             const confirmPassword = document.getElementById("confirmPassword").value;
 
@@ -77,8 +92,18 @@ export default {
                 return;
             }
 
-            // Proceed with the sign-up logic, e.g., API call
-            console.log("Form submitted with password:", password);
+            try {
+                const response = await api.post('/sign-up', {
+                    username: this.username,
+                    password: this.password
+                });
+                console.log("Sign-in successful:", response.data);
+                this.$router.push('/');
+                // Redirect or perform other actions after successful sign-in
+            } catch (error) {
+                console.error("Error during sign-in:", error);
+                alert("Sign-in failed. Please try again.");
+            }
         }
     },
     mounted() {

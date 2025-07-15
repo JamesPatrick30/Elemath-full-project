@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 
 const quizSchema = new mongoose.Schema({
   classId:      { type: String, ref: 'Class' },
-  createdBy:    { type: mongoose.Schema.Types.ObjectId, ref: 'Admin' },
+  createdBy:    { type: mongoose.Schema.Types.ObjectId, ref: 'teacher_accoount' },
   title:        { type: String, required: true },
   passingScore: { type: Number, default: 75 },
   questions: [
