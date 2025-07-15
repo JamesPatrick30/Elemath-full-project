@@ -36,7 +36,7 @@
                 </div>
             </div>
             <div class="did-you-know">
-                <h2>Did you know?</h2>
+                <h2>Lessons</h2>
                 <p>Math is not just about numbers, it's about problem-solving and critical thinking!</p>
             </div>
         </div>

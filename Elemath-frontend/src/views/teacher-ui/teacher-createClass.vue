@@ -1,4 +1,11 @@
 <template>
+    <div class="create-con" v-if="createClassCluster">
+        <div class="create">
+            <button @click="createClassClusterToggle()">X</button>
+            <input type="text" placeholder="Class Name" v-model="className">
+            <button @click="createClass">Create Class</button>
+        </div>
+    </div>
     <div class="body">
         <nav>
             <img class="logo" src="/images/logo.jpg" alt="">
@@ -14,12 +21,62 @@
                 <h3>Welcome back, James</h3>
             </div>
             <div class="contaner">
-                <button>+</button>
+                <button @click="createClassClusterToggle()">+</button>
             </div>
         </main>
     </div>
 </template>
+<script>
+
+export default {
+    name: 'TeacherCreateClass',
+    data() {
+        return {
+            className: '',
+            createClassCluster:false
+        };
+    },
+    methods: {
+        // Add methods for handling class creation logic
+        async createClass() {
+            try {
+                const response = await this.$axios.post('/api/create-class', {
+                    className: this.className,
+                });
+                if (response.status === 200) {
+                    // Handle successful class creation, e.g., redirect to class list
+                    this.$router.push({ name: 'teacher-ui' });
+                }
+            } catch (error) {
+                console.error('Class creation failed:', error);
+            }
+        },
+        createClassClusterToggle() {
+            this.createClassCluster = !this.createClassCluster;
+        }
+    },
+};
+</script>
 <style scoped>
+.create-con {
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    z-index: 10;
+    background-color: rgba(0, 0, 3, 0.70);
+}
+.create{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+}
 *{
     font-family: 'BubbleBody Neue', 'Poppins', sans-serif;
 }

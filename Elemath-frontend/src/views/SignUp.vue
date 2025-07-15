@@ -40,6 +40,8 @@
                 </div>
                 
                 <button class="submit" type="submit" @click="submitForm()">Sign In</button>
+
+                <button class="submit">Gmail</button>
                 
                 
             </div>

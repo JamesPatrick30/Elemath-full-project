@@ -11,6 +11,7 @@
             </nav>
             <div class="con-settings" v-if="btnActive.setting">
                 <input type="text" placeholder="Time" class="input-a">
+                <input type="text" placeholder="Passing Score" class="input-a">
             </div>
             <div class="con-Questions" v-if="btnActive.Question">
                 <select name="" id="" v-model="questionOption" >
@@ -104,6 +105,12 @@
                     />
                     </label>
                     <p v-if="fileName" class="file-name">Selected: {{ fileName }}</p>
+
+                    <select class="t-o-q" v-model="questionGenerateSetting.type"  >
+                        <option disabled value="">-- Select a Language --</option>
+                        <option value="multiple choices">Multiple Choice</option>
+                        <option value="Costumize">Costumize</option>
+                    </select>
             </div>
         </div>
       <div class="con-lobby">
