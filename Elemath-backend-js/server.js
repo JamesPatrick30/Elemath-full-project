@@ -41,18 +41,22 @@ app.get('/', (req, res) => {
 app.get('/api', (req, res) => {
     res.json({ message: 'API is running' });
 });
-app.post('/api/login', (req, res) => {
+app.post('/api/login',async (req, res) => {
     const { username, password } = req.body;
-
+    console.log("Login request body:", req.body);
     if (!username || !password) {
         return res.status(400).json({ message: 'Username and password are required' });
     }
-
+    const user = await teacher_accoount.findOne({ Email: username });
+    if (!user) {
+        return res.status(401).json({ message: 'User not found' });
+    }
     // Here you would typically check the username and password against your database
-    if (username !== 'testuser' && password !== 'testpassword') {
-        return res.status(401).json({ message: 'Invalid username or password' });
+    if (user.password !== password) {
+        return res.status(401).json({ message: 'wrong password' });
     }
 
+    const classCount = user.class.length;
     res.cookie('access_token', createToken({ username }).accessToken, {
         httpOnly: true,
         secure: false,
@@ -65,7 +69,7 @@ app.post('/api/login', (req, res) => {
       sameSite: 'lax',
       maxAge: 15 * 60 * 1000 // 15 mins
     });
-    res.status(200).json({ message: 'Login successful', accessToken: createToken({ username }).accessToken });
+    res.status(200).json({ message: 'Login successful', classCount: classCount });
     console.log('Login successful:', username);
 });
 app.post('/api/logout', (req, res) => {

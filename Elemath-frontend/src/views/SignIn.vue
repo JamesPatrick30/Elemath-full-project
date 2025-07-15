@@ -62,6 +62,11 @@ export default {
                 if (response.status === 200) {
                     // Handle successful login, e.g., redirect to dashboard
                     this.$router.push({ name: 'teacher-ui' });
+                    if(response.data.classCount === 0){
+                        this.$router.push({ name: 'teacher-create-class' });
+                    } else {
+                        this.$router.push({ name: 'teacher-ui' });
+                    }
                 }
             } catch (error) {
                 console.error('Login failed:', error);
