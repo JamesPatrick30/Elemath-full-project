@@ -13,7 +13,7 @@
             <header class="main-header">
                 <h4>Settings</h4>
             </header>
-            <section class="basic-info-section">
+            <section class="basic-info-section" >
                 <header class="section-header">Basic Info</header>
                 <div class="basic-info">
                     <div class="input-container">
@@ -38,10 +38,10 @@
                     <button class="update-btn" @click="btnBasicInfo()">Update</button>
                 </div>
             </section>
-            <section>
+            <section class="basic-info-section">
                 <header class="section-header" >Basic Info</header>
             </section>
-            <section>
+            <section class="basic-info-section">
                 <header class="section-header">Basic Info</header>
             </section>
             <button class="logout" @click="logout()">logout</button>
