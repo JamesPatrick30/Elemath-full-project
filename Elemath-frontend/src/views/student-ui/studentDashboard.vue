@@ -260,6 +260,9 @@ nav ul li:hover{
     font-family: 'BubbleBody Neue', 'Poppins', sans-serif;
 }
 .practicecontaner .practice-test {
+    background-image: url('/images/btnbg2.png');
+    background-size: cover;
+    background-position: center;
     width: 45%;
     height: 100%;
     background-color: #dce466;
