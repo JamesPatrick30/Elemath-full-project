@@ -2,12 +2,12 @@
 const express = require('express');
 const router = express.Router();
 const { OAuth2Client } = require('google-auth-library');
-
+const teacher_accoount = require('../models/teacher.js');
 const client = new OAuth2Client('651051530850-um6g1njmsd7qb1qu56tj5i4843mhkeio.apps.googleusercontent.com');
 
 router.post('/google', async (req, res) => {
   const { idToken } = req.body;
-
+  console.log("Received ID Token:", idToken);
   try {
     const ticket = await client.verifyIdToken({
       idToken,
@@ -17,9 +17,18 @@ router.post('/google', async (req, res) => {
     const payload = ticket.getPayload();
     const { email, name, picture } = payload;
 
-    // ✅ Here you can now find/create a user in your DB
-    // Example:
-    // const user = await User.findOneAndUpdate(...)
+    const existingUser = await teacher_accoount.findOne({ Email: email });
+    if (!existingUser) {
+      const newUser = new teacher_accoount({
+        Email: email,
+        password: 'password',
+        class: [] // or don't set this at all if it's not needed yet
+      });
+
+      
+      await newUser.save();
+      console.log('New user created:', newUser);
+    }
 
     res.status(200).json({ email, name, picture });
   } catch (err) {

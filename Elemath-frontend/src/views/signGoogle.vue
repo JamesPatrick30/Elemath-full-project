@@ -7,12 +7,15 @@
 
 <script setup>
 import { onMounted } from 'vue';
-import axios from '@/axios'; // adjust if needed
+import api from '@/axios'; // adjust if needed
 
 function handleGoogleCredentialResponse(response) {
   const idToken = response.credential;
 
-  axios.post('/google', { idToken })
+  api.post('/google',{
+    idToken: response.credential
+  }
+  )
     .then(res => {
       console.log('✅ Login success:', res.data);
       alert('Login successful!');

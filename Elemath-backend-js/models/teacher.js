@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
 
 const ClassScema = new mongoose.Schema({
-  Class_id: { type: String, required: true, unique: true },
+  Class_id: { type: String, required: true,},
   Class_name: { type: String, required: true },
 },{_id : false});
+
 const teacherSchema = new mongoose.Schema({
   Email: { type: String, required: true, unique: true },
   firstName: String,
@@ -13,7 +14,7 @@ const teacherSchema = new mongoose.Schema({
     type:[{ClassScema}],
     default: []
   },
-  password: { type: String, required: true }
+  password: { type: String}
 });
 
 module.exports = mongoose.model('teacher_accoount', teacherSchema);

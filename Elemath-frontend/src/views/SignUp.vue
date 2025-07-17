@@ -136,7 +136,7 @@ main {
     
 }
 .img-logo{
-    height: 400px;
+    height: 300px;
 }
 .passwordcontaner{
     width: 86%;
@@ -230,6 +230,9 @@ main {
         max-width: 400px;
         border-left: #464c84 5px solid;
         border-top: none;
+    }
+    .img-logo{
+        height: 400px;
     }
     
 }
