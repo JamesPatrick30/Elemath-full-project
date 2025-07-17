@@ -64,15 +64,15 @@ app.post('/api/login',async (req, res) => {
     if (user.password !== password) {
         return res.status(401).json({ message: 'wrong password' });
     }
-
+    const payload = {id: user._id, username: user.Email};
     const classCount = user.class.length;
-    res.cookie('access_token', createToken({ username }).accessToken, {
+    res.cookie('access_token', createToken({ payload }).accessToken, {
         httpOnly: true,
         secure: false,
         sameSite: 'lax',
         maxAge: 15 * 60 * 1000 // 15 mins
     });
-    res.cookie('refresh_token', createToken({ username }).refreshToken, {
+    res.cookie('refresh_token', createToken({ payload }).refreshToken, {
         httpOnly: true,
       secure: false,
       sameSite: 'lax',

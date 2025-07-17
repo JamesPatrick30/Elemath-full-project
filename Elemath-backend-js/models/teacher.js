@@ -7,6 +7,7 @@ const ClassScema = new mongoose.Schema({
 
 const teacherSchema = new mongoose.Schema({
   Email: { type: String, required: true, unique: true },
+  profile:String,
   firstName: String,
   middleName: String,
   lastName: String,
