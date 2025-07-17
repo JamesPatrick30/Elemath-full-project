@@ -27,7 +27,7 @@
                 </div>
                 
                 <button class="submit" type="submit" @click="login()">Sign In</button>
-                
+                <signGoogle ref="googleComponent" />
                 
             </div>
         </main>
@@ -36,8 +36,12 @@
 </template>
 <script>
 import api from '@/axios';
+import signGoogle from './signGoogle.vue';
 export default {
     name: 'SignIn',
+    components: {
+        signGoogle
+    },
     data() {
         return {
             showPassword: false,
@@ -74,7 +78,11 @@ export default {
                 // Handle login error, e.g., show an error message
             }
             
+        },
+        GoogleLogin() {
+        this.$refs.googleComponent?.manualLogin?.();
         }
+
     },
     mounted() {
     }

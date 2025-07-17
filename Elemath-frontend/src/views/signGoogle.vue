@@ -1,4 +1,3 @@
-<!-- SignGoogle.vue -->
 <template>
   <div>
     <div id="google-button"></div>
@@ -7,18 +6,19 @@
 
 <script setup>
 import { onMounted } from 'vue';
-import api from '@/axios'; // adjust if needed
+import { useRouter } from 'vue-router';
+import api from '@/axios'; // Axios instance
+
+const router = useRouter(); // 👈 Vue Router instance
 
 function handleGoogleCredentialResponse(response) {
   const idToken = response.credential;
 
-  api.post('/google',{
-    idToken: response.credential
-  }
-  )
+  api.post('/google', { idToken })
     .then(res => {
       console.log('✅ Login success:', res.data);
       alert('Login successful!');
+      router.push({ name: 'teacher-ui' }); // 👈 Use router here
     })
     .catch(error => {
       console.error('❌ Login failed:', error.response?.data || error.message);

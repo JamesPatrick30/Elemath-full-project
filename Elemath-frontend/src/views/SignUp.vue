@@ -39,7 +39,7 @@
                     </button>
                 </div>
                 
-                <button class="submit" type="submit" @click="submitForm()">Sign In</button>
+                <button class="submit" type="submit" @click="submitForm()">Sign Up</button>
                 <signGoogle ref="googleComponent" />
                 
                 
@@ -51,7 +51,7 @@
 <script>
 import api from '@/axios';
 import signGoogle from './signGoogle.vue';
-import GoogleLogin from './teacher-ui/GoogleLogin.vue';
+
 export default {
     name: 'SignIn',
     components: {
