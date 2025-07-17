@@ -3,15 +3,16 @@ const express = require('express');
 const router = express.Router();
 const { OAuth2Client } = require('google-auth-library');
 const teacher_accoount = require('../models/teacher.js');
-const client = new OAuth2Client('651051530850-um6g1njmsd7qb1qu56tj5i4843mhkeio.apps.googleusercontent.com');
+const dotenv = require('dotenv');
+dotenv.config();
+const client = new OAuth2Client(process.env.GOOGLE_KEY);
 
 router.post('/google', async (req, res) => {
   const { idToken } = req.body;
-  console.log("Received ID Token:", idToken);
   try {
     const ticket = await client.verifyIdToken({
       idToken,
-      audience: '651051530850-um6g1njmsd7qb1qu56tj5i4843mhkeio.apps.googleusercontent.com',
+      audience: process.env.GOOGLE_KEY,
     });
 
     const payload = ticket.getPayload();

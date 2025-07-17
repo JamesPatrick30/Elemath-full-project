@@ -52,7 +52,7 @@ onMounted(() => {
 
   script.onload = () => {
     window.google.accounts.id.initialize({
-      client_id: '651051530850-um6g1njmsd7qb1qu56tj5i4843mhkeio.apps.googleusercontent.com',
+      client_id: import.meta.env.VITE_API_GOOGLE,
       callback: handleGoogleCredentialResponse,
     });
 
