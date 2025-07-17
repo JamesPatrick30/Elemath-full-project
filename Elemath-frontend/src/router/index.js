@@ -65,7 +65,7 @@ const router = createRouter({
       component: setting
     },
     {
-      path: '/signInSucess',
+      path: '/auth-success',
       name: 'signInSucess',
       component: signInSucess
 

@@ -24,6 +24,9 @@ app.use(cors({
 }));
 app.use(cookieParser());
 app.use(bodyParser.json());
+const passport = require('./googleAuth'); // <- require your passport config
+app.use(passport.initialize());
+
 app.use(bodyParser.urlencoded({ extended: true }));
 const server = http.createServer(app);
 mongoose.connect(uri)
