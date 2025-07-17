@@ -132,7 +132,7 @@ app.post('/sign-up', async (req, res) => {
 app.get('/data/teacher', auth, async (req, res) => {
   console.log('/data/teacher endpoint hit');
   try {
-    console.log('Authenticated user:', req.user.id);
+    console.log('Authenticated user:', req.user);
     const user = await teacher_accoount.findById(req.user.id).populate('class');
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
