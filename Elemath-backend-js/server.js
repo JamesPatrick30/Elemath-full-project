@@ -129,115 +129,25 @@ app.post('/sign-up', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+app.get('/data/teacher', auth, async (req, res) => {
+  console.log('/data/teacher endpoint hit');
+  try {
+    console.log('Authenticated user:', req.user.id);
+    const user = await teacher_accoount.findById(req.user.id).populate('class');
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.status(200).json({
+      id: user._id,
+      email: user.Email,
+      profile: user.profile,
+      class: user.class,
+      classCount: user.class.length
+    });
+    console.log('/data/teacher :', user);
+  } catch (error) {
+    console.error('Error fetching teacher data:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 
-// app.post('/google', async (req, res) => {
-//   const { idToken } = req.body;
-
-//   try {
-//     const ticket = await client.verifyIdToken({
-//       idToken,
-//       audience: '651051530850-um6g1njmsd7qb1qu56tj5i4843mhkeio.apps.googleusercontent.com',
-//     });
-
-//     const payload = ticket.getPayload(); // contains email, name, picture, etc.
-//     const email = payload.email;
-
-//     // Check if user exists
-//     let user = await teacher_accoount.findOne({ Email: email });
-
-//     if (!user) {
-//       // Create user if not found
-//       user = new teacher_accoount({
-//         Email: email,
-//         password: '', // you may want to set a random string or null
-//         // You can also store name or picture if needed
-//       });
-//       await user.save();
-//     }
-
-//     const { accessToken, refreshToken } = createToken({ username: email });
-
-//     // Set cookies
-//     res.cookie('access_token', accessToken, {
-//       httpOnly: true,
-//       sameSite: 'Lax',
-//       secure: false,
-//       maxAge: 15 * 60 * 1000,
-//     });
-
-//     res.cookie('refresh_token', refreshToken, {
-//       httpOnly: true,
-//       sameSite: 'Lax',
-//       secure: false,
-//       maxAge: 15 * 60 * 1000,
-//     });
-
-//     res.status(200).json({ message: 'Google login successful', user: payload });
-
-//   } catch (err) {
-//     console.error('Token verification failed:', err);
-//     res.status(401).json({ message: 'Invalid Google ID Token' });
-//   }
-// });
-
-// // Step 1: Redirect user to Google
-// app.post('/auth/google',
-//   passport.authenticate('google', { scope: ['profile', 'email'] })
-// );
-
-// // Step 2: Handle Google callback
-// app.get('/auth/google/callback',
-//   passport.authenticate('google',{ failureRedirect: '/' }),
-//   (req, res) => {
-//     const user = req.user;
-    
-//     // Create your app's access and refresh tokens
-//     const { accessToken, refreshToken } = createToken({ username: user.email });
-
-//     res.cookie('access_token', accessToken, {
-//       httpOnly: true,
-//       sameSite: 'Lax',
-//       secure: false,
-//       maxAge: 15 * 60 * 1000,
-//     });
-
-//     res.cookie('refresh_token', refreshToken, {
-//       httpOnly: true,
-//       sameSite: 'Lax',
-//       secure: false,
-//       maxAge: 15 * 60 * 1000,
-//     });
-
-//     // Redirect to frontend after successful login
-//     res.redirect('http://localhost:5173/th');
-//   }
-// );
-
-// app.post('/sign-up', async (req, res) => {
-//     const { username, password } = req.body;
-//     if (!username || !password) {
-//         return res.status(400).json({ message: 'Username and password are required' });
-//     }
-//     const user = await teacher_accoount.findOne({ Email: username })
-//     if (!user) {
-//         return res.status(401).json({ message: 'username already exist' });
-//     }
-    
-//     const newUser = new teacher_accoount({
-//         Email: username,
-//         password: password,
-//     });
-//     try {
-//         await newUser.save();
-//         res.status(201).json({ message: 'User created successfully' });
-//     } catch (error) {
-//         console.error('Error creating user:', error);
-//         res.status(500).json({ message: 'Internal server error' });
-//     }
-
-// });
-
-// Start the server
-// app.listen(PORT, () => {
-//     console.log(`Server is running on port ${PORT}`);
-// });
+});

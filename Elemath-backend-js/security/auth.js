@@ -1,26 +1,20 @@
-// const dotenv = require('dotenv');
-// dotenv.config();
-const { verifyToken } = require('./createToken.js'); // ✅ Use require
+const jwt = require('jsonwebtoken');
 
 function auth(req, res, next) {
   const token = req.cookies.access_token;
-  if (!token) return res.status(401).json({ message: 'Not logged in' });
+
+  if (!token) {
+    return res.status(401).json({ message: 'Access denied. No token provided.' });
+  }
 
   try {
-    const decoded = verifyToken(token);
-    if (!decoded) return res.status(403).json({ message: 'Invalid token' });
-    // Attach user information to the request object
-    req.user = decoded;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded; // ✅ Attach user data to req.user
+    console.log("✅ Authenticated decoded:", decoded);
     next();
   } catch (err) {
-    return res.status(403).json({ message: 'Access token expired or invalid' });
+    return res.status(401).json({ message: 'Invalid or expired token.' });
   }
 }
 
-function verifyRefreshToken(req, res, next) {
-  const refreshToken = req.cookies.refresh_token;
-  if (!refreshToken) return res.status(401).json({ message: 'Refresh token not found' });
-
-}
-
-module.exports = auth; // ✅ Valid for CommonJS
+module.exports = auth;

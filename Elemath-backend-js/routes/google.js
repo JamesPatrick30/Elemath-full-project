@@ -43,13 +43,13 @@ router.post('/google', async (req, res) => {
     const userpayload = {id: user._id, username: user.Email};
     console.log('userpayload created:', userpayload);
 
-    res.cookie('access_token', createToken({ userpayload }).accessToken, {
+    res.cookie('access_token', createToken( userpayload ).accessToken, {
         httpOnly: true,
         secure: false,
         sameSite: 'lax',
         maxAge: 15 * 60 * 1000 // 15 mins
     });
-    res.cookie('refresh_token', createToken({ userpayload }).refreshToken, {
+    res.cookie('refresh_token', createToken( userpayload ).refreshToken, {
         httpOnly: true,
       secure: false,
       sameSite: 'lax',

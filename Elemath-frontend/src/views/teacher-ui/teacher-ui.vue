@@ -1,35 +1,15 @@
 <script>
+import api from '@/axios';
 import { Pie } from 'vue-chartjs'
 import VueApexCharts from 'vue3-apexcharts';
-export default{
-    components:{
+export default {
+    components: {
         Pie
     },
-    data(){
-        return{
-            students:[
-                {name:'james',lrn:'875465423'},
-                {name:'sophia',lrn:'875465424'},
-                {name:'liam',lrn:'875465425'},
-                {name:'olivia',lrn:'875465426'},
-                {name:'noah',lrn:'875465427'},
-                {name:'emma',lrn:'875465428'},
-                {name:'lucas',lrn:'875465429'},
-                {name:'ava',lrn:'875465430'},
-                {name:'elijah',lrn:'875465431'},
-                {name:'mia',lrn:'875465432'},
-                {name:'logan',lrn:'875465433'},
-                {name:'amelia',lrn:'875465434'},
-                {name:'ethan',lrn:'875465435'},
-                {name:'charlotte',lrn:'875465436'},
-                {name:'mason',lrn:'875465437'},
-                {name:'harper',lrn:'875465438'},
-                {name:'jacob',lrn:'875465439'},
-                {name:'evelyn',lrn:'875465440'},
-                {name:'michael',lrn:'875465441'},
-                {name:'abigail',lrn:'875465442'},
-              
-
+    data() {
+        return {
+            students: [
+                { name: 'james', lrn: '875465423' }
             ],
             pieData: {
                 labels: ['Red', 'Blue', 'Yellow'],
@@ -41,11 +21,27 @@ export default{
                     }
                 ]
             },
-            pieseries:[10,20,15],
-            pieoption:{labels:['asf','uj0','ouh']}
+            pieseries: [10, 20, 15],
+            pieoption: {
+                labels: ['asf', 'uj0', 'ouh']
+            }
+        };
+    },
+    methods: {
+        async getData() {
+            try {
+                const res = await api.get('/data/teacher');
+                console.log('Data fetched successfully:', res.data);
+            } catch (err) {
+                console.error('Error fetching data:', err);
+            }
         }
+    },
+    mounted() {
+        this.getData();
     }
-}
+};
+
 </script>
 <template>
     <body>
