@@ -5,8 +5,12 @@ const dotenv = require('dotenv');
 const app = express();
 const http = require('http');
 const mongoose = require('mongoose');
+const { OAuth2Client } = require('google-auth-library');
+const router = express.Router();
 dotenv.config();
-
+const client = new OAuth2Client(
+  '651051530850-um6g1njmsd7qb1qu56tj5i4843mhkeio.apps.googleusercontent.com'
+);
 const teacher_accoount = require('./models/teacher.js');
 const PORT = process.env.PORT || 3000;
 const uri = process.env.MONGODB_URL;
@@ -24,7 +28,8 @@ app.use(cors({
 }));
 app.use(cookieParser());
 app.use(bodyParser.json());
-const passport = require('./googleAuth'); // <- require your passport config
+
+const passport = require('./security/googleAuth.js'); // <- require your passport config
 app.use(passport.initialize());
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -38,6 +43,7 @@ mongoose.connect(uri)
   })
   .catch(err => console.error('❌ Connection error:', err));
 // Routes
+app.use('/', require('./routes/google'));
 app.get('/', (req, res) => {
     res.send('Welcome to the Elemath Backend API');
 });
@@ -123,6 +129,90 @@ app.post('/sign-up', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+
+// app.post('/google', async (req, res) => {
+//   const { idToken } = req.body;
+
+//   try {
+//     const ticket = await client.verifyIdToken({
+//       idToken,
+//       audience: '651051530850-um6g1njmsd7qb1qu56tj5i4843mhkeio.apps.googleusercontent.com',
+//     });
+
+//     const payload = ticket.getPayload(); // contains email, name, picture, etc.
+//     const email = payload.email;
+
+//     // Check if user exists
+//     let user = await teacher_accoount.findOne({ Email: email });
+
+//     if (!user) {
+//       // Create user if not found
+//       user = new teacher_accoount({
+//         Email: email,
+//         password: '', // you may want to set a random string or null
+//         // You can also store name or picture if needed
+//       });
+//       await user.save();
+//     }
+
+//     const { accessToken, refreshToken } = createToken({ username: email });
+
+//     // Set cookies
+//     res.cookie('access_token', accessToken, {
+//       httpOnly: true,
+//       sameSite: 'Lax',
+//       secure: false,
+//       maxAge: 15 * 60 * 1000,
+//     });
+
+//     res.cookie('refresh_token', refreshToken, {
+//       httpOnly: true,
+//       sameSite: 'Lax',
+//       secure: false,
+//       maxAge: 15 * 60 * 1000,
+//     });
+
+//     res.status(200).json({ message: 'Google login successful', user: payload });
+
+//   } catch (err) {
+//     console.error('Token verification failed:', err);
+//     res.status(401).json({ message: 'Invalid Google ID Token' });
+//   }
+// });
+
+// // Step 1: Redirect user to Google
+// app.post('/auth/google',
+//   passport.authenticate('google', { scope: ['profile', 'email'] })
+// );
+
+// // Step 2: Handle Google callback
+// app.get('/auth/google/callback',
+//   passport.authenticate('google',{ failureRedirect: '/' }),
+//   (req, res) => {
+//     const user = req.user;
+    
+//     // Create your app's access and refresh tokens
+//     const { accessToken, refreshToken } = createToken({ username: user.email });
+
+//     res.cookie('access_token', accessToken, {
+//       httpOnly: true,
+//       sameSite: 'Lax',
+//       secure: false,
+//       maxAge: 15 * 60 * 1000,
+//     });
+
+//     res.cookie('refresh_token', refreshToken, {
+//       httpOnly: true,
+//       sameSite: 'Lax',
+//       secure: false,
+//       maxAge: 15 * 60 * 1000,
+//     });
+
+//     // Redirect to frontend after successful login
+//     res.redirect('http://localhost:5173/th');
+//   }
+// );
+
 // app.post('/sign-up', async (req, res) => {
 //     const { username, password } = req.body;
 //     if (!username || !password) {

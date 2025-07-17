@@ -40,8 +40,7 @@
                 </div>
                 
                 <button class="submit" type="submit" @click="submitForm()">Sign In</button>
-
-                <button class="submit">Gmail</button>
+                <signGoogle ref="googleComponent" />
                 
                 
             </div>
@@ -51,8 +50,13 @@
 </template>
 <script>
 import api from '@/axios';
+import signGoogle from './signGoogle.vue';
+import GoogleLogin from './teacher-ui/GoogleLogin.vue';
 export default {
     name: 'SignIn',
+    components: {
+        signGoogle
+    },
     data() {
         return {
             username: '',
@@ -106,6 +110,10 @@ export default {
                 console.error("Error during sign-in:", error);
                 alert("Sign-in failed. Please try again.");
             }
+        },
+        GoogleLogin() {
+        this.$refs.googleComponent?.manualLogin?.();
+
         }
     },
     mounted() {

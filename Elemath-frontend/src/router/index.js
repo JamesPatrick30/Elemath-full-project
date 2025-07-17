@@ -10,7 +10,8 @@ import teacberDashboard from '@/views/teacher-ui/teacber-dashboard.vue'
 import teacherCreateClass from '@/views/teacher-ui/teacher-createClass.vue'
 import teacherUi from '@/views/teacher-ui/teacher-ui.vue'
 import questionMaker from '@/views/teacher-ui/questionMaker.vue'
-import signInSucess from '@/views/teacher-ui/signInSucess.vue'
+// import GoogleLogin from '@/views/teacher-ui/GoogleLogin.vue'
+import signGoogle from '@/views/signGoogle.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -64,11 +65,11 @@ const router = createRouter({
       name: 'setting',
       component: setting
     },
-    {
-      path: '/auth-success',
-      name: 'signInSucess',
-      component: signInSucess
-
+    ,{
+      path: '/sign-google',
+      name: 'signGoogle',
+      component: signGoogle
+    
     }
 
   ],
