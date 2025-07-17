@@ -8,6 +8,14 @@
 import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import api from '@/axios'; // Axios instance
+import { defineProps } from 'vue';
+
+const props = defineProps({
+  someData: String
+});
+
+// You can now use props.someData
+console.log("Received prop:", props.someData);
 
 const router = useRouter(); // 👈 Vue Router instance
 

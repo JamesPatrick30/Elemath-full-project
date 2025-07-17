@@ -40,7 +40,7 @@
                 </div>
                 
                 <button class="submit" type="submit" @click="submitForm()">Sign Up</button>
-                <signGoogle ref="googleComponent" />
+                <signGoogle  ref="googleComponent" />
                 
                 
             </div>
