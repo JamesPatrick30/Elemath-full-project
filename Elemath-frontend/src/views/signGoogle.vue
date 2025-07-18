@@ -26,7 +26,12 @@ function handleGoogleCredentialResponse(response) {
     .then(res => {
       console.log('✅ Login success:', res.data);
       alert('Login successful!');
-      router.push({ name: 'teacher-ui' }); // 👈 Use router here
+      if(res.data.class >0) {
+        router.push({ name: 'teacher-ui' }); // 👈 Use router here
+      }else{
+        router.push({ name: 'teacher-create-class' }); // 👈 Use router here
+      }
+      
     })
     .catch(error => {
       console.error('❌ Login failed:', error.response?.data || error.message);

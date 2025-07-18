@@ -66,13 +66,13 @@ app.post('/api/login',async (req, res) => {
     }
     const payload = {id: user._id, username: user.Email};
     const classCount = user.class.length;
-    res.cookie('access_token', createToken({ payload }).accessToken, {
+    res.cookie('access_token', createToken( payload ).accessToken, {
         httpOnly: true,
         secure: false,
         sameSite: 'lax',
         maxAge: 15 * 60 * 1000 // 15 mins
     });
-    res.cookie('refresh_token', createToken({ payload }).refreshToken, {
+    res.cookie('refresh_token', createToken( payload ).refreshToken, {
         httpOnly: true,
       secure: false,
       sameSite: 'lax',
@@ -80,6 +80,32 @@ app.post('/api/login',async (req, res) => {
     });
     res.status(200).json({ message: 'Login successful', classCount: classCount });
     console.log('Login successful:', username);
+});
+app.post('/refresh-token', auth, (req, res) => {
+    const refreshToken = req.cookies.refresh_token;
+    if (!refreshToken) {
+        return res.status(401).json({ message: 'No refresh token provided' });
+    }
+    try {
+        const newAccessToken = createToken( req.user ).accessToken;
+        res.cookie('access_token', newAccessToken, {
+            httpOnly: true,
+            secure: false, // use true if HTTPS
+            sameSite: 'lax',
+            maxAge: 15 * 60 * 1000 // 15 mins
+        });
+        res.cookie('refresh_token', createToken( req.user ).refreshToken, {
+            httpOnly: true,
+            secure: false, // use true if HTTPS
+            sameSite: 'lax',
+            maxAge: 15 * 60 * 1000 // 15 mins
+        });
+        console.log('Access token refreshed');
+        res.status(200).json({ message: 'Access token refreshed' });
+    } catch (error) {
+        console.error('Error refreshing token:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 });
 app.post('/api/logout', (req, res) => {
     console.log("Logout request cookies:", req.cookies);
@@ -137,17 +163,10 @@ app.get('/data/teacher', auth, async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    res.status(200).json({
-      id: user._id,
-      email: user.Email,
-      profile: user.profile,
-      class: user.class,
-      classCount: user.class.length
-    });
+    res.status(200).json(user);
     console.log('/data/teacher :', user);
   } catch (error) {
     console.error('Error fetching teacher data:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
-
 });

@@ -24,27 +24,49 @@ export default {
             pieseries: [10, 20, 15],
             pieoption: {
                 labels: ['asf', 'uj0', 'ouh']
-            }
+            },
+            user:null
         };
     },
     methods: {
         async getData() {
             try {
                 const res = await api.get('/data/teacher');
+                this.user = res.data;
                 console.log('Data fetched successfully:', res.data);
             } catch (err) {
                 console.error('Error fetching data:', err);
+                if(err.response && err.response.status === 401) {
+                    this.$router.push('/');
+                } else {
+                    alert('Failed to fetch data. Please try again later.');
+                }
+            }
+        },
+        async refreshtoken(){
+            try {
+                const res = await api.post('/refresh-token');
+                this.user = res.data;
+                console.log('Token refreshed successfully:', res.data);
+            } catch (err) {
+                console.error('Error refreshing token:', err);
+                if(err.response && err.response.status === 401) {
+                    this.$router.push('/');
+                } else {
+                    alert('Failed to refresh token. Please try again later.');
+                }
             }
         }
     },
     mounted() {
         this.getData();
+        this.refreshtoken();
     }
 };
 
 </script>
 <template>
-    <body>
+    <body v-if="user">
         <nav>
             <img class="logo" src="/images/logo.jpg" alt="">
             <ul>
@@ -59,12 +81,12 @@ export default {
             <div class="con-m">
             <div class="header" style="grid-area: header;">
                 <div class="image-contaner">
-                    <img src="/images/frog2.png" alt="">
+                    <img :src="user.profile" alt="">
                 </div>
                 
                 <div class="text-area">
-                    <h3>welcome back. james</h3>
-                    <h5>ID : 664232443</h5>
+                    <h3>welcome back. {{ user?.username }}</h3>
+                    <h5>ID : {{ user?._id }}</h5>
                 </div>
                 
             </div>

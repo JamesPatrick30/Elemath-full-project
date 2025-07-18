@@ -113,8 +113,22 @@ export default {
         },
         GoogleLogin() {
         this.$refs.googleComponent?.manualLogin?.();
-
-        }
+        this.getData();
+        },
+        async getData() {
+            try {
+                const res = await api.get('/data/teacher');
+                this.user = res.data;
+                console.log('Data fetched successfully in sign up:', res.data);
+            } catch (err) {
+                console.error('Error fetching data:', err);
+                if(err.response && err.response.status === 401) {
+                    this.$router.push('/');
+                } else {
+                    alert('Failed to fetch data. Please try again later.');
+                }
+            }
+        },
     },
     mounted() {
     }

@@ -20,28 +20,55 @@ router.post('/google', async (req, res) => {
     const payload = ticket.getPayload();
     const { email, name, picture } = payload;
 
+    const fullName = payload.name || '';
+    const nameParts = fullName.trim().split(/\s+/); // split by any whitespace
+
+    let firstName = '';
+    let middleName = '';
+    let lastName = '';
+
+    if (nameParts.length === 1) {
+      firstName = nameParts[0];
+    } else if (nameParts.length === 2) {
+      [firstName, lastName] = nameParts;
+    } else if (nameParts.length >= 3) {
+      firstName = nameParts[0];
+      lastName = nameParts[nameParts.length - 1];
+      middleName = nameParts.slice(1, -1).join(' ');
+    }
+
+
     const existingUser = await teacher_accoount.findOne({ Email: email });
     if (!existingUser) {
-      const newUser = new teacher_accoount({
-        Email: email,
-        profile: picture,
-        password: 'password',
-        class: [] // or don't set this at all if it's not needed yet
-      });
+      try{
+        const newUser = new teacher_accoount({
+          Email: email,
+          username:name,
+          profile: picture,
+          firstName: firstName,
+          middleName: middleName,
+          lastName: lastName,
+          password: 'password',
+          class: [] // or don't set this at all if it's not needed yet
+        });
 
+        
+        await newUser.save()
+        .then((result) => {
+          console.log('User saved successfully:', result);
+          user = result;
+        });
+        console.log('New user created:', user);
+
+      }catch(err){
+        console.error('❌ Error checking existing user:', err);
+      }
       
-      await newUser.save()
-      .then((result) => {
-        console.log('User saved successfully:', result);
-        user = result;
-      });
-      console.log('New user created:', user);
     }else{
       user = existingUser;
     }
 
     const userpayload = {id: user._id, username: user.Email};
-    console.log('userpayload created:', userpayload);
 
     res.cookie('access_token', createToken( userpayload ).accessToken, {
         httpOnly: true,
@@ -55,7 +82,7 @@ router.post('/google', async (req, res) => {
       sameSite: 'lax',
       maxAge: 15 * 60 * 1000 // 15 mins
     });
-    res.status(200).json({ email, name, picture });
+    res.status(200).json({ email, name, picture,class: user.class.length });
   } catch (err) {
     console.error('❌ Invalid Google ID Token', err);
     res.status(401).json({ message: 'Invalid Google ID Token' });
