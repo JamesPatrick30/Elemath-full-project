@@ -17,6 +17,8 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons';
 library.add(faTrash);
 import {faSort} from '@fortawesome/free-solid-svg-icons';
 library.add(faSort);
+import { faUserPlus } from '@fortawesome/free-solid-svg-icons';
+library.add(faUserPlus);
 const app = createApp(App)
 app.use(VueApexCharts);
 // Register the FontAwesomeIcon component globally

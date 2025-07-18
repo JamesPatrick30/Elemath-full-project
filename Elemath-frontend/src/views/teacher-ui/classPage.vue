@@ -9,6 +9,7 @@
                     <option value="">asdsd</option>
                     <option value="">asdsd</option>
                 </select>
+                <button class="add-student"><font-awesome-icon icon="fa-solid fa-user-plus" /> Add student</button>
             </header>
             <div class="student-list">
                 <div class="student-list-con">
@@ -19,6 +20,7 @@
                                 <th>MiddleName</th>
                                 <th>LastName</th>
                                 <th>LRN <font-awesome-icon :icon="['fas', 'sort']"  @click="sortByLrn()"/></th>
+                                <th>Password</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -28,6 +30,7 @@
                                 <td>{{ student.middleName }}</td>
                                 <td>{{ student.lastName }}</td>
                                 <td>{{ student.lrn }}</td>
+                                <td>{{ student.password }}</td>
                                 <td>
                                     <button class="action-btn" id="edit-icon">
                                         <font-awesome-icon :icon="['fas', 'user-pen']"  class="edit-icon" />
@@ -63,10 +66,23 @@ export default {
             infoMiddleName: '',
             infoLastName: '',
             students: [
-                { firstName: 'John Doe',middleName: 'A.', lastName: 'Smith', lrn: '1234567890' },
-                { firstName: 'Jane Doe', middleName: 'B.', lastName: 'Johnson', lrn: '0987654321' },
-                { firstName: 'Alice', middleName: 'C.', lastName: 'Brown', lrn: '1122334455' },
-                { firstName: 'Bob', middleName: 'D.', lastName: 'Davis', lrn: '5566778899' },
+                { firstName: 'John Doe',middleName: 'A.', lastName: 'Smith', lrn: '1234567890', password: 'password123' },
+                { firstName: 'Jane', middleName: 'B.', lastName: 'Doe', lrn: '0987654321', password: 'password456' },
+                { firstName: 'Alice', middleName: 'C.', lastName: 'Johnson', lrn: '1122334455', password: 'password789' },
+                { firstName: 'Bob', middleName: 'D.', lastName: 'Brown', lrn: '5566778899', password: 'password101' },
+                { firstName: 'Charlie', middleName: 'E.', lastName: 'Davis', lrn: '2233445566', password: 'password202' },
+                { firstName: 'David', middleName: 'F.', lastName: 'Garcia', lrn: '7788990011', password: 'password303' },
+                { firstName: 'Eva', middleName: 'G.', lastName: 'Martinez', lrn: '3344556677', password: 'password404' },
+                { firstName: 'Frank', middleName: 'H.', lastName: 'Lopez', lrn: '8899001122', password: 'password505' },
+                { firstName: 'Grace', middleName: 'I.', lastName: 'Wilson', lrn: '4455667788', password: 'password606' },
+                { firstName: 'Henry', middleName: 'J.', lastName: 'Anderson', lrn: '0011223344', password: 'password707' },
+                { firstName: 'Isabella', middleName: 'K.', lastName: 'Thomas', lrn: '6677889900', password: 'password808' },
+                { firstName: 'Jack', middleName: 'L.', lastName: 'Taylor', lrn: '1122334455', password: 'password909' },
+                { firstName: 'Liam', middleName: 'M.', lastName: 'Moore', lrn: '9988776655', password: 'password010' },
+                { firstName: 'Mia', middleName: 'N.', lastName: 'Jackson', lrn: '5566778899', password: 'password111' },
+                { firstName: 'Noah', middleName: 'O.', lastName: 'White', lrn: '2233445566', password: 'password222' },
+                { firstName: 'Olivia', middleName: 'P.', lastName: 'Harris', lrn: '7788990011', password: 'password333' },
+                
                 
             ],
         };
@@ -74,11 +90,30 @@ export default {
     methods:{
         sortByLrn() {
             this.students.sort((a, b) => a.lrn.localeCompare(b.lrn));
+           
         },
     }
 }
 </script>
 <style scoped>
+
+.add-student{
+    background-color: white;
+    color: #4fc4f7;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    height: 50px;
+    width: fit-content;
+    transition: 0.3s;
+}
+.add-student:hover{
+    background-color: #4fc4f7;
+    color: white;
+    transition: 0.3s;
+}
 #trash-icon{
     color: #ff0000;
     font-size: 1.2em;
@@ -112,17 +147,21 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100%;
+    height: 77%;
 }
 .student-list-table thead {
   background-color: #f5f5f5;
+  
 }
 .student-list-con .student-list-table td{
+    
     padding-top: 10px;
     text-align: center;
     border-bottom: 1px solid #ccc;
 }
 .student-list-con{
+    overflow: auto;
+    scrollbar-width: thin;
     border-radius: 10px;
     background-color: white;
     width: 90%;
@@ -131,6 +170,7 @@ export default {
     justify-content: center;
 }
 .student-list-con .student-list-table{
+    
     width: 100%;
     height: fit-content;
     border-collapse: collapse;
