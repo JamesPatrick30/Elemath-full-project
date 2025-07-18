@@ -6,20 +6,11 @@
             <button @click="createClass">Create Class</button>
         </div>
     </div>
-    <div class="body">
+    <div class="body" v-if="user">
         <navbar></navbar>
-        <!-- <nav>
-            <img class="logo" src="/images/logo.jpg" alt="">
-            <ul>
-                <li>Dashboard</li>
-                <li>Create Class</li>
-                <li>Manage Classes</li>
-                <li>Settings</li>
-            </ul>
-        </nav> -->
         <main>
             <div class="header">
-                <h3>Welcome back, James</h3>
+                <h3>Welcome back, {{ user?.username }}</h3>
             </div>
             <div class="contaner">
                 <button @click="createClassClusterToggle()">+</button>
@@ -39,7 +30,8 @@ export default {
     data() {
         return {
             className: '',
-            createClassCluster:false
+            createClassCluster:false,
+            user: null,
         };
     },
     methods: {
@@ -59,7 +51,44 @@ export default {
         },
         createClassClusterToggle() {
             this.createClassCluster = !this.createClassCluster;
+        },
+        async getData() {
+            try {
+                const res = await api.get('/data/teacher');
+                this.user = res.data;
+                
+                this.infoName = this.user.firstName;
+                this.infoMiddleName = this.user.middleName;
+                this.infoLastName = this.user.lastName;
+                this.classlength = this.user.class.length;
+                console.log('Data fetched successfully:', this.classlength);
+            } catch (err) {
+                console.error('Error fetching data:', err);
+                if(err.response && err.response.status === 401) {
+                    this.$router.push('/');
+                } else {
+                    alert('Failed to fetch data. Please try again later.');
+                }
+            }
+        },
+        async refreshtoken(){
+            try {
+                const res = await api.post('/refresh-token');
+                this.user = res.data;
+                console.log('Token refreshed successfully:', res.data);
+                await this.getData();
+            } catch (err) {
+                console.error('Error refreshing token:', err);
+                if(err.response && err.response.status === 401) {
+                    this.$router.push('/');
+                } else {
+                    alert('Failed to refresh token. Please try again later.');
+                }
+            }
         }
+    },
+    mounted() {
+        this.refreshtoken();
     },
 };
 </script>

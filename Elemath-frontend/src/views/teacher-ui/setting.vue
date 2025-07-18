@@ -1,5 +1,5 @@
 <template>
-    <body>
+    <body  v-if="user">
         <navbar :classlength = classlength></navbar>
         <main>
             <header class="main-header">
@@ -14,11 +14,11 @@
                     </div>
                     <div class="input-container">
                         <label for="Name"> Middle Name</label>
-                        <input class="input-basic" type="text" id="Name" placeholder="Name" v-model="infoName" readonly>
+                        <input class="input-basic" type="text" id="Name" placeholder="Name" v-model="infoMiddleName" readonly>
                     </div>
                     <div class="input-container">
                         <label for="Name"> Last Name</label>
-                        <input class="input-basic" type="text" id="Name" placeholder="Name" v-model="infoName" readonly>
+                        <input class="input-basic" type="text" id="Name" placeholder="Name" v-model="infoLastName" readonly>
                     </div>
                     <div class="input-container">
                         <label for="Name">Name</label>
@@ -39,6 +39,10 @@
             <button class="logout" @click="logout()">logout</button>
         </main>
     </body>
+    <body v-else class="loading-container">
+        <div class="loading"></div>
+        
+    </body>
 </template>
 <script>
 import api from '@/axios';
@@ -50,14 +54,10 @@ export default{
     },
     data() {
         return {
-            students: [
-                { name: 'John Doe', lrn: '123456789' },
-                { name: 'Jane Smith', lrn: '987654321' },
-                { name: 'Alice Johnson', lrn: '456789123' },
-                { name: 'Bob Brown', lrn: '321654987' }
-            ],
+            
             showInfo: false,
             infoName:'',
+            infoMiddleName:'',
             infoLrn: '',
             updateBasicInfo:false,
             user: null,
@@ -80,11 +80,11 @@ export default{
                 }
             });
         },
-        showInfofunction(student) {
-            this.showInfo = true;
-            this.infoName = student.name;
-            this.infoLrn = student.lrn;
-        },
+        // showInfofunction(student) {
+        //     this.showInfo = true;
+        //     this.infoName = student.name;
+        //     this.infoLrn = student.lrn;
+        // },
         async logout() {
             try {
                 const response = await api.post('/api/logout');
@@ -99,8 +99,11 @@ export default{
                 const res = await api.get('/data/teacher');
                 this.user = res.data;
                 
-                this.infoName = this.user.firsName;
+                this.infoName = this.user.firstName;
+                this.infoMiddleName = this.user.middleName;
+                this.infoLastName = this.user.lastName;
                 this.classlength = this.user.class.length;
+                
                 console.log('Data fetched successfully:', this.classlength);
             } catch (err) {
                 console.error('Error fetching data:', err);
@@ -132,6 +135,25 @@ export default{
     }
 }</script>
 <style scoped>
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+}
+.loading{
+    border: 8px solid #f3f3f3; /* Light grey */
+    border-top: 8px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 2s linear infinite;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
 .input-container {
     display: flex;
     flex-direction: column;
