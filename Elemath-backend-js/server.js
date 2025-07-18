@@ -17,7 +17,8 @@ const uri = process.env.MONGODB_URL;
 // const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 // import auth from './security/auth.js';
-const { createToken, verifyToken, verifyRefreshToken } = require('./security/createToken.js');
+const  {createToken} = require('./security/createToken.js');
+const verifyRefreshToken = require('./security/refreshtoken.js');
 const auth = require('./security/auth.js');
 // Load environment variables from .env file
 
@@ -81,7 +82,8 @@ app.post('/api/login',async (req, res) => {
     res.status(200).json({ message: 'Login successful', classCount: classCount });
     console.log('Login successful:', username);
 });
-app.post('/refresh-token', auth, (req, res) => {
+app.post('/refresh-token', verifyRefreshToken, (req, res) => {
+  console.log("Refresh token request cookies:", req.refreshToken);
     const refreshToken = req.cookies.refresh_token;
     if (!refreshToken) {
         return res.status(401).json({ message: 'No refresh token provided' });
@@ -155,7 +157,7 @@ app.post('/sign-up', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-app.get('/data/teacher', auth, async (req, res) => {
+app.get('/data/teacher', verifyRefreshToken, async (req, res) => {
   console.log('/data/teacher endpoint hit');
   try {
     console.log('Authenticated user:', req.user);

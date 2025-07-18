@@ -50,6 +50,7 @@ export default {
                 const res = await api.post('/refresh-token');
                 this.user = res.data;
                 console.log('Token refreshed successfully:', res.data);
+                await this.getData();
             } catch (err) {
                 console.error('Error refreshing token:', err);
                 if(err.response && err.response.status === 401) {
@@ -61,7 +62,7 @@ export default {
         }
     },
     mounted() {
-        this.getData();
+        
         this.refreshtoken();
     }
 };
