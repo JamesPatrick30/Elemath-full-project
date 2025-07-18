@@ -1,14 +1,6 @@
 <template>
     <body>
-        <nav>
-            <img class="logo" src="/images/logo.jpg" alt="">
-            <ul>
-                <li class="item1">Home</li>
-                <li class="item2">Profile</li>
-                <li class="item3">History</li>
-                <li class="item4">Settings</li>
-            </ul>
-        </nav>
+        <navbar :classlength = classlength></navbar>
         <main>
             <header class="main-header">
                 <h4>Settings</h4>
@@ -50,9 +42,12 @@
 </template>
 <script>
 import api from '@/axios';
-
+import navbar from './components/navbar.vue';
 export default{
     name: 'Setting',
+    components: {
+        navbar
+    },
     data() {
         return {
             students: [
@@ -62,9 +57,11 @@ export default{
                 { name: 'Bob Brown', lrn: '321654987' }
             ],
             showInfo: false,
-            infoName: '',
+            infoName:'',
             infoLrn: '',
-            updateBasicInfo:false
+            updateBasicInfo:false,
+            user: null,
+            classlength:null
         };
     },
     methods: {
@@ -96,7 +93,42 @@ export default{
             } catch (error) {
                 console.error('Logout failed:', error);
             }
+        },
+        async getData() {
+            try {
+                const res = await api.get('/data/teacher');
+                this.user = res.data;
+                
+                this.infoName = this.user.firsName;
+                this.classlength = this.user.class.length;
+                console.log('Data fetched successfully:', this.classlength);
+            } catch (err) {
+                console.error('Error fetching data:', err);
+                if(err.response && err.response.status === 401) {
+                    this.$router.push('/');
+                } else {
+                    alert('Failed to fetch data. Please try again later.');
+                }
+            }
+        },
+        async refreshtoken(){
+            try {
+                const res = await api.post('/refresh-token');
+                this.user = res.data;
+                console.log('Token refreshed successfully:', res.data);
+                await this.getData();
+            } catch (err) {
+                console.error('Error refreshing token:', err);
+                if(err.response && err.response.status === 401) {
+                    this.$router.push('/');
+                } else {
+                    alert('Failed to refresh token. Please try again later.');
+                }
+            }
         }
+    },
+    mounted() {
+        this.refreshtoken();
     }
 }</script>
 <style scoped>
@@ -208,7 +240,7 @@ section .section-header {
 body{
     background-color: rgb(235, 235, 235);
     height: 100vh;
-    width: 100%;
+    width: 100vw;
     display: flex;
 }
 main{
@@ -221,7 +253,7 @@ main{
     overflow: auto;
     scrollbar-width: thin;
 }
-nav {
+/* nav {
     
     width: 20%;
     height: 100%;
@@ -260,7 +292,7 @@ nav ul li:hover{
     transition: 0.3s;
     background-color: #4fc4f7;
     color: white;
-}
+} */
 *{
     font-family: 'BubbleBody Neue','Poppins', sans-serif;
 }

@@ -7,7 +7,8 @@
         </div>
     </div>
     <div class="body">
-        <nav>
+        <navbar></navbar>
+        <!-- <nav>
             <img class="logo" src="/images/logo.jpg" alt="">
             <ul>
                 <li>Dashboard</li>
@@ -15,7 +16,7 @@
                 <li>Manage Classes</li>
                 <li>Settings</li>
             </ul>
-        </nav>
+        </nav> -->
         <main>
             <div class="header">
                 <h3>Welcome back, James</h3>
@@ -27,9 +28,14 @@
     </div>
 </template>
 <script>
-
+import api from '@/axios'; // Axios instance
+import navbar from './components/navbar.vue';
 export default {
     name: 'TeacherCreateClass',
+    components: {
+        navbar
+    },
+    
     data() {
         return {
             className: '',
@@ -80,12 +86,12 @@ export default {
 *{
     font-family: 'BubbleBody Neue', 'Poppins', sans-serif;
 }
-.logo{
+/* .logo{
     height: auto;
     width: 100%;
     margin-top: 0%;
     margin-bottom: 10px;
-}
+} */
 .body {
     display: flex;
     height: 100vh;
@@ -95,10 +101,11 @@ main {
     flex: 1;
     display: flex;
     flex-direction: column;
-
+    height: 100%;
+    width: 100%;
     background-color: aliceblue;
 }
-nav {
+/* nav {
     
     width: 20%;
     height: 100%;
@@ -137,7 +144,7 @@ nav ul li:hover{
     transition: 0.3s;
     background-color: #4fc4f7;
     color: white;
-}
+} */
 .contaner{
     height: 90%;
     width: 90%;
