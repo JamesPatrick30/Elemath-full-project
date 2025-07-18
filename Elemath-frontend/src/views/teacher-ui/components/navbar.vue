@@ -4,7 +4,7 @@
             <ul>
                 <li class="item1" :class="((parameter === '/tc') || (parameter === '/th'))? 'in': 'out'" @click="goHome()">Home</li>
                 <li class="item2" :class="parameter === '/t'? 'in': 'out'">Profile</li>
-                <li :class="parameter === '/t'? 'in': 'out'">Class</li>
+                <li :class="parameter === '/c'? 'in': 'out'" @click="this.$router.push('/c')">Class</li>
                 <li :class="parameter == '/t'? 'in': 'out'">Grade</li>
                 <li class="item3" :class="parameter === '/t'? 'in': 'out'">History</li>
                 <li class="item4" :class="parameter === '/ts'? 'in': 'out'" @click="this.$router.push('/ts')">Settings</li>
@@ -53,7 +53,7 @@ export default{
     margin-bottom: 10px;
 }
 nav {
-    
+    min-width: 250px;
     max-width: 250px;
     height: 100%;
     background-color: #ffffff;

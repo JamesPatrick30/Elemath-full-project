@@ -2,9 +2,11 @@
 import api from '@/axios';
 import { Pie } from 'vue-chartjs'
 import VueApexCharts from 'vue3-apexcharts';
+import navbar from './components/navbar.vue';
 export default {
     components: {
-        Pie
+        Pie,
+        navbar,
     },
     data() {
         return {
@@ -67,80 +69,71 @@ export default {
 </script>
 <template>
     <body v-if="user">
-        <nav>
-            <img class="logo" src="/images/logo.jpg" alt="">
-            <ul>
-                <li class="item1">Home</li>
-                <li class="item2">Profile</li>
-                <li>Grade</li>
-                <li class="item3">History</li>
-                <li class="item4" @click="this.$router.push('/ts')">Settings</li>
-            </ul>
-        </nav>
+        <navbar />
         <main>
             <div class="con-m">
-            <div class="header" style="grid-area: header;">
-                <div class="image-contaner">
-                    <img :src="user.profile" alt="">
-                </div>
-                
-                <div class="text-area">
-                    <h3>welcome back. {{ user?.username }}</h3>
-                    <h5>ID : {{ user?._id }}</h5>
-                </div>
-                
-            </div>
-            <div class="body"  style="grid-area: body;">
-                <div class="con-b">
-                    <div id="mode" class="quiz" style="grid-area: quizmode;">
-                        <h1>QUIZ MODE</h1>
+                <div class="header" style="grid-area: header;">
+                    <div class="image-contaner">
+                        <img :src="user.profile" alt="">
                     </div>
-                    <div id="mode" class="windowcard" style="grid-area: windowcard;">
-                        <h1>Window Card</h1>
-                        <img class="teach" src="/images/teach.png" alt="">
+                    
+                    <div class="text-area">
+                        <h3>welcome back. {{ user?.username }}</h3>
+                        <h5>ID : {{ user?._id }}</h5>
                     </div>
-                    <div id="mode" class="challenge" style="grid-area: challenge;">
-                        <h1>Challenge Mode</h1>
+                    
+                </div>
+                <div class="body"  style="grid-area: body;">
+                    <div class="con-b">
+                        <div id="mode" class="quiz" style="grid-area: quizmode;">
+                            <h1>QUIZ MODE</h1>
+                        </div>
+                        <div id="mode" class="windowcard" style="grid-area: windowcard;">
+                            <h1>Window Card</h1>
+                            <img class="teach" src="/images/teach.png" alt="">
+                        </div>
+                        <div id="mode" class="challenge" style="grid-area: challenge;">
+                            <h1>Challenge Mode</h1>
+                        </div>
+                        <div id="mode" class="lesson" style="grid-area: lesson;">
+                            <h1>Lessons</h1>
+                        </div>
                     </div>
-                    <div id="mode" class="lesson" style="grid-area: lesson;">
-                        <h1>Lessons</h1>
+                    
+                </div>
+                <div class="list" style="grid-area: list;">
+                    <h1>Students</h1>
+                    <div class="table-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>LRN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="student in students" :key="student.lrn">
+                                    <td>{{ student.name }}</td>
+                                    <td>{{ student.lrn }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-                
-            </div>
-            <div class="list" style="grid-area: list;">
-                <h1>Students</h1>
-                <div class="table-scroll">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>LRN</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="student in students" :key="student.lrn">
-                                <td>{{ student.name }}</td>
-                                <td>{{ student.lrn }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="statistic" style="grid-area: statistic;">
+                <h3>Class Chart</h3>
+                <div class="con-ch">
+                    <apexChart
+                        class="pie"
+                        type="pie"
+                        :series="pieseries"
+                        :options="pieoption"
+                        width="300"
+                        height="300"
+                    />
                 </div>
-            </div>
-            <div class="statistic" style="grid-area: statistic;">
-            <h3>Class Chart</h3>
-            <div class="con-ch">
-                 <apexChart
-                    class="pie"
-                    type="pie"
-                    :series="pieseries"
-                    :options="pieoption"
-                    width="300"
-                    height="300"
-                 />
-            </div>
-                
-            </div>
+                    
+                </div>
         </div>
         </main>
         
@@ -318,7 +311,7 @@ export default {
 body{
     background-color: rgb(235, 235, 235);
     height: 100vh;
-    width: 100%;
+    width: 100vw;
     display: flex;
 }
 main{
@@ -328,44 +321,5 @@ main{
     align-items: center;
     justify-content: center;
 }
-nav {
-    
-    width: 20%;
-    height: 100%;
-    background-color: #ffffff;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: baseline;
-}
-nav ul {
-    margin-top: 20px;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: 100%;
-    font-family: 'BubbleBody Neue', 'Poppins', sans-serif;
-}
-nav ul li{
-    border-radius: 30px;
-    cursor: pointer;
-    width: 100%;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    text-align: center;
-    justify-content: center;
-    color: #4fc4f7;
-    font-weight: bold;
-    font-family: 'BubbleBody Neue', 'Poppins', sans-serif;
-    transition: 0.3s;
-}
-nav ul li:hover{
-    transition: 0.3s;
-    background-color: #4fc4f7;
-    color: white;
-}
+
 </style>
