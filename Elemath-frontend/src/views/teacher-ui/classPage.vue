@@ -2,7 +2,7 @@
     <body>
         <navbar/>
         <main>
-            <h1 class="title">Class</h1>
+            <h1 class="title">Class </h1>
             <header>
                 <select name="class" id="" class="selectClass">
                     <option value="">asdsd</option>
@@ -18,7 +18,7 @@
                                 <th>firstName</th>
                                 <th>MiddleName</th>
                                 <th>LastName</th>
-                                <th>LRN</th>
+                                <th>LRN <font-awesome-icon :icon="['fas', 'sort']"  @click="sortByLrn()"/></th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -28,7 +28,14 @@
                                 <td>{{ student.middleName }}</td>
                                 <td>{{ student.lastName }}</td>
                                 <td>{{ student.lrn }}</td>
-                                <td><button><font-awesome-icon :icon="['fas', 'user-pen']" />q</button> <button>delete</button></td>
+                                <td>
+                                    <button class="action-btn" id="edit-icon">
+                                        <font-awesome-icon :icon="['fas', 'user-pen']"  class="edit-icon" />
+                                    </button>
+                                    <button class="action-btn" id="trash-icon">
+                                        <font-awesome-icon :icon="['fas', 'trash']" />
+                                    </button>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -64,9 +71,43 @@ export default {
             ],
         };
     },
+    methods:{
+        sortByLrn() {
+            this.students.sort((a, b) => a.lrn.localeCompare(b.lrn));
+        },
+    }
 }
 </script>
 <style scoped>
+#trash-icon{
+    color: #ff0000;
+    font-size: 1.2em;
+    transition: color 0.3s ease;
+}
+#trash-icon:hover {
+    color: white;
+    background-color: #ff0000;
+}
+#edit-icon:hover {
+    background-color: #FFD43B;
+    color: white;
+
+}
+#edit-icon{
+    border-radius: 3px;
+    color: #FFD43B;
+    cursor: pointer;
+    font-size: 1.2em;
+    transition: color 0.3s ease;
+}
+.action-btn{
+    height: fit-content;
+    width: fit-content;
+    margin: 5px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
 .student-list{
     display: flex;
     align-items: center;

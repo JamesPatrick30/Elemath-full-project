@@ -100,7 +100,7 @@ app.post('/refresh-token', verifyRefreshToken, (req, res) => {
             httpOnly: true,
             secure: false, // use true if HTTPS
             sameSite: 'lax',
-            maxAge: 15 * 60 * 1000 // 15 mins
+            maxAge: 100 * 60 * 1000 // 15 mins
         });
         console.log('Access token refreshed');
         res.status(200).json({ message: 'Access token refreshed' });
