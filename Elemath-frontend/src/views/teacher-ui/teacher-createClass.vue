@@ -17,14 +17,17 @@
             </div>
         </main>
     </div>
+    <loading v-else />
 </template>
 <script>
 import api from '@/axios'; // Axios instance
 import navbar from './components/navbar.vue';
+import loading from './components/loading.vue';
 export default {
     name: 'TeacherCreateClass',
     components: {
-        navbar
+        navbar,
+        loading
     },
     
     data() {
