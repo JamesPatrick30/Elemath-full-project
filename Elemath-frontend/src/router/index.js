@@ -10,11 +10,18 @@ import teacberDashboard from '@/views/teacher-ui/teacber-dashboard.vue'
 import teacherCreateClass from '@/views/teacher-ui/teacher-createClass.vue'
 import teacherUi from '@/views/teacher-ui/teacher-ui.vue'
 import questionMaker from '@/views/teacher-ui/questionMaker.vue'
+import classPage from '@/views/teacher-ui/classPage.vue'
 // import GoogleLogin from '@/views/teacher-ui/GoogleLogin.vue'
 import signGoogle from '@/views/signGoogle.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path:'/c',
+      name: 'classPage',
+      component: classPage
+    },
+    
     {
       path: '/',
       name: 'landingpage',
