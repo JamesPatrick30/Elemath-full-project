@@ -45,6 +45,7 @@ router.post('/google', async (req, res) => {
           Email: email,
           username:name,
           profile: picture,
+          googleprofile:picture,
           firstName: firstName,
           middleName: middleName,
           lastName: lastName,
