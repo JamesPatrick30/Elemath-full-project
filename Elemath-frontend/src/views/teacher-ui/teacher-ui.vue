@@ -3,10 +3,12 @@ import api from '@/axios';
 import { Pie } from 'vue-chartjs'
 import VueApexCharts from 'vue3-apexcharts';
 import navbar from './components/navbar.vue';
+import loading from './components/loading.vue';
 export default {
     components: {
         Pie,
         navbar,
+        loading,
     },
     data() {
         return {
@@ -207,6 +209,7 @@ export default {
         </main>
         
     </body>
+    <loading v-else></loading>
 </template>
 <style scoped>
 *{
