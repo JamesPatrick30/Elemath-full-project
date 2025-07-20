@@ -92,12 +92,21 @@ export default {
             console.log(img)
         },
         async saveProfile(){
+            const btn = document.getElementsByClassName('btn-saveProfile');
+            btn.disabled = true;
+
+
+
             try{
-                const res = await api('/teacher/changeProfile',{
+                const res = await api.post('/teacher/changeProfile',{
                     profile:this.currentProfile
                 })
                 alert('save!');
                 await this.getData();
+                console.log(res.data.message);
+                const con = document.getElementsByClassName('profile-outer')[0];
+                con.style.display = 'none'; // or 'block', 'flex', etc.
+                btn.disabled = false;
             }catch(err){
                 console.log('Error is :' + err)
             }
@@ -115,6 +124,7 @@ export default {
         <div class="profile-con">
             <div class="profile">
                 <img :src="currentProfile" alt="">
+                <button @click="saveProfile()" class="btn-saveProfile">Save</button>
             </div>
             <div class="characters">
                 <div class="character" @click="changeProfile(user?.googleprofile)" >
@@ -222,6 +232,10 @@ export default {
 .characters .character img:hover{
     transform: scale(1.2);
     transition: 0.3s;
+}
+.profile{
+    display: flex;
+    flex-direction: column;
 }
 .profile img{
     border-radius: 50%;

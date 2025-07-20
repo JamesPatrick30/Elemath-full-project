@@ -172,3 +172,25 @@ app.get('/data/teacher', verifyRefreshToken, async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+app.post('/teacher/changeProfile',auth,async(req,res)=>{
+  const {profile} = req.body;
+
+  const user = await teacher_accoount.findOne({_id:req.user.id});
+
+  if (!user) { return res.status(404).json({message: 'user not found'}); }
+  try{
+
+    await teacher_accoount.updateOne(
+        { _id : req.user.id },
+        {$set : { profile : profile}}
+      );
+    
+    return res.json({message:'done'})
+  }catch(err){
+    console.log('error is : '+ err);
+  }
+  
+
+
+
+})
