@@ -47,9 +47,8 @@ export default {
                 { name: 'takos', image: '/characters/takos.png'},
                 { name: 'think', image: '/characters/think.png'},
                 { name: 'yellow', image: '/characters/yellow.png'},
-               
-                
-            ],
+               ],
+               currentProfile: ''
         };
     },
     methods: {
@@ -81,6 +80,27 @@ export default {
                     alert('Failed to refresh token. Please try again later.');
                 }
             }
+        },
+        picCharacter(){
+            const con = document.getElementsByClassName('profile-outer')[0];
+            con.style.display = 'flex'; // or 'block', 'flex', etc.
+            this.currentProfile = this.user.profile
+            console.log('click');
+        },
+        changeProfile(img){
+            this.currentProfile=img;
+            console.log(img)
+        },
+        async saveProfile(){
+            try{
+                const res = await api('/teacher/changeProfile',{
+                    profile:this.currentProfile
+                })
+                alert('save!');
+                await this.getData();
+            }catch(err){
+                console.log('Error is :' + err)
+            }
         }
     },
     mounted() {
@@ -94,13 +114,13 @@ export default {
     <div class="profile-outer">
         <div class="profile-con">
             <div class="profile">
-                <img :src="user?.profile" alt="">
+                <img :src="currentProfile" alt="">
             </div>
             <div class="characters">
-                <div class="character" >
-                    <img :src="user?.profile" alt="">
+                <div class="character" @click="changeProfile(user?.googleprofile)" >
+                    <img :src="user?.googleprofile" alt="">
                 </div>
-                <div class="character" v-for="character in characters" :key="character.image">
+                <div class="character" v-for="character in characters" :key="character.image" @click="changeProfile(character.image)">
                     <img :src="character.image" alt="">
                 </div>
             </div>
@@ -111,9 +131,9 @@ export default {
         <main>
             <div class="con-m">
                 <div class="header" style="grid-area: header;">
-                    <div class="image-contaner">
+                    <div class="image-contaner" @click="picCharacter()">
                         <!-- <img :src="user.profile" alt=""> -->
-                         <img src="/characters/robot.png" alt="">
+                         <img :src="user?.profile" alt="profile">
                     </div>
                     
                     <div class="text-area">
@@ -222,10 +242,11 @@ export default {
     z-index: 1000;
 }
 .profile-outer{
- 
+
+    display: none;
     height: 100vh;
     width: 100vw;
-    display: none;
+    
     align-items: center;
     justify-content: center;
     background-color: rgba(0, 0, 0, 0.5);
@@ -292,9 +313,9 @@ export default {
     border-radius: 20px;
 }
 .teach{
-    z-index: 1;
+    /* z-index: 1; */
     position: relative;
-    left: 150px;
+    left: 110px;
     bottom: 100px;
     height: 250px;
     width: auto;
@@ -308,6 +329,7 @@ export default {
     transition: 0.1s linear;
 }
 .image-contaner{
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: end;
@@ -336,7 +358,7 @@ export default {
 .lesson{
     color: white;
     background-color: #dc7556;
-    padding: 20px;
+    padding: 10px;
     border-radius: 20px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 
@@ -345,7 +367,7 @@ export default {
 .challenge{
     color: white;
     background-color: #e7bb41;
-    padding: 20px;
+    padding: 10px;
     border-radius: 20px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 
@@ -354,7 +376,7 @@ export default {
 .quiz{
     color: white;
     background-color: #2a713d;
-    padding: 20px;
+    padding: 10px;
     border-radius: 20px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 
@@ -362,7 +384,7 @@ export default {
 }
 .windowcard{
     color: white;
-    padding: 20px;
+    padding: 10px;
     background-color: #2d8bba;
     border-radius: 20px;
        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
@@ -371,7 +393,7 @@ export default {
 }
 
 .body .con-b{
-    height: 90%;
+    height: 60px;
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
