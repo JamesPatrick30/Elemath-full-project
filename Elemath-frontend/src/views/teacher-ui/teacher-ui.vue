@@ -27,7 +27,29 @@ export default {
             pieoption: {
                 labels: ['asf', 'uj0', 'ouh']
             },
-            user:null
+            user:null,
+            characters:[
+                { name: 'robot', image: '/characters/robot.png' },
+                { name: 'berry', image : '/characters/berry.png' },
+                { name: 'blood', image: '/characters/blood.png' },
+                { name: 'dragon', image: '/characters/dragon.png' },
+                { name: 'Ele', image: '/characters/Ele.png' },
+                { name: 'froggy', image: '/characters/froggy.png'},
+                { name: 'green', image: '/characters/green.png'},
+                { name: 'grey', image: '/characters/grey.png'},
+                { name: 'kiss', image: '/characters/kiss.png'},
+                { name: 'lazy', image: '/characters/lazy.png'},
+                { name: 'longneck', image: '/characters/longneck.png'},
+                { name: 'pickel', image: '/characters/pickel.png'},
+                { name: 'rat', image: '/characters/rat.png'},
+                { name: 'robot', image: '/characters/robot.png'},
+                { name: 'slow', image: '/characters/slow.png'},
+                { name: 'takos', image: '/characters/takos.png'},
+                { name: 'think', image: '/characters/think.png'},
+                { name: 'yellow', image: '/characters/yellow.png'},
+               
+                
+            ],
         };
     },
     methods: {
@@ -69,13 +91,29 @@ export default {
 
 </script>
 <template>
+    <div class="profile-outer">
+        <div class="profile-con">
+            <div class="profile">
+                <img :src="user?.profile" alt="">
+            </div>
+            <div class="characters">
+                <div class="character" >
+                    <img :src="user?.profile" alt="">
+                </div>
+                <div class="character" v-for="character in characters" :key="character.image">
+                    <img :src="character.image" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
     <body v-if="user">
         <navbar />
         <main>
             <div class="con-m">
                 <div class="header" style="grid-area: header;">
                     <div class="image-contaner">
-                        <img :src="user.profile" alt="">
+                        <!-- <img :src="user.profile" alt=""> -->
+                         <img src="/characters/robot.png" alt="">
                     </div>
                     
                     <div class="text-area">
@@ -144,6 +182,56 @@ export default {
 *{
     font-family: 'BubbleBody Neue','Poppins', sans-serif;
 }
+.characters{
+    margin-left: 2em;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    min-height: 300px;
+    width: fit-content;
+    border-left: 1px solid #707070;
+    
+    
+}
+.characters .character img{
+    border-radius: 50%;
+    height: 50px;
+    margin-left: 1em;
+    transition: 0.3s;
+    cursor: pointer;
+}
+.characters .character img:hover{
+    transform: scale(1.2);
+    transition: 0.3s;
+}
+.profile img{
+    border-radius: 50%;
+    height: 200px;
+    padding: 50px;
+}
+.profile-outer .profile-con{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    background-color: #282828;
+    border-radius: 20px;
+    min-height: 300px;
+    min-width: 300px;
+    position: relative;
+    padding: 20px;
+    z-index: 1000;
+}
+.profile-outer{
+ 
+    height: 100vh;
+    width: 100vw;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    z-index: 3;
+}
 .logo{
     height: auto;
     width: 100%;
@@ -204,6 +292,7 @@ export default {
     border-radius: 20px;
 }
 .teach{
+    z-index: 1;
     position: relative;
     left: 150px;
     bottom: 100px;
