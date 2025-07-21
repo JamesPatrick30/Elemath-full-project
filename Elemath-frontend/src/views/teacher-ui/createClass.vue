@@ -4,9 +4,9 @@
          <div class="add-student-con">
             <div class="form">
                 <input type="text" placeholder="LRN" v-model="inputlrn">
-                <input type="text" placeholder="First Name">
-                <input type="text" placeholder="Middle Name">
-                <input type="text" placeholder="Last Name">
+                <input type="text" placeholder="First Name" v-model="firstName">
+                <input type="text" placeholder="Middle Name" v-model="middleName">
+                <input type="text" placeholder="Last Name" v-model="lastName">
             </div>
          </div>
          <div class="list">
@@ -88,26 +88,44 @@ export default{
                 { firstName: "Adrian", middleName: "Lee", lastName: "Padilla", lrn: "1000000029", password: "pass151", profile: "/characters/grey.png" },
                 { firstName: "Faith", middleName: "Hope", lastName: "Quinto", lrn: "1000000030", password: "pass152", profile: "/characters/think.png" }
             ],
-            inputlrn:''
+            inputlrn:'',
+            firstName:'',
+            middleName:'',
+            lastName:''
         }
     },
     methods:{
         async findStudent(){
             try{
-                const res = await api('/find-student',{
+                const res = await api.post('/find-student',{
                     lrn: this.inputlrn
                 });
                 console.log(res.data);
+                this.firstName = res.data.firstName;
+                this.middleName = res.data.middlename;
+                this.lastName = res.data.lastName;
+
             }catch(err){
                 console.log('error is :'+ err);
-            }
+                if (err.response) {
+                // Server responded with an error (like 400 or 404)
+                alert(`Error ${err.response.status}: ${err.response.data.message}`);
+                } else if (err.request) {
+                // Request was made but no response
+                alert('No response from server. Please check your connection.');
+                } else {
+                // Other errors (e.g., bad request config)
+                alert('Something went wrong: ' + err.message);
+                }
+                }
         }
     },
    
     watch:{
         inputlrn(newVal) {
-            if (newVal.length === 12) {
-            console.log('out');
+            if (newVal.length <= 12) {
+            console.log(newVal);
+            this.findStudent();
             // You can call other functions here too
             }
         }

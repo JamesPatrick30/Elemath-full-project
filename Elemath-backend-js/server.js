@@ -11,6 +11,7 @@ dotenv.config();
 const client = new OAuth2Client(
   '651051530850-um6g1njmsd7qb1qu56tj5i4843mhkeio.apps.googleusercontent.com'
 );
+const students = require('./models/students.js');
 const teacher_accoount = require('./models/teacher.js');
 const PORT = process.env.PORT || 3000;
 const uri = process.env.MONGODB_URL;
@@ -189,8 +190,13 @@ app.post('/teacher/changeProfile',auth,async(req,res)=>{
   }catch(err){
     console.log('error is : '+ err);
   }
-  
+});
+app.post('/find-student', auth, async (req, res) => {
+  const { lrn } = req.body;
 
+  const student = await students.findOne({ lrn:lrn });
 
+  if (!student) return res.status(404).json({ message: 'Student not found' });
 
-})
+  res.status(200).json(student);
+});
