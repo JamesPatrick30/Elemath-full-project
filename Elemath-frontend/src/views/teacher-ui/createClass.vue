@@ -1,0 +1,249 @@
+<template>
+    <body>
+        <!-- <navbar /> -->
+         <div class="add-student-con">
+            <div class="form">
+                <input type="text" placeholder="LRN" v-model="inputlrn">
+                <input type="text" placeholder="First Name">
+                <input type="text" placeholder="Middle Name">
+                <input type="text" placeholder="Last Name">
+            </div>
+         </div>
+         <div class="list">
+            <div class="table">
+                <div class="table-head">
+                    <div class="thead"><strong>Profile</strong></div>
+                    <div class="thead"><strong>First Name</strong></div>
+                    <div class="thead"><strong>Middle Name</strong></div>
+                    <div class="thead"><strong>Last Name</strong></div>
+                    <div class="thead"><strong>LRN</strong></div>
+                    <div class="thead"><strong>Password</strong></div>
+                    <div class="thead"><strong>Action</strong></div>
+                </div>
+                <div class="table-body">
+                    <div class="tr-body" v-for="student in students" :key="student.lrn">
+                        <div class="tbody" alt="Profile" ><img id="img":src="student.profile" alt="Profile"></div>
+                        <div class="tbody"><p>{{student.firstName}}</p></div>
+                        <div class="tbody"><p>student.</p></div>
+                        <div class="tbody"><p>student.</p></div>
+                        <div class="tbody"><p>student.</p></div>
+                        <div class="tbody"><p>student.</p></div> 
+                        <div class="tbody">
+                            <button class="action-btn" id="edit-icon">
+                                <font-awesome-icon :icon="['fas', 'user-pen']"  style="color: yellow;" />
+                            </button>
+                            <button class="action-btn" id="trash-icon">
+                                <font-awesome-icon :icon="['fas', 'trash']" style="color: red;" />
+                            </button>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            
+
+            
+         </div>
+    </body>
+</template>
+<script>
+import navbar from './components/navbar.vue';
+import api from '@/axios';
+export default{
+    name:'Create Class',
+    components:{
+        navbar
+    },
+    data(){
+        return{
+            students:[
+                { firstName: "Juan", middleName: "Cruz", lastName: "Dela", lrn: "1000000001", password: "pass123", profile: "/characters/robot.png" },
+                { firstName: "Maria", middleName: "Lopez", lastName: "Santos", lrn: "1000000002", password: "pass124", profile: "/characters/berry.png" },
+                { firstName: "Jose", middleName: "Reyes", lastName: "Cruz", lrn: "1000000003", password: "pass125", profile: "/characters/blood.png" },
+                { firstName: "Ana", middleName: "Torres", lastName: "Garcia", lrn: "1000000004", password: "pass126", profile: "/characters/dragon.png" },
+                { firstName: "Mark", middleName: "Evans", lastName: "Dela Cruz", lrn: "1000000005", password: "pass127", profile: "/characters/Ele.png" },
+                { firstName: "Ella", middleName: "Mae", lastName: "Rivera", lrn: "1000000006", password: "pass128", profile: "/characters/froggy.png" },
+                { firstName: "Lucas", middleName: "John", lastName: "Fernandez", lrn: "1000000007", password: "pass129", profile: "/characters/green.png" },
+                { firstName: "Carla", middleName: "Jane", lastName: "Ramos", lrn: "1000000008", password: "pass130", profile: "/characters/grey.png" },
+                { firstName: "Miguel", middleName: "Andres", lastName: "Vega", lrn: "1000000009", password: "pass131", profile: "/characters/kiss.png" },
+                { firstName: "Nina", middleName: "Belle", lastName: "Luna", lrn: "1000000010", password: "pass132", profile: "/characters/lazy.png" },
+                { firstName: "Jude", middleName: "Matthew", lastName: "Ortiz", lrn: "1000000011", password: "pass133", profile: "/characters/longneck.png" },
+                { firstName: "Kyla", middleName: "Rose", lastName: "Santiago", lrn: "1000000012", password: "pass134", profile: "/characters/pickel.png" },
+                { firstName: "Leo", middleName: "Alexander", lastName: "Reyes", lrn: "1000000013", password: "pass135", profile: "/characters/rat.png" },
+                { firstName: "Grace", middleName: "Elaine", lastName: "Martinez", lrn: "1000000014", password: "pass136", profile: "/characters/slow.png" },
+                { firstName: "Jake", middleName: "Michael", lastName: "Domingo", lrn: "1000000015", password: "pass137", profile: "/characters/takos.png" },
+                { firstName: "Sofia", middleName: "Claire", lastName: "Tan", lrn: "1000000016", password: "pass138", profile: "/characters/think.png" },
+                { firstName: "Ivan", middleName: "James", lastName: "Navarro", lrn: "1000000017", password: "pass139", profile: "/characters/yellow.png" },
+                { firstName: "Lara", middleName: "Grace", lastName: "Castro", lrn: "1000000018", password: "pass140", profile: "/characters/blood.png" },
+                { firstName: "Enzo", middleName: "Rafael", lastName: "Solis", lrn: "1000000019", password: "pass141", profile: "/characters/dragon.png" },
+                { firstName: "Bianca", middleName: "Louise", lastName: "Gutierrez", lrn: "1000000020", password: "pass142", profile: "/characters/Ele.png" },
+                { firstName: "Darren", middleName: "Kyle", lastName: "Delos Reyes", lrn: "1000000021", password: "pass143", profile: "/characters/green.png" },
+                { firstName: "Chloe", middleName: "Ann", lastName: "Aguilar", lrn: "1000000022", password: "pass144", profile: "/characters/kiss.png" },
+                { firstName: "Caleb", middleName: "Renz", lastName: "Morales", lrn: "1000000023", password: "pass145", profile: "/characters/robot.png" },
+                { firstName: "Jasmine", middleName: "Ivy", lastName: "Torralba", lrn: "1000000024", password: "pass146", profile: "/characters/froggy.png" },
+                { firstName: "Tristan", middleName: "Paul", lastName: "Serrano", lrn: "1000000025", password: "pass147", profile: "/characters/rat.png" },
+                { firstName: "Andrea", middleName: "Nicole", lastName: "Villanueva", lrn: "1000000026", password: "pass148", profile: "/characters/longneck.png" },
+                { firstName: "Nathan", middleName: "Jay", lastName: "Bautista", lrn: "1000000027", password: "pass149", profile: "/characters/lazy.png" },
+                { firstName: "Camille", middleName: "Joy", lastName: "Rosario", lrn: "1000000028", password: "pass150", profile: "/characters/yellow.png" },
+                { firstName: "Adrian", middleName: "Lee", lastName: "Padilla", lrn: "1000000029", password: "pass151", profile: "/characters/grey.png" },
+                { firstName: "Faith", middleName: "Hope", lastName: "Quinto", lrn: "1000000030", password: "pass152", profile: "/characters/think.png" }
+            ],
+            inputlrn:''
+        }
+    },
+    methods:{
+        async findStudent(){
+            try{
+                const res = await api('/find-student',{
+                    lrn: this.inputlrn
+                });
+                console.log(res.data);
+            }catch(err){
+                console.log('error is :'+ err);
+            }
+        }
+    },
+   
+    watch:{
+        inputlrn(newVal) {
+            if (newVal.length === 12) {
+            console.log('out');
+            // You can call other functions here too
+            }
+        }
+    }
+    
+}
+</script>
+<style scoped>
+.form input:focus{
+    outline: none;
+    border-bottom: 1px solid rgb(100, 193, 255);
+    color: rgb(100, 193, 255);
+}
+.form input{
+    margin-bottom: 10px;
+    height: 40px;
+    width: 80%;
+    outline: none;
+    border: none;
+    border-bottom: 1px solid gray;
+}
+.form{
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 80%;
+    width: 80%;
+}
+.action-btn{
+    height: fit-content;
+    width: fit-content;
+    margin: 5px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+.tr-body:hover {
+  background-color: #299bff;
+}
+
+.highlight-parent {
+  background-color: #3a8bd1; /* light blue, change as needed */
+  transition: background-color 0.2s ease;
+}
+
+#img{
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+}
+.table-body{
+    overflow-y: scroll;
+    scrollbar-width: none;
+    background-color: white;
+    height: inherit;
+}
+.table-body:has(.tbody:hover){
+    background-color: aqua;
+}
+.table-head,.tr-body{
+    
+    display: flex;
+    text-align: center;
+}
+.table-head{
+    height: 50px;
+}
+/* .tbody:hover{
+    background-color: blue;
+} */
+.tbody{
+    height: 55px;
+}
+.thead,.tbody{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: white;
+    width: 100%;
+    border-bottom: 1px solid rgb(141, 141, 141);
+}
+.table{
+    overflow: hidden;
+    border-radius: 20px;
+    height: 90%;
+    width: 90%;
+    background-color: white;
+}
+.table-con{
+    height: 80%;
+    width: 90%;
+    border-radius: 20px;
+    overflow: hidden;
+    background-color: white;
+
+}.table-container {
+  max-height: 300px;
+  overflow-y: auto;
+  display: block;
+}
+
+.student-list-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.student-list-table th,
+.student-list-table td {
+  padding: 8px;
+  text-align: left;
+  border: 1px solid #ccc;
+}
+
+
+.list{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 100%;
+    
+}
+.add-student-con{
+    width: 50%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+body{
+    background-color: rgb(235, 235, 235);
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+}
+</style>

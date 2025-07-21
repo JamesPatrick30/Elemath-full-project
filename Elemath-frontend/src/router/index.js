@@ -11,7 +11,7 @@ import teacherCreateClass from '@/views/teacher-ui/teacher-createClass.vue'
 import teacherUi from '@/views/teacher-ui/teacher-ui.vue'
 import questionMaker from '@/views/teacher-ui/questionMaker.vue'
 import classPage from '@/views/teacher-ui/classPage.vue'
-// import GoogleLogin from '@/views/teacher-ui/GoogleLogin.vue'
+import classCreate from '@/views/teacher-ui/createClass.vue'
 import signGoogle from '@/views/signGoogle.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -77,6 +77,11 @@ const router = createRouter({
       name: 'signGoogle',
       component: signGoogle
     
+    },
+    {
+      path: '/cc',
+      name: 'createClass',
+      component: classCreate
     }
 
   ],
