@@ -46,7 +46,7 @@
                     
                 </div>
                 <div class="footer">
-                        <button><font-awesome-icon icon="fa-regular fa-floppy-disk" />save</button>
+                        <button><font-awesome-icon icon="fa-regular fa-floppy-disk" /> Save</button>
                     </div>
             </div>
             
@@ -147,12 +147,20 @@ export default{
 </script>
 <style scoped>
 .footer button{
+    align-self: center;
+    border: 1px solid #4fc4f7 ;
+    background-color: white;
     width: 100px ;
     height: 30px;
+    margin-right: 10px;
+    border-radius: 5px;
+}
+.footer button:hover{
+    background-color: #4fc4f7;
 }
 .footer{
     background-color: white;
-    height: 30px;
+    height: 40px;
     width: 100%;
     display: flex;
     align-items: center;
