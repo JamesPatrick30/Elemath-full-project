@@ -8,12 +8,13 @@ const mongoose = require('mongoose');
 const { OAuth2Client } = require('google-auth-library');
 const router = express.Router();
 dotenv.config();
-const client = new OAuth2Client(
-  '651051530850-um6g1njmsd7qb1qu56tj5i4843mhkeio.apps.googleusercontent.com'
-);
+// const client = new OAuth2Client(
+//   '651051530850-um6g1njmsd7qb1qu56tj5i4843mhkeio.apps.googleusercontent.com'
+// );
 const students = require('./models/students.js');
 const teacher_accoount = require('./models/teacher.js');
 const classes = require('./models/class.js');
+const StudentClass = require('./models/student.js');
 
 const PORT = process.env.PORT || 3000;
 const uri = process.env.MONGODB_URL;
@@ -241,8 +242,10 @@ app.post('/get/classData',auth,async(req,res)=>{
   try{
     const classIn = await classes.findOne({_id : classId});
     if(!classIn) return res.status(404).json({message: 'class doesnt exist'});
+
+    const list = await StudentClass.find({classId : classId});
     console.log('list :'+classIn);
-    res.status(200).json(classIn);
+    res.status(200).json(list);
   }catch(err){
     console.log(err);
   }

@@ -66,22 +66,22 @@ export default {
             infoMiddleName: '',
             infoLastName: '',
             students: [
-                { firstName: 'John Doe',middleName: 'A.', lastName: 'Smith', lrn: '1234567890', password: 'password123' },
-                { firstName: 'Jane', middleName: 'B.', lastName: 'Doe', lrn: '0987654321', password: 'password456' },
-                { firstName: 'Alice', middleName: 'C.', lastName: 'Johnson', lrn: '1122334455', password: 'password789' },
-                { firstName: 'Bob', middleName: 'D.', lastName: 'Brown', lrn: '5566778899', password: 'password101' },
-                { firstName: 'Charlie', middleName: 'E.', lastName: 'Davis', lrn: '2233445566', password: 'password202' },
-                { firstName: 'David', middleName: 'F.', lastName: 'Garcia', lrn: '7788990011', password: 'password303' },
-                { firstName: 'Eva', middleName: 'G.', lastName: 'Martinez', lrn: '3344556677', password: 'password404' },
-                { firstName: 'Frank', middleName: 'H.', lastName: 'Lopez', lrn: '8899001122', password: 'password505' },
-                { firstName: 'Grace', middleName: 'I.', lastName: 'Wilson', lrn: '4455667788', password: 'password606' },
-                { firstName: 'Henry', middleName: 'J.', lastName: 'Anderson', lrn: '0011223344', password: 'password707' },
-                { firstName: 'Isabella', middleName: 'K.', lastName: 'Thomas', lrn: '6677889900', password: 'password808' },
-                { firstName: 'Jack', middleName: 'L.', lastName: 'Taylor', lrn: '1122334455', password: 'password909' },
-                { firstName: 'Liam', middleName: 'M.', lastName: 'Moore', lrn: '9988776655', password: 'password010' },
-                { firstName: 'Mia', middleName: 'N.', lastName: 'Jackson', lrn: '5566778899', password: 'password111' },
-                { firstName: 'Noah', middleName: 'O.', lastName: 'White', lrn: '2233445566', password: 'password222' },
-                { firstName: 'Olivia', middleName: 'P.', lastName: 'Harris', lrn: '7788990011', password: 'password333' },
+                // { firstName: 'John Doe',middleName: 'A.', lastName: 'Smith', lrn: '1234567890', password: 'password123' },
+                // { firstName: 'Jane', middleName: 'B.', lastName: 'Doe', lrn: '0987654321', password: 'password456' },
+                // { firstName: 'Alice', middleName: 'C.', lastName: 'Johnson', lrn: '1122334455', password: 'password789' },
+                // { firstName: 'Bob', middleName: 'D.', lastName: 'Brown', lrn: '5566778899', password: 'password101' },
+                // { firstName: 'Charlie', middleName: 'E.', lastName: 'Davis', lrn: '2233445566', password: 'password202' },
+                // { firstName: 'David', middleName: 'F.', lastName: 'Garcia', lrn: '7788990011', password: 'password303' },
+                // { firstName: 'Eva', middleName: 'G.', lastName: 'Martinez', lrn: '3344556677', password: 'password404' },
+                // { firstName: 'Frank', middleName: 'H.', lastName: 'Lopez', lrn: '8899001122', password: 'password505' },
+                // { firstName: 'Grace', middleName: 'I.', lastName: 'Wilson', lrn: '4455667788', password: 'password606' },
+                // { firstName: 'Henry', middleName: 'J.', lastName: 'Anderson', lrn: '0011223344', password: 'password707' },
+                // { firstName: 'Isabella', middleName: 'K.', lastName: 'Thomas', lrn: '6677889900', password: 'password808' },
+                // { firstName: 'Jack', middleName: 'L.', lastName: 'Taylor', lrn: '1122334455', password: 'password909' },
+                // { firstName: 'Liam', middleName: 'M.', lastName: 'Moore', lrn: '9988776655', password: 'password010' },
+                // { firstName: 'Mia', middleName: 'N.', lastName: 'Jackson', lrn: '5566778899', password: 'password111' },
+                // { firstName: 'Noah', middleName: 'O.', lastName: 'White', lrn: '2233445566', password: 'password222' },
+                // { firstName: 'Olivia', middleName: 'P.', lastName: 'Harris', lrn: '7788990011', password: 'password333' },
                 
                 
             ],
@@ -98,7 +98,8 @@ export default {
                 const list = await api.post('/get/classData',{
                     classId:classIn
                 });
-                console.log('list : '+list.data._id);
+                console.log('list : '+list.data);
+                this.students = list.data
             }catch(err){
                 console.log(err);
             }
