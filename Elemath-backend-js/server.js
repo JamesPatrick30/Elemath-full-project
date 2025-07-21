@@ -200,3 +200,37 @@ app.post('/find-student', auth, async (req, res) => {
 
   res.status(200).json(student);
 });
+app.post('/admin/trim-students', async (req, res) => {
+  try {
+    const studentsin = await students.find();
+
+    for (let student of studentsin) {
+      let updated = false;
+
+      ['lrn', 'lastName', 'firstName', 'middlename', 'section'].forEach(field => {
+        if (student[field] && typeof student[field] === 'string') {
+          const trimmed = student[field].trim();
+          if (trimmed !== student[field]) {
+            student[field] = trimmed;
+            updated = true;
+          }
+        }
+      });
+
+      if (updated) {
+        try {
+          await student.save();
+        } catch (err) {
+          console.error('Failed to save:', student._id, err);
+        }
+      }
+    }
+
+
+    res.status(200).json({ message: 'All student strings trimmed' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Trimming failed', error });
+  }
+});
+

@@ -3,13 +3,17 @@
         <!-- <navbar /> -->
          <div class="add-student-con">
             <div class="form">
-                <input type="text" placeholder="LRN" v-model="inputlrn">
-                <input type="text" placeholder="First Name" v-model="firstName">
-                <input type="text" placeholder="Middle Name" v-model="middleName">
-                <input type="text" placeholder="Last Name" v-model="lastName">
+                
+
+                <input type="text" placeholder="LRN" v-model="inputlrn" :class="warning? 'not-warning' : 'warning'">
+                <input type="text" class="input" placeholder="First Name" v-model="firstName">
+                <input type="text" class="input" placeholder="Middle Name" v-model="middleName">
+                <input type="text" class="input" placeholder="Last Name" v-model="lastName">
             </div>
          </div>
          <div class="list">
+            <div class="list-con">
+                <h3>Students : {{ students.length }}</h3>
             <div class="table">
                 <div class="table-head">
                     <div class="thead"><strong>Profile</strong></div>
@@ -40,6 +44,8 @@
                     
                 </div>
             </div>
+            </div>
+            
             
 
             
@@ -91,25 +97,27 @@ export default{
             inputlrn:'',
             firstName:'',
             middleName:'',
-            lastName:''
+            lastName:'',
+            warning:true
         }
     },
     methods:{
         async findStudent(){
             try{
                 const res = await api.post('/find-student',{
-                    lrn: this.inputlrn
+                    lrn: this.inputlrn.trim()
                 });
                 console.log(res.data);
                 this.firstName = res.data.firstName;
                 this.middleName = res.data.middlename;
                 this.lastName = res.data.lastName;
-
+                this.warning=true;
             }catch(err){
+                this.warning = false;
                 console.log('error is :'+ err);
                 if (err.response) {
                 // Server responded with an error (like 400 or 404)
-                alert(`Error ${err.response.status}: ${err.response.data.message}`);
+                alert(`${err.response.data.message}`);
                 } else if (err.request) {
                 // Request was made but no response
                 alert('No response from server. Please check your connection.');
@@ -123,7 +131,7 @@ export default{
    
     watch:{
         inputlrn(newVal) {
-            if (newVal.length <= 12) {
+            if (newVal.trim().length === 12) {
             console.log(newVal);
             this.findStudent();
             // You can call other functions here too
@@ -134,12 +142,33 @@ export default{
 }
 </script>
 <style scoped>
-.form input:focus{
+.list-con{
+    height: 90%;
+    width: 95%;
+}
+.warning{
+     margin-bottom: 10px;
+    height: 40px;
+    width: 80%;
+    color: red;
+    outline: none;
+    border: none;
+    border-bottom: 1px solid red;
+}
+.not-warning{
+    margin-bottom: 10px;
+    height: 40px;
+    width: 80%;
+    outline: none;
+    border: none;
+    border-bottom: 1px solid gray;
+}
+.form .input:focus{
     outline: none;
     border-bottom: 1px solid rgb(100, 193, 255);
     color: rgb(100, 193, 255);
 }
-.form input{
+.form .input{
     margin-bottom: 10px;
     height: 40px;
     width: 80%;
@@ -212,9 +241,9 @@ export default{
 }
 .table{
     overflow: hidden;
-    border-radius: 20px;
-    height: 90%;
-    width: 90%;
+    border-radius: 10px;
+    height: inherit;
+    width: inherit;
     background-color: white;
 }
 .table-con{
@@ -245,6 +274,7 @@ export default{
 
 .list{
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 
