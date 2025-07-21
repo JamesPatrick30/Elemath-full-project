@@ -14,7 +14,11 @@ import { faUserPen } from '@fortawesome/free-solid-svg-icons';
 // Add icons to the library
 library.add(faUserPen);
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
+
 library.add(faTrash);
+import { faFloppyDisk } from '@fortawesome/free-regular-svg-icons'; // 👈 your icon
+
+library.add(faFloppyDisk);
 import {faSort} from '@fortawesome/free-solid-svg-icons';
 library.add(faSort);
 import { faUserPlus } from '@fortawesome/free-solid-svg-icons';

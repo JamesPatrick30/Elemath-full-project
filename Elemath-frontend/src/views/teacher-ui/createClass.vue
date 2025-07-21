@@ -14,36 +14,40 @@
          <div class="list">
             <div class="list-con">
                 <h3>Students : {{ students.length }}</h3>
-            <div class="table">
-                <div class="table-head">
-                    <div class="thead"><strong>Profile</strong></div>
-                    <div class="thead"><strong>First Name</strong></div>
-                    <div class="thead"><strong>Middle Name</strong></div>
-                    <div class="thead"><strong>Last Name</strong></div>
-                    <div class="thead"><strong>LRN</strong></div>
-                    <div class="thead"><strong>Password</strong></div>
-                    <div class="thead"><strong>Action</strong></div>
-                </div>
-                <div class="table-body">
-                    <div class="tr-body" v-for="student in students" :key="student.lrn">
-                        <div class="tbody" alt="Profile" ><img id="img":src="student.profile" alt="Profile"></div>
-                        <div class="tbody"><p>{{student.firstName}}</p></div>
-                        <div class="tbody"><p>student.</p></div>
-                        <div class="tbody"><p>student.</p></div>
-                        <div class="tbody"><p>student.</p></div>
-                        <div class="tbody"><p>student.</p></div> 
-                        <div class="tbody">
-                            <button class="action-btn" id="edit-icon">
-                                <font-awesome-icon :icon="['fas', 'user-pen']"  style="color: yellow;" />
-                            </button>
-                            <button class="action-btn" id="trash-icon">
-                                <font-awesome-icon :icon="['fas', 'trash']" style="color: red;" />
-                            </button>
+                <div class="table">
+                    <div class="table-head">
+                        <div class="thead"><strong>Profile</strong></div>
+                        <div class="thead"><strong>First Name</strong></div>
+                        <div class="thead"><strong>Middle Name</strong></div>
+                        <div class="thead"><strong>Last Name</strong></div>
+                        <div class="thead"><strong>LRN</strong></div>
+                        <div class="thead"><strong>Password</strong></div>
+                        <div class="thead"><strong>Action</strong></div>
+                    </div>
+                    <div class="table-body">
+                        <div class="tr-body" v-for="student in students" :key="student.lrn">
+                            <div class="tbody" alt="Profile" ><img id="img":src="student.profile" alt="Profile"></div>
+                            <div class="tbody"><p>{{student.firstName}}</p></div>
+                            <div class="tbody"><p>student.</p></div>
+                            <div class="tbody"><p>student.</p></div>
+                            <div class="tbody"><p>student.</p></div>
+                            <div class="tbody"><p>student.</p></div> 
+                            <div class="tbody">
+                                <button class="action-btn" id="edit-icon">
+                                    <font-awesome-icon :icon="['fas', 'user-pen']"  style="color: yellow;" />
+                                </button>
+                                <button class="action-btn" id="trash-icon">
+                                    <font-awesome-icon :icon="['fas', 'trash']" style="color: red;" />
+                                </button>
+                            </div>
                         </div>
+                        
                     </div>
                     
                 </div>
-            </div>
+                <div class="footer">
+                        <button><font-awesome-icon icon="fa-regular fa-floppy-disk" />save</button>
+                    </div>
             </div>
             
             
@@ -142,7 +146,22 @@ export default{
 }
 </script>
 <style scoped>
+.footer button{
+    width: 100px ;
+    height: 30px;
+}
+.footer{
+    background-color: white;
+    height: 30px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+
+}
 .list-con{
+    border-radius: 10px;
+    background-color: white;
     height: 90%;
     width: 95%;
 }
@@ -223,27 +242,32 @@ export default{
 }
 .table-head{
     height: 50px;
+    background-color: #ccc;
 }
 /* .tbody:hover{
     background-color: blue;
 } */
 .tbody{
     height: 55px;
+    background-color: white;
+}
+.thead{
+    background-color: #ccc;
 }
 .thead,.tbody{
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
-    background-color: white;
+    
     width: 100%;
     border-bottom: 1px solid rgb(141, 141, 141);
 }
 .table{
     overflow: hidden;
-    border-radius: 10px;
-    height: inherit;
-    width: inherit;
+    
+    height: 87%;
+    width: 100%;
     background-color: white;
 }
 .table-con{
