@@ -3,7 +3,7 @@
         <!-- <navbar /> -->
          <div class="add-student-con">
             <div class="form">
-                
+                <h5>ID : {{ classid }}</h5>
 
                 <input type="text" placeholder="LRN" v-model="inputlrn" :class="warning? 'not-warning' : 'warning'">
                 <input type="text" class="input" placeholder="First Name" v-model="firstName">
@@ -66,6 +66,7 @@ export default{
     },
     data(){
         return{
+            classid:this.$route.query.i,
             students:[
                 { firstName: "Juan", middleName: "Cruz", lastName: "Dela", lrn: "1000000001", password: "pass123", profile: "/characters/robot.png" },
                 { firstName: "Maria", middleName: "Lopez", lastName: "Santos", lrn: "1000000002", password: "pass124", profile: "/characters/berry.png" },

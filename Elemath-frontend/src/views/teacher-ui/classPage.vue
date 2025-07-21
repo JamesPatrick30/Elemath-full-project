@@ -4,11 +4,23 @@
         <main>
             <h1 class="title">Class </h1>
             <header>
-                <select name="class" id="" class="selectClass" v-model="classInput" @change="getClassData(classInput)">
-                    <option v-for="classes in user?.class" :key="classes.Class_name" :value="classes.Class_id">{{ classes.Class_name }}</option>
-                    
+                <select
+                    name="class"
+                    class="selectClass"
+                    v-model="selectedClassId"
+                    @change="getClassData(selectedClassId)"
+                    >
+                    <option
+                        v-for="classes in user?.class"
+                        :key="classes.Class_id"
+                        :value="classes.Class_id"
+                    >
+                        {{ classes.Class_name }}
+                    </option>
                 </select>
-                <button class="add-student"><font-awesome-icon icon="fa-solid fa-user-plus" /> Add student</button>
+
+
+                <button class="add-student" @click="goToEditClass()"><font-awesome-icon icon="fa-solid fa-user-plus" /> Add student</button>
             </header>
             <div class="student-list">
                 <div class="student-list-con">
@@ -62,8 +74,10 @@ export default {
     },
     data() {
         return {
+            selectedClassId: null,
+
             classlength: 0,
-            classInput:'',
+            classInput:null,
             user: null,
             infoName: '',
             infoMiddleName: '',
@@ -92,37 +106,54 @@ export default {
         };
     },
     methods:{
+        goToEditClass(){
+            this.$router.push({ name: 'createClass',query: { i: this.selectedClassId } });
+        },
         sortByLrn() {
             this.students.sort((a, b) => a.lrn.localeCompare(b.lrn));
            
         },
-        async getClassData(classIn){
-            try{
-                const list = await api.post('/get/classData',{
-                    classId:classIn
+        async getClassData(classIn) {
+            try {
+                const res = await api.post('/get/classData', {
+                    classId: classIn
                 });
-                console.log('list : '+list.data);
-                this.students = list.data
-            }catch(err){
-                console.log(err);
+
+                console.log('Student list:', res.data);
+                this.students = res.data;
+            } catch (err) {
+                console.error('Error fetching class data:', err);
+                alert('Failed to load class data. Please try again later.');
             }
         },
+
         async getData() {
             try {
                 const res = await api.get('/data/teacher');
                 this.user = res.data;
-                this.classInput = this.user.class[0].Class_name;
-                this.getClassData( this.user.class[0].Class_id);
+
+                // Automatically select the first class if available
+                if (this.user.class && this.user.class.length > 0) {
+                    const firstClass = this.user.class[0];
+                    this.selectedClassId = firstClass.Class_id;
+                    this.classInput = firstClass;
+                    this.getClassData(this.selectedClassId);
+                }
+
+
                 console.log('Data fetched successfully:', res.data);
             } catch (err) {
                 console.error('Error fetching data:', err);
-                if(err.response && err.response.status === 401) {
+                
+                if (err.response?.status === 401) {
                     this.$router.push('/');
                 } else {
-                    alert('Failed to fetch data. Please try again later.');
+                    const msg = err.response?.data?.message || 'Failed to fetch data. Please try again later.';
+                    alert(msg);
                 }
             }
         },
+
         async refreshtoken(){
             try {
                 const res = await api.post('/refresh-token');
