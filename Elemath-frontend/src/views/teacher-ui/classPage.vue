@@ -41,6 +41,9 @@
                             </tr>
                         </tbody>
                     </table>
+                    <div class="nodata" v-if="students.length == 0">
+                        <h1>No student enrolled</h1>
+                    </div>
                 </div>
                 
             </div>
@@ -109,6 +112,7 @@ export default {
                 const res = await api.get('/data/teacher');
                 this.user = res.data;
                 this.classInput = this.user.class[0].Class_name;
+                this.getClassData( this.user.class[0].Class_id);
                 console.log('Data fetched successfully:', res.data);
             } catch (err) {
                 console.error('Error fetching data:', err);
@@ -141,7 +145,14 @@ export default {
 }
 </script>
 <style scoped>
-
+.nodata{
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    height: inherit;
+    /* background-color: #4fc4f7; */
+}
 .add-student{
     background-color: white;
     color: #4fc4f7;
@@ -212,7 +223,8 @@ export default {
     width: 90%;
     height: 90%;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    /* justify-content: center; */
 }
 .student-list-con .student-list-table{
     
