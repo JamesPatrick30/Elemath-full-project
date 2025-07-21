@@ -235,7 +235,18 @@ app.post('/createClass', auth, async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
+app.post('/get/classData',auth,async(req,res)=>{
+  const {classId } = req.body;
 
+  try{
+    const classIn = await classes.findOne({_id : classId});
+    if(!classIn) return res.status(404).json({message: 'class doesnt exist'});
+    console.log('list :'+classIn);
+    res.status(200).json(classIn);
+  }catch(err){
+    console.log(err);
+  }
+})
 app.post('/admin/trim-students', async (req, res) => {
   try {
     const studentsin = await students.find();

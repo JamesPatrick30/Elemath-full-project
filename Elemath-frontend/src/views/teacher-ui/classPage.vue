@@ -4,10 +4,9 @@
         <main>
             <h1 class="title">Class </h1>
             <header>
-                <select name="class" id="" class="selectClass">
-                    <option value="">asdsd</option>
-                    <option value="">asdsd</option>
-                    <option value="">asdsd</option>
+                <select name="class" id="" class="selectClass" v-model="classInput" @change="getClassData(classInput)">
+                    <option v-for="classes in user?.class" :key="classes.Class_name" :value="classes.Class_id">{{ classes.Class_name }}</option>
+                    
                 </select>
                 <button class="add-student"><font-awesome-icon icon="fa-solid fa-user-plus" /> Add student</button>
             </header>
@@ -61,6 +60,7 @@ export default {
     data() {
         return {
             classlength: 0,
+            classInput:'',
             user: null,
             infoName: '',
             infoMiddleName: '',
@@ -85,6 +85,7 @@ export default {
                 
                 
             ],
+            user:null
         };
     },
     methods:{
@@ -92,6 +93,49 @@ export default {
             this.students.sort((a, b) => a.lrn.localeCompare(b.lrn));
            
         },
+        async getClassData(classIn){
+            try{
+                const list = await api.post('/get/classData',{
+                    classId:classIn
+                });
+                console.log('list : '+list.data._id);
+            }catch(err){
+                console.log(err);
+            }
+        },
+        async getData() {
+            try {
+                const res = await api.get('/data/teacher');
+                this.user = res.data;
+                this.classInput = this.user.class[0].Class_name;
+                console.log('Data fetched successfully:', res.data);
+            } catch (err) {
+                console.error('Error fetching data:', err);
+                if(err.response && err.response.status === 401) {
+                    this.$router.push('/');
+                } else {
+                    alert('Failed to fetch data. Please try again later.');
+                }
+            }
+        },
+        async refreshtoken(){
+            try {
+                const res = await api.post('/refresh-token');
+                this.user = res.data;
+                console.log('Token refreshed successfully in class:', res.data);
+                await this.getData();
+            } catch (err) {
+                console.error('Error refreshing token:', err);
+                if(err.response && err.response.status === 401) {
+                    this.$router.push('/');
+                } else {
+                    alert('Failed to refresh token. Please try again later.');
+                }
+            }
+        },
+    },
+    mounted(){
+        this.refreshtoken();
     }
 }
 </script>

@@ -102,7 +102,8 @@ export default{
             firstName:'',
             middleName:'',
             lastName:'',
-            warning:true
+            warning:true,
+            user:null
         }
     },
     methods:{
@@ -129,8 +130,37 @@ export default{
                 // Other errors (e.g., bad request config)
                 alert('Something went wrong: ' + err.message);
                 }
+            }
+        },
+        async getData() {
+            try {
+                const res = await api.get('/data/teacher');
+                this.user = res.data;
+                console.log('Data fetched successfully:', res.data);
+            } catch (err) {
+                console.error('Error fetching data:', err);
+                if(err.response && err.response.status === 401) {
+                    this.$router.push('/');
+                } else {
+                    alert('Failed to fetch data. Please try again later.');
                 }
-        }
+            }
+        },
+        async refreshtoken(){
+            try {
+                const res = await api.post('/refresh-token');
+                this.user = res.data;
+                console.log('Token refreshed successfully in class:', res.data);
+                await this.getData();
+            } catch (err) {
+                console.error('Error refreshing token:', err);
+                if(err.response && err.response.status === 401) {
+                    this.$router.push('/');
+                } else {
+                    alert('Failed to refresh token. Please try again later.');
+                }
+            }
+        },
     },
    
     watch:{
@@ -141,6 +171,10 @@ export default{
             // You can call other functions here too
             }
         }
+    },
+
+    mounted(){
+        this.refreshtoken();
     }
     
 }
