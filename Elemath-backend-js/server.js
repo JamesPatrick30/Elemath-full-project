@@ -236,6 +236,9 @@ app.post('/createClass', auth, async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
+app.post('/enroll-student',auth,async(req,res)=>{
+  const { student} = req.body;
+})
 app.post('/get/classData',auth,async(req,res)=>{
   const {classId } = req.body;
 

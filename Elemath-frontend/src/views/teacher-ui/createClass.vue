@@ -9,6 +9,7 @@
                 <input type="text" class="input" placeholder="First Name" v-model="firstName">
                 <input type="text" class="input" placeholder="Middle Name" v-model="middleName">
                 <input type="text" class="input" placeholder="Last Name" v-model="lastName">
+                <button>Add</button>
             </div>
          </div>
          <div class="list">
