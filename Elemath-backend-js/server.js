@@ -13,6 +13,8 @@ const client = new OAuth2Client(
 );
 const students = require('./models/students.js');
 const teacher_accoount = require('./models/teacher.js');
+const classes = require('./models/class.js');
+
 const PORT = process.env.PORT || 3000;
 const uri = process.env.MONGODB_URL;
 // const jwt = require('jsonwebtoken');
@@ -200,6 +202,40 @@ app.post('/find-student', auth, async (req, res) => {
 
   res.status(200).json(student);
 });
+app.post('/createClass', auth, async (req, res) => {
+  const { ClassName } = req.body;
+
+  try {
+    // 1. Create and save the class
+    const newClass = new classes({
+      Class_name: ClassName,
+      teacherId: req.user.id
+    });
+
+    const savedClass = await newClass.save(); // use await properly
+
+    // 2. Update the teacher's class array with correct structure
+    await teacher_accoount.updateOne(
+      { _id: req.user.id },
+      {
+        $push: {
+          class: {
+            Class_id: savedClass._id.toString(),
+            Class_name: ClassName
+          }
+        }
+      }
+    );
+
+    console.log('Class created and teacher updated.');
+    res.json({ message: 'created' });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 app.post('/admin/trim-students', async (req, res) => {
   try {
     const studentsin = await students.find();

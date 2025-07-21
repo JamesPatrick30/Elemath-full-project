@@ -14,7 +14,7 @@ const teacherSchema = new mongoose.Schema({
   middleName: String,
   lastName: String,
   class:{
-    type:[{ClassScema}],
+    type:[ClassScema],
     default: []
   },
   password: { type: String}

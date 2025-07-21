@@ -3,7 +3,7 @@
         <div class="create">
             <button @click="createClassClusterToggle()">X</button>
             <input type="text" placeholder="Class Name" v-model="className">
-            <button @click="createClass">Create Class</button>
+            <button @click="createClass()">Create Class</button>
         </div>
     </div>
     <div class="body" v-if="user">
@@ -41,8 +41,8 @@ export default {
         // Add methods for handling class creation logic
         async createClass() {
             try {
-                const response = await this.$axios.post('/api/create-class', {
-                    className: this.className,
+                const response = await api.post('/createClass', {
+                    ClassName: this.className,
                 });
                 if (response.status === 200) {
                     // Handle successful class creation, e.g., redirect to class list

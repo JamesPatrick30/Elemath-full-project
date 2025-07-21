@@ -1,10 +1,7 @@
 const mongoose = require('mongoose');
 
 const classSchema = new mongoose.Schema({
-  _id: {
-    type: String, // Example: "Grade6A"
-    required: true
-  },
+  
   Class_name: {
     type: String,
     required: true
