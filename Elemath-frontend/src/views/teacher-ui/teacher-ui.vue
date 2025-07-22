@@ -224,6 +224,16 @@ export default {
 *{
     font-family: 'BubbleBody Neue','Poppins', sans-serif;
 }
+.btn-saveProfile{
+    width: 100px;
+    height: 40px;
+    background-color: greenyellow;
+    color: white;
+    font-weight: 800;
+    border-radius: 10px;
+    border: none;
+    font-size: 15px;
+}
 .characters{
     margin-left: 2em;
     display: grid;
@@ -248,6 +258,8 @@ export default {
 .profile{
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 .profile img{
     border-radius: 50%;
