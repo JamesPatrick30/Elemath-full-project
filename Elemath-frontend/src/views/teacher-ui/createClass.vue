@@ -1,4 +1,21 @@
 <template>
+    <div class="cluster-con" v-if="cluster">
+        <div class="cluster">
+            <div class="cluster-header">
+                <button @click="openCluster(true)" class="btn-cluster-delete"><font-awesome-icon :icon="['fas', 'xmark']" size="lg"/></button>
+                <h1 v-if="editordelete" style="color: #ffda03;">Edit</h1>
+                <h1 v-else style="color: red;">Delete</h1>
+            </div>
+            <div class="cluster-body">
+                <p>lrn</p>
+                <p>First Name</p>
+                <p>Middle Name</p>
+                <p>Last Name</p>
+                <p>Password</p>
+            </div>
+            
+        </div>
+    </div>
     <body>
         <!-- <navbar /> -->
          <div class="add-student-con">
@@ -14,7 +31,7 @@
          </div>
          <div class="list">
             <div class="list-con">
-                <h3 style="color: #4fc4f7;">Students : {{ students.length }}</h3>
+                <h3 style="color: #4fc4f7;">Student Count : {{ students.length }}</h3>
                 <div class="table">
                     <div class="table-head">
                         <div class="thead"><strong>Profile</strong></div>
@@ -35,10 +52,10 @@
                                 <div class="tbody"><p>{{student.lrn}}</p></div>
                                 <div class="tbody"><p>{{student.password}}</p></div> 
                             <div class="tbody">
-                                <button class="action-btn" id="edit-icon">
-                                    <font-awesome-icon :icon="['fas', 'user-pen']"  style="color: yellow;" />
+                                <button class="action-btn" id="edit-icon" @click="openCluster(true)">
+                                    <font-awesome-icon :icon="['fas', 'user-pen']"  style="color:#ffda03;" />
                                 </button>
-                                <button class="action-btn" id="trash-icon">
+                                <button class="action-btn" id="trash-icon" @click="openCluster(false)">
                                     <font-awesome-icon :icon="['fas', 'trash']" style="color: red;" />
                                 </button>
                             </div>
@@ -75,7 +92,8 @@ export default{
             middleName:'',
             lastName:'',
             warning:true,
-            
+            cluster:false,
+            editordelete: true,
             classname: ''
         }
     },
@@ -199,6 +217,10 @@ export default{
                 }
             }
         },
+        openCluster(edit){
+            this.cluster = !this.cluster;
+            this.editordelete = edit;
+        }
     },
    
     watch:{
@@ -213,11 +235,61 @@ export default{
 
     mounted(){
         this.refreshtoken();
+
+        
     }
     
 }
 </script>
 <style scoped>
+.cluster-body p{
+    margin-top: 10px;
+}
+.cluster-body{
+    background-color: #3a8bd1;
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.cluster-header{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.btn-cluster-delete{
+    background-color: transparent;
+    color: red;
+    border: none;
+    align-self: flex-end;
+    justify-self: center;
+    
+}
+.btn-cluster-delete:hover{
+    color: rgb(216, 0, 0);
+}
+.cluster-con{
+    border-radius: 10px;
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.cluster{
+    background-color: white;
+    height: 450px;
+    width: 350px;
+    border-radius: 10px;
+    display: flex;
+    /* align-items: center; */
+     flex-direction: column;
+    /* justify-content: center;   */
+}
 .classname{
     margin-top: 0;
     margin-bottom: 100px;

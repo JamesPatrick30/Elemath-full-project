@@ -17,7 +17,8 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
 library.add(faTrash);
 import { faFloppyDisk } from '@fortawesome/free-regular-svg-icons'; // 👈 your icon
-
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
+library.add(faXmark);
 library.add(faFloppyDisk);
 import {faSort} from '@fortawesome/free-solid-svg-icons';
 library.add(faSort);
