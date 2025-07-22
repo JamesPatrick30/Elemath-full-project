@@ -9,7 +9,7 @@
                 <input type="text" class="input" placeholder="First Name" v-model="firstName">
                 <input type="text" class="input" placeholder="Middle Name" v-model="middleName">
                 <input type="text" class="input" placeholder="Last Name" v-model="lastName">
-                <button>Add</button>
+                <button @click="enrollStudent()">Add</button>
             </div>
          </div>
          <div class="list">
@@ -24,6 +24,7 @@
                         <div class="thead"><strong>LRN</strong></div>
                         <div class="thead"><strong>Password</strong></div>
                         <div class="thead"><strong>Action</strong></div>
+
                     </div>
                     <div class="table-body">
                         <div class="tr-body" v-for="student in students" :key="student.lrn">
@@ -70,35 +71,35 @@ export default{
             classid:this.$route.query.i,
             students:[
                 { firstName: "Juan", middleName: "Cruz", lastName: "Dela", lrn: "1000000001", password: "pass123", profile: "/characters/robot.png" },
-                { firstName: "Maria", middleName: "Lopez", lastName: "Santos", lrn: "1000000002", password: "pass124", profile: "/characters/berry.png" },
-                { firstName: "Jose", middleName: "Reyes", lastName: "Cruz", lrn: "1000000003", password: "pass125", profile: "/characters/blood.png" },
-                { firstName: "Ana", middleName: "Torres", lastName: "Garcia", lrn: "1000000004", password: "pass126", profile: "/characters/dragon.png" },
-                { firstName: "Mark", middleName: "Evans", lastName: "Dela Cruz", lrn: "1000000005", password: "pass127", profile: "/characters/Ele.png" },
-                { firstName: "Ella", middleName: "Mae", lastName: "Rivera", lrn: "1000000006", password: "pass128", profile: "/characters/froggy.png" },
-                { firstName: "Lucas", middleName: "John", lastName: "Fernandez", lrn: "1000000007", password: "pass129", profile: "/characters/green.png" },
-                { firstName: "Carla", middleName: "Jane", lastName: "Ramos", lrn: "1000000008", password: "pass130", profile: "/characters/grey.png" },
-                { firstName: "Miguel", middleName: "Andres", lastName: "Vega", lrn: "1000000009", password: "pass131", profile: "/characters/kiss.png" },
-                { firstName: "Nina", middleName: "Belle", lastName: "Luna", lrn: "1000000010", password: "pass132", profile: "/characters/lazy.png" },
-                { firstName: "Jude", middleName: "Matthew", lastName: "Ortiz", lrn: "1000000011", password: "pass133", profile: "/characters/longneck.png" },
-                { firstName: "Kyla", middleName: "Rose", lastName: "Santiago", lrn: "1000000012", password: "pass134", profile: "/characters/pickel.png" },
-                { firstName: "Leo", middleName: "Alexander", lastName: "Reyes", lrn: "1000000013", password: "pass135", profile: "/characters/rat.png" },
-                { firstName: "Grace", middleName: "Elaine", lastName: "Martinez", lrn: "1000000014", password: "pass136", profile: "/characters/slow.png" },
-                { firstName: "Jake", middleName: "Michael", lastName: "Domingo", lrn: "1000000015", password: "pass137", profile: "/characters/takos.png" },
-                { firstName: "Sofia", middleName: "Claire", lastName: "Tan", lrn: "1000000016", password: "pass138", profile: "/characters/think.png" },
-                { firstName: "Ivan", middleName: "James", lastName: "Navarro", lrn: "1000000017", password: "pass139", profile: "/characters/yellow.png" },
-                { firstName: "Lara", middleName: "Grace", lastName: "Castro", lrn: "1000000018", password: "pass140", profile: "/characters/blood.png" },
-                { firstName: "Enzo", middleName: "Rafael", lastName: "Solis", lrn: "1000000019", password: "pass141", profile: "/characters/dragon.png" },
-                { firstName: "Bianca", middleName: "Louise", lastName: "Gutierrez", lrn: "1000000020", password: "pass142", profile: "/characters/Ele.png" },
-                { firstName: "Darren", middleName: "Kyle", lastName: "Delos Reyes", lrn: "1000000021", password: "pass143", profile: "/characters/green.png" },
-                { firstName: "Chloe", middleName: "Ann", lastName: "Aguilar", lrn: "1000000022", password: "pass144", profile: "/characters/kiss.png" },
-                { firstName: "Caleb", middleName: "Renz", lastName: "Morales", lrn: "1000000023", password: "pass145", profile: "/characters/robot.png" },
-                { firstName: "Jasmine", middleName: "Ivy", lastName: "Torralba", lrn: "1000000024", password: "pass146", profile: "/characters/froggy.png" },
-                { firstName: "Tristan", middleName: "Paul", lastName: "Serrano", lrn: "1000000025", password: "pass147", profile: "/characters/rat.png" },
-                { firstName: "Andrea", middleName: "Nicole", lastName: "Villanueva", lrn: "1000000026", password: "pass148", profile: "/characters/longneck.png" },
-                { firstName: "Nathan", middleName: "Jay", lastName: "Bautista", lrn: "1000000027", password: "pass149", profile: "/characters/lazy.png" },
-                { firstName: "Camille", middleName: "Joy", lastName: "Rosario", lrn: "1000000028", password: "pass150", profile: "/characters/yellow.png" },
-                { firstName: "Adrian", middleName: "Lee", lastName: "Padilla", lrn: "1000000029", password: "pass151", profile: "/characters/grey.png" },
-                { firstName: "Faith", middleName: "Hope", lastName: "Quinto", lrn: "1000000030", password: "pass152", profile: "/characters/think.png" }
+                // { firstName: "Maria", middleName: "Lopez", lastName: "Santos", lrn: "1000000002", password: "pass124", profile: "/characters/berry.png" },
+                // { firstName: "Jose", middleName: "Reyes", lastName: "Cruz", lrn: "1000000003", password: "pass125", profile: "/characters/blood.png" },
+                // { firstName: "Ana", middleName: "Torres", lastName: "Garcia", lrn: "1000000004", password: "pass126", profile: "/characters/dragon.png" },
+                // { firstName: "Mark", middleName: "Evans", lastName: "Dela Cruz", lrn: "1000000005", password: "pass127", profile: "/characters/Ele.png" },
+                // { firstName: "Ella", middleName: "Mae", lastName: "Rivera", lrn: "1000000006", password: "pass128", profile: "/characters/froggy.png" },
+                // { firstName: "Lucas", middleName: "John", lastName: "Fernandez", lrn: "1000000007", password: "pass129", profile: "/characters/green.png" },
+                // { firstName: "Carla", middleName: "Jane", lastName: "Ramos", lrn: "1000000008", password: "pass130", profile: "/characters/grey.png" },
+                // { firstName: "Miguel", middleName: "Andres", lastName: "Vega", lrn: "1000000009", password: "pass131", profile: "/characters/kiss.png" },
+                // { firstName: "Nina", middleName: "Belle", lastName: "Luna", lrn: "1000000010", password: "pass132", profile: "/characters/lazy.png" },
+                // { firstName: "Jude", middleName: "Matthew", lastName: "Ortiz", lrn: "1000000011", password: "pass133", profile: "/characters/longneck.png" },
+                // { firstName: "Kyla", middleName: "Rose", lastName: "Santiago", lrn: "1000000012", password: "pass134", profile: "/characters/pickel.png" },
+                // { firstName: "Leo", middleName: "Alexander", lastName: "Reyes", lrn: "1000000013", password: "pass135", profile: "/characters/rat.png" },
+                // { firstName: "Grace", middleName: "Elaine", lastName: "Martinez", lrn: "1000000014", password: "pass136", profile: "/characters/slow.png" },
+                // { firstName: "Jake", middleName: "Michael", lastName: "Domingo", lrn: "1000000015", password: "pass137", profile: "/characters/takos.png" },
+                // { firstName: "Sofia", middleName: "Claire", lastName: "Tan", lrn: "1000000016", password: "pass138", profile: "/characters/think.png" },
+                // { firstName: "Ivan", middleName: "James", lastName: "Navarro", lrn: "1000000017", password: "pass139", profile: "/characters/yellow.png" },
+                // { firstName: "Lara", middleName: "Grace", lastName: "Castro", lrn: "1000000018", password: "pass140", profile: "/characters/blood.png" },
+                // { firstName: "Enzo", middleName: "Rafael", lastName: "Solis", lrn: "1000000019", password: "pass141", profile: "/characters/dragon.png" },
+                // { firstName: "Bianca", middleName: "Louise", lastName: "Gutierrez", lrn: "1000000020", password: "pass142", profile: "/characters/Ele.png" },
+                // { firstName: "Darren", middleName: "Kyle", lastName: "Delos Reyes", lrn: "1000000021", password: "pass143", profile: "/characters/green.png" },
+                // { firstName: "Chloe", middleName: "Ann", lastName: "Aguilar", lrn: "1000000022", password: "pass144", profile: "/characters/kiss.png" },
+                // { firstName: "Caleb", middleName: "Renz", lastName: "Morales", lrn: "1000000023", password: "pass145", profile: "/characters/robot.png" },
+                // { firstName: "Jasmine", middleName: "Ivy", lastName: "Torralba", lrn: "1000000024", password: "pass146", profile: "/characters/froggy.png" },
+                // { firstName: "Tristan", middleName: "Paul", lastName: "Serrano", lrn: "1000000025", password: "pass147", profile: "/characters/rat.png" },
+                // { firstName: "Andrea", middleName: "Nicole", lastName: "Villanueva", lrn: "1000000026", password: "pass148", profile: "/characters/longneck.png" },
+                // { firstName: "Nathan", middleName: "Jay", lastName: "Bautista", lrn: "1000000027", password: "pass149", profile: "/characters/lazy.png" },
+                // { firstName: "Camille", middleName: "Joy", lastName: "Rosario", lrn: "1000000028", password: "pass150", profile: "/characters/yellow.png" },
+                // { firstName: "Adrian", middleName: "Lee", lastName: "Padilla", lrn: "1000000029", password: "pass151", profile: "/characters/grey.png" },
+                // { firstName: "Faith", middleName: "Hope", lastName: "Quinto", lrn: "1000000030", password: "pass152", profile: "/characters/think.png" }
             ],
             inputlrn:'',
             firstName:'',
@@ -109,6 +110,42 @@ export default{
         }
     },
     methods:{
+        async enrollStudent(){
+            const characters = [
+                '/characters/robot.png' ,
+                '/characters/berry.png' ,
+                '/characters/blood.png',
+                '/characters/dragon.png' ,
+                '/characters/Ele.png' ,
+                '/characters/froggy.png',
+                '/characters/green.png',
+                '/characters/grey.png',
+                '/characters/kiss.png',
+                '/characters/lazy.png',
+                '/characters/longneck.png',
+                '/characters/pickel.png',
+                '/characters/rat.png',
+                '/characters/robot.png',
+                '/characters/slow.png',
+                '/characters/takos.png',
+               '/characters/think.png',
+                '/characters/yellow.png',
+               ];
+            const num = Math.floor(Math.random() * characters.length); // 1 to 100
+            console.log('random : '+num + 'character : '+ characters[num]);
+            try{
+                const res = await api.post('/enroll',{
+                    profile:characters[num],
+                    fname:firstName,
+                    mname:middleName,
+                    lname:lastName,
+                    lrn:inputlrn,
+                    password:inputlrn
+                });
+            }catch(err){
+                console.log(err);
+            }
+        },
         async findStudent(){
             try{
                 const res = await api.post('/find-student',{
