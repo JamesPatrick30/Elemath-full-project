@@ -24,7 +24,7 @@
             </header>
             <div class="student-list">
                 <div class="student-list-con">
-                    <table class="student-list-table">
+                    <!-- <table class="student-list-table">
                         <thead>
                             <tr>
                                 <th>firstName</th>
@@ -37,9 +37,9 @@
                         </thead>
                         <tbody>
                             <tr v-for="student in students" :key="student.lrn">
-                                <td>{{ student.firstName }}</td>
-                                <td>{{ student.middleName }}</td>
-                                <td>{{ student.lastName }}</td>
+                                <td>{{ student.firstname }}</td>
+                                <td>{{ student.middlename }}</td>
+                                <td>{{ student.lastname }}</td>
                                 <td>{{ student.lrn }}</td>
                                 <td>{{ student.password }}</td>
                                 <td>
@@ -52,7 +52,44 @@
                                 </td>
                             </tr>
                         </tbody>
-                    </table>
+                    </table> -->
+                    <div class="table">
+                        <div class="table-head">
+                            <div class="thead"><strong>Profile</strong></div>
+                            <div class="thead"><strong>First Name</strong></div>
+                            <div class="thead"><strong>Middle Name</strong></div>
+                            <div class="thead"><strong>Last Name</strong></div>
+                            <div class="thead"><strong>LRN</strong></div>
+                            <div class="thead"><strong>Password</strong></div>
+                            <div class="thead"><strong>Action</strong></div>
+
+                        </div>
+                        <div class="table-body" v-if="students.length !== 0">
+                            <div class="tr-body" v-for="student in students" :key="student.lrn">
+                                <div class="tbody" alt="Profile" ><img id="img":src="student.profile" alt="Profile"></div>
+                                <div class="tbody"><p>{{student.firstname}}</p></div>
+                                <div class="tbody"><p>{{ student.middlename }}.</p></div>
+                                <div class="tbody"><p>{{student.lastname}}</p></div>
+                                <div class="tbody"><p>{{student.lrn}}</p></div>
+                                <div class="tbody"><p>{{student.password}}</p></div> 
+                                <div class="tbody">
+                                    <button class="action-btn" id="edit-icon">
+                                        <font-awesome-icon :icon="['fas', 'user-pen']"  style="color: yellow;" />
+                                    </button>
+                                    <button class="action-btn" id="trash-icon">
+                                        <font-awesome-icon :icon="['fas', 'trash']" style="color: red;" />
+                                    </button>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        
+                    </div>
+                        <!-- <div class="footer">
+                            <button><font-awesome-icon icon="fa-regular fa-floppy-disk" /> Save</button>
+                        </div> -->
+                    
+              
                     <div class="nodata" v-if="students.length == 0">
                         <h1>No student enrolled</h1>
                     </div>
@@ -83,22 +120,22 @@ export default {
             infoMiddleName: '',
             infoLastName: '',
             students: [
-                // { firstName: 'John Doe',middleName: 'A.', lastName: 'Smith', lrn: '1234567890', password: 'password123' },
-                // { firstName: 'Jane', middleName: 'B.', lastName: 'Doe', lrn: '0987654321', password: 'password456' },
-                // { firstName: 'Alice', middleName: 'C.', lastName: 'Johnson', lrn: '1122334455', password: 'password789' },
-                // { firstName: 'Bob', middleName: 'D.', lastName: 'Brown', lrn: '5566778899', password: 'password101' },
-                // { firstName: 'Charlie', middleName: 'E.', lastName: 'Davis', lrn: '2233445566', password: 'password202' },
-                // { firstName: 'David', middleName: 'F.', lastName: 'Garcia', lrn: '7788990011', password: 'password303' },
-                // { firstName: 'Eva', middleName: 'G.', lastName: 'Martinez', lrn: '3344556677', password: 'password404' },
-                // { firstName: 'Frank', middleName: 'H.', lastName: 'Lopez', lrn: '8899001122', password: 'password505' },
-                // { firstName: 'Grace', middleName: 'I.', lastName: 'Wilson', lrn: '4455667788', password: 'password606' },
-                // { firstName: 'Henry', middleName: 'J.', lastName: 'Anderson', lrn: '0011223344', password: 'password707' },
-                // { firstName: 'Isabella', middleName: 'K.', lastName: 'Thomas', lrn: '6677889900', password: 'password808' },
-                // { firstName: 'Jack', middleName: 'L.', lastName: 'Taylor', lrn: '1122334455', password: 'password909' },
-                // { firstName: 'Liam', middleName: 'M.', lastName: 'Moore', lrn: '9988776655', password: 'password010' },
-                // { firstName: 'Mia', middleName: 'N.', lastName: 'Jackson', lrn: '5566778899', password: 'password111' },
-                // { firstName: 'Noah', middleName: 'O.', lastName: 'White', lrn: '2233445566', password: 'password222' },
-                // { firstName: 'Olivia', middleName: 'P.', lastName: 'Harris', lrn: '7788990011', password: 'password333' },
+                { firstName: 'John Doe',middleName: 'A.', lastName: 'Smith', lrn: '1234567890', password: 'password123' },
+                { firstName: 'Jane', middleName: 'B.', lastName: 'Doe', lrn: '0987654321', password: 'password456' },
+                { firstName: 'Alice', middleName: 'C.', lastName: 'Johnson', lrn: '1122334455', password: 'password789' },
+                { firstName: 'Bob', middleName: 'D.', lastName: 'Brown', lrn: '5566778899', password: 'password101' },
+                { firstName: 'Charlie', middleName: 'E.', lastName: 'Davis', lrn: '2233445566', password: 'password202' },
+                { firstName: 'David', middleName: 'F.', lastName: 'Garcia', lrn: '7788990011', password: 'password303' },
+                { firstName: 'Eva', middleName: 'G.', lastName: 'Martinez', lrn: '3344556677', password: 'password404' },
+                { firstName: 'Frank', middleName: 'H.', lastName: 'Lopez', lrn: '8899001122', password: 'password505' },
+                { firstName: 'Grace', middleName: 'I.', lastName: 'Wilson', lrn: '4455667788', password: 'password606' },
+                { firstName: 'Henry', middleName: 'J.', lastName: 'Anderson', lrn: '0011223344', password: 'password707' },
+                { firstName: 'Isabella', middleName: 'K.', lastName: 'Thomas', lrn: '6677889900', password: 'password808' },
+                { firstName: 'Jack', middleName: 'L.', lastName: 'Taylor', lrn: '1122334455', password: 'password909' },
+                { firstName: 'Liam', middleName: 'M.', lastName: 'Moore', lrn: '9988776655', password: 'password010' },
+                { firstName: 'Mia', middleName: 'N.', lastName: 'Jackson', lrn: '5566778899', password: 'password111' },
+                { firstName: 'Noah', middleName: 'O.', lastName: 'White', lrn: '2233445566', password: 'password222' },
+                { firstName: 'Olivia', middleName: 'P.', lastName: 'Harris', lrn: '7788990011', password: 'password333' },
                 
                 
             ],
@@ -176,6 +213,72 @@ export default {
 }
 </script>
 <style scoped>
+.action-btn{
+    height: fit-content;
+    width: fit-content;
+    margin: 5px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+/* .tr-body:hover {
+  background-color: #299bff;
+} */
+
+.highlight-parent {
+  background-color: #3a8bd1; /* light blue, change as needed */
+  transition: background-color 0.2s ease;
+}
+
+#img{
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+}
+.table-body{
+    overflow-y: scroll;
+    scrollbar-width: none;
+    background-color: white;
+    height: inherit;
+}
+.table-body:has(.tbody:hover){
+    background-color: aqua;
+}
+.table-head,.tr-body{
+    
+    display: flex;
+    text-align: center;
+}
+.table-head{
+    height: 50px;
+    background-color: #ccc;
+}
+/* .tbody:hover{
+    background-color: blue;
+} */
+.tbody{
+    height: 55px;
+    background-color: white;
+}
+.thead{
+    background-color: #ccc;
+}
+.thead,.tbody{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    
+    width: 100%;
+    border-bottom: 1px solid rgb(141, 141, 141);
+}
+.table{
+    overflow: hidden;
+    
+    height: 100%;
+    width: 100%;
+    background-color: white;
+}
 .nodata{
     display: flex;
     justify-content: center;

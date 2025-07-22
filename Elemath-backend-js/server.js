@@ -237,7 +237,41 @@ app.post('/createClass', auth, async (req, res) => {
   }
 });
 app.post('/enroll-student',auth,async(req,res)=>{
-  const { student} = req.body;
+  const { profile, fname, mname, lname, lrn, password, classId, email } = req.body;
+
+  const student = await StudentClass.findOne({lrn:lrn});
+
+  if (student) return res.status(409).json({message: 'Student already enrolled!'});
+  try{
+    const studentenrolled = await StudentClass({
+        profile:profile,
+        firstname:fname,
+        middlename:mname,
+        lastname:lname,
+        lrn:lrn,
+        email:email,
+        password:password,
+        classId:classId
+    });
+
+    const saveStudent = await studentenrolled.save();
+
+    await classes.updateOne(
+      { _id: classId },
+      {
+        $push: {
+          studentIds: saveStudent._id.toString(),
+        }
+      }
+    );
+    console.log('Class created and teacher updated.');
+    res.json({ message: 'created' });
+  }catch(err){
+    console.log(err);
+  }
+  
+
+
 })
 app.post('/get/classData',auth,async(req,res)=>{
   const {classId } = req.body;

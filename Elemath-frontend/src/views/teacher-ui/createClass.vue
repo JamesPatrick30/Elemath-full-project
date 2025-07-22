@@ -29,11 +29,11 @@
                     <div class="table-body">
                         <div class="tr-body" v-for="student in students" :key="student.lrn">
                             <div class="tbody" alt="Profile" ><img id="img":src="student.profile" alt="Profile"></div>
-                            <div class="tbody"><p>{{student.firstName}}</p></div>
-                            <div class="tbody"><p>student.</p></div>
-                            <div class="tbody"><p>student.</p></div>
-                            <div class="tbody"><p>student.</p></div>
-                            <div class="tbody"><p>student.</p></div> 
+                                <div class="tbody"><p>{{student.firstname}}</p></div>
+                                <div class="tbody"><p>{{ student.middlename }}.</p></div>
+                                <div class="tbody"><p>{{student.lastname}}</p></div>
+                                <div class="tbody"><p>{{student.lrn}}</p></div>
+                                <div class="tbody"><p>{{student.password}}</p></div> 
                             <div class="tbody">
                                 <button class="action-btn" id="edit-icon">
                                     <font-awesome-icon :icon="['fas', 'user-pen']"  style="color: yellow;" />
@@ -48,7 +48,7 @@
                     
                 </div>
                 <div class="footer">
-                        <button><font-awesome-icon icon="fa-regular fa-floppy-disk" /> Save</button>
+                        <button class="btn-add"><font-awesome-icon icon="fa-regular fa-floppy-disk" /> Save</button>
                     </div>
             </div>
             
@@ -110,6 +110,19 @@ export default{
         }
     },
     methods:{
+        async getClassData(classIn) {
+            try {
+                const res = await api.post('/get/classData', {
+                    classId: classIn
+                });
+
+                console.log('Student list:', res.data);
+                this.students = res.data;
+            } catch (err) {
+                console.error('Error fetching class data:', err);
+                alert('Failed to load class data. Please try again later.');
+            }
+        },
         async enrollStudent(){
             const characters = [
                 '/characters/robot.png' ,
@@ -134,7 +147,7 @@ export default{
             const num = Math.floor(Math.random() * characters.length); // 1 to 100
             console.log('random : '+num + 'character : '+ characters[num]);
             try{
-                const res = await api.post('/enroll',{
+                const res = await api.post('/enroll-student',{
                     profile:characters[num],
                     fname:this.firstName,
                     mname:this.middleName,
@@ -147,6 +160,7 @@ export default{
                 console.log(res.data);
             }catch(err){
                 console.log(err);
+                alert(err.response.data.message);
             }
         },
         async findStudent(){
@@ -194,6 +208,7 @@ export default{
                 this.user = res.data;
                 console.log('Token refreshed successfully in class:', res.data);
                 await this.getData();
+                await this.getClassData(this.classid);
             } catch (err) {
                 console.error('Error refreshing token:', err);
                 if(err.response && err.response.status === 401) {
@@ -222,6 +237,12 @@ export default{
 }
 </script>
 <style scoped>
+.btn-add{
+    height: 50px;
+    width: 100px;
+    border: none;
+    background-color: #4ff380;
+}
 .footer button{
     align-self: center;
     border: 1px solid #4fc4f7 ;
