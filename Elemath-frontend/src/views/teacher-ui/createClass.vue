@@ -9,7 +9,7 @@
                 <input type="text" class="input" placeholder="First Name" v-model="firstName">
                 <input type="text" class="input" placeholder="Middle Name" v-model="middleName">
                 <input type="text" class="input" placeholder="Last Name" v-model="lastName">
-                <button @click="enrollStudent()">Add</button>
+                <button @click="enrollStudent()" class="btn-add"><font-awesome-icon :icon="['fas', 'user-plus']" /> ADD</button>
             </div>
          </div>
          <div class="list">
@@ -48,7 +48,7 @@
                     
                 </div>
                 <div class="footer">
-                        <button class="btn-add"><font-awesome-icon icon="fa-regular fa-floppy-disk" /> Save</button>
+                        <button @click="this.$router.push({name : 'teacher-ui'})"><font-awesome-icon icon="fa-regular fa-floppy-disk" /> Save</button>
                     </div>
             </div>
             
@@ -70,7 +70,7 @@ export default{
         return{
             classid:this.$route.query.i,
             students:[
-                { firstName: "Juan", middleName: "Cruz", lastName: "Dela", lrn: "1000000001", password: "pass123", profile: "/characters/robot.png" },
+                //{ firstName: "Juan", middleName: "Cruz", lastName: "Dela", lrn: "1000000001", password: "pass123", profile: "/characters/robot.png" },
                 // { firstName: "Maria", middleName: "Lopez", lastName: "Santos", lrn: "1000000002", password: "pass124", profile: "/characters/berry.png" },
                 // { firstName: "Jose", middleName: "Reyes", lastName: "Cruz", lrn: "1000000003", password: "pass125", profile: "/characters/blood.png" },
                 // { firstName: "Ana", middleName: "Torres", lastName: "Garcia", lrn: "1000000004", password: "pass126", profile: "/characters/dragon.png" },
@@ -124,6 +124,10 @@ export default{
             }
         },
         async enrollStudent(){
+            if( !this.inputlrn || !this.firstName || !this.middleName || !this.lastName ){
+                alert('Fill up the form')
+
+            }
             const characters = [
                 '/characters/robot.png' ,
                 '/characters/berry.png' ,
@@ -237,8 +241,14 @@ export default{
 }
 </script>
 <style scoped>
+*{
+    font-family: 'BubbleBody Neue','Poppins', sans-serif;
+}
 .btn-add{
-    height: 50px;
+    border-radius: 5px;
+    color: white;
+    font-weight: 800;
+    height: 40px;
     width: 100px;
     border: none;
     background-color: #4ff380;
