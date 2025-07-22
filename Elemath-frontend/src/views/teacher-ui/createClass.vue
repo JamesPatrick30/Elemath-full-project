@@ -3,8 +3,8 @@
         <!-- <navbar /> -->
          <div class="add-student-con">
             <div class="form">
-                <h5>ID : {{ classid }}</h5>
-
+                <h2 class="title">Add Student</h2>
+                <h4 class="classname">Class Name : {{ classname }}</h4>
                 <input type="text" placeholder="LRN" v-model="inputlrn" :class="warning? 'not-warning' : 'warning'">
                 <input type="text" class="input" placeholder="First Name" v-model="firstName">
                 <input type="text" class="input" placeholder="Middle Name" v-model="middleName">
@@ -14,7 +14,7 @@
          </div>
          <div class="list">
             <div class="list-con">
-                <h3>Students : {{ students.length }}</h3>
+                <h3 style="color: #4fc4f7;">Students : {{ students.length }}</h3>
                 <div class="table">
                     <div class="table-head">
                         <div class="thead"><strong>Profile</strong></div>
@@ -28,7 +28,7 @@
                     </div>
                     <div class="table-body">
                         <div class="tr-body" v-for="student in students" :key="student.lrn">
-                            <div class="tbody" alt="Profile" ><img id="img":src="student.profile" alt="Profile"></div>
+                            <div class="tbody" id="it" alt="Profile" ><img id="img":src="student.profile" alt="Profile"></div>
                                 <div class="tbody"><p>{{student.firstname}}</p></div>
                                 <div class="tbody"><p>{{ student.middlename }}.</p></div>
                                 <div class="tbody"><p>{{student.lastname}}</p></div>
@@ -69,44 +69,14 @@ export default{
     data(){
         return{
             classid:this.$route.query.i,
-            students:[
-                //{ firstName: "Juan", middleName: "Cruz", lastName: "Dela", lrn: "1000000001", password: "pass123", profile: "/characters/robot.png" },
-                // { firstName: "Maria", middleName: "Lopez", lastName: "Santos", lrn: "1000000002", password: "pass124", profile: "/characters/berry.png" },
-                // { firstName: "Jose", middleName: "Reyes", lastName: "Cruz", lrn: "1000000003", password: "pass125", profile: "/characters/blood.png" },
-                // { firstName: "Ana", middleName: "Torres", lastName: "Garcia", lrn: "1000000004", password: "pass126", profile: "/characters/dragon.png" },
-                // { firstName: "Mark", middleName: "Evans", lastName: "Dela Cruz", lrn: "1000000005", password: "pass127", profile: "/characters/Ele.png" },
-                // { firstName: "Ella", middleName: "Mae", lastName: "Rivera", lrn: "1000000006", password: "pass128", profile: "/characters/froggy.png" },
-                // { firstName: "Lucas", middleName: "John", lastName: "Fernandez", lrn: "1000000007", password: "pass129", profile: "/characters/green.png" },
-                // { firstName: "Carla", middleName: "Jane", lastName: "Ramos", lrn: "1000000008", password: "pass130", profile: "/characters/grey.png" },
-                // { firstName: "Miguel", middleName: "Andres", lastName: "Vega", lrn: "1000000009", password: "pass131", profile: "/characters/kiss.png" },
-                // { firstName: "Nina", middleName: "Belle", lastName: "Luna", lrn: "1000000010", password: "pass132", profile: "/characters/lazy.png" },
-                // { firstName: "Jude", middleName: "Matthew", lastName: "Ortiz", lrn: "1000000011", password: "pass133", profile: "/characters/longneck.png" },
-                // { firstName: "Kyla", middleName: "Rose", lastName: "Santiago", lrn: "1000000012", password: "pass134", profile: "/characters/pickel.png" },
-                // { firstName: "Leo", middleName: "Alexander", lastName: "Reyes", lrn: "1000000013", password: "pass135", profile: "/characters/rat.png" },
-                // { firstName: "Grace", middleName: "Elaine", lastName: "Martinez", lrn: "1000000014", password: "pass136", profile: "/characters/slow.png" },
-                // { firstName: "Jake", middleName: "Michael", lastName: "Domingo", lrn: "1000000015", password: "pass137", profile: "/characters/takos.png" },
-                // { firstName: "Sofia", middleName: "Claire", lastName: "Tan", lrn: "1000000016", password: "pass138", profile: "/characters/think.png" },
-                // { firstName: "Ivan", middleName: "James", lastName: "Navarro", lrn: "1000000017", password: "pass139", profile: "/characters/yellow.png" },
-                // { firstName: "Lara", middleName: "Grace", lastName: "Castro", lrn: "1000000018", password: "pass140", profile: "/characters/blood.png" },
-                // { firstName: "Enzo", middleName: "Rafael", lastName: "Solis", lrn: "1000000019", password: "pass141", profile: "/characters/dragon.png" },
-                // { firstName: "Bianca", middleName: "Louise", lastName: "Gutierrez", lrn: "1000000020", password: "pass142", profile: "/characters/Ele.png" },
-                // { firstName: "Darren", middleName: "Kyle", lastName: "Delos Reyes", lrn: "1000000021", password: "pass143", profile: "/characters/green.png" },
-                // { firstName: "Chloe", middleName: "Ann", lastName: "Aguilar", lrn: "1000000022", password: "pass144", profile: "/characters/kiss.png" },
-                // { firstName: "Caleb", middleName: "Renz", lastName: "Morales", lrn: "1000000023", password: "pass145", profile: "/characters/robot.png" },
-                // { firstName: "Jasmine", middleName: "Ivy", lastName: "Torralba", lrn: "1000000024", password: "pass146", profile: "/characters/froggy.png" },
-                // { firstName: "Tristan", middleName: "Paul", lastName: "Serrano", lrn: "1000000025", password: "pass147", profile: "/characters/rat.png" },
-                // { firstName: "Andrea", middleName: "Nicole", lastName: "Villanueva", lrn: "1000000026", password: "pass148", profile: "/characters/longneck.png" },
-                // { firstName: "Nathan", middleName: "Jay", lastName: "Bautista", lrn: "1000000027", password: "pass149", profile: "/characters/lazy.png" },
-                // { firstName: "Camille", middleName: "Joy", lastName: "Rosario", lrn: "1000000028", password: "pass150", profile: "/characters/yellow.png" },
-                // { firstName: "Adrian", middleName: "Lee", lastName: "Padilla", lrn: "1000000029", password: "pass151", profile: "/characters/grey.png" },
-                // { firstName: "Faith", middleName: "Hope", lastName: "Quinto", lrn: "1000000030", password: "pass152", profile: "/characters/think.png" }
-            ],
+            students:[],
             inputlrn:'',
             firstName:'',
             middleName:'',
             lastName:'',
             warning:true,
-            user:null
+            
+            classname: ''
         }
     },
     methods:{
@@ -199,23 +169,25 @@ export default{
         },
         async getData() {
             try {
-                const res = await api.get('/data/teacher');
-                this.user = res.data;
-                console.log('Data fetched successfully:', res.data);
+                const res = await api.post('/data/teacher/classname',{
+                    classid:this.classid
+                });
+                // this.user = res.data;
+                this.classname = res.data.classname;
             } catch (err) {
                 console.error('Error fetching data:', err);
                 if(err.response && err.response.status === 401) {
                     this.$router.push('/');
                 } else {
-                    alert('Failed to fetch data. Please try again later.');
+                    alert(err.response.data.message);
                 }
             }
         },
         async refreshtoken(){
             try {
                 const res = await api.post('/refresh-token');
-                this.user = res.data;
-                console.log('Token refreshed successfully in class:', res.data);
+                // this.user = res.data;
+                // console.log('Token refreshed successfully in class:', res.data);
                 await this.getData();
                 await this.getClassData(this.classid);
             } catch (err) {
@@ -246,6 +218,17 @@ export default{
 }
 </script>
 <style scoped>
+.classname{
+    margin-top: 0;
+    margin-bottom: 100px;
+    color: #4fc4f7;
+}
+.title{
+    font-weight: 800;
+    font-size: 30px;
+    margin-bottom: 0;
+    color: #4fc4f7;
+}
 *{
     font-family: 'BubbleBody Neue','Poppins', sans-serif;
 }
@@ -257,6 +240,12 @@ export default{
     width: 100px;
     border: none;
     background-color: #4ff380;
+    transition: 0.3s;
+}
+.btn-add:hover{
+    background-color: #6ae990;
+    transform: scale(1.1);
+    transition: 0.3s;
 }
 .footer button{
     align-self: center;
@@ -354,7 +343,7 @@ export default{
     background-color: white;
     height: inherit;
 }
-.tbody:has(.tbody:hover){
+#it:has(.tbody:hover){
     background-color: aqua;
 }
 .table-head,.tr-body{
@@ -363,18 +352,20 @@ export default{
     text-align: center;
 }
 .table-head{
+    background-color: #4fc4f7;
     height: 50px;
-    background-color: #ccc;
+    color: #ccc;
 }
 /* .tbody:hover{
     background-color: blue;
 } */
 .tbody{
     height: 55px;
-    background-color: white;
+    /* background-color: white; */
 }
 .thead{
-    background-color: #ccc;
+    background-color: #4fc4f7;
+    color: white;
 }
 .thead,.tbody{
     display: flex;
@@ -435,9 +426,21 @@ export default{
     align-items: center;
 }
 body{
-    background-color: rgb(235, 235, 235);
+    /* background-color: rgb(235, 235, 235); */
     height: 100vh;
     width: 100vw;
     display: flex;
+}
+body::before {
+    z-index: -1;
+    background-image: url('/images/bg.png');
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
 }
 </style>

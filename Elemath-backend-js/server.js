@@ -286,6 +286,16 @@ app.post('/get/classData',auth,async(req,res)=>{
   }catch(err){
     console.log(err);
   }
+});
+
+app.post('/data/teacher/classname',auth,async (req,res)=>{
+  const { classid } = req.body;
+  console.log(classid);
+  const classvar = await classes.findById(classid);
+
+  if(!classvar) return res.status(404).json({message : 'Class not exist'});
+
+  res.status(200).json({classname: classvar.Class_name});
 })
 app.post('/admin/trim-students', async (req, res) => {
   try {
@@ -320,4 +330,3 @@ app.post('/admin/trim-students', async (req, res) => {
     res.status(500).json({ message: 'Trimming failed', error });
   }
 });
-
