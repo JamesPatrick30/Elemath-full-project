@@ -298,6 +298,7 @@ export default{
     border-bottom: 1px solid gray;
 }
 .form .input:focus{
+
     outline: none;
     border-bottom: 1px solid rgb(100, 193, 255);
     color: rgb(100, 193, 255);
@@ -311,6 +312,7 @@ export default{
     border-bottom: 1px solid gray;
 }
 .form{
+    border-radius: 10px;
     background-color: white;
     display: flex;
     align-items: center;
@@ -327,9 +329,9 @@ export default{
     border: none;
     cursor: pointer;
 }
-.tr-body:hover {
+/* .tr-body:hover {
   background-color: #299bff;
-}
+} */
 
 .highlight-parent {
   background-color: #3a8bd1; /* light blue, change as needed */
@@ -347,7 +349,7 @@ export default{
     background-color: white;
     height: inherit;
 }
-.table-body:has(.tbody:hover){
+.tbody:has(.tbody:hover){
     background-color: aqua;
 }
 .table-head,.tr-body{
