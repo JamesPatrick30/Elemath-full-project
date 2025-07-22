@@ -1,4 +1,7 @@
 <template>
+    <div class="loading-con" v-if="loading">
+        <div class="loading"></div>
+    </div>
     <div class="cluster-con" v-if="cluster">
         <div class="cluster">
             <div class="cluster-header">
@@ -8,7 +11,7 @@
             </div>
             <div class="cluster-body">
                 <p>lrn</p>
-                <p>First Name</p>
+                <p>First Name : {{ ename }}</p>
                 <p>Middle Name</p>
                 <p>Last Name</p>
                 <p>Password</p>
@@ -26,7 +29,7 @@
                 <input type="text" class="input" placeholder="First Name" v-model="firstName">
                 <input type="text" class="input" placeholder="Middle Name" v-model="middleName">
                 <input type="text" class="input" placeholder="Last Name" v-model="lastName">
-                <button @click="enrollStudent()" class="btn-add"><font-awesome-icon :icon="['fas', 'user-plus']" /> ADD</button>
+                <button @click="enrollStudent()" class="btn-add" id="btn-add"><font-awesome-icon :icon="['fas', 'user-plus']" /> ADD</button>
             </div>
          </div>
          <div class="list">
@@ -52,10 +55,10 @@
                                 <div class="tbody"><p>{{student.lrn}}</p></div>
                                 <div class="tbody"><p>{{student.password}}</p></div> 
                             <div class="tbody">
-                                <button class="action-btn" id="edit-icon" @click="openCluster(true)">
+                                <button class="action-btn" id="edit-icon" @click="openCluster(true,student.firstname)">
                                     <font-awesome-icon :icon="['fas', 'user-pen']"  style="color:#ffda03;" />
                                 </button>
-                                <button class="action-btn" id="trash-icon" @click="openCluster(false)">
+                                <button class="action-btn" id="trash-icon" @click="openCluster(false,student.firstname)">
                                     <font-awesome-icon :icon="['fas', 'trash']" style="color: red;" />
                                 </button>
                             </div>
@@ -76,12 +79,14 @@
     </body>
 </template>
 <script>
+import loading from './components/loading.vue';
 import navbar from './components/navbar.vue';
 import api from '@/axios';
 export default{
     name:'Create Class',
     components:{
-        navbar
+        navbar,
+        loading
     },
     data(){
         return{
@@ -94,7 +99,10 @@ export default{
             warning:true,
             cluster:false,
             editordelete: true,
-            classname: ''
+            classname: '',
+            loading:false,
+
+            ename:''
         }
     },
     methods:{
@@ -112,10 +120,14 @@ export default{
             }
         },
         async enrollStudent(){
+            
             if( !this.inputlrn || !this.firstName || !this.middleName || !this.lastName ){
                 alert('Fill up the form')
                 return
             }
+            // const btnadd = document.getElementById('btn-add');
+            // btnadd.disabled = true;
+            this.loading = true;
             const characters = [
                 '/characters/robot.png' ,
                 '/characters/berry.png' ,
@@ -159,6 +171,8 @@ export default{
                 console.log(err);
                 alert(err.response.data.message);
             }
+            // btnadd.disabled = false;
+            this.loading = false;
         },
         async findStudent(){
             try{
@@ -217,9 +231,10 @@ export default{
                 }
             }
         },
-        openCluster(edit){
+        openCluster(edit,fname){
             this.cluster = !this.cluster;
             this.editordelete = edit;
+            this.ename=fname;
         }
     },
    
@@ -242,6 +257,9 @@ export default{
 }
 </script>
 <style scoped>
+loading-con{
+    position: fixed;
+}
 .cluster-body p{
     margin-top: 10px;
 }
@@ -270,7 +288,7 @@ export default{
 .btn-cluster-delete:hover{
     color: rgb(216, 0, 0);
 }
-.cluster-con{
+.cluster-con,.loading-con{
     border-radius: 10px;
     position: fixed;
     height: 100vh;
@@ -433,11 +451,21 @@ export default{
 } */
 .tbody{
     height: 55px;
+    animation: in 1s linear
     /* background-color: white; */
 }
 .thead{
     background-color: #4fc4f7;
     color: white;
+    
+}
+@keyframes in {
+    from{
+        background-color: #6ae990;
+    }
+    to{
+        background-color: white;
+    }
 }
 .thead,.tbody{
     display: flex;
