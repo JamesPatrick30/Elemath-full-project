@@ -136,12 +136,15 @@ export default{
             try{
                 const res = await api.post('/enroll',{
                     profile:characters[num],
-                    fname:firstName,
-                    mname:middleName,
-                    lname:lastName,
-                    lrn:inputlrn,
-                    password:inputlrn
+                    fname:this.firstName,
+                    mname:this.middleName,
+                    lname:this.lastName,
+                    lrn:this.inputlrn,
+                    password:this.inputlrn,
+                    classId:this.classid,
+                    email:''
                 });
+                console.log(res.data);
             }catch(err){
                 console.log(err);
             }
