@@ -126,7 +126,7 @@ export default{
         async enrollStudent(){
             if( !this.inputlrn || !this.firstName || !this.middleName || !this.lastName ){
                 alert('Fill up the form')
-
+                return
             }
             const characters = [
                 '/characters/robot.png' ,
@@ -162,6 +162,11 @@ export default{
                     email:''
                 });
                 console.log(res.data);
+                this.inputlrn='';
+                this.firstName='';
+                this.middleName = '';
+                this.lastName = '';
+                await this.getClassData(this.classid);
             }catch(err){
                 console.log(err);
                 alert(err.response.data.message);

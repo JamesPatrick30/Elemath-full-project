@@ -249,7 +249,7 @@ app.post('/enroll-student',auth,async(req,res)=>{
         middlename:mname,
         lastname:lname,
         lrn:lrn,
-        email:email,
+        email:lrn,
         password:password,
         classId:classId
     });
