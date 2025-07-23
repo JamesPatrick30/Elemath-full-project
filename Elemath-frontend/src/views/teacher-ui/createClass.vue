@@ -25,7 +25,20 @@
     <body>
         <!-- <navbar /> -->
          <div class="add-student-con">
-            <div class="form">
+            <div class="form" v-if="uploadFile">
+                <h2>📤 Upload Student List</h2>
+
+                <form @submit.prevent="uploadFile" enctype="multipart/form-data">
+                <input type="file" @change="handleFileChange" accept=".pdf,.xlsx,.xls" required />
+                <button type="submit">Upload</button>
+                </form>
+
+                <div v-if="uploading" class="progress-bar">
+                <progress :value="progress" max="100"></progress>
+                <p>{{ progress }}%</p>
+                </div>
+            </div>
+            <div class="form" v-else>
                 <h2 class="title">Add Student</h2>
                 <h4 class="classname">Class Name : {{ classname }}</h4>
                 <input type="text" placeholder="LRN" v-model="inputlrn" :class="warning? 'not-warning' : 'warning'">
@@ -106,6 +119,9 @@ export default{
     },
     data(){
         return{
+            selectedFile: null,
+            progress: 0,
+            uploading: false,
             classid:this.$route.query.i,
             students:[],
             inputlrn:'',
@@ -124,7 +140,11 @@ export default{
             elname:'',
             epassword:'',
 
-            Dlrn:''
+            Dlrn:'',
+            uploadFile:true
+
+            ,file:null,
+            progress:null
         }
     },
     methods:{
@@ -282,6 +302,39 @@ export default{
                 alert(err.status.data.message);
             }
             this.loading =false;
+        },
+        handleFileChange(event) {
+        this.selectedFile = event.target.files[0];
+        },
+        async handleUpload() {
+      if (!this.selectedFile) {
+        alert("Please select a file first.");
+        return;
+      }
+
+      const formData = new FormData();
+        formData.append('file', this.selectedFile);
+
+        this.uploading = true;
+        this.progress = 0;
+
+        try {
+            const response = await app.post('/upload', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            },
+            onUploadProgress: (progressEvent) => {
+                this.progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            }
+            });
+
+            this.students = response.data.students || [];
+        } catch (err) {
+            console.error(err);
+            alert("Upload failed.");
+        } finally {
+            this.uploading = false;
+        }
         }
     },
    
@@ -304,6 +357,19 @@ export default{
 }
 </script>
 <style scoped>
+
+.upload-container {
+  padding: 20px;
+  max-width: 600px;
+  margin: auto;
+}
+.progress-bar {
+  margin: 10px 0;
+}
+progress {
+  width: 100%;
+  height: 20px;
+}
 .cluster-footer{
     height: fit-content;
     display: flex ;
