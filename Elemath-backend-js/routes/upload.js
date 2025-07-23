@@ -24,6 +24,34 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
+function extractStudentsFromRow(row) {
+    const tokens = row.trim().split(/\s+/);
+    const students = [];
+    let tempNameParts = [];
+    let currentGrade = null;
+
+    for (let token of tokens) {
+        if (/^\d{12}$/.test(token)) {
+            // We've hit the LRN → finalize the name
+            const lrn = token;
+            const fullName = tempNameParts.join(' ').trim();
+            if (fullName) {
+                students.push({ lrn, fullName });
+            }
+            tempNameParts = [];
+            currentGrade = null; // reset for next student
+        } else if (/^\d{1,2}$/.test(token)) {
+            // Possible grade level (like "9")
+            currentGrade = token;
+        } else {
+            // Likely part of a name
+            tempNameParts.push(token);
+        }
+    }
+
+    return students;
+}
+
 // Upload Route
 router.post('/upload', upload.single('file'), async (req, res) => {
     const {classId}= req.body
@@ -59,59 +87,62 @@ router.post('/upload', upload.single('file'), async (req, res) => {
                 '/characters/yellow.png',
                ];
         
-        
+        const lrns = [];
+
         for (let row of json) {
             for (let cell of row) {
                 const matchLRN = String(cell).match(/^(\d{12})$/); // detect LRN (12 digits)
                 if (matchLRN) {
                     const lrn = matchLRN[1];
+                    const nameRow = row; // Assuming name is on same row
+                    const fullname = nameRow.slice(1).join(' ').trim();
 
-                    const alreadyInDB = await Student.findOne({ lrn });
-
-                    if (alreadyInDB) {
-                        const num = Math.floor(Math.random() * characters.length);
-                        const enrolled = await studentenrolled.findOne({ lrn: lrn });
-                        if(!enrolled){
-                            const studenten_rolled = new studentenrolled({
-                                    profile:characters[num],
-                                    firstname:alreadyInDB.firstName,
-                                    middlename:alreadyInDB.middlename,
-                                    lastname:alreadyInDB.lastName,
-                                    lrn:alreadyInDB.lrn,
-                                    email:alreadyInDB.lrn,
-                                    password:alreadyInDB.lrn,
-                                    classId:classId
-                                });
-                            const puen =await studenten_rolled.save();
-                            await classes.updateOne(
-                                  { _id: classId },
-                                  {
-                                    $push: {
-                                      studentIds: puen._id.toString(),
-                                    }
-                                  }
-                                );
-                            // continue;
-                        }else{
-                            
-                            extractedStudents.push(alreadyInDB);
-                            // const nameRow = row; // Assuming name is on same row
-                            // const fullName = nameRow.slice(1).join(' ').trim(); // after LRN
-
-                            // const nameParts = fullName.match(/^([\w\-']+),\s+([\w\-']+)(?:\s+([\w\-']+))?$/);
-                            // if (nameParts) {
-                            //     const [, lastName, firstName, middleName = ''] = nameParts;
-                            //     ;
-                            // }
-                        }
-                        
-                    }
-
-                    
+                    const nameParts = fullname.match(/^([\w\-']+),\s+([\w\-']+)(?:\s+([\w\-']+))?$/);
+                    console.log('row : '+extractStudentsFromRow(fullname));
+                    lrns.push(lrn);
                 }
             }
         }
-        res.json({ count: extractedStudents.length, students: extractedStudents });
+
+        let fulldata = [];
+        const students = await Student.find({ lrn : { $in : lrns}});
+        const existingLRNs = students.map(s => s.lrn);
+
+        const enrolled = await studentenrolled.find({ lrn : { $in : existingLRNs}});
+
+        const enrolledLRNs = enrolled.map(e => e.lrn);
+
+        // Students that are not yet enrolled
+        const missing = students.filter(student => !enrolledLRNs.includes(student.lrn));
+
+
+        if (missing.length === 0) {
+            console.log('All students are already enrolled');
+            return res.status(204).json({ message: 'All students are already enrolled', enrolled });
+        }
+        for(let student in missing){
+            const num = Math.floor(Math.random() * characters.length);
+            console.log('data : '+student);
+            fulldata.push({
+                profile:characters[num],
+                firstname:missing[student].firstName,
+                middlename:missing[student].middlename,
+                lastname:missing[student].lastName,
+                lrn:missing[student].lrn,
+                email:missing[student].lrn,
+                password:missing[student].lrn,
+                classId:classId
+            });
+        }
+        console.log(fulldata);
+        const inserted = await studentenrolled.insertMany(fulldata);
+        const studentIds = inserted.map(s => s._id);
+
+        await classes.updateOne(
+        { _id: classId },
+        { $push: { studentIds: { $each: studentIds } } }
+        );
+        res.json({ count: extractedStudents.length, students: fulldata });
 
     } catch (err) {
         console.error(err);

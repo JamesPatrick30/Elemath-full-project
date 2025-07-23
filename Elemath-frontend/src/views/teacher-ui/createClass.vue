@@ -352,9 +352,14 @@ export default{
                 
                 // this.students = response.data;
                 console.log('Uploaded students:', response.data);
+                if(response.data.message === 'All students are already enrolled'){
+                    console.log(response.data.enrolled)
+                    return alert(response.data.message);
+                }
                 await this.getClassData(this.classid);
             } catch (err) {
                 console.error(err);
+                
                 alert("Upload failed.");
             } finally {
                 this.uploading = false;
