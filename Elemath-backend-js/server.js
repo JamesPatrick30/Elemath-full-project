@@ -35,6 +35,7 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 
 const passport = require('./security/googleAuth.js'); // <- require your passport config
+const student = require('./models/student.js');
 app.use(passport.initialize());
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -296,7 +297,20 @@ app.post('/data/teacher/classname',auth,async (req,res)=>{
   if(!classvar) return res.status(404).json({message : 'Class not exist'});
 
   res.status(200).json({classname: classvar.Class_name});
-})
+});
+
+app.delete('/remove/student', auth ,async ( req,res )=>{
+  const { lrn } = req.body;
+
+  const student = await StudentClass.findOne({ lrn : lrn });
+
+  if (!student) return res.status(404).json({message : 'student not found'});
+
+  const deletedata = await StudentClass.findOneAndDelete({lrn : lrn});
+
+  console.log(deletedata);
+  res.json({message : 'success'});
+});
 app.post('/admin/trim-students', async (req, res) => {
   try {
     const studentsin = await students.find();

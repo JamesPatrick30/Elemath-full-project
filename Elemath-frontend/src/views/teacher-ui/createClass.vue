@@ -10,12 +10,15 @@
                 <h1 v-else style="color: red;">Delete</h1>
             </div>
             <div class="cluster-body">
-                <p>lrn</p>
-                <p>First Name : {{ ename }}</p>
-                <p>Middle Name</p>
-                <p>Last Name</p>
-                <p>Password</p>
+                <p>lrn {{ elrn }}</p>
+                <p>First Name : {{ efname }}</p>
+                <p>Middle Name : {{ emname }}</p>
+                <p>Last Name : {{ elname }}</p>
+                <p>Password : {{ epassword }}</p>
             </div>
+            <footer class="cluster-footer">
+                <button @click="deletestudent()"><font-awesome-icon :icon="['fas', 'trash']" style="color: white;" /> DELETE</button>
+            </footer>
             
         </div>
     </div>
@@ -55,10 +58,23 @@
                                 <div class="tbody"><p>{{student.lrn}}</p></div>
                                 <div class="tbody"><p>{{student.password}}</p></div> 
                             <div class="tbody">
-                                <button class="action-btn" id="edit-icon" @click="openCluster(true,student.firstname)">
+                                <button class="action-btn" id="edit-icon" @click="openCluster(
+                                        true,
+                                        student.lrn,
+                                        student.firstname,
+                                        student.middlename,
+                                        student.lastname,
+                                        student.password)">
                                     <font-awesome-icon :icon="['fas', 'user-pen']"  style="color:#ffda03;" />
                                 </button>
-                                <button class="action-btn" id="trash-icon" @click="openCluster(false,student.firstname)">
+                                <button class="action-btn" id="trash-icon" 
+                                    @click="openCluster(
+                                        false,
+                                        student.lrn,
+                                        student.firstname,
+                                        student.middlename,
+                                        student.lastname,
+                                        student.password)">
                                     <font-awesome-icon :icon="['fas', 'trash']" style="color: red;" />
                                 </button>
                             </div>
@@ -102,7 +118,13 @@ export default{
             classname: '',
             loading:false,
 
-            ename:''
+            efname:'',
+            elrn:'',
+            emname:'',
+            elname:'',
+            epassword:'',
+
+            Dlrn:''
         }
     },
     methods:{
@@ -231,10 +253,35 @@ export default{
                 }
             }
         },
-        openCluster(edit,fname){
+        openCluster(edit,lrn,fname,mname,lname,password){
             this.cluster = !this.cluster;
             this.editordelete = edit;
-            this.ename=fname;
+            this.efname=fname;
+            this.elrn = lrn;
+            this.emname = mname;
+            this.elname = lname;
+            this.epassword = password
+
+            
+                this.Dlrn = lrn;
+            
+        },
+        async deletestudent(){
+            this.loading = true;
+            this.cluster = false;
+            try{
+                const res = await api.delete('/remove/student',{
+                    data: { lrn: this.Dlrn }
+                });
+
+                console.log(res.data);
+                await this.getClassData(this.classid);
+                
+            }catch(err){
+                console.log(err);
+                alert(err.status.data.message);
+            }
+            this.loading =false;
         }
     },
    
@@ -257,14 +304,32 @@ export default{
 }
 </script>
 <style scoped>
-loading-con{
+.cluster-footer{
+    height: fit-content;
+    display: flex ;
+    justify-content: end;
+    align-items: center;
+}
+.cluster-footer button{
+    border: none;
+    background-color: red;
+    color: white;
+    border-radius: 5px;
+    font-weight: 800;
+    height: 35px;
+    width: 70px;
+    padding: 7px;
+    margin-right:3px;
+    display: flex;
+}
+.loading-con{
     position: fixed;
 }
 .cluster-body p{
     margin-top: 10px;
 }
 .cluster-body{
-    background-color: #3a8bd1;
+
     height: 300px;
     display: flex;
     flex-direction: column;
