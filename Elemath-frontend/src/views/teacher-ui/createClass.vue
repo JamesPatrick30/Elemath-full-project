@@ -28,9 +28,14 @@
             <div class="form" v-if="uploadFile">
                 <h2>📤 Upload Student List</h2>
 
-                <form @submit.prevent="uploadFile" enctype="multipart/form-data">
-                <input type="file" @change="handleFileChange" accept=".pdf,.xlsx,.xls" required />
-                <button type="submit">Upload</button>
+                 <form @submit.prevent="handleUpload" enctype="multipart/form-data">
+                    <input type="file" @change="handleFileChange" accept=".pdf,.xlsx,.xls" required />
+                    <button type="submit">Upload</button>
+
+                    <div v-if="uploading">
+                    Uploading: {{ progress }}%
+                    <progress :value="progress" max="100"></progress>
+                    </div>
                 </form>
 
                 <div v-if="uploading" class="progress-bar">
@@ -120,8 +125,8 @@ export default{
     data(){
         return{
             selectedFile: null,
-            progress: 0,
             uploading: false,
+            progress: 0,
             classid:this.$route.query.i,
             students:[],
             inputlrn:'',
@@ -304,38 +309,43 @@ export default{
             this.loading =false;
         },
         handleFileChange(event) {
-        this.selectedFile = event.target.files[0];
+            this.selectedFile = event.target.files[0];
         },
+
         async handleUpload() {
-      if (!this.selectedFile) {
-        alert("Please select a file first.");
-        return;
-      }
-
-      const formData = new FormData();
-        formData.append('file', this.selectedFile);
-
-        this.uploading = true;
-        this.progress = 0;
-
-        try {
-            const response = await app.post('/upload', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            },
-            onUploadProgress: (progressEvent) => {
-                this.progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            if (!this.selectedFile) {
+                alert("Please select a file first.");
+                return;
             }
-            });
 
-            this.students = response.data.students || [];
-        } catch (err) {
-            console.error(err);
-            alert("Upload failed.");
-        } finally {
-            this.uploading = false;
+            const formData = new FormData();
+            formData.append('file', this.selectedFile);
+            formData.append('classId',this.classid);
+            this.uploading = true;
+            this.progress = 0;
+
+            try {
+                const response = await api.post('/upload', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                },
+                timeout: 20000, // ⏳ Increase timeout to 20 seconds
+                onUploadProgress: (progressEvent) => {
+                    this.progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                }
+                });
+                
+                // this.students = response.data;
+                // console.log('Uploaded students:', response.data);
+                await this.getClassData(this.classid);
+            } catch (err) {
+                console.error(err);
+                alert("Upload failed.");
+            } finally {
+                this.uploading = false;
+            }
         }
-        }
+        
     },
    
     watch:{

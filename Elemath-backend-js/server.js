@@ -1,5 +1,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const multer = require('multer');
+const pdfParse = require('pdf-parse');
+const XLSX = require('xlsx');
+const Tesseract = require('tesseract.js');
+const fs = require('fs');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const app = express();
@@ -49,6 +54,11 @@ mongoose.connect(uri)
   })
   .catch(err => console.error('❌ Connection error:', err));
 // Routes
+const uploadRouter = require('./routes/upload.js');
+
+app.use('/', uploadRouter); // Mount upload route
+
+
 app.use('/', require('./routes/google'));
 app.get('/', (req, res) => {
     res.send('Welcome to the Elemath Backend API');
@@ -344,3 +354,66 @@ app.post('/admin/trim-students', async (req, res) => {
     res.status(500).json({ message: 'Trimming failed', error });
   }
 });
+
+// // Set up Multer
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     const dir = './uploads';
+//     if (!fs.existsSync(dir)) fs.mkdirSync(dir);
+//     cb(null, dir);
+//   },
+//   filename: function (req, file, cb) {
+//     const timestamp = Date.now();
+//     cb(null, `${timestamp}-${file.originalname}`);
+//   }
+// });
+// const upload = multer({ storage });
+
+// app.post('/upload', upload.single('file'), async (req, res) => {
+//   try {
+//     const filePath = req.file.path;
+//     let students = [];
+
+//     if (req.file.mimetype.includes('pdf')) {
+//       const dataBuffer = fs.readFileSync(filePath);
+//       const pdfData = await pdfParse(dataBuffer);
+//       const lines = pdfData.text.split('\n');
+
+//       lines.forEach(line => {
+//         const match = line.match(/(\d{12})\s+(.+?)\s+(Section\s+.+)/i); // Adjust this regex as needed
+//         if (match) {
+//           students.push({
+//             LRN: match[1],
+//             name: match[2].trim(),
+//             section: match[3].trim()
+//           });
+//         }
+//       });
+
+//     } else if (
+//       req.file.mimetype.includes('excel') ||
+//       req.file.originalname.endsWith('.xlsx') ||
+//       req.file.originalname.endsWith('.xls')
+//     ) {
+//       const workbook = XLSX.readFile(filePath);
+//       const sheetName = workbook.SheetNames[0];
+//       const sheet = workbook.Sheets[sheetName];
+//       const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+//       jsonData.forEach((row) => {
+//         if (typeof row[0] === 'number' && String(row[0]).length === 12) {
+//           students.push({
+//             LRN: String(row[0]),
+//             name: row[1] || '',
+//             section: row[2] || ''
+//           });
+//         }
+//       });
+//     }
+
+//     res.json({ students });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ error: 'File processing failed.' });
+//   }
+// });
