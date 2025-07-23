@@ -10,6 +10,8 @@ const studentenrolled = require('../models/student');
 // Multer config
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
+        
+
         const uploadDir = './uploads/';
         if (!fs.existsSync(uploadDir)) {
             fs.mkdirSync(uploadDir);
@@ -24,13 +26,18 @@ const upload = multer({ storage });
 
 // Upload Route
 router.post('/upload', upload.single('file'), async (req, res) => {
+    const {classId}= req.body
+
     try {
+        if (!req.file) {
+        return res.status(400).json({ error: 'No file uploaded' });
+        }
         const workbook = xlsx.readFile(req.file.path);
         const sheetName = workbook.SheetNames[0];
         const sheet = workbook.Sheets[sheetName];
         const json = xlsx.utils.sheet_to_json(sheet, { header: 1 });
 
-        const extractedStudents = [];
+        let extractedStudents = [];
         const characters = [
                 '/characters/robot.png' ,
                 '/characters/berry.png' ,
@@ -52,8 +59,7 @@ router.post('/upload', upload.single('file'), async (req, res) => {
                 '/characters/yellow.png',
                ];
         
-        const {classId}= req.body
-        console.log('class Id : '+classId);
+        
         for (let row of json) {
             for (let cell of row) {
                 const matchLRN = String(cell).match(/^(\d{12})$/); // detect LRN (12 digits)
@@ -63,12 +69,10 @@ router.post('/upload', upload.single('file'), async (req, res) => {
                     const alreadyInDB = await Student.findOne({ lrn });
 
                     if (alreadyInDB) {
-                        console.log(`LRN ${lrn} already exists in DB, skipping...`);
                         const num = Math.floor(Math.random() * characters.length);
-                        const enrolled =await studentenrolled.findOne({lrn:lrn});
-                        console.log(`LRN ${lrn} already exists in DB, skipping...${enrolled}`);
+                        const enrolled = await studentenrolled.findOne({ lrn: lrn });
                         if(!enrolled){
-                            const studenten_rolled = await studentenrolled({
+                            const studenten_rolled = new studentenrolled({
                                     profile:characters[num],
                                     firstname:alreadyInDB.firstName,
                                     middlename:alreadyInDB.middlename,
@@ -79,8 +83,6 @@ router.post('/upload', upload.single('file'), async (req, res) => {
                                     classId:classId
                                 });
                             const puen =await studenten_rolled.save();
-                            console.log('save is student : ',puen);
-
                             await classes.updateOne(
                                   { _id: classId },
                                   {
@@ -89,28 +91,26 @@ router.post('/upload', upload.single('file'), async (req, res) => {
                                     }
                                   }
                                 );
-                            continue;
+                            // continue;
+                        }else{
+                            
+                            extractedStudents.push(alreadyInDB);
+                            // const nameRow = row; // Assuming name is on same row
+                            // const fullName = nameRow.slice(1).join(' ').trim(); // after LRN
+
+                            // const nameParts = fullName.match(/^([\w\-']+),\s+([\w\-']+)(?:\s+([\w\-']+))?$/);
+                            // if (nameParts) {
+                            //     const [, lastName, firstName, middleName = ''] = nameParts;
+                            //     ;
+                            // }
                         }
                         
                     }
 
-                    const nameRow = row; // Assuming name is on same row
-                    const fullName = nameRow.slice(1).join(' ').trim(); // after LRN
-
-                    const nameParts = fullName.match(/^([\w\-']+),\s+([\w\-']+)(?:\s+([\w\-']+))?$/);
-                    if (nameParts) {
-                        const [, lastName, firstName, middleName = ''] = nameParts;
-                        extractedStudents.push({
-                            lrn,
-                            lastName,
-                            firstName,
-                            middlename: middleName
-                        });
-                    }
+                    
                 }
             }
         }
-
         res.json({ count: extractedStudents.length, students: extractedStudents });
 
     } catch (err) {

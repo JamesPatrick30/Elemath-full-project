@@ -25,33 +25,45 @@
     <body>
         <!-- <navbar /> -->
          <div class="add-student-con">
-            <div class="form" v-if="uploadFile">
-                <h2>📤 Upload Student List</h2>
+            <div class="form-con">
+                <div class="form-header">
+                    <button @click="addorupload(false)">add</button>
+                    <button @click="addorupload(true)">upload</button>
+                </div>
+                <div class="form" v-if="uploadFile">
+                
+                    <h2>📤 Upload Student List</h2>
 
-                 <form @submit.prevent="handleUpload" enctype="multipart/form-data">
-                    <input type="file" @change="handleFileChange" accept=".pdf,.xlsx,.xls" required />
-                    <button type="submit">Upload</button>
+                    <form @submit.prevent="handleUpload" enctype="multipart/form-data">
+                        <!-- <label for="moduleFile" class="upload-label">
+                        📄 Upload Module / Lesson File
+                        <input type="file" @change="handleFileChange" accept=".pdf,.xlsx,.xls" required />
+                        </label> -->
+                        <input type="file" @change="handleFileChange" accept=".pdf,.xlsx,.xls" required />
+                        <button type="submit">Upload</button>
 
-                    <div v-if="uploading">
-                    Uploading: {{ progress }}%
+                        <div v-if="uploading">
+                        Uploading: {{ progress }}%
+                        <progress :value="progress" max="100"></progress>
+                        </div>
+                    </form>
+
+                    <!-- <div v-if="uploading" class="progress-bar">
                     <progress :value="progress" max="100"></progress>
-                    </div>
-                </form>
-
-                <div v-if="uploading" class="progress-bar">
-                <progress :value="progress" max="100"></progress>
-                <p>{{ progress }}%</p>
+                    <p>{{ progress }}%</p> -->
+                    <!-- </div> -->
+                </div>
+                <div class="form" v-else>
+                    <h2 class="title">Add Student</h2>
+                    <h4 class="classname">Class Name : {{ classname }}</h4>
+                    <input type="text" placeholder="LRN" v-model="inputlrn" :class="warning? 'not-warning' : 'warning'">
+                    <input type="text" class="input" placeholder="First Name" v-model="firstName">
+                    <input type="text" class="input" placeholder="Middle Name" v-model="middleName">
+                    <input type="text" class="input" placeholder="Last Name" v-model="lastName">
+                    <button @click="enrollStudent()" class="btn-add" id="btn-add"><font-awesome-icon :icon="['fas', 'user-plus']" /> ADD</button>
                 </div>
             </div>
-            <div class="form" v-else>
-                <h2 class="title">Add Student</h2>
-                <h4 class="classname">Class Name : {{ classname }}</h4>
-                <input type="text" placeholder="LRN" v-model="inputlrn" :class="warning? 'not-warning' : 'warning'">
-                <input type="text" class="input" placeholder="First Name" v-model="firstName">
-                <input type="text" class="input" placeholder="Middle Name" v-model="middleName">
-                <input type="text" class="input" placeholder="Last Name" v-model="lastName">
-                <button @click="enrollStudent()" class="btn-add" id="btn-add"><font-awesome-icon :icon="['fas', 'user-plus']" /> ADD</button>
-            </div>
+            
          </div>
          <div class="list">
             <div class="list-con">
@@ -153,6 +165,9 @@ export default{
         }
     },
     methods:{
+        addorupload(up){
+            this.uploadFile =up;
+        },
         async getClassData(classIn) {
             try {
                 const res = await api.post('/get/classData', {
@@ -336,7 +351,7 @@ export default{
                 });
                 
                 // this.students = response.data;
-                // console.log('Uploaded students:', response.data);
+                console.log('Uploaded students:', response.data);
                 await this.getClassData(this.classid);
             } catch (err) {
                 console.error(err);
@@ -367,7 +382,18 @@ export default{
 }
 </script>
 <style scoped>
-
+.form-header{
+    padding: 5px;
+}
+.form-header button{
+    border: none;
+    background-color: white;
+}
+.form-con{
+    border-radius: 5px;
+    background-color: white;
+    height: 600px;
+}
 .upload-container {
   padding: 20px;
   max-width: 600px;
@@ -523,7 +549,7 @@ progress {
     border-bottom: 1px solid gray;
 }
 .form .input:focus{
-
+    
     outline: none;
     border-bottom: 1px solid rgb(100, 193, 255);
     color: rgb(100, 193, 255);
@@ -543,8 +569,10 @@ progress {
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    height: 80%;
-    width: 80%;
+    height: 70%;
+    min-width: 300px;
+    max-width: 300px;
+    /* width: 80%; */
 }
 .action-btn{
     height: fit-content;
@@ -663,6 +691,7 @@ progress {
     width: 50%;
     height: 100%;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 }
