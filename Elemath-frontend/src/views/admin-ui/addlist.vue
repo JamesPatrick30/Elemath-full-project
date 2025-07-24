@@ -1,7 +1,40 @@
 <template>
-    <div class="cluster-enrolled-con">
+    <div class="cluster-enrolled-con" v-if="enrolledcluster">
         <div class="cluster-enroll">
-
+            <header>
+                <button @click="closeEnrolledlist()"><font-awesome-icon :icon="['fas', 'xmark']" size="lg"/></button>
+                <h1>Enrolled previously</h1>
+            </header>
+            
+            <ul class="cluster-list">
+                <li class="item-list" v-for="student in Enrolledpreviously" :key="student.lrn">
+                    <p>Lrn : {{ student.lrn }}</p>
+                    <p>name : {{ student.name }}</p>
+                    <p>firstName : {{ student.firstName }}</p>
+                    <p>middleName : {{ student.middleName }}</p>
+                    <p>lastName : {{ student.lastName }}</p>
+                </li>
+            </ul>
+            
+        </div>
+    </div>
+    <div class="cluster-enrolled-con" v-if="newenrolledcluster">
+        <div class="cluster-enroll">
+            <header>
+                <button @click="closenewEnrolledlist()"><font-awesome-icon :icon="['fas', 'xmark']" size="lg"/></button>
+                <h1>New Students</h1>
+            </header>
+            
+            <ul class="cluster-list">
+                <li class="item-list" v-for="student in newEnrolled" :key="student.lrn">
+                    <p>Lrn : {{ student.lrn }}</p>
+                    <p>name : {{ student.name }}</p>
+                    <p>firstName : {{ student.firstName }}</p>
+                    <p>middleName : {{ student.middleName }}</p>
+                    <p>lastName : {{ student.lastName }}</p>
+                </li>
+            </ul>
+            
         </div>
     </div>
     <body>
@@ -48,9 +81,19 @@ export default{
             selectedFile: null,
             uploading: false,
             progress: 0,
+            enrolledcluster:false,
+            Enrolledpreviously:[],
+            newEnrolled:[],
+            newenrolledcluster: false
         }
     },
     methods:{
+        closenewEnrolledlist(){
+            this.newenrolledcluster=false;
+        },
+        closeEnrolledlist(){
+            this.enrolledcluster=false;
+        },
         handleFileChange(event) {
             this.selectedFile = event.target.files[0];
             if (event) {
@@ -84,6 +127,15 @@ export default{
                 
                 // this.students = response.data;
                 console.log('Uploaded students:', response.data);
+                
+                if(response.data.enrolled.length !== 0){
+                    this.Enrolledpreviously = response.data.enrolled;
+                    this.enrolledcluster = true;
+                }
+                if(response.data.insterted.length !== 0){
+                    this.newEnrolled = response.data.insterted;
+                    this.newenrolledcluster = true;
+                }
                 if(response.data.message === 'All students are already enrolled'){
                     console.log(response.data.enrolled)
                     return alert(response.data.message);
@@ -101,11 +153,56 @@ export default{
 }
 </script>
 <style scoped>
+.item-list{
+    color: white;
+    font-weight: 700;
+    margin-top: 2em;
+    padding: 10px;
+    border-radius: 10px;
+    width: inherit;
+    height: fit-content;
+    background-color: #7ab9fc;
+}
+.cluster-list{
+    list-style: none;
+    width: 90%;
+    height: 80%;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+.cluster-enroll header button{
+    border: none;
+    background-color: transparent;
+    color: red;
+    align-self: flex-end;
+    margin-top: 5px;
+    margin-right: 5px;
+}
+.cluster-enroll header{
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+}
+.cluster-enroll{
+    background-color: white;
+    height: 90%;
+    width: 50%;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 .cluster-enrolled-con{
     position: fixed;
     height: 100vh;
     width: 100vw;
-    background-color: rgb(0, 0, 0,0,5);
+    background-color: rgb(0, 0, 0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
     z-index: 1000;
 }
 body{
