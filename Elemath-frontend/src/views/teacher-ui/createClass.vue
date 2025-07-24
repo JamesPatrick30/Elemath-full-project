@@ -39,7 +39,7 @@
                         📄 Upload Module / Lesson File
                         <input type="file" @change="handleFileChange" accept=".pdf,.xlsx,.xls" required />
                         </label> -->
-                        <input type="file" @change="handleFileChange" accept=".pdf,.xlsx,.xls" required />
+                        <input type="file" @change="handleFileChange" class="upload-label" accept=".pdf,.xlsx,.xls" required />
                         <button type="submit">Upload</button>
 
                         <div v-if="uploading">

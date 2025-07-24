@@ -58,6 +58,9 @@ const uploadRouter = require('./routes/upload.js');
 
 app.use('/', uploadRouter); // Mount upload route
 
+const uploadlist = require('./routes/uploadlist.js');
+
+app.use('/',uploadlist);
 
 app.use('/', require('./routes/google'));
 app.get('/', (req, res) => {

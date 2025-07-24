@@ -24,36 +24,8 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-function extractStudentsFromRow(row) {
-    const tokens = row.trim().split(/\s+/);
-    const students = [];
-    let tempNameParts = [];
-    let currentGrade = null;
-
-    for (let token of tokens) {
-        if (/^\d{12}$/.test(token)) {
-            // We've hit the LRN → finalize the name
-            const lrn = token;
-            const fullName = tempNameParts.join(' ').trim();
-            if (fullName) {
-                students.push({ lrn, fullName });
-            }
-            tempNameParts = [];
-            currentGrade = null; // reset for next student
-        } else if (/^\d{1,2}$/.test(token)) {
-            // Possible grade level (like "9")
-            currentGrade = token;
-        } else {
-            // Likely part of a name
-            tempNameParts.push(token);
-        }
-    }
-
-    return students;
-}
-
 // Upload Route
-router.post('/upload', upload.single('file'), async (req, res) => {
+router.post('/uploadlist', upload.single('file'), async (req, res) => {
     const {classId}= req.body
 
     try {
@@ -124,61 +96,12 @@ router.post('/upload', upload.single('file'), async (req, res) => {
                 lrns.push(lrnFemale[0]);
             }
         }
-        // for (let row of json) {
-        //     for (let cell of row) {
-        //         const matchLRN = String(cell).match(/^(\d{12})$/); // detect LRN (12 digits)
-        //         if (matchLRN) {
-        //             const lrn = matchLRN[1];
-        //             const nameRow = row; // Assuming name is on same row
-        //             const fullname = nameRow.slice(1).join(' ').trim();
 
-        //             const nameParts = fullname.match(/^([\w\-']+),\s+([\w\-']+)(?:\s+([\w\-']+))?$/);
-        //             console.log('row : '+extractStudentsFromRow(fullname));
-        //             lrns.push(lrn);
-        //         }
-        //     }
-        // }
 
-        // let fulldata = [];
-        const studentsfinds = await Student.find({ lrn : { $in : lrns}});
-        // const existingLRNs = studentsfinds.map(s => s.lrn);
 
-        // const enrolled = await studentenrolled.find({ lrn : { $in : existingLRNs}});
+        // const studentsfinds = await Student.find({ lrn : { $in : lrns}});
 
-        // const enrolledLRNs = enrolled.map(e => e.lrn);
-
-        // // Students that are not yet enrolled
-        // const missing = studentsfinds.filter(student => !enrolledLRNs.includes(student.lrn));
-
-        // const notlisted = studentsfinds.filter(student => !students.includes(student.lrn));
-        // if (missing.length === 0) {
-        //     console.log('All students are already enrolled');
-        //     return res.status(204).json({ message: 'All students are already enrolled', enrolled });
-        // }
-        // for(let student in missing){
-        //     const num = Math.floor(Math.random() * characters.length);
-        //     console.log('data : '+student);
-        //     fulldata.push({
-        //         profile:characters[num],
-        //         firstname:missing[student].firstName,
-        //         middlename:missing[student].middlename,
-        //         lastname:missing[student].lastName,
-        //         lrn:missing[student].lrn,
-        //         email:missing[student].lrn,
-        //         password:missing[student].lrn,
-        //         classId:classId
-        //     });
-        // }
-        // // console.log(fulldata);
-        // const inserted = await studentenrolled.insertMany(fulldata);
-        // const studentIds = inserted.map(s => s._id);
-
-        // await classes.updateOne(
-        // { _id: classId },
-        // { $push: { studentIds: { $each: studentIds } } }
-        // );
-        // res.json({ count: extractedStudents.length, students: fulldata });
-        console.log('in the list : '+ studentsfinds);
+        // console.log('in the list : '+ studentsfinds);
         console.log('lrns : ' + lrns);
         console.log('count : '+ students.length);
         res.json({ count:'hehe'});
