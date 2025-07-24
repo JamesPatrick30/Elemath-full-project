@@ -67,6 +67,25 @@
                         </div>
                     </form>
         </div>
+        <div class="list">
+            <div class="list-table">
+                <div class="table-header">
+                    <div class="thead"></div>
+                    <div class="thead"></div>
+                    <div class="thead"></div>
+                    <div class="thead"></div>
+                </div>
+                <div class="table-body">
+                    <div class="tr">
+                        <div class="tbody"></div>
+                        <div class="thead"></div>
+                        <div class="thead"></div>
+                        <div class="thead"></div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
     </body>
     
 </template>
@@ -153,6 +172,27 @@ export default{
 }
 </script>
 <style scoped>
+.form-con{
+
+    width: 25%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+.list-table{
+    height: 90%;
+    width: 90%;
+    background-color: white;
+}
+.list{
+    width: 75%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 .item-list{
     color: white;
     font-weight: 700;
@@ -219,6 +259,9 @@ body{
   color: #333;
 }
 form{
+    background-color: white;
+    height: 90%;
+    width: 90%;
     display: flex;
     flex-direction: column;
 }
