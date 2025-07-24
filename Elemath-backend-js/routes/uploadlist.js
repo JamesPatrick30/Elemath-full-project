@@ -1,13 +1,10 @@
 const multer = require('multer');
 const xlsx = require('xlsx');
-const Student = require('../models/students'); // your student model
-const classes = require('../models/class.js');
 const express = require('express');
 const router = express.Router();
-const path = require('path');
 const fs = require('fs');
-const studentenrolled = require('../models/student');
-// Multer config
+
+const studentdb = require('../models/studentlist');
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         
@@ -26,7 +23,7 @@ const upload = multer({ storage });
 
 // Upload Route
 router.post('/uploadlist', upload.single('file'), async (req, res) => {
-    const {classId}= req.body
+    // const {classId}= req.body
 
     try {
         if (!req.file) {
@@ -38,27 +35,6 @@ router.post('/uploadlist', upload.single('file'), async (req, res) => {
         const json = xlsx.utils.sheet_to_json(sheet, { header: 1 });
 
         let extractedStudents = [];
-        const characters = [
-                '/characters/robot.png' ,
-                '/characters/berry.png' ,
-                '/characters/blood.png',
-                '/characters/dragon.png' ,
-                '/characters/Ele.png' ,
-                '/characters/froggy.png',
-                '/characters/green.png',
-                '/characters/grey.png',
-                '/characters/kiss.png',
-                '/characters/lazy.png',
-                '/characters/longneck.png',
-                '/characters/pickel.png',
-                '/characters/rat.png',
-                '/characters/robot.png',
-                '/characters/slow.png',
-                '/characters/takos.png',
-               '/characters/think.png',
-                '/characters/yellow.png',
-               ];
-        
         const lrns = [];
 
         const students = [];
@@ -73,6 +49,7 @@ router.post('/uploadlist', upload.single('file'), async (req, res) => {
                 const { lastName, firstName, middleName } = parseName(nameMale);
                 students.push({
                     lrn: lrnMale[0],
+                    name:nameMale,
                     gender: 'Male',
                     lastName,
                     firstName,
@@ -88,6 +65,7 @@ router.post('/uploadlist', upload.single('file'), async (req, res) => {
                 const { lastName, firstName, middleName } = parseName(nameFemale);
                 students.push({
                     lrn: lrnFemale[0],
+                    name:nameFemale,
                     gender: 'Female',
                     lastName,
                     firstName,
@@ -96,15 +74,19 @@ router.post('/uploadlist', upload.single('file'), async (req, res) => {
                 lrns.push(lrnFemale[0]);
             }
         }
+        const enrolled = await studentdb.find({ lrn : { $in : lrns}});
+        
+        const enrolledLRNs = enrolled.map(e => e.lrn);
 
+        // Students that are not yet enrolled
+        const missing = students.filter(student => !enrolledLRNs.includes(student.lrn));
+        
 
-
-        // const studentsfinds = await Student.find({ lrn : { $in : lrns}});
-
-        // console.log('in the list : '+ studentsfinds);
-        console.log('lrns : ' + lrns);
+        const db = await studentdb.insertMany(missing);
+        console.log('db : ' +missing);
+        console.log('lrns : ' + enrolled);
         console.log('count : '+ students.length);
-        res.json({ count:'hehe'});
+        res.json({ studentReadCount :students.length,insterted : db,enrolled : enrolled});
 
     } catch (err) {
         console.error(err);

@@ -9,7 +9,7 @@ const studentSchema = new Schema({
     name: String,
     lastName: String,
     firstName: String,
-    middlename: String,
+    middleName: String,
 });
 
 const Student = mongoose.model('Student_list', studentSchema);

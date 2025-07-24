@@ -35,7 +35,7 @@
                     <h2>📤 Upload Student List</h2>
 
                     <form @submit.prevent="handleUpload" enctype="multipart/form-data">
-                        <!-- <label for="moduleFile" class="upload-label">
+                        <!-- <label for="moduleFile" clnhass="upload-label">
                         📄 Upload Module / Lesson File
                         <input type="file" @change="handleFileChange" accept=".pdf,.xlsx,.xls" required />
                         </label> -->
