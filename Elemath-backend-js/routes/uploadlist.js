@@ -33,7 +33,7 @@ router.post('/uploadlist', upload.single('file'), async (req, res) => {
         const sheetName = workbook.SheetNames[0];
         const sheet = workbook.Sheets[sheetName];
         const json = xlsx.utils.sheet_to_json(sheet, { header: 1 });
-
+        console.log(json);
         let extractedStudents = [];
         const lrns = [];
 
@@ -43,8 +43,26 @@ router.post('/uploadlist', upload.single('file'), async (req, res) => {
             if (!row || row.length < 4) continue; // skip short or empty rows
 
             // Check male student slot
-            const lrnMale = String(row[0] || '').match(/^\d{12}$/);
-            const nameMale = row[3];
+            // let arrcount = 0;
+            // if(row[0]== null){
+            //     arrcount = 1;
+            //     console.log('length row : '+ row.length + 'row : '+row);
+            // }
+            let lrnMale = null;
+            let maleleng = 0;
+            do{
+                lrnMale = String(row[maleleng] || '').trim().match(/^\d{12}$/);
+                maleleng++;
+            }while(lrnMale == null && row.length > maleleng);
+
+            let nameMale = null;
+
+            do{
+                nameMale = row[maleleng];
+                maleleng++;
+            }while(String(nameMale).length <= 5 && String(row[maleleng + 1] || '').match(/^\d{12}$/) !== lrnMale && row.length > maleleng);
+            // const lrnMale = String(row[arrcount] || '').match(/^\d{12}$/) ;
+            // const nameMale = row[arrcount + 3];
             if (lrnMale && typeof nameMale === 'string' && nameMale.includes(',')) {
                 const { lastName, firstName, middleName } = parseName(nameMale);
                 students.push({
@@ -59,13 +77,26 @@ router.post('/uploadlist', upload.single('file'), async (req, res) => {
             }
 
             // Check female student slot
-            const lrnFemale = String(row[5] || '').match(/^\d{12}$/);
-            const nameFemale = row[7];
-            if (lrnFemale && typeof nameFemale === 'string' && nameFemale.includes(',')) {
+            let lrnFemale = null;
+            let leng = maleleng;
+            do{
+                lrnFemale = String(row[leng] || '').trim().match(/^\d{12}$/);
+                leng++;
+            }while(lrnFemale == null && row.length > leng);
+            const nameFemale = row[row.length - 1];
+            console.log('female name : ' + lrnFemale);
+            console.log('female : '+ nameFemale);
+            // const lrnFemale = String(row[arrcount + 5] || '').match(/^\d{12}$/);
+            
+            if (
+                lrnFemale &&
+                typeof nameFemale === 'string' &&
+                (nameFemale.includes(',') || nameFemale.includes('.'))
+            ) {
                 const { lastName, firstName, middleName } = parseName(nameFemale);
                 students.push({
                     lrn: lrnFemale[0],
-                    name:nameFemale,
+                    name: nameFemale,
                     gender: 'Female',
                     lastName,
                     firstName,
@@ -77,7 +108,10 @@ router.post('/uploadlist', upload.single('file'), async (req, res) => {
         const enrolled = await studentdb.find({ lrn : { $in : lrns}});
         
         const enrolledLRNs = enrolled.map(e => e.lrn);
-
+        const male = students.filter(student => student.gender === 'Male');
+        const female = students.filter(student => student.gender === 'Female');
+        console.log('male : '+male.length+' female : '+ female.length);
+        
         // Students that are not yet enrolled
         const missing = students.filter(student => !enrolledLRNs.includes(student.lrn));
         
