@@ -4,6 +4,7 @@
             <header>
                 <button @click="closeEnrolledlist()"><font-awesome-icon :icon="['fas', 'xmark']" size="lg"/></button>
                 <h1>Enrolled previously</h1>
+                <h4>Student : {{ Enrolledpreviously.length }}</h4>
             </header>
             
             <ul class="cluster-list">
@@ -23,6 +24,7 @@
             <header>
                 <button @click="closenewEnrolledlist()"><font-awesome-icon :icon="['fas', 'xmark']" size="lg"/></button>
                 <h1>New Students</h1>
+                <h4>Student : {{ newEnrolled.length }}</h4>
             </header>
             
             <ul class="cluster-list">
