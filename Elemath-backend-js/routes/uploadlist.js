@@ -56,11 +56,20 @@ router.post('/uploadlist', upload.single('file'), async (req, res) => {
             }while(lrnMale == null && row.length > maleleng);
 
             let nameMale = null;
-
+            let nameMalefound = false;
             do{
                 nameMale = row[maleleng];
+                console.log('name choice : '+ nameMale);
+                if (
+                nameMale &&
+                typeof nameMale === 'string' &&
+                (nameMale.includes(',') || nameMale.includes('.'))
+                ){
+                    nameMalefound = true;
+                } 
                 maleleng++;
-            }while(String(nameMale).length <= 5 && String(row[maleleng + 1] || '').match(/^\d{12}$/) !== lrnMale && row.length > maleleng);
+            }while(!nameMalefound && row.length > maleleng);
+            console.log('male lrn : '+ lrnMale + ' male name : '+ nameMale);
             // const lrnMale = String(row[arrcount] || '').match(/^\d{12}$/) ;
             // const nameMale = row[arrcount + 3];
             if (lrnMale && typeof nameMale === 'string' && nameMale.includes(',')) {
