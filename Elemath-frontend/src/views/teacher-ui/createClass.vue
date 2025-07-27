@@ -1,4 +1,61 @@
 <template>
+    <div class="cluster-enrolled-con" v-if="failedcluster">
+        <div class="cluster-enroll">
+            <header>
+                <button @click="closerFailed()"><font-awesome-icon :icon="['fas', 'xmark']" size="lg"/></button>
+                <h1>failed!</h1>
+                <h4>Student : {{ failedlist.length }}</h4>
+            </header>
+            
+            <ul class="cluster-list">
+                <li class="item-list" v-for="student in failedlist" :key="student.lrn">
+                    <p>Lrn : {{ student.lrn }}</p>
+                    <p>name : {{ student.name }}</p>
+                </li>
+            </ul>
+            
+        </div>
+    </div>
+    <div class="cluster-enrolled-con" v-if="enrolledcluster">
+        <div class="cluster-enroll">
+            <header>
+                <button @click="closeEnrolledlist()"><font-awesome-icon :icon="['fas', 'xmark']" size="lg"/></button>
+                <h1>Enrolled previously</h1>
+                <h4>Student : {{ Enrolledpreviously.length }}</h4>
+            </header>
+            
+            <ul class="cluster-list">
+                <li class="item-list" v-for="student in Enrolledpreviously" :key="student.lrn">
+                    <p>Lrn : {{ student.lrn }}</p>
+                    <p>name : {{ student.name }}</p>
+                    <p>firstName : {{ student.firstName }}</p>
+                    <p>middleName : {{ student.middleName }}</p>
+                    <p>lastName : {{ student.lastName }}</p>
+                </li>
+            </ul>
+            
+        </div>
+    </div>
+    <div class="cluster-enrolled-con" v-if="newenrolledcluster">
+        <div class="cluster-enroll">
+            <header>
+                <button @click="closenewEnrolledlist()"><font-awesome-icon :icon="['fas', 'xmark']" size="lg"/></button>
+                <h1>New Students</h1>
+                <h4>Student : {{ newEnrolled.length }}</h4>
+            </header>
+            
+            <ul class="cluster-list">
+                <li class="item-list" v-for="student in newEnrolled" :key="student.lrn">
+                    <p>Lrn : {{ student.lrn }}</p>
+                    <p>name : {{ student.name }}</p>
+                    <p>firstName : {{ student.firstName }}</p>
+                    <p>middleName : {{ student.middleName }}</p>
+                    <p>lastName : {{ student.lastName }}</p>
+                </li>
+            </ul>
+            
+        </div>
+    </div>
     <div class="loading-con" v-if="loading">
         <div class="loading"></div>
     </div>
@@ -136,6 +193,12 @@ export default{
     },
     data(){
         return{
+            Enrolledpreviously:[],
+            failedlist:[],
+            newEnrolled:[],
+            newenrolledcluster:false,
+            enrolledcluster:false,
+            failedcluster: false,
             selectedFile: null,
             uploading: false,
             progress: 0,
@@ -326,6 +389,15 @@ export default{
         handleFileChange(event) {
             this.selectedFile = event.target.files[0];
         },
+        closenewEnrolledlist(){
+            this.newenrolledcluster=false;
+        },
+        closeEnrolledlist(){
+            this.enrolledcluster=false;
+        },
+        closerFailed(){
+            this.failedcluster = false;
+        },
 
         async handleUpload() {
             if (!this.selectedFile) {
@@ -355,6 +427,18 @@ export default{
                 if(response.data.message === 'All students are already enrolled'){
                     console.log(response.data.enrolled)
                     return alert(response.data.message);
+                }
+                this.newEnrolled= response.data.insterted;
+                if(this.newEnrolled){
+                    this.newenrolledcluster = true;
+                }
+                this.enrollStudent = response.data.enrolled;
+                if(this.enrollStudent){
+                    this.enrolledcluster = true;
+                }
+                this.failedlist = response.data.failed;
+                if(this.failedlist){
+                    this.failedcluster = true;
                 }
                 await this.getClassData(this.classid);
             } catch (err) {
@@ -387,6 +471,70 @@ export default{
 }
 </script>
 <style scoped>
+.list-table{
+    height: 90%;
+    width: 90%;
+    background-color: white;
+}
+.list{
+    width: 75%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.item-list{
+    color: white;
+    font-weight: 700;
+    margin-top: 2em;
+    padding: 10px;
+    border-radius: 10px;
+    width: inherit;
+    height: fit-content;
+    background-color: #7ab9fc;
+}
+.cluster-list{
+    list-style: none;
+    width: 90%;
+    height: 80%;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+.cluster-enroll header button{
+    border: none;
+    background-color: transparent;
+    color: red;
+    align-self: flex-end;
+    margin-top: 5px;
+    margin-right: 5px;
+}
+.cluster-enroll header{
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+}
+.cluster-enroll{
+    background-color: white;
+    height: 90%;
+    width: 50%;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.cluster-enrolled-con{
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    background-color: rgb(0, 0, 0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
 .form-header{
     padding: 5px;
 }
