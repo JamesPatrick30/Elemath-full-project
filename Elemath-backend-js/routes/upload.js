@@ -124,6 +124,8 @@ router.post('/upload', upload.single('file'), async (req, res) => {
                 lrns.push(lrnFemale[0]);
             }
         }
+        //TODO: REMOVE COMMENT
+        //FIXME : hjehe
         // for (let row of json) {
         //     for (let cell of row) {
         //         const matchLRN = String(cell).match(/^(\d{12})$/); // detect LRN (12 digits)

@@ -34,8 +34,8 @@ router.post('/uploadlist', upload.single('file'), async (req, res) => {
         const sheet = workbook.Sheets[sheetName];
         const json = xlsx.utils.sheet_to_json(sheet, { header: 1 });
         console.log(json);
-        let extractedStudents = [];
         const lrns = [];
+        const failed = [];
 
         const students = [];
         let rowcount = 0;
@@ -59,6 +59,7 @@ router.post('/uploadlist', upload.single('file'), async (req, res) => {
                     !templrn.trim().match(/^\d{12}$/) &&
                     rowcount <50
                 ) {
+                    // failed.push({name: templrn , lrn : null});
                     console.log('failed in lrn: ' + templrn);
                     break;
                 }
@@ -78,7 +79,9 @@ router.post('/uploadlist', upload.single('file'), async (req, res) => {
                     nameMalefound = true;
                 } else if (String(row[maleleng] || '').trim().match(/^\d{12}$/)) {
                     // Stop the loop if another LRN is found
+                    failed.push({name: null , lrn : lrnMale});
                     nameMale = '';
+                    
                     break;
                 }
                 maleleng++;
@@ -98,6 +101,11 @@ router.post('/uploadlist', upload.single('file'), async (req, res) => {
                 lrns.push(lrnMale[0]);
             }else if (rowcount < 50 && rowcount > 16 && ( typeof nameMale !== 'string' || !lrnMale)){
                 console.log('failed Male: name : '+nameMale+' lrn : '+lrnMale + ' row : '+rowcount);
+                if(typeof nameMale !== 'string'){
+                    failed.push({name: null , lrn : nameMale});
+                }else{
+                    failed.push({name: nameMale , lrn : lrnMale});
+                }
                 
             }
             // Only iterate over relevant indices to avoid unnecessary checks
@@ -131,8 +139,13 @@ router.post('/uploadlist', upload.single('file'), async (req, res) => {
                     middleName
                 });
                 lrns.push(lrnFemale[0]);
-            }else if (rowcount < 50 && rowcount > 16 && (typeof nameFemale !== 'string' || !lrnFemale)){
-                console.log('failed female name : '+nameFemale+' lrn : '+lrnFemale);
+            }else if (rowcount < 50 && rowcount > 16 && nameMale !== nameFemale &&(typeof nameFemale !== 'string' || !lrnFemale)){
+                console.log('failed feMale: name : '+nameFemale+' lrn : '+lrnFemale + ' row : '+rowcount);
+                if(typeof nameFemale !== 'string'){
+                    failed.push({name: null , lrn : lrnFemale});
+                }else{
+                    failed.push({name: nameFemale , lrn : lrnFemale});
+                }
             }
         }
         const enrolled = await studentdb.find({ lrn : { $in : lrns}});
@@ -141,6 +154,9 @@ router.post('/uploadlist', upload.single('file'), async (req, res) => {
         const male = students.filter(student => student.gender === 'Male');
         const female = students.filter(student => student.gender === 'Female');
         console.log('male : '+male.length+' female : '+ female.length);
+        for(fail of failed){
+            console.log('lrn : '+fail.lrn + ' name : '+fail.name);
+        }
         
         // Students that are not yet enrolled
         const missing = students.filter(student => !enrolledLRNs.includes(student.lrn));
@@ -150,7 +166,7 @@ router.post('/uploadlist', upload.single('file'), async (req, res) => {
         // console.log('db : ' +missing);
         // console.log('lrns : ' + enrolled);
         // console.log('count : '+ students.length);
-        res.json({ studentReadCount :students.length,insterted : db,enrolled : enrolled});
+        res.json({ studentReadCount :students.length,insterted : db,enrolled : enrolled, failed : failed });
 
     } catch (err) {
         console.error(err);
