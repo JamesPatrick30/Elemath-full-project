@@ -48,9 +48,9 @@
                 <li class="item-list" v-for="student in newEnrolled" :key="student.lrn">
                     <p>Lrn : {{ student.lrn }}</p>
                     <p>name : {{ student.name }}</p>
-                    <p>firstName : {{ student.firstName }}</p>
-                    <p>middleName : {{ student.middleName }}</p>
-                    <p>lastName : {{ student.lastName }}</p>
+                    <p>firstName : {{ student.firstname }}</p>
+                    <p>middleName : {{ student.middlename }}</p>
+                    <p>lastName : {{ student.lastname }}</p>
                 </li>
             </ul>
             

@@ -105,7 +105,7 @@ router.post('/upload', upload.single('file'), async (req, res) => {
                     rowcount > 17 &&
                     typeof templrn === 'string' &&
                     !templrn.trim().match(/^\d{12}$/) &&
-                    rowcount <50
+                    rowcount <37
                 ) {
                     // failed.push({name: templrn , lrn : null});
                     console.log('failed in lrn: ' + templrn);
@@ -148,7 +148,7 @@ router.post('/upload', upload.single('file'), async (req, res) => {
                     middleName
                 });
                 lrns.push(lrnMale[0]);
-            }else if (rowcount < 50 && rowcount > 16 && ( typeof nameMale !== 'string' || !lrnMale)){
+            }else if (rowcount < 37 && rowcount > 16 && ( typeof nameMale !== 'string' || !lrnMale)){
                 console.log('failed Male: name : '+nameMale+' lrn : '+lrnMale + ' row : '+rowcount);
                 if(typeof nameMale !== 'string'){
                     failed.push({name: null , lrn : nameMale});
@@ -188,7 +188,7 @@ router.post('/upload', upload.single('file'), async (req, res) => {
                     middleName
                 });
                 lrns.push(lrnFemale[0]);
-            }else if (rowcount < 50 && rowcount > 16 && nameMale !== nameFemale &&(typeof nameFemale !== 'string' || !lrnFemale)){
+            }else if (rowcount < 37 && rowcount > 16 && nameMale !== nameFemale &&(typeof nameFemale !== 'string' || !lrnFemale)){
                 console.log('failed feMale: name : '+nameFemale+' lrn : '+lrnFemale + ' row : '+rowcount);
                 if(typeof nameFemale !== 'string'){
                     failed.push({name: null , lrn : lrnFemale});
@@ -215,8 +215,9 @@ router.post('/upload', upload.single('file'), async (req, res) => {
             console.log('data : '+student);
             fulldata.push({
                 profile:characters[num],
+                name : missing[student].name,
                 firstname:missing[student].firstName,
-                middlename:missing[student].middlename,
+                middlename:missing[student].middleName,
                 lastname:missing[student].lastName,
                 lrn:missing[student].lrn,
                 email:missing[student].lrn,
