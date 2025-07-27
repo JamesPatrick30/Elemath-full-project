@@ -13,11 +13,16 @@ import questionMaker from '@/views/teacher-ui/questionMaker.vue'
 import classPage from '@/views/teacher-ui/classPage.vue'
 import classCreate from '@/views/teacher-ui/createClass.vue'
 import signGoogle from '@/views/signGoogle.vue'
-
+import Analytics from '@/views/teacher-ui/Analytics.vue'
 import addlist from '@/views/admin-ui/addlist.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path: '/an',
+      name : 'Analytics',
+      component: Analytics
+    },
     {
       path : '/ad',
       name : 'addlist',
