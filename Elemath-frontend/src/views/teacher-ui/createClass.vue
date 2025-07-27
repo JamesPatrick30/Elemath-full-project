@@ -21,11 +21,11 @@
             <header>
                 <button @click="closeEnrolledlist()"><font-awesome-icon :icon="['fas', 'xmark']" size="lg"/></button>
                 <h1>Enrolled previously</h1>
-                <h4>Student : {{ Enrolledpreviously.length }}</h4>
+                <h4>Student : {{ enrollStudentlist.length }}</h4>
             </header>
             
             <ul class="cluster-list">
-                <li class="item-list" v-for="student in Enrolledpreviously" :key="student.lrn">
+                <li class="item-list" v-for="student in enrollStudentlist" :key="student.lrn">
                     <p>Lrn : {{ student.lrn }}</p>
                     <p>name : {{ student.name }}</p>
                     <p>firstName : {{ student.firstName }}</p>
@@ -193,7 +193,7 @@ export default{
     },
     data(){
         return{
-            Enrolledpreviously:[],
+            enrollStudentlist:[],
             failedlist:[],
             newEnrolled:[],
             newenrolledcluster:false,
@@ -429,15 +429,15 @@ export default{
                     return alert(response.data.message);
                 }
                 this.newEnrolled= response.data.insterted;
-                if(this.newEnrolled){
+                if(this.newEnrolled.length > 0){
                     this.newenrolledcluster = true;
                 }
-                this.enrollStudent = response.data.enrolled;
-                if(this.enrollStudent){
+                this.enrollStudentlist = response.data.enrolled;
+                if(this.enrollStudentlist.length > 0){
                     this.enrolledcluster = true;
                 }
                 this.failedlist = response.data.failed;
-                if(this.failedlist){
+                if(this.failedlist.length > 0){
                     this.failedcluster = true;
                 }
                 await this.getClassData(this.classid);

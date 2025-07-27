@@ -227,7 +227,7 @@ router.post('/upload', upload.single('file'), async (req, res) => {
 
         const db = await studentenrolled.insertMany(fulldata);
         // console.log('db : ' +missing);
-        // console.log('lrns : ' + enrolled);
+        console.log('lrns : ' + enrolled);
         // console.log('count : '+ students.length);
         res.json({ studentReadCount :students.length,insterted : db,enrolled : enrolled, failed : failed });
 
