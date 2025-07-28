@@ -6,7 +6,7 @@
                 <h1>Grade</h1>
             </header>
             <div class="table-con">
-                
+                <!-- TODO: create better table -->
                 <table>
                     <thead>
                         <tr>
