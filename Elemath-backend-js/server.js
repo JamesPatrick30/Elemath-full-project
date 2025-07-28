@@ -89,13 +89,13 @@ app.post('/api/login',async (req, res) => {
         httpOnly: true,
         secure: false,
         sameSite: 'lax',
-        maxAge: 15 * 60 * 1000 // 15 mins
+        maxAge: 90 * 60 * 1000 // 15 mins
     });
     res.cookie('refresh_token', createToken( payload ).refreshToken, {
         httpOnly: true,
       secure: false,
       sameSite: 'lax',
-      maxAge: 15 * 60 * 1000 // 15 mins
+      maxAge: 90 * 24 * 60 * 60 * 1000 // 15 mins
     });
     res.status(200).json({ message: 'Login successful', classCount: classCount });
     console.log('Login successful:', username);
@@ -112,13 +112,13 @@ app.post('/refresh-token', verifyRefreshToken, (req, res) => {
             httpOnly: true,
             secure: false, // use true if HTTPS
             sameSite: 'lax',
-            maxAge: 15 * 60 * 1000 // 15 mins
+            maxAge: 90 * 60 * 1000 // 15 mins
         });
         res.cookie('refresh_token', createToken( req.user ).refreshToken, {
             httpOnly: true,
             secure: false, // use true if HTTPS
             sameSite: 'lax',
-            maxAge: 100 * 60 * 1000 // 15 mins
+            maxAge: 90 * 24 * 60 * 60 * 1000 // 15 mins
         });
         console.log('Access token refreshed');
         res.status(200).json({ message: 'Access token refreshed' });
@@ -175,8 +175,7 @@ app.post('/sign-up', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-app.get('/data/teacher', verifyRefreshToken, async (req, res) => {
-  console.log('/data/teacher endpoint hit');
+app.get('/data/teacher', auth, async (req, res) => {
   try {
     console.log('Authenticated user:', req.user);
     const user = await teacher_accoount.findById(req.user.id).populate('class');
