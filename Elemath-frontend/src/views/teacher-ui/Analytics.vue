@@ -4,6 +4,10 @@
     <main>
       <header>
         <h3 class="header-text">Analytics Dashboard</h3>
+        <select name="" id="" class="classes">
+          <option value="2">2</option>
+          <option value="2">2</option>
+        </select>
       </header>
       <div class="con">
         <div class="item0">
@@ -63,7 +67,7 @@
           <div class="pie-con">
             <apexChart
               type="pie"
-              height="200"
+              height="210"
               :series="improvementChart.series"
               :options="improvementChart.options"
             />
@@ -127,6 +131,18 @@ export default {
 </script>
 
 <style scoped>
+.classes{
+  position: fixed;
+  border-radius: 5px;
+  top: 5px;
+  right: 10px;
+  width: 90px;
+  height: 40px;
+}
+header{
+  display: flex;
+  margin: 0;
+}
 .pie-con{
   height:100%;
   width: 100%;
