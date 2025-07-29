@@ -19,13 +19,13 @@ function auth(req, res, next) {
       res.cookie('access_token', createToken( decoded ).accessToken, {
           httpOnly: true,
           secure: false,
-          sameSite: 'lax',
-          maxAge: 90 * 60 * 1000 // 15 mins
+          sameSite: 'None',
+          maxAge: 15 * 60 * 1000 // 15 mins
       });
       res.cookie('refresh_token', createToken( decoded ).refreshToken, {
           httpOnly: true,
         secure: false,
-        sameSite: 'lax',
+        sameSite: 'None',
         maxAge: 90 * 24 * 60 * 60 * 1000 // 15 mins
       });
       next();

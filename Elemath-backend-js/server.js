@@ -89,14 +89,14 @@ app.post('/api/login',async (req, res) => {
     res.cookie('access_token', createToken( payload ).accessToken, {
         httpOnly: true,
         secure: false,
-        sameSite: 'lax',
-        maxAge: 90 * 60 * 1000 // 15 mins
+        sameSite: 'None',
+        maxAge: 15 * 60 * 1000
     });
     res.cookie('refresh_token', createToken( payload ).refreshToken, {
         httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
-      maxAge: 90 * 24 * 60 * 60 * 1000 // 15 mins
+        secure: false,
+        sameSite: 'None',
+        maxAge: 90 * 24 * 60 * 60 * 1000
     });
     res.status(200).json({ message: 'Login successful', classCount: classCount });
     console.log('Login successful:', username);
