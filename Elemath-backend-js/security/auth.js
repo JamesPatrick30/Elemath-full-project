@@ -2,12 +2,11 @@ const jwt = require('jsonwebtoken');
 const  {createToken} = require('./createToken');
 function auth(req, res, next) {
   const token = req.cookies.access_token;
-  const refreshtoken = req.refreshToken;
-  console.log("Refresh token request cookies:", req.refreshToken);
+  console.log("Refresh token request cookies:", req.cookies.refresh_token);
   console.log("Refresh token request access_token:", token);
   if (!token) {
 
-    const refresh_token = req.refreshToken;
+    const refresh_token = req.cookies.refresh_token;
 
     if (!refresh_token) {
       return res.status(401).json({ message: 'Access denied. No token provided.' });
