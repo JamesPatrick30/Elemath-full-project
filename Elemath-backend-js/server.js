@@ -359,7 +359,7 @@ app.post('/admin/trim-students', async (req, res) => {
   }
 });
 app.get('/role',auth,async(req,res)=>{
-  const id = res.user.id;
+  const id = req.user.id;
 
   const teacher = await teacher_accoount.findById(id);
 
