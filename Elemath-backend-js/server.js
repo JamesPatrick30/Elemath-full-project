@@ -59,6 +59,7 @@ const uploadRouter = require('./routes/upload.js');
 app.use('/', uploadRouter); // Mount upload route
 
 const uploadlist = require('./routes/uploadlist.js');
+const Student = require('./models/students.js');
 
 app.use('/',uploadlist);
 
@@ -357,7 +358,28 @@ app.post('/admin/trim-students', async (req, res) => {
     res.status(500).json({ message: 'Trimming failed', error });
   }
 });
+app.get('/role',auth,async(req,res)=>{
+  const id = res.user.id;
 
+  const teacher = await teacher_accoount.findById(id);
+
+  if (teacher) {
+    return res.json({
+      role:'teacher',
+      class:teacher.class
+    });
+  }
+
+  const studentrole = await StudentClass.findById(id);
+
+  if(studentrole){
+    return res.json({
+      role:'student'
+    });
+  }
+
+  res.json({login:true});
+});
 // // Set up Multer
 // const storage = multer.diskStorage({
 //   destination: function (req, file, cb) {

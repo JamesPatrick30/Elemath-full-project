@@ -258,9 +258,12 @@ export default {
           this.$router.push('/sd');
         }
       }catch(err){
-
+        console.log(err)
       }
     }
+  },
+  mounted(){
+    this.getRole();
   }
 }
 
