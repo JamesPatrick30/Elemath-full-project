@@ -128,6 +128,7 @@ app.post('/api/login',async (req, res) => {
 //         res.status(500).json({ message: 'Internal server error' });
 //     }
 // });
+
 app.post('/api/logout', (req, res) => {
     console.log("Logout request cookies:", req.cookies);
   res.clearCookie('access_token', {
@@ -176,8 +177,7 @@ app.post('/sign-up', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-app.get('/data/teacher', verifyRefreshToken, async (req, res) => {
-  console.log('/data/teacher endpoint hit');
+app.get('/data/teacher', auth, async (req, res) => {
   try {
     // console.log('Authenticated user:', req.user);
     const user = await teacher_accoount.findById(req.user.id).populate('class');
@@ -185,7 +185,6 @@ app.get('/data/teacher', verifyRefreshToken, async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
     res.status(200).json(user);
-    // console.log('/data/teacher :', user);
   } catch (error) {
     console.error('Error fetching teacher data:', error);
     res.status(500).json({ message: 'Internal server error' });

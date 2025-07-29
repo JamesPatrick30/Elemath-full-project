@@ -15,9 +15,15 @@ import classCreate from '@/views/teacher-ui/createClass.vue'
 import signGoogle from '@/views/signGoogle.vue'
 import Analytics from '@/views/teacher-ui/Analytics.vue'
 import addlist from '@/views/admin-ui/addlist.vue'
+import Grade from '@/views/teacher-ui/Grade.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path :'/g',
+      name:'grade',
+      component:Grade
+    },
     {
       path: '/an',
       name : 'Analytics',
