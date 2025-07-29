@@ -206,6 +206,7 @@ import cloud from '@/components/svg/cloud.vue';
 import gameimage from '/images/1.png';
 import gameimage2 from '/images/2.png';
 import gameimage3 from '/images/3.png';
+import api from '@/axios';
 export default {
   name: "SimpleTree",
   components: {
@@ -225,6 +226,7 @@ export default {
     };
   },
   methods: {
+    
     goToSignIn(role) {
       this.$router.push({ name: 'signin',query: { role: role } });
     },
@@ -243,6 +245,22 @@ export default {
     goToSignUp(role) {
       this.$router.push({ name: 'signup',query: { role: role } });
     },
+    async getRole(){
+      try{
+        const res =await api.get('/role');
+        if(res.data.role === 'teacher'){
+          if(res.data.class === 0 ){
+            this.$router.push('/tc');
+          }else{
+            this.$router.push('th');
+          }
+        }else if(res.data.role === 'student'){
+          this.$router.push('/sd');
+        }
+      }catch(err){
+
+      }
+    }
   }
 }
 
