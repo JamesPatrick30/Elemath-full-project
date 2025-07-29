@@ -9,7 +9,7 @@
                 <!-- TODO: create better table -->
                  <div class="table">
                     <div class="thead">
-                        <div class="th-name"><h3>Name</h3></div>
+                        <div class="th-name" @click="add()"><h3>Name</h3></div>
                         <div class="th-con">
                             <div class="th"></div>
                         </div>
@@ -18,8 +18,9 @@
                         <div class="tr" v-for="student in students" :key="student.name">
                             <div class="td-name">{{ student.name }}</div>
                             <div class="td-con">
-                                <div class="td" v-for="grade in student.quiz">{{ grade }}</div>
+                                <div class="td" v-for="grade in gradeline(student.quiz)"><p>{{ grade }}</p> </div>
                             </div>
+                            <div class="td-total"><p>{{ average(student.quiz) }}</p></div>
                         </div>
                     </div>
                  </div>
@@ -59,7 +60,35 @@ export default{
                 { lrn: 256548512391, name: 'Diaz, Patricia', quiz: [91, 93, 92, 90, 94, 95, 98, 100, 97, 99, 96] },
                 { lrn: 256548512392, name: 'Bautista, Simon', quiz: [58, 60, 59, 61, 57, 62, 65, 67, 64, 66, 68] },
                 { lrn: 256548512393, name: 'Aguilar, Rose', quiz: [87, 89, 88, 86, 90, 85, 92, 94, 91, 93, 95] }
-            ]
+            ],
+            line:0
+        }
+    },
+    methods:{
+        gradeline(grades){
+            const list = [];
+            let i = this.line;
+            for( i ; i < this.line + 5 && i < grades.length; i++){
+                list.push(grades[i]);
+            }
+            console.log('line : '+i +' Student : '+(grades.length-4));
+            return list;
+        },
+        add(){
+            if(this.line < (this.students[0].quiz.length - 5)){
+                 
+                this.line++;
+            }
+            // console.log('line : '+this.line +' Student : '+(this.students[0].quiz.length - 4));
+            
+        },
+        average(grades){
+            let Total = 0;
+            for(let grade of grades){
+                Total += grade;
+            }
+            const average = (Total / grades.length).toFixed(2);
+            return average;
         }
     }
 }
@@ -70,7 +99,18 @@ body{
     height: 100vh;
     width: 100vw;
     display: flex;
+    overflow: hidden;
 
+}
+.tbody{
+    height: calc(100% - 50px);
+    overflow: auto;
+    scrollbar-width: none;
+    width: 100%;
+    background-color: aqua;
+}
+.td-total{
+    width: 50px;
 }
 .td{
     min-width: 50px;
@@ -80,12 +120,9 @@ body{
 }
 .tr,.thead{display: flex;}
 .td-con,.th-con{
-    overflow-x:scroll;
-    overflow-y: hidden;
-    scrollbar-width: thin;
     display: flex;
     height: 50px;
-    width:calc(100% - 400px);
+    width:calc(100% - 450px);
     border: 1px solid black;
 }
 .th-name,.td-name{
@@ -98,6 +135,7 @@ th,td{
     outline: auto;
 }
 .table{
+    
     border: 1px solid black;
     height: 90%;
     width: 90%;
