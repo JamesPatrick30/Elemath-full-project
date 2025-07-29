@@ -466,7 +466,6 @@ export default{
         // this.refreshtoken();
         this.getData();
         this.getClassData(this.classid);
-
         
     }
     
