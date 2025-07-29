@@ -189,7 +189,8 @@ export default {
         },
     },
     mounted(){
-        this.refreshtoken();
+        this.getData();
+        // this.refreshtoken();
     }
 }
 </script>
