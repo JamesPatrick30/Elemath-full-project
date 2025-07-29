@@ -113,18 +113,10 @@ export default {
                 console.log('Error is :' + err)
             }
         },
-        // async trimdb(){
-        //     try{
-        //         const res = await api.post('/admin/trim-students');
-        //         alert(res.data.message);
-        //     }catch(err){
-        //         console.log(err);
-        //     }
-        // }
     },
     mounted() {
-        
-        this.refreshtoken();
+        this.getData();
+        // this.refreshtoken();
         // this.trimdb();
     }
 };

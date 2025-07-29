@@ -101,33 +101,33 @@ app.post('/api/login',async (req, res) => {
     res.status(200).json({ message: 'Login successful', classCount: classCount });
     console.log('Login successful:', username);
 });
-app.post('/refresh-token', verifyRefreshToken, (req, res) => {
-  console.log("Refresh token request cookies:", req.refreshToken);
-    const refreshToken = req.cookies.refresh_token;
-    if (!refreshToken) {
-        return res.status(401).json({ message: 'No refresh token provided' });
-    }
-    try {
-        const newAccessToken = createToken( req.user ).accessToken;
-        res.cookie('access_token', newAccessToken, {
-            httpOnly: true,
-            secure: false, // use true if HTTPS
-            sameSite: 'lax',
-            maxAge: 90 * 60 * 1000 // 15 mins
-        });
-        res.cookie('refresh_token', createToken( req.user ).refreshToken, {
-            httpOnly: true,
-            secure: false, // use true if HTTPS
-            sameSite: 'lax',
-            maxAge: 90 * 24 * 60 * 60 * 1000 // 15 mins
-        });
-        console.log('Access token refreshed');
-        res.status(200).json({ message: 'Access token refreshed' });
-    } catch (error) {
-        console.error('Error refreshing token:', error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
-});
+// app.post('/refresh-token', verifyRefreshToken, (req, res) => {
+//   console.log("Refresh token request cookies:", req.refreshToken);
+//     const refreshToken = req.cookies.refresh_token;
+//     if (!refreshToken) {
+//         return res.status(401).json({ message: 'No refresh token provided' });
+//     }
+//     try {
+//         const newAccessToken = createToken( req.user ).accessToken;
+//         res.cookie('access_token', newAccessToken, {
+//             httpOnly: true,
+//             secure: false, // use true if HTTPS
+//             sameSite: 'lax',
+//             maxAge: 90 * 60 * 1000 // 15 mins
+//         });
+//         res.cookie('refresh_token', createToken( req.user ).refreshToken, {
+//             httpOnly: true,
+//             secure: false, // use true if HTTPS
+//             sameSite: 'lax',
+//             maxAge: 90 * 24 * 60 * 60 * 1000 // 15 mins
+//         });
+//         console.log('Access token refreshed');
+//         res.status(200).json({ message: 'Access token refreshed' });
+//     } catch (error) {
+//         console.error('Error refreshing token:', error);
+//         res.status(500).json({ message: 'Internal server error' });
+//     }
+// });
 app.post('/api/logout', (req, res) => {
     console.log("Logout request cookies:", req.cookies);
   res.clearCookie('access_token', {
@@ -179,13 +179,13 @@ app.post('/sign-up', async (req, res) => {
 app.get('/data/teacher', verifyRefreshToken, async (req, res) => {
   console.log('/data/teacher endpoint hit');
   try {
-    console.log('Authenticated user:', req.user);
+    // console.log('Authenticated user:', req.user);
     const user = await teacher_accoount.findById(req.user.id).populate('class');
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
     res.status(200).json(user);
-    console.log('/data/teacher :', user);
+    // console.log('/data/teacher :', user);
   } catch (error) {
     console.error('Error fetching teacher data:', error);
     res.status(500).json({ message: 'Internal server error' });
