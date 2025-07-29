@@ -39,26 +39,26 @@ export default{
     data(){
         return{
             students:[
-                { lrn: 256548512374, name: 'Sanchez, James Patrick L.', quiz: [20, 50, 80, 43, 12, 53] },
-                { lrn: 256548512375, name: 'Reyes, Maria Clara', quiz: [75, 60, 85, 90, 70, 88] },
-                { lrn: 256548512376, name: 'Dela Cruz, Juan', quiz: [65, 70, 80, 60, 55, 77] },
-                { lrn: 256548512377, name: 'Garcia, Ana', quiz: [90, 92, 88, 85, 91, 89] },
-                { lrn: 256548512378, name: 'Torres, Miguel', quiz: [55, 60, 58, 62, 59, 61] },
-                { lrn: 256548512379, name: 'Lopez, Carla', quiz: [80, 85, 78, 82, 79, 81] },
-                { lrn: 256548512380, name: 'Ramos, Paolo', quiz: [70, 75, 72, 68, 74, 73] },
-                { lrn: 256548512381, name: 'Cruz, Angelica', quiz: [88, 90, 85, 87, 89, 86] },
-                { lrn: 256548512382, name: 'Santos, Mark', quiz: [60, 65, 63, 67, 62, 66] },
-                { lrn: 256548512383, name: 'Flores, Bianca', quiz: [95, 98, 97, 96, 99, 94] },
-                { lrn: 256548512384, name: 'Mendoza, Carlo', quiz: [50, 55, 53, 57, 52, 56] },
-                { lrn: 256548512385, name: 'Gutierrez, Liza', quiz: [85, 80, 83, 82, 81, 84] },
-                { lrn: 256548512386, name: 'Navarro, Kevin', quiz: [77, 79, 75, 78, 76, 80] },
-                { lrn: 256548512387, name: 'Castro, Julia', quiz: [68, 70, 72, 69, 71, 73] },
-                { lrn: 256548512388, name: 'Villanueva, Paolo', quiz: [82, 84, 83, 81, 85, 80] },
-                { lrn: 256548512389, name: 'Morales, Erika', quiz: [73, 75, 74, 76, 72, 77] },
-                { lrn: 256548512390, name: 'Fernandez, John', quiz: [66, 68, 67, 65, 69, 70] },
-                { lrn: 256548512391, name: 'Diaz, Patricia', quiz: [91, 93, 92, 90, 94, 95] },
-                { lrn: 256548512392, name: 'Bautista, Simon', quiz: [58, 60, 59, 61, 57, 62] },
-                { lrn: 256548512393, name: 'Aguilar, Rose', quiz: [87, 89, 88, 86, 90, 85] }
+                { lrn: 256548512374, name: 'Sanchez, James Patrick L.', quiz: [20, 50, 80, 43, 12, 53, 60, 72, 55, 48, 67] },
+                { lrn: 256548512375, name: 'Reyes, Maria Clara', quiz: [75, 60, 85, 90, 70, 88, 92, 81, 77, 85, 90] },
+                { lrn: 256548512376, name: 'Dela Cruz, Juan', quiz: [65, 70, 80, 60, 55, 77, 69, 73, 68, 71, 75] },
+                { lrn: 256548512377, name: 'Garcia, Ana', quiz: [90, 92, 88, 85, 91, 89, 94, 96, 93, 95, 97] },
+                { lrn: 256548512378, name: 'Torres, Miguel', quiz: [55, 60, 58, 62, 59, 61, 64, 66, 63, 65, 67] },
+                { lrn: 256548512379, name: 'Lopez, Carla', quiz: [80, 85, 78, 82, 79, 81, 84, 86, 83, 85, 87] },
+                { lrn: 256548512380, name: 'Ramos, Paolo', quiz: [70, 75, 72, 68, 74, 73, 76, 78, 75, 77, 79] },
+                { lrn: 256548512381, name: 'Cruz, Angelica', quiz: [88, 90, 85, 87, 89, 86, 91, 93, 90, 92, 94] },
+                { lrn: 256548512382, name: 'Santos, Mark', quiz: [60, 65, 63, 67, 62, 66, 69, 71, 68, 70, 72] },
+                { lrn: 256548512383, name: 'Flores, Bianca', quiz: [95, 98, 97, 96, 99, 94, 100, 99, 98, 97, 96] },
+                { lrn: 256548512384, name: 'Mendoza, Carlo', quiz: [50, 55, 53, 57, 52, 56, 59, 61, 58, 60, 62] },
+                { lrn: 256548512385, name: 'Gutierrez, Liza', quiz: [85, 80, 83, 82, 81, 84, 87, 89, 86, 88, 90] },
+                { lrn: 256548512386, name: 'Navarro, Kevin', quiz: [77, 79, 75, 78, 76, 80, 83, 85, 82, 84, 86] },
+                { lrn: 256548512387, name: 'Castro, Julia', quiz: [68, 70, 72, 69, 71, 73, 76, 78, 75, 77, 79] },
+                { lrn: 256548512388, name: 'Villanueva, Paolo', quiz: [82, 84, 83, 81, 85, 80, 87, 89, 86, 88, 90] },
+                { lrn: 256548512389, name: 'Morales, Erika', quiz: [73, 75, 74, 76, 72, 77, 80, 82, 79, 81, 83] },
+                { lrn: 256548512390, name: 'Fernandez, John', quiz: [66, 68, 67, 65, 69, 70, 73, 75, 72, 74, 76] },
+                { lrn: 256548512391, name: 'Diaz, Patricia', quiz: [91, 93, 92, 90, 94, 95, 98, 100, 97, 99, 96] },
+                { lrn: 256548512392, name: 'Bautista, Simon', quiz: [58, 60, 59, 61, 57, 62, 65, 67, 64, 66, 68] },
+                { lrn: 256548512393, name: 'Aguilar, Rose', quiz: [87, 89, 88, 86, 90, 85, 92, 94, 91, 93, 95] }
             ]
         }
     }
@@ -75,11 +75,14 @@ body{
 .td{
     min-width: 50px;
     width: 100%;
-    height: inherit;
+    height: 48px;
     border: 1px solid black;
 }
 .tr,.thead{display: flex;}
 .td-con,.th-con{
+    overflow-x:scroll;
+    overflow-y: hidden;
+    scrollbar-width: thin;
     display: flex;
     height: 50px;
     width:calc(100% - 400px);
