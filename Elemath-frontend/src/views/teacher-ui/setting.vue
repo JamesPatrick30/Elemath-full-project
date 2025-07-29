@@ -130,7 +130,8 @@ export default{
         }
     },
     mounted() {
-        this.refreshtoken();
+        // this.refreshtoken();
+        this.getData();
     }
 }</script>
 <style scoped>
