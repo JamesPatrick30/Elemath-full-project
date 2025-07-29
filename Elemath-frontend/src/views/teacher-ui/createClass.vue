@@ -463,7 +463,9 @@ export default{
     },
 
     mounted(){
-        this.refreshtoken();
+        // this.refreshtoken();
+        this.getData();
+        this.getClassData(this.classid);
 
         
     }
