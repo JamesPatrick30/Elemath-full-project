@@ -92,12 +92,12 @@ app.post('/api/login',async (req, res) => {
         sameSite: 'None',
         maxAge: 15 * 60 * 1000
     });
-    res.cookie('refresh_token', createToken( payload ).refreshToken, {
-        httpOnly: true,
+    res.cookie('refresh_token', createToken( decoded ).refreshToken, {
+          httpOnly: true,
         secure: false,
         sameSite: 'None',
-        maxAge: 90 * 24 * 60 * 60 * 1000
-    });
+        maxAge: 90 * 24 * 60 * 60 * 1000 // 15 mins
+      });
     res.status(200).json({ message: 'Login successful', classCount: classCount });
     console.log('Login successful:', username);
 });

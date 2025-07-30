@@ -11,16 +11,17 @@
                     <div class="thead">
                         <div class="th-name" @click="add()"><h3>Name</h3></div>
                         <div class="th-con">
-                            <div class="th"></div>
+                            <div class="th" v-for="quiz in  quizslist(this.quizs,quizstotal)" :key="quiz.name">{{ quiz.name }} <br> {{ quiz.score }}</div>
                         </div>
+                        <div class="th-total"><p>average</p></div>
                     </div>
                     <div class="tbody">
                         <div class="tr" v-for="student in students" :key="student.name">
                             <div class="td-name">{{ student.name }}</div>
                             <div class="td-con">
-                                <div class="td" v-for="grade in gradeline(student.quiz)"><p>{{ grade }}</p> </div>
+                                <div class="td" v-for="grades in gradeline(student.quiz,quizstotal)" :key="grades.lrn" :class="grades.pass? 'notpass':'pass'"><p>{{ grades.grade }}</p> </div>
                             </div>
-                            <div class="td-total"><p>{{ average(student.quiz) }}</p></div>
+                            <div class="td-total" :class="average(student.quiz).pass ? 'pass' : 'notpass'"><p>{{ average(student.quiz).average }}</p></div>
                         </div>
                     </div>
                  </div>
@@ -35,65 +36,89 @@
 import navbar from './components/navbar.vue';
 export default{
     components:{
-        navbar
+        navbar                   
     },
     data(){
         return{
-            students:[
-                { lrn: 256548512374, name: 'Sanchez, James Patrick L.', quiz: [20, 50, 80, 43, 12, 53, 60, 72, 55, 48, 67] },
-                { lrn: 256548512375, name: 'Reyes, Maria Clara', quiz: [75, 60, 85, 90, 70, 88, 92, 81, 77, 85, 90] },
-                { lrn: 256548512376, name: 'Dela Cruz, Juan', quiz: [65, 70, 80, 60, 55, 77, 69, 73, 68, 71, 75] },
-                { lrn: 256548512377, name: 'Garcia, Ana', quiz: [90, 92, 88, 85, 91, 89, 94, 96, 93, 95, 97] },
-                { lrn: 256548512378, name: 'Torres, Miguel', quiz: [55, 60, 58, 62, 59, 61, 64, 66, 63, 65, 67] },
-                { lrn: 256548512379, name: 'Lopez, Carla', quiz: [80, 85, 78, 82, 79, 81, 84, 86, 83, 85, 87] },
-                { lrn: 256548512380, name: 'Ramos, Paolo', quiz: [70, 75, 72, 68, 74, 73, 76, 78, 75, 77, 79] },
-                { lrn: 256548512381, name: 'Cruz, Angelica', quiz: [88, 90, 85, 87, 89, 86, 91, 93, 90, 92, 94] },
-                { lrn: 256548512382, name: 'Santos, Mark', quiz: [60, 65, 63, 67, 62, 66, 69, 71, 68, 70, 72] },
-                { lrn: 256548512383, name: 'Flores, Bianca', quiz: [95, 98, 97, 96, 99, 94, 100, 99, 98, 97, 96] },
-                { lrn: 256548512384, name: 'Mendoza, Carlo', quiz: [50, 55, 53, 57, 52, 56, 59, 61, 58, 60, 62] },
-                { lrn: 256548512385, name: 'Gutierrez, Liza', quiz: [85, 80, 83, 82, 81, 84, 87, 89, 86, 88, 90] },
-                { lrn: 256548512386, name: 'Navarro, Kevin', quiz: [77, 79, 75, 78, 76, 80, 83, 85, 82, 84, 86] },
-                { lrn: 256548512387, name: 'Castro, Julia', quiz: [68, 70, 72, 69, 71, 73, 76, 78, 75, 77, 79] },
-                { lrn: 256548512388, name: 'Villanueva, Paolo', quiz: [82, 84, 83, 81, 85, 80, 87, 89, 86, 88, 90] },
-                { lrn: 256548512389, name: 'Morales, Erika', quiz: [73, 75, 74, 76, 72, 77, 80, 82, 79, 81, 83] },
-                { lrn: 256548512390, name: 'Fernandez, John', quiz: [66, 68, 67, 65, 69, 70, 73, 75, 72, 74, 76] },
-                { lrn: 256548512391, name: 'Diaz, Patricia', quiz: [91, 93, 92, 90, 94, 95, 98, 100, 97, 99, 96] },
-                { lrn: 256548512392, name: 'Bautista, Simon', quiz: [58, 60, 59, 61, 57, 62, 65, 67, 64, 66, 68] },
-                { lrn: 256548512393, name: 'Aguilar, Rose', quiz: [87, 89, 88, 86, 90, 85, 92, 94, 91, 93, 95] }
+            quizs:['Quiz 1','Quiz 2','Quiz 3','Quiz 4','Quiz 5','Quiz 6','Quiz 7','Quiz 8','Quiz 9','Quiz 10','Quiz 11'],
+            quizstotal: [10, 20, 25, 15, 30, 50, 40, 35, 45, 60],
+            students: [
+            { lrn: 256548512374, name: 'Sanchez, James Patrick L.', quiz: [8, 15, 22, 12, 25, 41, 30, 28, 39, 55] },
+            { lrn: 256548512375, name: 'Reyes, Maria Clara', quiz: [10, 18, 24, 13, 28, 48, 37, 33, 42, 59] },
+            { lrn: 256548512376, name: 'Dela Cruz, Juan', quiz: [9, 16, 20, 14, 26, 44, 35, 30, 40, 57] },
+            { lrn: 256548512377, name: 'Garcia, Ana', quiz: [7, 19, 23, 12, 29, 49, 39, 32, 44, 60] },
+            { lrn: 256548512378, name: 'Torres, Miguel', quiz: [6, 11, 18, 10, 22, 38, 28, 25, 35, 50] },
+            { lrn: 256548512379, name: 'Lopez, Carla', quiz: [9, 20, 25, 15, 30, 50, 40, 35, 45, 60] },
+            { lrn: 256548512380, name: 'Ramos, Paolo', quiz: [8, 17, 22, 13, 27, 45, 36, 29, 41, 58] },
+            { lrn: 256548512381, name: 'Cruz, Angelica', quiz: [10, 20, 25, 14, 30, 47, 39, 34, 43, 59] },
+            { lrn: 256548512382, name: 'Santos, Mark', quiz: [7, 13, 19, 11, 23, 40, 31, 27, 38, 52] },
+            { lrn: 256548512383, name: 'Flores, Bianca', quiz: [10, 19, 23, 15, 28, 46, 38, 33, 44, 60] },
+            { lrn: 256548512384, name: 'Mendoza, Carlo', quiz: [8, 15, 21, 13, 25, 42, 34, 30, 40, 56] },
+            { lrn: 256548512385, name: 'Gutierrez, Liza', quiz: [9, 18, 24, 14, 29, 48, 37, 32, 42, 58] },
+            { lrn: 256548512386, name: 'Navarro, Kevin', quiz: [10, 17, 23, 12, 26, 47, 36, 31, 41, 57] },
+            { lrn: 256548512387, name: 'Castro, Julia', quiz: [8, 14, 20, 11, 24, 43, 33, 28, 39, 54] },
+            { lrn: 256548512388, name: 'Villanueva, Paolo', quiz: [9, 16, 21, 13, 27, 45, 35, 29, 41, 56] },
+            { lrn: 256548512389, name: 'Morales, Erika', quiz: [10, 19, 25, 15, 30, 50, 40, 34, 45, 60] },
+            { lrn: 256548512390, name: 'Fernandez, John', quiz: [7, 12, 18, 10, 22, 39, 30, 26, 36, 51] },
+            { lrn: 256548512391, name: 'Diaz, Patricia', quiz: [10, 20, 25, 15, 30, 50, 40, 35, 45, 60] },
+            { lrn: 256548512392, name: 'Bautista, Simon', quiz: [9, 18, 23, 14, 28, 47, 37, 32, 42, 59] },
+            { lrn: 256548512393, name: 'Aguilar, Rose', quiz: [8, 16, 22, 13, 26, 46, 36, 31, 41, 57] }
             ],
+
             line:0
         }
     },
     methods:{
-        gradeline(grades){
+        gradeline(grades,quizstotal){
+
             const list = [];
             let i = this.line;
-            for( i ; i < this.line + 5 && i < grades.length; i++){
-                list.push(grades[i]);
+            for( i ; i < this.line + 7 && i < grades.length; i++){
+                let pass = false;
+                if (grades[i] < (quizstotal[i] * 0.75)){
+                    pass = true;
+                }
+                list.push({grade:grades[i],pass:pass});
             }
-            console.log('line : '+i +' Student : '+(grades.length-4));
+            console.log('line : '+list);
             return list;
         },
         add(){
-            if(this.line < (this.students[0].quiz.length - 5)){
+            if(this.line < (this.students[0].quiz.length - 7)){
                  
                 this.line++;
             }
             // console.log('line : '+this.line +' Student : '+(this.students[0].quiz.length - 4));
             
         },
+        quizslist(quiz,quizstotal){
+            const list = [];
+            let i = this.line;
+            for( i ; i < this.line + 7 && i < quiz.length; i++){
+                list.push({name : quiz[i],score : quizstotal[i]});
+            }
+            console.log('line : '+i +' Student : '+(quiz.length-7));
+            return list;
+        },
         average(grades){
             let Total = 0;
-            for(let grade of grades){
-                Total += grade;
+            for(let i in grades){
+                Total += grades[i] / this.quizstotal[i] *100;
             }
             const average = (Total / grades.length).toFixed(2);
-            return average;
+            let pass = false;
+            if((Total / grades.length)>75){
+                pass = true
+            }
+            return {average,pass};
         }
     }
 }
 </script>
 <style scoped>
+.notpass{
+    background-color: red;
+}
 body{
     background-color: rgb(235, 235, 235);
     height: 100vh;
@@ -107,27 +132,72 @@ body{
     overflow: auto;
     scrollbar-width: none;
     width: 100%;
-    background-color: aqua;
+    /* background-color: aqua; */
+}
+.th-total{
+    text-align: center;
+    text-justify:auto;
+    height: 50px;
+    width: 60px;
+    border: 1px solid black;
 }
 .td-total{
-    width: 50px;
+    text-align: center;
+    text-justify:auto;
+    height: 25px;
+    width: 60px;
+    border: 1px solid black;
 }
-.td{
+.td p,.td-total p{
+    margin: 0;
+}
+.th{
+    text-align: center;
+    text-justify:auto;
     min-width: 50px;
     width: 100%;
-    height: 48px;
+    height: 50px;
     border: 1px solid black;
+}
+.td{
+    text-align: center;
+    text-justify:auto;
+    min-width: 50px;
+    width: 100%;
+    height: 25px;
+    border: 1px solid black;
+}
+.thead{
+    height: 50px;
+}
+.th-con{
+    height: 50px;
+    width:calc(100% - 350px);
+    border: 1px solid black;
+    display: flex;
 }
 .tr,.thead{display: flex;}
-.td-con,.th-con{
+.td-con{
     display: flex;
-    height: 50px;
-    width:calc(100% - 450px);
+    height: 25px;
+    width:calc(100% - 350px);
     border: 1px solid black;
 }
-.th-name,.td-name{
+.th-name h3{
+    margin: 0;
+    
+}
+.th-name{
     height: 50px;
-    width: 400px;
+    width: 300px;
+    font-weight: 800;
+    text-align: center;
+    border: 1px solid black;
+}
+.td-name{
+    height: 25px;
+    width: 300px;
+    font-weight: 800;
     text-align: center;
     border: 1px solid black;
 }
