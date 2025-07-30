@@ -31,7 +31,7 @@ function auth(req, res, next) {
           sameSite: 'lax',
           maxAge: 90 * 24 * 60 * 60 * 1000 // 90 days
       });
-
+      console.log('the token rotated')
       next();
     } catch (err) {
       return res.status(401).json({ message: 'Invalid or expired token.' });
