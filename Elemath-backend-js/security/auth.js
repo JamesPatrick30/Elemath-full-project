@@ -16,18 +16,22 @@ function auth(req, res, next) {
       const decoded = jwt.verify(refresh_token, process.env.JWT_SECRET);
       req.user = decoded; // ✅ Attach user data to req.user
       console.log("✅ Authenticated decoded:", decoded);
-      res.cookie('access_token', createToken( decoded ).accessToken, {
+      // Access token cookie (90 minutes)
+      res.cookie('access_token', createToken(payload).accessToken, {
           httpOnly: true,
-          secure: false,
-          sameSite: 'None',
-          maxAge: 15 * 60 * 1000 // 15 mins
+          secure: false,       // true in production
+          sameSite: 'lax',     // 'none' only if cross-site
+          maxAge: 90 * 60 * 1000 // 90 minutes
       });
-      res.cookie('refresh_token', createToken( decoded ).refreshToken, {
+
+      // Refresh token cookie (90 days)
+      res.cookie('refresh_token', createToken(payload).refreshToken, {
           httpOnly: true,
-        secure: false,
-        sameSite: 'None',
-        maxAge: 90 * 24 * 60 * 60 * 1000 // 15 mins
+          secure: false,       // true in production
+          sameSite: 'lax',
+          maxAge: 90 * 24 * 60 * 60 * 1000 // 90 days
       });
+
       next();
     } catch (err) {
       return res.status(401).json({ message: 'Invalid or expired token.' });

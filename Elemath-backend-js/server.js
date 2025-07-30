@@ -86,18 +86,22 @@ app.post('/api/login',async (req, res) => {
     }
     const payload = {id: user._id, username: user.Email};
     const classCount = user.class.length;
-    res.cookie('access_token', createToken( payload ).accessToken, {
+    // Access token cookie (90 minutes)
+    res.cookie('access_token', createToken(payload).accessToken, {
         httpOnly: true,
-        secure: false,
-        sameSite: 'None',
-        maxAge: 15 * 60 * 1000
+        secure: false,       // true in production
+        sameSite: 'lax',     // 'none' only if cross-site
+        maxAge: 90 * 60 * 1000 // 90 minutes
     });
-    res.cookie('refresh_token', createToken( decoded ).refreshToken, {
-          httpOnly: true,
-        secure: false,
-        sameSite: 'None',
-        maxAge: 90 * 24 * 60 * 60 * 1000 // 15 mins
-      });
+
+    // Refresh token cookie (90 days)
+    res.cookie('refresh_token', createToken(payload).refreshToken, {
+        httpOnly: true,
+        secure: false,       // true in production
+        sameSite: 'lax',
+        maxAge: 90 * 24 * 60 * 60 * 1000 // 90 days
+    });
+
     res.status(200).json({ message: 'Login successful', classCount: classCount });
     console.log('Login successful:', username);
 });
