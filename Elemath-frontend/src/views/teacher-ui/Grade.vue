@@ -16,7 +16,7 @@
                         <div class="th-total"><p>average</p></div>
                     </div>
                     <div class="tbody">
-                        <div class="tr" v-for="student in students" :key="student.name">
+                        <div class="tr" :id="index%2? 'line-2' : ''" v-for="(student,index) in students" :key="student.name">
                             <div class="td-name">{{ student.name }}</div>
                             <div class="td-con">
                                 <div class="td" v-for="grades in gradeline(student.quiz,quizstotal)" :key="grades.lrn" :class="grades.pass? 'notpass':'pass'"><p>{{ grades.grade }}</p> </div>
@@ -63,7 +63,7 @@ export default{
             { lrn: 256548512391, name: 'Diaz, Patricia', quiz: [10, 20, 25, 15, 30, 50, 40, 35, 45, 60] },
             { lrn: 256548512392, name: 'Bautista, Simon', quiz: [9, 18, 23, 14, 28, 47, 37, 32, 42, 59] },
             { lrn: 256548512393, name: 'Aguilar, Rose', quiz: [8, 16, 22, 13, 26, 46, 36, 31, 41, 57] }
-            ],
+            ].sort((a, b) => a.name.localeCompare(b.name)),
 
             line:0
         }
@@ -116,6 +116,9 @@ export default{
 }
 </script>
 <style scoped>
+#line-2{
+    background-color: rgb(154, 209, 247);
+}
 .notpass{
     background-color: red;
 }
