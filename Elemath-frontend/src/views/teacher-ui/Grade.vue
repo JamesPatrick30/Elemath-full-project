@@ -4,6 +4,14 @@
         <main>
             <header>
                 <h1>Grade</h1>
+                <div class="actions">
+                    <select name="class" id=""></select>
+                    <select name="quater" id="">
+                    
+                    </select>
+                    <button>Create an Quarter</button>
+                </div>
+                
             </header>
             <div class="table-con">
                 <!-- TODO: create better table -->
@@ -32,7 +40,7 @@
     </body>
 </template> 
 <script>
-
+import api from '@/axios';
 import navbar from './components/navbar.vue';
 export default{
     components:{
@@ -40,6 +48,9 @@ export default{
     },
     data(){
         return{
+            user:null,
+            classInput:'',
+            selectedClassId:'',
             quizs:['Quiz 1','Quiz 2','Quiz 3','Quiz 4','Quiz 5','Quiz 6','Quiz 7','Quiz 8','Quiz 9','Quiz 10','Quiz 11'],
             quizstotal: [10, 20, 25, 15, 30, 50, 40, 35, 45, 60],
             students: [
@@ -69,8 +80,51 @@ export default{
         }
     },
     methods:{
+        async getClassData(classIn) {
+            try {
+                const res = await api.post('/get/classData', {
+                    classId: classIn
+                });
+
+                console.log('Student list:', res.data);
+                this.students = res.data;
+            } catch (err) {
+                console.error('Error fetching class data:', err);
+                alert('Failed to load class data. Please try again later.');
+            }
+        },
+        async getData() {
+            try {
+                const res = await api.get('/data/teacher');
+                this.user = res.data;
+
+                // Automatically select the first class if available
+                if (this.user.class && this.user.class.length > 0) {
+                    const firstClass = this.user.class[0];
+                    this.selectedClassId = firstClass.Class_id;
+                    this.classInput = firstClass;
+                    this.getClassData(this.selectedClassId);
+                }
+
+
+                console.log('Data fetched successfully:', res.data);
+            } catch (err) {
+                console.error('Error fetching data:', err);
+                
+                if (err.response?.status === 401) {
+                    this.$router.push('/');
+                } else {
+                    const msg = err.response?.data?.message || 'Failed to fetch data. Please try again later.';
+                    alert(msg);
+                }
+            }
+        },
         gradeline(grades,quizstotal){
 
+            if (!Array.isArray(grades) || !Array.isArray(quizstotal)) {
+                console.warn("gradeline called with invalid data");
+                return [];
+            }
             const list = [];
             let i = this.line;
             for( i ; i < this.line + 7 && i < grades.length; i++){
@@ -112,15 +166,23 @@ export default{
             }
             return {average,pass};
         }
+    },
+    mounted(){
+        this.getData();
     }
 }
 </script>
 <style scoped>
+.actions{
+    margin-left: 20px;
+    display: flex;
+    gap: 20px;
+}
 #line-2{
     background-color: rgb(154, 209, 247);
 }
 .notpass{
-    background-color: red;
+    background-color: rgb(255, 140, 140);
 }
 body{
     background-color: rgb(235, 235, 235);
