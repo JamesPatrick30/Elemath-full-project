@@ -105,6 +105,9 @@ app.post('/api/login',async (req, res) => {
     res.status(200).json({ message: 'Login successful', classCount: classCount });
     console.log('Login successful:', username);
 });
+app.post('create/record',auth,async (req , res) =>{
+
+});
 // app.post('/refresh-token', verifyRefreshToken, (req, res) => {
 //   console.log("Refresh token request cookies:", req.refreshToken);
 //     const refreshToken = req.cookies.refresh_token;
