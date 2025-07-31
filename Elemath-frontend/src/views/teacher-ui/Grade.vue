@@ -93,6 +93,9 @@ export default{
         }
     },
     methods:{
+        async createQuarter(){
+            //TODO: create the logic
+        },
         async getClassData(classIn) {
             try {
                 const res = await api.post('/get/classData', {
