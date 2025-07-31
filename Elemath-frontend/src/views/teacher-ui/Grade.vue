@@ -1,4 +1,16 @@
 <template>
+    <div class="cluster-con" v-if="clusterCreateGrade === false">
+        <div class="cluster">
+            <div class="header-cluster">
+                <button @click="clusterCreateGrade = true"><font-awesome-icon :icon="['fas', 'xmark']" size="lg"/></button>
+                <h1>Create Quarter</h1>
+                <h2>class : {{ selectedClassId?.Class_name }}</h2>
+            </div>
+
+            <input type="text" class="input-cluster" placeholder="Quarter Name">
+            <button class="btn-cluster">Create</button>
+        </div>
+    </div>
     <body>
         <navbar></navbar>
         <main>
@@ -9,7 +21,7 @@
                     <select name="quater" id="">
                     
                     </select>
-                    <button>Create an Quarter</button>
+                    <button @click="clusterCreateGrade = true">Create an Quarter</button>
                 </div>
                 
             </header>
@@ -25,7 +37,7 @@
                     </div>
                     <div class="tbody">
                         <div class="tr" :id="index%2? 'line-2' : ''" v-for="(student,index) in students" :key="student.name">
-                            <div class="td-name">{{ student.name }}</div>
+                            <div class="td-name"><h5 class="student-name">{{ student.name }}</h5></div>
                             <div class="td-con">
                                 <div class="td" v-for="grades in gradeline(student.quiz,quizstotal)" :key="grades.lrn" :class="grades.pass? 'notpass':'pass'"><p>{{ grades.grade }}</p> </div>
                             </div>
@@ -48,9 +60,10 @@ export default{
     },
     data(){
         return{
+            clusterCreateGrade:false,
             user:null,
             classInput:'',
-            selectedClassId:'',
+            selectedClassId:{},
             quizs:['Quiz 1','Quiz 2','Quiz 3','Quiz 4','Quiz 5','Quiz 6','Quiz 7','Quiz 8','Quiz 9','Quiz 10','Quiz 11'],
             quizstotal: [10, 20, 25, 15, 30, 50, 40, 35, 45, 60],
             students: [
@@ -101,9 +114,9 @@ export default{
                 // Automatically select the first class if available
                 if (this.user.class && this.user.class.length > 0) {
                     const firstClass = this.user.class[0];
-                    this.selectedClassId = firstClass.Class_id;
+                    this.selectedClassId = firstClass;
                     this.classInput = firstClass;
-                    this.getClassData(this.selectedClassId);
+                    this.getClassData(this.selectedClassId.Class_id);
                 }
 
 
@@ -125,17 +138,17 @@ export default{
                 console.warn("gradeline called with invalid data");
                 return [];
             }
-            const list = [];
-            let i = this.line;
-            for( i ; i < this.line + 7 && i < grades.length; i++){
-                let pass = false;
-                if (grades[i] < (quizstotal[i] * 0.75)){
-                    pass = true;
-                }
-                list.push({grade:grades[i],pass:pass});
-            }
-            console.log('line : '+list);
-            return list;
+            // const list = [];
+            // let i = this.line;
+            // for( i ; i < this.line + 7 && i < grades.length; i++){
+            //     let pass = false;
+            //     if (grades[i] < (quizstotal[i] * 0.75)){
+            //         pass = true;
+            //     }
+            //     list.push({grade:grades[i],pass:pass});
+            // }
+            // console.log('line : '+list);
+            // return list;
         },
         add(){
             if(this.line < (this.students[0].quiz.length - 7)){
@@ -155,15 +168,15 @@ export default{
             return list;
         },
         average(grades){
-            let Total = 0;
-            for(let i in grades){
-                Total += grades[i] / this.quizstotal[i] *100;
-            }
-            const average = (Total / grades.length).toFixed(2);
+            // let Total = 0;
+            // for(let i in grades){
+            //     Total += grades[i] / this.quizstotal[i] *100;
+            // }
+             const average = 100;//(Total / grades.length).toFixed(2);
             let pass = false;
-            if((Total / grades.length)>75){
-                pass = true
-            }
+            // if((Total / grades.length)>75){
+            //     pass = true
+            // }
             return {average,pass};
         }
     },
@@ -173,6 +186,78 @@ export default{
 }
 </script>
 <style scoped>
+.student-name{
+    margin: 0;
+    padding: 0;
+    
+}
+*{
+    font-family: 'BubbleBody Neue','Poppins', sans-serif;
+}
+.cluster .btn-cluster{
+    background-color: rgb(114, 241, 131);
+    color: white;
+    font-weight: 800;
+    border: none;
+}
+.cluster .input-cluster{
+    border: 2px solid rgb(114, 241, 131);
+    /* border-bottom: 2px solid rgb(114, 241, 131); */
+}
+.cluster .input-cluster:focus{
+    /* border: none; */
+    outline: none;
+    box-shadow: 0 0px 10 px rgb(114, 241, 131);
+}
+.cluster .input-cluster,.cluster .btn-cluster{
+    width: 200px;
+    height: 30px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+.header-cluster h2{
+    margin: 0;
+    margin-bottom: 20px;
+}
+.header-cluster h1{
+    margin: 0;
+}
+.header-cluster button{
+
+    align-self: flex-end;
+    left: auto;
+    border: none;
+    color: rgb(245, 101, 101);
+    background-color: transparent;
+}
+.header-cluster{
+    color: #41b8d5;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.cluster{
+    height: fit-content;
+    width: 300px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 10px;
+    /* justify-content: center; */
+}
+.cluster-con{
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    background-color: rgba(0, 0, 0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
 .actions{
     margin-left: 20px;
     display: flex;
