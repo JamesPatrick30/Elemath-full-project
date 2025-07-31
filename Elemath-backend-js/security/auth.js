@@ -17,7 +17,7 @@ function auth(req, res, next) {
       req.user = decoded; // ✅ Attach user data to req.user
       console.log("✅ Authenticated decoded:", decoded);
       // Access token cookie (90 minutes)
-      res.cookie('access_token', createToken(payload).accessToken, {
+      res.cookie('access_token', createToken(decoded).accessToken, {
           httpOnly: true,
           secure: false,       // true in production
           sameSite: 'lax',     // 'none' only if cross-site
@@ -25,7 +25,7 @@ function auth(req, res, next) {
       });
 
       // Refresh token cookie (90 days)
-      res.cookie('refresh_token', createToken(payload).refreshToken, {
+      res.cookie('refresh_token', createToken(decoded).refreshToken, {
           httpOnly: true,
           secure: false,       // true in production
           sameSite: 'lax',
