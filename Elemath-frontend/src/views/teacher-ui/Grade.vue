@@ -1,8 +1,8 @@
 <template>
-    <div class="cluster-con" v-if="clusterCreateGrade === false">
+    <div class="cluster-con" v-if="clusterCreateGrade === true">
         <div class="cluster">
             <div class="header-cluster">
-                <button @click="clusterCreateGrade = true"><font-awesome-icon :icon="['fas', 'xmark']" size="lg"/></button>
+                <button @click="clusterCreateGrade = false"><font-awesome-icon :icon="['fas', 'xmark']" size="lg"/></button>
                 <h1>Create Quarter</h1>
                 <h2>class : {{ selectedClassId?.Class_name }}</h2>
             </div>
@@ -33,7 +33,7 @@
                         <div class="th-con">
                             <div class="th" v-for="quiz in  quizslist(this.quizs,quizstotal)" :key="quiz.name">{{ quiz.name }} <br> {{ quiz.score }}</div>
                         </div>
-                        <div class="th-total"><p>average</p></div>
+                        <div class="th-total"><p>Ave</p></div>
                     </div>
                     <div class="tbody">
                         <div class="tr" :id="index%2? 'line-2' : ''" v-for="(student,index) in students" :key="student.name">
@@ -99,8 +99,8 @@ export default{
                     classId: classIn
                 });
 
-                console.log('Student list:', res.data);
-                this.students = res.data;
+                console.log('Student list:', res.data.sort((a, b) => a.name.localeCompare(b.name)));
+                this.students = res.data.sort((a, b) => a.name.localeCompare(b.name));
             } catch (err) {
                 console.error('Error fetching class data:', err);
                 alert('Failed to load class data. Please try again later.');
@@ -357,8 +357,8 @@ th,td{
 .table{
     
     border: 1px solid black;
-    height: 90%;
-    width: 90%;
+    height: 80%;
+    width: 94%;
     /* background-color: rgb(216, 216, 216); */
 }
 .table-con{
