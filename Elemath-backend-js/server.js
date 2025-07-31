@@ -105,8 +105,19 @@ app.post('/api/login',async (req, res) => {
     res.status(200).json({ message: 'Login successful', classCount: classCount });
     console.log('Login successful:', username);
 });
+const Gradebook = require('./models/grade.js');
 app.post('create/record',auth,async (req , res) =>{
 // TODO:create the logic
+  const {classId,gradingPeriod} = req.body;
+
+  const book = new Gradebook({
+    classId: classId,
+    gradingPeriod:gradingPeriod
+  });
+
+  const result = book.save();
+  console.log(result);
+  res.json({message : 'done',result:result});
 });
 // app.post('/refresh-token', verifyRefreshToken, (req, res) => {
 //   console.log("Refresh token request cookies:", req.refreshToken);
