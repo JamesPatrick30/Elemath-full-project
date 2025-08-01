@@ -30,6 +30,7 @@ const studentListSchema = new mongoose.Schema({
   lrn:String,
   name:String
 }, { _id: false });
+
 const gradebookSchema = new mongoose.Schema({
   classId:       { type: String, ref: 'Class' },
   gradingPeriod: { type: String }, // e.g., Q1, Q2, Final

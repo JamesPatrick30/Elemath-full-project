@@ -91,7 +91,8 @@ app.post('/api/login',async (req, res) => {
         httpOnly: true,
         secure: false,       // true in production
         sameSite: 'lax',     // 'none' only if cross-site
-        maxAge: 90 * 60 * 1000 // 90 minutes
+        maxAge: 90 * 60 * 1000, // 90 minutes
+        path:'/'
     });
 
     // Refresh token cookie (90 days)
@@ -99,7 +100,8 @@ app.post('/api/login',async (req, res) => {
         httpOnly: true,
         secure: false,       // true in production
         sameSite: 'lax',
-        maxAge: 90 * 24 * 60 * 60 * 1000 // 90 days
+        maxAge: 90 * 24 * 60 * 60 * 1000, // 90 days
+        path:'/'
     });
 
     res.status(200).json({ message: 'Login successful', classCount: classCount });
