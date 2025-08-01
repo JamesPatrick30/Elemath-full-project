@@ -94,6 +94,21 @@ export default{
         }
     },
     methods:{
+        async refreshtoken(){
+            try {
+                const res = await api.post('/refresh-token');
+                this.user = res.data;
+                console.log('Token refreshed successfully:', res.data);
+                await this.getData();
+            } catch (err) {
+                console.error('Error refreshing token:', err);
+                if(err.response && err.response.status === 401) {
+                    this.$router.push('/');
+                } else {
+                    alert('Failed to refresh token. Please try again later.');
+                }
+            }
+        },
         async createQuarter(classId){
             //TODO: create the logic
             console.log('Classid : '+classId );
@@ -198,7 +213,8 @@ export default{
         }
     },
     mounted(){
-        this.getData();
+        this.refreshtoken()
+        // this.getData();
     }
 }
 </script>

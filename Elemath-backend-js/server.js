@@ -121,33 +121,37 @@ app.post('create/record',auth,async (req , res) =>{
   console.log(result);
   res.json({message : 'done',result:result});
 });
-// app.post('/refresh-token', verifyRefreshToken, (req, res) => {
-//   console.log("Refresh token request cookies:", req.refreshToken);
-//     const refreshToken = req.cookies.refresh_token;
-//     if (!refreshToken) {
-//         return res.status(401).json({ message: 'No refresh token provided' });
-//     }
-//     try {
-//         const newAccessToken = createToken( req.user ).accessToken;
-//         res.cookie('access_token', newAccessToken, {
-//             httpOnly: true,
-//             secure: false, // use true if HTTPS
-//             sameSite: 'lax',
-//             maxAge: 90 * 60 * 1000 // 15 mins
-//         });
-//         res.cookie('refresh_token', createToken( req.user ).refreshToken, {
-//             httpOnly: true,
-//             secure: false, // use true if HTTPS
-//             sameSite: 'lax',
-//             maxAge: 90 * 24 * 60 * 60 * 1000 // 15 mins
-//         });
-//         console.log('Access token refreshed');
-//         res.status(200).json({ message: 'Access token refreshed' });
-//     } catch (error) {
-//         console.error('Error refreshing token:', error);
-//         res.status(500).json({ message: 'Internal server error' });
-//     }
-// });
+app.post('/refresh-token', verifyRefreshToken, (req, res) => {
+  console.log("Refresh token request cookies:", req.refreshToken);
+    const refreshToken = req.cookies.refresh_token;
+    if (!refreshToken) {
+        return res.status(401).json({ message: 'No refresh token provided' });
+    }
+    try {
+        const payload = req.user ;
+        res.cookie('access_token', createToken(payload).accessToken, {
+            httpOnly: true,
+            secure: false,       // true in production
+            sameSite: 'lax',     // 'none' only if cross-site
+            maxAge: 90 * 60 * 1000, // 90 minutes
+            path:'/'
+        });
+
+        // Refresh token cookie (90 days)
+        res.cookie('refresh_token', createToken(payload).refreshToken, {
+            httpOnly: true,
+            secure: false,       // true in production
+            sameSite: 'lax',
+            maxAge: 90 * 24 * 60 * 60 * 1000, // 90 days
+            path:'/'
+        });
+        console.log('Access token refreshed');
+        res.status(200).json({ message: 'Access token refreshed' });
+    } catch (error) {
+        console.error('Error refreshing token:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
 
 app.post('/api/logout', (req, res) => {
     console.log("Logout request cookies:", req.cookies);
