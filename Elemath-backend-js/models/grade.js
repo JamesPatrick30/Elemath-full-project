@@ -35,7 +35,21 @@ const gradebookSchema = new mongoose.Schema({
   classId:       { type: String, ref: 'Class' },
   gradingPeriod: { type: String }, // e.g., Q1, Q2, Final
   students:[studentListSchema],
-  grades: [quizSchema]
+  quizzes: [quizSchema],
+  analysis:{
+    lineChart: {
+      type: [mongoose.Schema.Types.Mixed],
+      default: []
+    },
+    topStudent:{
+      type: [mongoose.Schema.Types.Mixed],
+      default: []
+    },
+    passvsfail:{
+      pass: { type: Number, default: 0 },
+      failed: { type: Number, default: 0 }
+    }
+  }
 });
 
 module.exports = mongoose.model('Gradebook', gradebookSchema);
