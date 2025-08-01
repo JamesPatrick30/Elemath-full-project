@@ -108,18 +108,42 @@ app.post('/api/login',async (req, res) => {
     console.log('Login successful:', username);
 });
 const Gradebook = require('./models/grade.js');
-app.post('create/record',auth,async (req , res) =>{
-// TODO:create the logic
-  const {classId,gradingPeriod} = req.body;
+app.post('/create/record', auth, async (req, res) => {
+  try {
+    const { classId, gradingPeriod } = req.body;
 
-  const book = new Gradebook({
-    classId: classId,
-    gradingPeriod:gradingPeriod
-  });
+    // 1. Make sure we don't already have a record for this class & period
+    const existing = await Gradebook.findOne({ classId, gradingPeriod });
+    if (existing) {
+      return res.status(400).json({ message: "Gradebook already exists for this class and grading period." });
+    }
 
-  const result = book.save();
-  console.log(result);
-  res.json({message : 'done',result:result});
+    // 2. Get all students in the class
+    const students = await Student.find(
+      { classId:classId },
+      { lrn: 1, name: 1, _id: 0 } // projection
+    );
+
+    if (!students.length) {
+      return res.status(404).json({ message: "No students found for this class." });
+    }
+
+    // 3. Create new gradebook
+    const book = new Gradebook({
+      classId,
+      gradingPeriod,
+      students
+    });
+
+    const result = await book.save(); // ✅ await here
+
+    // 4. Respond with result
+    res.status(201).json({ message: 'Gradebook created successfully.', result });
+
+  } catch (error) {
+    console.error("Error creating gradebook:", error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
 });
 app.post('/refresh-token', verifyRefreshToken, (req, res) => {
   console.log("Refresh token request cookies:", req.refreshToken);
@@ -201,7 +225,7 @@ app.post('/sign-up', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-app.get('/data/teacher',verifyRefreshToken, auth, async (req, res) => {
+app.get('/data/teacher', verifyRefreshToken,auth, async (req, res) => {
   try {
     // console.log('Authenticated user:', req.user);
     const user = await teacher_accoount.findById(req.user.id).populate('class');

@@ -109,10 +109,37 @@ export default{
                 }
             }
         },
-        async createQuarter(classId){
-            //TODO: create the logic
-            console.log('Classid : '+classId );
-        },
+        //TODO:fix this and add an drop down
+        async createQuarter(classId) {
+            console.log('ClassId:', classId, 'Quarter:', this.qname);
+
+            try {
+                const res = await api.post('/create/record', {
+                classId,
+                gradingPeriod: this.qname
+                });
+
+                // log success clearly
+                console.log('✅ Gradebook Created:', res.data.message);
+
+                // optional: show feedback in the UI
+                this.$toast.success(`Gradebook created for ${this.qname}!`);
+
+                // optional: store result in a local state
+                this.gradebook = res.data.result;
+
+            } catch (err) {
+                // Better error handling
+                if (err.response) {
+                console.error('❌ API Error:', err.response.data.message);
+                this.$toast.error(err.response.data.message || 'Failed to create gradebook.');
+                } else {
+                console.error('❌ Network Error:', err.message);
+                this.$toast.error('Server unreachable. Please try again.');
+                }
+            }
+            },
+
         async getQuarter(quaterId){
             try{
                 const res = await api.post('/get/quarter',{
