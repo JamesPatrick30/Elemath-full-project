@@ -131,6 +131,9 @@ export default{
                     this.selectedClassId = firstClass;
                     this.classInput = firstClass;
                     this.getClassData(this.selectedClassId.Class_id);
+                }else{
+                    alert('No class yet!');
+                    this.$router.push('/tc');
                 }
 
 
