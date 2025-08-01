@@ -96,7 +96,16 @@ export default{
     methods:{
         async createQuarter(classId){
             //TODO: create the logic
-            console.log('Classid : '+classId)
+            console.log('Classid : '+classId );
+        },
+        async getQuarter(quaterId){
+            try{
+                const res = await api.post('/get/quarter',{
+                    quaterId:quaterId
+                });
+            }catch(err){
+                console.log(err);
+            }
         },
         async getClassData(classIn) {
             try {
