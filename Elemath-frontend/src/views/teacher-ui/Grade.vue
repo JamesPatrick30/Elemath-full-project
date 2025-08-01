@@ -7,8 +7,8 @@
                 <h2>class : {{ selectedClassId?.Class_name }}</h2>
             </div>
 
-            <input type="text" class="input-cluster" placeholder="Quarter Name">
-            <button class="btn-cluster">Create</button>
+            <input type="text" class="input-cluster" placeholder="Quarter Name" v-model="qname">
+            <button class="btn-cluster" @click="createQuarter(selectedClassId?.Class_id)">Create</button>
         </div>
     </div>
     <body>
@@ -60,6 +60,7 @@ export default{
     },
     data(){
         return{
+            qname:'',
             clusterCreateGrade:false,
             user:null,
             classInput:'',
@@ -93,8 +94,9 @@ export default{
         }
     },
     methods:{
-        async createQuarter(){
+        async createQuarter(classId){
             //TODO: create the logic
+            console.log('Classid : '+classId)
         },
         async getClassData(classIn) {
             try {
