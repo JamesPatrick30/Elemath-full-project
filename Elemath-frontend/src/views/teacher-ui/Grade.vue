@@ -138,7 +138,17 @@ export default{
                 this.$toast.error('Server unreachable. Please try again.');
                 }
             }
-            },
+        },
+        async getAllQuarter(classId){
+            try{
+                const res = await api.post('/get/classrecord/Id',{
+                    classId:classId
+                });
+                console.log('res get all record id '+ res);
+            }catch(err){
+                console.log(err);
+            }
+        },
 
         async getQuarter(quaterId){
             try{
@@ -156,6 +166,7 @@ export default{
                 });
 
                 console.log('Student list:', res.data.sort((a, b) => a.name.localeCompare(b.name)));
+                this.getAllQuarter(classIn);
                 this.students = res.data.sort((a, b) => a.name.localeCompare(b.name));
             } catch (err) {
                 console.error('Error fetching class data:', err);
