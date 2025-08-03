@@ -121,6 +121,18 @@ app.post('/get/quarter',auth,async (req,res)=>{
 
 });
 
+app.post('/get/classrecord/Id',auth,async(req,res)=>{
+  const {classId}= req.body;
+
+  const records = await Gradebook.find({classId:classId});
+
+  if (!records) return res.status(404).json({count : 0});
+
+  consoles.log('record in :'+classId +' ,' + records);
+  res.json({count: records.length,records: records});
+
+});
+
 app.post('/create/record', auth, async (req, res) => {
   try {
     const { classId, gradingPeriod } = req.body;
@@ -315,6 +327,7 @@ app.post('/createClass', auth, async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
+
 app.post('/enroll-student',auth,async(req,res)=>{
   const { profile, fname, mname, lname, lrn, password, classId, email } = req.body;
 
