@@ -108,6 +108,19 @@ app.post('/api/login',async (req, res) => {
     console.log('Login successful:', username);
 });
 const Gradebook = require('./models/grade.js');
+
+app.post('/get/quarter',auth,async (req,res)=>{
+  const {quaterId} = req.body;
+
+  const quarter = await Gradebook.findOne({_id:quaterId});
+
+  if (!quarter) return res.status(404).json({message:'no quarter fund'});
+
+  res.json(quarter);
+  console.log('quater : '+ quarter);
+
+});
+
 app.post('/create/record', auth, async (req, res) => {
   try {
     const { classId, gradingPeriod } = req.body;
@@ -145,6 +158,7 @@ app.post('/create/record', auth, async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
+
 app.post('/refresh-token', verifyRefreshToken, (req, res) => {
   console.log("Refresh token request cookies:", req.refreshToken);
     const refreshToken = req.cookies.refresh_token;
@@ -194,6 +208,7 @@ app.post('/api/logout', (req, res) => {
   res.status(200).json({ message: 'Logged out successfully' });
   
 });
+
 app.post('/sign-up', async (req, res) => {
   const { username, password } = req.body;
 
@@ -225,6 +240,7 @@ app.post('/sign-up', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+
 app.get('/data/teacher', verifyRefreshToken,auth, async (req, res) => {
   try {
     // console.log('Authenticated user:', req.user);
@@ -238,6 +254,7 @@ app.get('/data/teacher', verifyRefreshToken,auth, async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+
 app.post('/teacher/changeProfile',auth,async(req,res)=>{
   const {profile} = req.body;
 
