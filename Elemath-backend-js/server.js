@@ -128,7 +128,7 @@ app.post('/get/classrecord/Id',auth,async(req,res)=>{
 
   if (!records) return res.status(404).json({count : 0});
 
-  consoles.log('record in :'+classId +' ,' + records);
+  console.log('record in :'+classId +' ,' + records);
   res.json({count: records.length,records: records});
 
 });
