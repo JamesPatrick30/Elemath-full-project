@@ -67,28 +67,7 @@ export default{
             selectedClassId:{},
             quizs:['Quiz 1','Quiz 2','Quiz 3','Quiz 4','Quiz 5','Quiz 6','Quiz 7','Quiz 8','Quiz 9','Quiz 10','Quiz 11'],
             quizstotal: [10, 20, 25, 15, 30, 50, 40, 35, 45, 60],
-            students: [
-            { lrn: 256548512374, name: 'Sanchez, James Patrick L.', quiz: [8, 15, 22, 12, 25, 41, 30, 28, 39, 55] },
-            { lrn: 256548512375, name: 'Reyes, Maria Clara', quiz: [10, 18, 24, 13, 28, 48, 37, 33, 42, 59] },
-            { lrn: 256548512376, name: 'Dela Cruz, Juan', quiz: [9, 16, 20, 14, 26, 44, 35, 30, 40, 57] },
-            { lrn: 256548512377, name: 'Garcia, Ana', quiz: [7, 19, 23, 12, 29, 49, 39, 32, 44, 60] },
-            { lrn: 256548512378, name: 'Torres, Miguel', quiz: [6, 11, 18, 10, 22, 38, 28, 25, 35, 50] },
-            { lrn: 256548512379, name: 'Lopez, Carla', quiz: [9, 20, 25, 15, 30, 50, 40, 35, 45, 60] },
-            { lrn: 256548512380, name: 'Ramos, Paolo', quiz: [8, 17, 22, 13, 27, 45, 36, 29, 41, 58] },
-            { lrn: 256548512381, name: 'Cruz, Angelica', quiz: [10, 20, 25, 14, 30, 47, 39, 34, 43, 59] },
-            { lrn: 256548512382, name: 'Santos, Mark', quiz: [7, 13, 19, 11, 23, 40, 31, 27, 38, 52] },
-            { lrn: 256548512383, name: 'Flores, Bianca', quiz: [10, 19, 23, 15, 28, 46, 38, 33, 44, 60] },
-            { lrn: 256548512384, name: 'Mendoza, Carlo', quiz: [8, 15, 21, 13, 25, 42, 34, 30, 40, 56] },
-            { lrn: 256548512385, name: 'Gutierrez, Liza', quiz: [9, 18, 24, 14, 29, 48, 37, 32, 42, 58] },
-            { lrn: 256548512386, name: 'Navarro, Kevin', quiz: [10, 17, 23, 12, 26, 47, 36, 31, 41, 57] },
-            { lrn: 256548512387, name: 'Castro, Julia', quiz: [8, 14, 20, 11, 24, 43, 33, 28, 39, 54] },
-            { lrn: 256548512388, name: 'Villanueva, Paolo', quiz: [9, 16, 21, 13, 27, 45, 35, 29, 41, 56] },
-            { lrn: 256548512389, name: 'Morales, Erika', quiz: [10, 19, 25, 15, 30, 50, 40, 34, 45, 60] },
-            { lrn: 256548512390, name: 'Fernandez, John', quiz: [7, 12, 18, 10, 22, 39, 30, 26, 36, 51] },
-            { lrn: 256548512391, name: 'Diaz, Patricia', quiz: [10, 20, 25, 15, 30, 50, 40, 35, 45, 60] },
-            { lrn: 256548512392, name: 'Bautista, Simon', quiz: [9, 18, 23, 14, 28, 47, 37, 32, 42, 59] },
-            { lrn: 256548512393, name: 'Aguilar, Rose', quiz: [8, 16, 22, 13, 26, 46, 36, 31, 41, 57] }
-            ].sort((a, b) => a.name.localeCompare(b.name)),
+            students: [].sort((a, b) => a.name.localeCompare(b.name)),
 
             line:0
         }
@@ -130,13 +109,18 @@ export default{
 
             } catch (err) {
                 // Better error handling
+                if(err.response.status === 400){
+                    alert(err.response.data.message);
+                }
                 if (err.response) {
                 console.error('❌ API Error:', err.response.data.message);
-                this.$toast.error(err.response.data.message || 'Failed to create gradebook.');
+                // this.$toast.error(err.response.data.message || 'Failed to create gradebook.');
                 } else {
                 console.error('❌ Network Error:', err.message);
-                this.$toast.error('Server unreachable. Please try again.');
+                // this.$toast.error('Server unreachable. Please try again.');
                 }
+
+                
             }
         },
         async getAllQuarter(classId){
@@ -144,7 +128,7 @@ export default{
                 const res = await api.post('/get/classrecord/Id',{
                     classId:classId
                 });
-                console.log('res get all record id '+ res);
+                console.log('res get all record id '+ res.data.count);
             }catch(err){
                 console.log(err);
             }
@@ -155,6 +139,7 @@ export default{
                 const res = await api.post('/get/quarter',{
                     quaterId:quaterId
                 });
+                console.log(res);
             }catch(err){
                 console.log(err);
             }

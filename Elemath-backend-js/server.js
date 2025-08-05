@@ -142,9 +142,9 @@ app.post('/create/record', auth, async (req, res) => {
     if (existing) {
       return res.status(400).json({ message: "Gradebook already exists for this class and grading period." });
     }
-
+    console.log('classId : '+classId + ' gradingPeriod : '+gradingPeriod);
     // 2. Get all students in the class
-    const students = await Student.find(
+    const students = await StudentClass.find(
       { classId:classId },
       { lrn: 1, name: 1, _id: 0 } // projection
     );
@@ -161,7 +161,7 @@ app.post('/create/record', auth, async (req, res) => {
     });
 
     const result = await book.save(); // ✅ await here
-
+    console.log(result);
     // 4. Respond with result
     res.status(201).json({ message: 'Gradebook created successfully.', result });
 
