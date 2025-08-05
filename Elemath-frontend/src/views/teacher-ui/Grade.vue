@@ -128,7 +128,8 @@ export default{
                 const res = await api.post('/get/classrecord/Id',{
                     classId:classId
                 });
-                console.log('res get all record id '+ res.data.count);
+                const data = res.data.records;
+                console.log('res get all record id '+ data);
             }catch(err){
                 console.log(err);
             }
