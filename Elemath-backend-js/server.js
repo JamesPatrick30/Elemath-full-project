@@ -480,13 +480,13 @@ app.get('/role', auth, async (req, res) => {
   }
 });
 
-app.get('get/grade/class',auth,async(req,res)=>{
+app.get('/get/grade/class',auth,async(req,res)=>{
   const id = req.user.id;
 
   try{
-    const data = await teacher_accoount.findById(id,{class:1});
+    const data = await teacher_accoount.findById(id,{class:1,_id:0});
     console.log(data);
-    return res.json({data:data});
+    return res.json({data:data.class});
   }catch(err){
     console.log(err);
   }

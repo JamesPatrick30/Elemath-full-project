@@ -63,6 +63,7 @@ export default{
             qname:'',
             clusterCreateGrade:false,
             user:null,
+            class:[],
             classInput:'',
             selectedClassId:{},
             quizs:['Quiz 1','Quiz 2','Quiz 3','Quiz 4','Quiz 5','Quiz 6','Quiz 7','Quiz 8','Quiz 9','Quiz 10','Quiz 11'],
@@ -161,12 +162,12 @@ export default{
         },
         async getData() {
             try {
-                const res = await api.get('/data/teacher');
-                this.user = res.data;
-
+                const res = await api.get('/get/grade/class');
+                this.class = res.data;
+                console.log('classes ? '+JSON.stringify( this.class));
                 // Automatically select the first class if available
-                if (this.user.class && this.user.class.length > 0) {
-                    const firstClass = this.user.class[0];
+                if (this.class && this.class.data.length > 0) {
+                    const firstClass = this.class.data[0];
                     this.selectedClassId = firstClass;
                     this.classInput = firstClass;
                     this.getClassData(this.selectedClassId.Class_id);
