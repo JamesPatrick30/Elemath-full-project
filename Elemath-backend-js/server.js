@@ -170,10 +170,21 @@ app.post('/create/record', auth, async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
-
+const jwt = require('jsonwebtoken');
 app.post('/refresh-token', verifyRefreshToken, (req, res) => {
   console.log("Refresh token request cookies:", req.refreshToken);
     const refreshToken = req.cookies.refresh_token;
+    const accessToken = req.cookies.access_token;
+    if(accessToken){
+      try{
+        const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+        console.log('the token is not rotated');
+        res.status(200).json({ message: 'Access token is ok' });
+        return;
+      }catch(err){
+        console.log(err);
+      }
+    }
     if (!refreshToken) {
         return res.status(401).json({ message: 'No refresh token provided' });
     }
