@@ -469,13 +469,14 @@ app.get('/role', auth, async (req, res) => {
     }
 
     // If neither
-    res.status(404).json({ message: 'User role not found' });
+    return res.status(404).json({ message: 'User role not found' });
 
   } catch (error) {
     console.error("Error in /role:", error);
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 });
+
 
 // // Set up Multer
 // const storage = multer.diskStorage({
