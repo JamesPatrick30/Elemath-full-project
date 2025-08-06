@@ -206,7 +206,7 @@ app.post('/refresh-token', verifyRefreshToken, (req, res) => {
             maxAge: 90 * 24 * 60 * 60 * 1000, // 90 days
             path:'/'
         });
-        console.log('Access token refreshed');
+        console.log('\x1b[33m%s\x1b[0m','all token is rotated in refresh token api');
         res.status(200).json({ message: 'Access token refreshed' });
     } catch (error) {
         console.error('Error refreshing token:', error);
@@ -330,8 +330,8 @@ app.post('/createClass', auth, async (req, res) => {
       }
     );
 
-    console.log('Class created and teacher updated.');
-    res.json({ message: 'created' });
+    console.log('Class created and teacher updated.'+savedClass);
+    res.json({ id: savedClass._id });
 
   } catch (err) {
     console.error(err);

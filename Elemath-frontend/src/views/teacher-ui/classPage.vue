@@ -1,4 +1,12 @@
 <template>
+    <div class="create-con" v-if="createClassCluster">
+        <div class="create">
+            <button class="btn-close-cluster" @click="createClassCluster = false"><font-awesome-icon :icon="['fas', 'xmark']" size="lg"/></button>
+            <h1 class="title-c">Create Class</h1>
+            <input class="input-cluster" type="text" placeholder="Class Name" v-model="className">
+            <button @click="createClass()" class="btn-cluster">Create Class</button>
+        </div>
+    </div>
     <body>
         <navbar/>
         <main>
@@ -20,7 +28,8 @@
                 </select>
 
 
-                <button class="add-student" @click="goToEditClass()"><font-awesome-icon icon="fa-solid fa-user-plus" /> Add student</button>
+                <button class="add-student" @click="goToEditClass()"><font-awesome-icon icon="fa-solid fa-user-plus" /> Edit student</button>
+                <button class="add-student" @click="createClassCluster = true"> Create class</button>
             </header>
             <div class="student-list">
                 <div class="student-list-con">
@@ -61,7 +70,7 @@
                             <div class="thead"><strong>Last Name</strong></div>
                             <div class="thead"><strong>LRN</strong></div>
                             <div class="thead"><strong>Password</strong></div>
-                            <div class="thead"><strong>Action</strong></div>
+                            <!-- <div class="thead"><strong>Action</strong></div> -->
 
                         </div>
                         <div class="table-body" v-if="students.length !== 0">
@@ -72,14 +81,14 @@
                                 <div class="tbody"><p>{{student.lastname}}</p></div>
                                 <div class="tbody"><p>{{student.lrn}}</p></div>
                                 <div class="tbody"><p>{{student.password}}</p></div> 
-                                <div class="tbody">
+                                <!-- <div class="tbody">
                                     <button class="action-btn" id="edit-icon">
                                         <font-awesome-icon :icon="['fas', 'user-pen']"  style="color: yellow;" />
                                     </button>
                                     <button class="action-btn" id="trash-icon">
                                         <font-awesome-icon :icon="['fas', 'trash']" style="color: red;" />
                                     </button>
-                                </div>
+                                </div> -->
                             </div>
                             
                         </div>
@@ -111,8 +120,9 @@ export default {
     },
     data() {
         return {
+            className:'',
             selectedClassId: null,
-
+            createClassCluster:false,
             classlength: 0,
             classInput:null,
             user: null,
@@ -124,6 +134,24 @@ export default {
         };
     },
     methods:{
+        async createClass() {
+            try {
+                const response = await api.post('/createClass', {
+                    ClassName: this.className,
+                });
+                if (response.status === 200) {
+                    // Handle successful class creation, e.g., redirect to class list
+                    // this.$router.push({ name: 'teacher-ui' });
+                    this.getData();
+                    this.getClassData(response.data.id);
+                    this.createClassCluster = false;
+                    this.selectedClassId = response.data.id;
+                }
+                this.className='';
+            } catch (error) {
+                console.error('Class creation failed:', error);
+            }
+        },
         goToEditClass(){
             this.$router.push({ name: 'createClass',query: { i: this.selectedClassId } });
         },
@@ -195,6 +223,59 @@ export default {
 }
 </script>
 <style scoped>
+.title-c{
+    color: #4fc4f7;
+    margin-bottom:10px ;
+}
+.btn-close-cluster{
+    border: none;
+    background-color: transparent;
+    color: red;
+    align-self: end;
+    left: auto;
+}
+.btn-cluster{
+    background-color: rgb(114, 241, 131);
+    color: white;
+    font-weight: 800;
+    border: none;
+}
+.input-cluster{
+    border: 2px solid rgb(114, 241, 131);
+    /* border-bottom: 2px solid rgb(114, 241, 131); */
+}
+.input-cluster:focus{
+    /* border: none; */
+    outline: none;
+    box-shadow: 0 0px 10 px rgb(114, 241, 131);
+}
+.input-cluster,.btn-cluster{
+    width: 200px;
+    height: 30px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+.create-con {
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    z-index: 10;
+    background-color: rgba(0, 0, 3, 0.70);
+}
+.create{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* justify-content: center; */
+    background-color: white;
+    height: fit-content;
+    width: 250px;
+    /* padding: 20px; */
+    border-radius: 10px;
+}
 .action-btn{
     height: fit-content;
     width: fit-content;
@@ -353,6 +434,7 @@ export default {
     font-family: 'BubbleBody Neue','Poppins', sans-serif;
 }
 .title{
+    color: #4fc4f7;
     margin-left: 10px;
 }
 body {

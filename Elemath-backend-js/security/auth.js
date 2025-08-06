@@ -32,6 +32,7 @@ function auth(req, res, next) {
           maxAge: 90 * 24 * 60 * 60 * 1000, // 90 days
           path:'/'
       });
+      console.log('\x1b[34m%s\x1b[0m','all the token is rotated in auth middleware');
         next();
       } catch (err) {
         return res.status(403).json({ message: 'Invalid or expired refresh token.' });
