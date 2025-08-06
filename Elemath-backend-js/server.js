@@ -178,7 +178,7 @@ app.post('/refresh-token', verifyRefreshToken, (req, res) => {
     if(accessToken){
       try{
         const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
-        console.log('the token is not rotated');
+        console.log('\x1b[46m%s\x1b[0m','the token is not rotated');
         res.status(200).json({ message: 'Access token is ok' });
         return;
       }catch(err){
@@ -206,7 +206,7 @@ app.post('/refresh-token', verifyRefreshToken, (req, res) => {
             maxAge: 90 * 24 * 60 * 60 * 1000, // 90 days
             path:'/'
         });
-        console.log('\x1b[33m%s\x1b[0m','all token is rotated in refresh token api');
+        console.log('\x1b[43m%s\x1b[0m','all token is rotated in refresh token api');
         res.status(200).json({ message: 'Access token refreshed' });
     } catch (error) {
         console.error('Error refreshing token:', error);
