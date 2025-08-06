@@ -172,7 +172,7 @@ app.post('/create/record', auth, async (req, res) => {
 });
 const jwt = require('jsonwebtoken');
 app.post('/refresh-token', verifyRefreshToken, (req, res) => {
-  console.log("Refresh token request cookies:", req.refreshToken);
+  // console.log("Refresh token request cookies:", req.refreshToken);
     const refreshToken = req.cookies.refresh_token;
     const accessToken = req.cookies.access_token;
     if(accessToken){

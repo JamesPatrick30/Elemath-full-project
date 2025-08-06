@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const  {createToken} = require('./createToken');
 function auth(req, res, next) {
   const token = req.cookies.access_token;
-  console.log("Refresh token request cookies:", req.cookies.refresh_token);
+  console.log("Refresh token in auth request cookies:", req.cookies.refresh_token);
   console.log("Refresh token request access_token:", token);
   if (!token) {
     const refreshToken = req.cookies.refresh_token; // ✅ Use refresh_token for refresh flow
