@@ -91,7 +91,7 @@ app.post('/api/login',async (req, res) => {
         httpOnly: true,
         secure: false,       // true in production
         sameSite: 'lax',     // 'none' only if cross-site
-        maxAge: 90 * 60 * 1000, // 90 minutes
+        maxAge: 1 * 60 * 1000, // 90 minutes
         path:'/'
     });
 
@@ -194,7 +194,7 @@ app.post('/refresh-token', verifyRefreshToken, (req, res) => {
             httpOnly: true,
             secure: false,       // true in production
             sameSite: 'lax',     // 'none' only if cross-site
-            maxAge: 90 * 60 * 1000, // 90 minutes
+            maxAge: 1 * 60 * 1000, // 90 minutes
             path:'/'
         });
 
@@ -456,10 +456,11 @@ app.get('/role', auth, async (req, res) => {
     // Check teacher
     const teacher = await teacher_accoount.findById(id).populate('class');
     if (teacher) {
+      console.log("✅ Teacher role found :", teacher);
       return res.json({
         role: 'teacher',
         class: teacher.class
-      });
+      }); // <-- return prevents further code
     }
 
     // Check student
@@ -472,10 +473,14 @@ app.get('/role', auth, async (req, res) => {
     return res.status(404).json({ message: 'User role not found' });
 
   } catch (error) {
-    console.error("Error in /role:", error);
-    return res.status(500).json({ message: "Internal server error" });
+    console.error("🔥 Error in /role:", error);
+    if (!res.headersSent) {
+      return res.status(500).json({ message: "Internal server error" });
+    }
   }
 });
+
+
 
 
 // // Set up Multer

@@ -75,7 +75,7 @@ router.post('/google', async (req, res) => {
         httpOnly: true,
         secure: false,
         sameSite: 'lax',
-        maxAge: 15 * 60 * 1000 // 15 mins
+        maxAge: 1 * 60 * 1000 // 15 mins
     });
     res.cookie('refresh_token', createToken( userpayload ).refreshToken, {
         httpOnly: true,
