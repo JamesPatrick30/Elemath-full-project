@@ -8,7 +8,7 @@
             </div>
 
             <input type="text" class="input-cluster" placeholder="Quarter Name" v-model="qname">
-            <button class="btn-cluster" @click="createQuarter(selectedClassId?.Class_id)">Create</button>
+            <button class="btn-cluster" @click="createQuarter(selectedClassId)">Create</button>
         </div>
     </div>
     <body>
@@ -116,11 +116,11 @@ export default{
                 console.log('✅ Gradebook Created:', res.data.message);
 
                 // optional: show feedback in the UI
-                this.$toast.success(`Gradebook created for ${this.qname}!`);
+                // this.$toast.success(`Gradebook created for ${this.qname}!`);
 
                 // optional: store result in a local state
                 this.gradebook = res.data.result;
-
+                this.clusterCreateGrade = false;
             } catch (err) {
                 // Better error handling
                 if(err.response.status === 400){
@@ -143,7 +143,7 @@ export default{
                     classId:classId
                 });
                 const data = res.data.records;
-                console.log('res get all record id '+ data);
+                console.log('res get all record id '+ JSON.stringify(data));
             }catch(err){
                 console.log(err);
             }

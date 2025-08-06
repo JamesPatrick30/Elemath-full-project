@@ -124,7 +124,7 @@ app.post('/get/quarter',auth,async (req,res)=>{
 app.post('/get/classrecord/Id',auth,async(req,res)=>{
   const {classId}= req.body;
 
-  const records = await Gradebook.find({classId:classId});
+  const records = await Gradebook.find({classId:classId},{gradingPeriod:1});
 
   if (!records) return res.status(404).json({count : 0});
 
