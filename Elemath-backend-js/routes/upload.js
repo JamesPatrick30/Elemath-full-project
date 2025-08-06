@@ -1,11 +1,12 @@
 const multer = require('multer');
 const xlsx = require('xlsx');
-const Student = require('../models/students'); // your student model
-const classes = require('../models/class.js');
+// const Student = require('../models/students'); // your student model
+// const classes = require('../models/class.js');
 const express = require('express');
 const router = express.Router();
-const path = require('path');
+// const path = require('path');
 const fs = require('fs');
+const Gradebook = require('../models/grade.js');
 const studentenrolled = require('../models/student');
 // Multer config
 const storage = multer.diskStorage({
@@ -209,6 +210,11 @@ router.post('/upload', upload.single('file'), async (req, res) => {
         
         // Students that are not yet enrolled
         const missing = students.filter(student => !enrolledLRNs.includes(student.lrn));
+        const gradebook_students =  missing.map(student => ({
+        lrn: student.lrn,
+        name: student.name
+        }));
+
         const fulldata = [];
         for(let student in missing){
             const num = Math.floor(Math.random() * characters.length);
@@ -224,10 +230,19 @@ router.post('/upload', upload.single('file'), async (req, res) => {
                 password:missing[student].lrn,
                 classId:classId
             });
+            // gradebook_students.push({
+            //     lrn:missing[student].lrn,
+            //     name:missing[student].name
+            // })
         }
-
+        const result = await Gradebook.updateMany(
+            { classId },
+            {
+                $addToSet: { students: { $each: gradebook_students } } // add to studentListSchema
+            }
+            );
         const db = await studentenrolled.insertMany(fulldata);
-        // console.log('db : ' +missing);
+        console.log('db : ' +JSON.stringify(missing, null, 2));
         console.log('lrns : ' + enrolled);
         // console.log('count : '+ students.length);
         res.json({ studentReadCount :students.length,insterted : db,enrolled : enrolled, failed : failed });
