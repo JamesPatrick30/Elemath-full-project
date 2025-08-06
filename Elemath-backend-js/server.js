@@ -112,11 +112,11 @@ const Gradebook = require('./models/grade.js');
 app.post('/get/quarter',auth,async (req,res)=>{
   const {quaterId} = req.body;
 
-  const quarter = await Gradebook.findOne({_id:quaterId});
+  const quarter = await Gradebook.findOne({_id:quaterId},{_id:0,quizzes:1});
 
   if (!quarter) return res.status(404).json({message:'no quarter fund'});
 
-  res.json(quarter);
+  res.json({quizzes:quarter.quizzes});
   console.log('quater : '+ quarter);
 
 });
@@ -124,7 +124,7 @@ app.post('/get/quarter',auth,async (req,res)=>{
 app.post('/get/classrecord/Id',auth,async(req,res)=>{
   const {classId}= req.body;
 
-  const records = await Gradebook.find({classId:classId},{gradingPeriod:1});
+  const records = await Gradebook.find({classId:classId},{gradingPeriod:1}).sort({ dateCreated: -1 }); // latest first
 
   if (!records) return res.status(404).json({count : 0});
 

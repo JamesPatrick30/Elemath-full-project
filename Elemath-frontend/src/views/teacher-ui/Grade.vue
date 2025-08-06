@@ -18,22 +18,35 @@
                 <h1>Grade</h1>
                 <div class="actions">
                     <select
-                    name="class"
-                    class="selectClass"
-                    v-model="selectedClassId"
-                    @change="getClassData(selectedClassId)"
-                    >
-                    <option
-                        v-for="classes in class"
-                        :key="classes.Class_id"
-                        :value="classes.Class_id"
-                    >
-                        {{ classes.Class_name }}
-                    </option>
-                </select>
-                    <select name="quater" id="">
-                    
+                        name="class"
+                        class="selectClass"
+                        v-model="selectedClassId"
+                        @change="getClassData(selectedClassId)"
+                        >
+                        <option
+                            v-for="classes in class"
+                            :key="classes.Class_id"
+                            :value="classes.Class_id"
+                        >
+                            {{ classes.Class_name }}
+                        </option>
                     </select>
+                    <select
+                        name="class"
+                        class="selectClass"
+                        v-model="quarterSelected"
+                        @change="getQuarter(quarterSelected)"
+                        >
+                        <option
+                            v-for="classes in quaterlist"
+                            :key="classes._id"
+                            :value="classes._id"
+                        >
+                            {{ classes.gradingPeriod }}
+                        </option>
+                    </select>
+                    
+                    
                     <button @click="clusterCreateGrade = true">Create an Quarter</button>
                 </div>
                 
@@ -79,8 +92,10 @@ export default{
             class:null,
             classInput:'',
             selectedClassId:{},
-            quizs:['Quiz 1','Quiz 2','Quiz 3','Quiz 4','Quiz 5','Quiz 6','Quiz 7','Quiz 8','Quiz 9','Quiz 10','Quiz 11'],
-            quizstotal: [10, 20, 25, 15, 30, 50, 40, 35, 45, 60],
+            quaterlist:null,
+            quarterSelected:null,
+            quizs:[],
+            // quizstotal: [10, 20, 25, 15, 30, 50, 40, 35, 45, 60],
             students: [].sort((a, b) => a.name.localeCompare(b.name)),
 
             line:0
@@ -143,7 +158,16 @@ export default{
                     classId:classId
                 });
                 const data = res.data.records;
-                console.log('res get all record id '+ JSON.stringify(data));
+                this.quaterlist =data;
+                if(this.quaterlist.length <=0){
+                    alert('Need to create an Quarter.');
+                    this.clusterCreateGrade=true;
+                    return;
+                }
+                this.quarterSelected = data[0]._id;
+                this.getQuarter(data[0]._id);
+
+                // console.log('res get all record id '+ JSON.stringify(data));
             }catch(err){
                 console.log(err);
             }
@@ -154,7 +178,8 @@ export default{
                 const res = await api.post('/get/quarter',{
                     quaterId:quaterId
                 });
-                console.log(res);
+                this.quizs = res.data.quizzes;
+                // console.log(res.data.quizzes);
             }catch(err){
                 console.log(err);
             }
@@ -239,12 +264,17 @@ export default{
             return list;
         },
         average(grades){
+            let pass = false;
+            let average = 100;//(Total / grades.length).toFixed(2);
+            if(this.quizs){
+                average='Na';
+            }
             // let Total = 0;
             // for(let i in grades){
             //     Total += grades[i] / this.quizstotal[i] *100;
             // }
-             const average = 100;//(Total / grades.length).toFixed(2);
-            let pass = false;
+             
+            
             // if((Total / grades.length)>75){
             //     pass = true
             // }
