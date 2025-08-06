@@ -20,7 +20,7 @@ function auth(req, res, next) {
           httpOnly: true,
           secure: false,       // true in production
           sameSite: 'lax',     // 'none' only if cross-site
-          maxAge: 1 * 60 * 1000, // 90 minutes
+          maxAge: 90 * 60 * 1000, // 90 minutes
           path:'/'
       });
 

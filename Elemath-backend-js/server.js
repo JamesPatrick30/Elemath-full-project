@@ -91,7 +91,7 @@ app.post('/api/login',async (req, res) => {
         httpOnly: true,
         secure: false,       // true in production
         sameSite: 'lax',     // 'none' only if cross-site
-        maxAge: 1 * 60 * 1000, // 90 minutes
+        maxAge: 90 * 60 * 1000, // 90 minutes
         path:'/'
     });
 
@@ -194,7 +194,7 @@ app.post('/refresh-token', verifyRefreshToken, (req, res) => {
             httpOnly: true,
             secure: false,       // true in production
             sameSite: 'lax',     // 'none' only if cross-site
-            maxAge: 1 * 60 * 1000, // 90 minutes
+            maxAge: 90 * 60 * 1000, // 90 minutes
             path:'/'
         });
 
