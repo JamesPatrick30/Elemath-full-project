@@ -480,68 +480,14 @@ app.get('/role', auth, async (req, res) => {
   }
 });
 
+app.get('get/grade/class',auth,async(req,res)=>{
+  const id = req.user.id;
 
-
-
-// // Set up Multer
-// const storage = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     const dir = './uploads';
-//     if (!fs.existsSync(dir)) fs.mkdirSync(dir);
-//     cb(null, dir);
-//   },
-//   filename: function (req, file, cb) {
-//     const timestamp = Date.now();
-//     cb(null, `${timestamp}-${file.originalname}`);
-//   }
-// });
-// const upload = multer({ storage });
-
-// app.post('/upload', upload.single('file'), async (req, res) => {
-//   try {
-//     const filePath = req.file.path;
-//     let students = [];
-
-//     if (req.file.mimetype.includes('pdf')) {
-//       const dataBuffer = fs.readFileSync(filePath);
-//       const pdfData = await pdfParse(dataBuffer);
-//       const lines = pdfData.text.split('\n');
-
-//       lines.forEach(line => {
-//         const match = line.match(/(\d{12})\s+(.+?)\s+(Section\s+.+)/i); // Adjust this regex as needed
-//         if (match) {
-//           students.push({
-//             LRN: match[1],
-//             name: match[2].trim(),
-//             section: match[3].trim()
-//           });
-//         }
-//       });
-
-//     } else if (
-//       req.file.mimetype.includes('excel') ||
-//       req.file.originalname.endsWith('.xlsx') ||
-//       req.file.originalname.endsWith('.xls')
-//     ) {
-//       const workbook = XLSX.readFile(filePath);
-//       const sheetName = workbook.SheetNames[0];
-//       const sheet = workbook.Sheets[sheetName];
-//       const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-
-//       jsonData.forEach((row) => {
-//         if (typeof row[0] === 'number' && String(row[0]).length === 12) {
-//           students.push({
-//             LRN: String(row[0]),
-//             name: row[1] || '',
-//             section: row[2] || ''
-//           });
-//         }
-//       });
-//     }
-
-//     res.json({ students });
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ error: 'File processing failed.' });
-//   }
-// });
+  try{
+    const data = await teacher_accoount.findById(id,{class:1});
+    console.log(data);
+    return res.json({data:data});
+  }catch(err){
+    console.log(err);
+  }
+})
