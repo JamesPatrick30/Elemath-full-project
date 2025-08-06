@@ -1,6 +1,10 @@
 <template>
     <nav>
-            <img class="logo" src="/images/logo.jpg" alt="">
+            <img 
+            class="logo" 
+            src="/images/logo.jpg" 
+            loading="lazy"
+            alt="">
             <ul>
                 <li class="item1" :class="((parameter === '/tc') || (parameter === '/th'))? 'in': 'out'" @click="goHome()">Home</li>
                 <li class="item2" :class="parameter === '/an'? 'in': 'out'" @click="this.$router.push('/an')">Analytics</li>
@@ -47,8 +51,9 @@ export default{
     color: white;
 }
 .logo{
-    height: auto;
+    height: 250px;
     width: 100%;
+    object-fit: cover;
     margin-top: 0%;
     margin-bottom: 10px;
 }
