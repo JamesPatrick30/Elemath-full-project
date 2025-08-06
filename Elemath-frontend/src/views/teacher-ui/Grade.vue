@@ -17,7 +17,20 @@
             <header>
                 <h1>Grade</h1>
                 <div class="actions">
-                    <select name="class" id=""></select>
+                    <select
+                    name="class"
+                    class="selectClass"
+                    v-model="selectedClassId"
+                    @change="getClassData(selectedClassId)"
+                    >
+                    <option
+                        v-for="classes in class"
+                        :key="classes.Class_id"
+                        :value="classes.Class_id"
+                    >
+                        {{ classes.Class_name }}
+                    </option>
+                </select>
                     <select name="quater" id="">
                     
                     </select>
@@ -63,7 +76,7 @@ export default{
             qname:'',
             clusterCreateGrade:false,
             user:null,
-            class:[],
+            class:null,
             classInput:'',
             selectedClassId:{},
             quizs:['Quiz 1','Quiz 2','Quiz 3','Quiz 4','Quiz 5','Quiz 6','Quiz 7','Quiz 8','Quiz 9','Quiz 10','Quiz 11'],
@@ -148,6 +161,7 @@ export default{
         },
         async getClassData(classIn) {
             try {
+                console.log('class id : '+classIn);
                 const res = await api.post('/get/classData', {
                     classId: classIn
                 });
@@ -163,14 +177,14 @@ export default{
         async getData() {
             try {
                 const res = await api.get('/get/grade/class');
-                this.class = res.data;
-                console.log('classes ? '+JSON.stringify( this.class));
+                this.class = res.data.data;
+                // console.log('classes ? '+JSON.stringify( this.class));
                 // Automatically select the first class if available
-                if (this.class && this.class.data.length > 0) {
-                    const firstClass = this.class.data[0];
-                    this.selectedClassId = firstClass;
+                if (this.class && this.class.length > 0) {
+                    const firstClass = this.class[0];
+                    this.selectedClassId = firstClass.Class_id;
                     this.classInput = firstClass;
-                    this.getClassData(this.selectedClassId.Class_id);
+                    this.getClassData(this.selectedClassId);
                 }else{
                     alert('No class yet!');
                     this.$router.push('/tc');
@@ -244,6 +258,17 @@ export default{
 }
 </script>
 <style scoped>
+.selectClass{
+    border-radius: 5px;
+    margin-left: 10px;
+    height: 50px;
+    width: 100px;
+    padding: 10px;
+    border: none;
+}
+.selectClass:focus{
+    outline: none;
+}
 .student-name{
     margin: 0;
     padding: 0;
