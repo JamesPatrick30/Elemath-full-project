@@ -88,8 +88,10 @@
                     <button @click="addorupload(true)">upload</button>
                 </div>
                 <div class="form" v-if="uploadFile">
-                
-                    <h2>📤 Upload Student List</h2>
+            
+                    <h2 class="title">Add Student</h2>
+                    <h4 class="classname">Class Name : {{ classname }}</h4>
+                    <h3>📤 Upload Student List</h3>
 
                     <form @submit.prevent="handleUpload" enctype="multipart/form-data">
                         <!-- <label for="moduleFile" clnhass="upload-label">

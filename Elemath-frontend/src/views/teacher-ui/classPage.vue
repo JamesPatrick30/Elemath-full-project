@@ -146,6 +146,8 @@ export default {
                     this.getClassData(response.data.id);
                     this.createClassCluster = false;
                     this.selectedClassId = response.data.id;
+
+                    this.goToEditClass();
                 }
                 this.className='';
             } catch (error) {
