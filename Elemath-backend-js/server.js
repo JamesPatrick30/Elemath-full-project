@@ -435,28 +435,37 @@ app.post('/admin/trim-students', async (req, res) => {
     res.status(500).json({ message: 'Trimming failed', error });
   }
 });
-app.get('/role',auth,async(req,res)=>{
-  const id = req.user.id;
+app.get('/role', auth, async (req, res) => {
+  try {
+    const id = req.user?.id;
+    if (!id) {
+      return res.status(400).json({ message: "Invalid token payload." });
+    }
 
-  const teacher = await teacher_accoount.findById(id);
+    // Check teacher
+    const teacher = await teacher_accoount.findById(id).populate('class');
+    if (teacher) {
+      return res.json({
+        role: 'teacher',
+        class: teacher.class
+      });
+    }
 
-  if (teacher) {
-    return res.json({
-      role:'teacher',
-      class:teacher.class
-    });
+    // Check student
+    const studentrole = await StudentClass.findOne({ _id: id });
+    if (studentrole) {
+      return res.json({ role: 'student' });
+    }
+
+    // If neither
+    res.status(404).json({ message: 'User role not found' });
+
+  } catch (error) {
+    console.error("Error in /role:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
-
-  const studentrole = await StudentClass.findById(id);
-
-  if(studentrole){
-    return res.json({
-      role:'student'
-    });
-  }
-
-  res.json({login:true});
 });
+
 // // Set up Multer
 // const storage = multer.diskStorage({
 //   destination: function (req, file, cb) {
