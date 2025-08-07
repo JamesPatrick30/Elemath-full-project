@@ -67,6 +67,10 @@ app.use('/', require('./routes/google'));
 app.get('/', (req, res) => {
     res.send('Welcome to the Elemath Backend API');
 });
+
+const lessonRoutes = require("./routes/lesson");
+app.use('/lesson',lessonRoutes);
+
 app.get('/api', (req, res) => {
     res.json({ message: 'API is running' });
 });
