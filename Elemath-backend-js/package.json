@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
+    "postinstall": "npx canvas-prebuilt-install",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
@@ -12,6 +13,7 @@
   "description": "",
   "dependencies": {
     "axios": "^1.9.0",
+    "canvas": "^3.1.2",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.2.0",
@@ -22,7 +24,12 @@
     "multer": "^2.0.2",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
+    "pdf-lib": "^1.17.1",
     "pdf-parse": "^1.1.1",
+    "pdf-poppler": "^0.2.1",
+    "pdf2pic": "^3.2.0",
+    "pdfjs-dist": "^3.4.120",
+    "sharp": "^0.34.3",
     "tesseract.js": "^6.0.1",
     "textract": "^2.5.0",
     "xlsx": "^0.18.5"

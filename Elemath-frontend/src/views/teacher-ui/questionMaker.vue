@@ -111,6 +111,9 @@
                         <option value="multiple choices">Multiple Choice</option>
                         <option value="Costumize">Costumize</option>
                     </select>
+                    <input type="file" @change="onFileChange" />
+                    <button @click="uploadLesson">Upload</button>
+                    <p v-if="progress">Progress: {{ progress }}%</p>
             </div>
         </div>
       <div class="con-lobby">
@@ -155,10 +158,12 @@
     
 </template>
 <script>
-
+import api from '@/axios';
 export default{
     data(){
         return{
+            progress : 0,
+            file : null,
             btnActive:{setting:true,Question:false,file:false},
             btnLobby:{playes:false,Question:true},
             questionOption:'Costumize',
@@ -214,6 +219,58 @@ export default{
         }
     },
     methods:{
+onFileChange(event) {
+  this.file = event.target.files[0];
+},
+
+async uploadLesson() {
+  if (!this.file) {
+    alert("Please select a file first.");
+    return;
+  }
+  this.progress = 0;
+  const formData = new FormData();
+  formData.append("lessonFile", this.file); // must match backend
+
+  try {
+    const res = await api.post("/lesson/upload", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+      onUploadProgress: (progressEvent) => {
+        this.progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+      }
+    });
+
+    console.log("✅ File uploaded:", res.data);
+    this.rawText = res.data.rawText;
+    alert("Lesson uploaded successfully!");
+  } catch (err) {
+    console.error("❌ Upload failed:", err);
+  }
+},
+
+        //  async uploadLesson(event) {
+        //     const file = event.target.files[0]
+        //     if (!file) return
+
+        //     const formData = new FormData()
+        //     formData.append('lessonFile', file)
+
+        //     try {
+        //         const res = await api.post('/lesson/upload', formData, {
+        //         headers: { 'Content-Type': 'multipart/form-data' },
+        //         onUploadProgress: (progressEvent) => {
+        //             this.progress = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+        //         }
+        //         })
+
+        //         this.rawText = res.data.rawText
+        //         alert('✅ Lesson uploaded and extracted successfully!')
+        //     } catch (err) {
+        //         console.error('❌ Upload failed:', err)
+        //         alert('Upload failed: ' + (err.response?.data?.message || err.message))
+        //     }
+        //     },
+
         navClick(btn){
             this.btnActive.setting = false;
             this.btnActive.Question = false;
@@ -283,6 +340,19 @@ export default{
 }
 </script>
 <style scoped>
+.progress-container {
+  width: 100%;
+  height: 20px;
+  background-color: #eee;
+  margin-top: 10px;
+  border-radius: 5px;
+  overflow: hidden;
+}
+.progress-bar {
+  height: 100%;
+  background-color: #4caf50;
+  transition: width 0.3s ease;
+}
 .btn-start{
     position: absolute;
     bottom: 20px;
