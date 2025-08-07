@@ -48,6 +48,7 @@
                     
                     
                     <button @click="clusterCreateGrade = true">Create an Quarter</button>
+                    <button class="list-q"><font-awesome-icon icon="fa-solid fa-list" size="xl"/></button>
                 </div>
                 
             </header>

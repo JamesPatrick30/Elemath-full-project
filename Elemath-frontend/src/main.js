@@ -9,10 +9,10 @@ import VueApexCharts from "vue3-apexcharts";
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faUserPen } from '@fortawesome/free-solid-svg-icons';
-
+import {faList} from '@fortawesome/free-solid-svg-icons';
 
 // Add icons to the library
-library.add(faUserPen);
+library.add(faUserPen,faList);
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
 library.add(faTrash);
