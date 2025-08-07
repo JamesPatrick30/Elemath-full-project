@@ -24,6 +24,7 @@
     "passport-google-oauth20": "^2.0.0",
     "pdf-parse": "^1.1.1",
     "tesseract.js": "^6.0.1",
+    "textract": "^2.5.0",
     "xlsx": "^0.18.5"
   }
 }
