@@ -17,6 +17,7 @@
             <header>
                 <h1>Grade</h1>
                 <div class="actions">
+                    <p class="tittle-btn">Class :</p>
                     <select
                         name="class"
                         class="selectClass"
@@ -31,6 +32,7 @@
                             {{ classes.Class_name }}
                         </option>
                     </select>
+                    <p class="tittle-btn">Quarter :</p>
                     <select
                         name="class"
                         class="selectClass"
@@ -289,13 +291,25 @@ export default{
 }
 </script>
 <style scoped>
+.tittle-btn{
+    font-weight: 600;
+    margin-left: 0;
+    padding: 0;
+    font-family: 'BubbleBody Neue','Poppins', sans-serif;
+}
 .selectClass{
     border-radius: 5px;
-    margin-left: 10px;
+    margin-right: 10px;
     height: 50px;
     width: 100px;
     padding: 10px;
+    color: #4fc4f7;
+    font-weight: 800;
     border: none;
+}
+.selectClass:hover{
+    width: fit-content;
+    min-width: 100px;
 }
 .selectClass:focus{
     outline: none;
@@ -373,9 +387,10 @@ export default{
     z-index: 1000;
 }
 .actions{
+    color: #4fc4f7;
     margin-left: 20px;
     display: flex;
-    gap: 20px;
+    /* gap: 20px; */
 }
 #line-2{
     background-color: rgb(154, 209, 247);
@@ -477,7 +492,7 @@ th,td{
 }
 .table-con{
     /* background-color: aqua; */
-    height: 90%;
+    height: 85%;
     width: 100%;
     display: flex;
     flex-direction: column;
