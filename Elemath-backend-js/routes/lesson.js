@@ -9,7 +9,7 @@ const { createCanvas } = require("canvas");
 const Tesseract = require("tesseract.js");
 const sharp = require("sharp");
 const pdfjsLib = require("pdfjs-dist/legacy/build/pdf.js");
-
+const axios = require("axios"); // <— Added to send to FastAPI
 const router = express.Router();
 
 // Polyfill DOMMatrix for Node.js (needed by pdfjs)
@@ -59,7 +59,18 @@ router.post("/upload", upload.single("lessonFile"), async (req, res) => {
     }
 
     fs.unlinkSync(filePath); // cleanup uploaded file
-    console.log("✅ OCR rawText:\n" + JSON.stringify(rawText));
+    // console.log("✅ OCR rawText:\n" + JSON.stringify(rawText));
+    try {
+      const fastapiResponse = await axios.post(
+        "http://127.0.0.1:8000/log-object", // FastAPI endpoint
+        { rawText }, // Send as JSON object
+        { headers: { "Content-Type": "application/json" } }
+      );
+
+      console.log("📨 FastAPI replied:", fastapiResponse.data);
+    } catch (fastapiErr) {
+      console.error("❌ Error sending to FastAPI:", fastapiErr.message);
+    }
     res.json({ rawText });
 
   } catch (error) {
