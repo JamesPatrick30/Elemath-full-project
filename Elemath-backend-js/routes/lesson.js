@@ -62,12 +62,12 @@ router.post("/upload", upload.single("lessonFile"), async (req, res) => {
     // console.log("✅ OCR rawText:\n" + JSON.stringify(rawText));
     try {
       const fastapiResponse = await axios.post(
-        "http://127.0.0.1:8000/log-object", // FastAPI endpoint
+        "http://127.0.0.1:8000/generate-quiz", // FastAPI endpoint
         { rawText }, // Send as JSON object
         { headers: { "Content-Type": "application/json" } }
       );
 
-      console.log("📨 FastAPI replied:", fastapiResponse.data);
+      console.log("📨 FastAPI replied:",JSON.stringify( fastapiResponse.data));
     } catch (fastapiErr) {
       console.error("❌ Error sending to FastAPI:", fastapiErr.message);
     }
