@@ -138,15 +138,15 @@
             <div class="question" v-for="(question,index) in questions" :key="question" :id="index">
                 <h4>No.{{ index + 1 }}</h4>
                 <!-- TODO: fix the data -->
-                <p class="type">{{ question.type }}</p>
-                <p class="type">{{ question.language }}</p>
+                <p class="type">{{ question?.topic }}</p>
+                <!-- <p class="type">{{ question.language }}</p> -->
                 <p>{{ question.question }}</p>
-                <div class="multi" v-if="question.type==='multiple choices'">
+                <div class="multi">
                     <div class="choices" v-for="Choice in question.options" :key="Choice" :class="(Choice===question.answer)? 'r-answer':'w-answer'" >
                         {{ Choice }}
                     </div>
                 </div>
-                <div class="con-input-a" v-else-if="question.type=== 'input answer'">
+                <div class="con-input-a" v-if="question.type=== 'input answer'">
                     <div class="input-answer" >
                       Answer:{{ question.answer }}
                     </div>
@@ -244,7 +244,10 @@ async uploadLesson() {
 
     console.log("✅ File uploaded:", res.data);
     this.rawText = res.data.rawText;
-    this.questions.push(res.data.quiz);
+    
+    res.data.quiz.forEach(q => {
+        this.questions.push(q);
+    });
     alert("Lesson uploaded successfully!");
   } catch (err) {
     console.error("❌ Upload failed:", err);

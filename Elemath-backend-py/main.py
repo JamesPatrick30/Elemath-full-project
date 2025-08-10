@@ -56,7 +56,11 @@ async def generate_quiz(data: LessonText):
         "4. The 'options' field must be an array in this exact format: [\"A. option text\", \"B. option text\", \"C. option text\", \"D. option text\"].\n"
         "5. The 'answer' field must contain the full option text exactly as in 'options' (e.g., \"A. 25%\").\n"
         "6. The 'explanation' field must briefly explain why the answer is correct.\n\n"
-        "Output format (strict JSON only):\n"
+        "STRICT OUTPUT RULES:\n"
+        "- Output must be valid JSON only — no markdown, no triple backticks, no explanations, no intro text.\n"
+        "- Do NOT say 'Here’s the JSON', 'Sure, here’s...', or anything similar.\n"
+        "- The response must start with '[' and end with ']'.\n\n"
+        "Output format:\n"
         "[\n"
         "  {\n"
         "    \"question\": \"...\",\n"
@@ -68,10 +72,10 @@ async def generate_quiz(data: LessonText):
         "    \"answer\": \"A. ...\",\n"
         "    \"explanation\": \"...\"\n"
         "  }\n"
-        "]\n"
-        "Do not include any text outside the JSON. No markdown, no extra commentary.\n"
+        "]\n\n"
         f"Lesson text:\n\n{data.rawText}"
     )
+
 
 
 
