@@ -60,6 +60,7 @@ router.post("/upload", upload.single("lessonFile"), async (req, res) => {
 
     fs.unlinkSync(filePath); // cleanup uploaded file
     // console.log("✅ OCR rawText:\n" + JSON.stringify(rawText));
+    let quiz=null;
     try {
       const fastapiResponse = await axios.post(
         "http://127.0.0.1:8000/generate-quiz", // FastAPI endpoint
@@ -68,10 +69,20 @@ router.post("/upload", upload.single("lessonFile"), async (req, res) => {
       );
 
       console.log("📨 FastAPI replied:",fastapiResponse.data);
+      let rawString = fastapiResponse.data.quiz;
+      rawString = rawString.replace(/```json|```/g, '').trim();
+
+      
+      try {
+        quiz = JSON.parse(rawString);
+        console.dir(quiz, { depth: null });
+      } catch (err) {
+        console.error('❌ Invalid JSON:', err.message);
+      }
     } catch (fastapiErr) {
       console.error("❌ Error sending to FastAPI:", fastapiErr.message);
     }
-    res.json({ rawText });
+    res.json({ rawText,quiz:quiz });
 
   } catch (error) {
     console.error("❌ Error extracting lesson file:", error);
