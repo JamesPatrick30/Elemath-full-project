@@ -3,7 +3,7 @@ import axios from 'axios'
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE, // example: 'https://your-backend.onrender.com/api'
   withCredentials: true,
-  timeout: 60000
+  timeout: 120000
 })
 
 // 🔐 Add API key to every request

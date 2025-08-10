@@ -137,10 +137,12 @@
             <h3>Questions : {{ questions.length }}</h3>
             <div class="question" v-for="(question,index) in questions" :key="question" :id="index">
                 <h4>No.{{ index + 1 }}</h4>
+                <!-- TODO: fix the data -->
                 <p class="type">{{ question.type }}</p>
-                <p>{{ question.Q }}</p>
+                <p class="type">{{ question.language }}</p>
+                <p>{{ question.question }}</p>
                 <div class="multi" v-if="question.type==='multiple choices'">
-                    <div class="choices" v-for="Choice in question.choices" :key="Choice" :class="(Choice===question.answer)? 'r-answer':'w-answer'" >
+                    <div class="choices" v-for="Choice in question.options" :key="Choice" :class="(Choice===question.answer)? 'r-answer':'w-answer'" >
                         {{ Choice }}
                     </div>
                 </div>
@@ -194,26 +196,26 @@ export default{
             questionGenerateSetting:{type:'',topic:'',lang:'',difficulty:''},
 
             questions:[
-                { Q: 'What is 5 + 3?', type: 'input answer', answerType: 'number', answer: '8' },
-                { Q: 'What is 12 - 4?', type: 'input answer', answerType: 'number', answer: '8' },
-                { Q: 'What is the place value of 7 in 374?', type: 'input answer', answerType: 'number', answer: '70' },
-                { Q: 'What is the shape with 3 sides?', type: 'multiple choices', answer: 'Triangle', choices: ['Circle', 'Rectangle', 'Triangle', 'Square'] },
-                { Q: 'Which number is even?', type: 'multiple choices', answer: '8', choices: ['3', '5', '7', '8'] },
-                { Q: 'What is 4 × 6?', type: 'input answer', answerType: 'number', answer: '24' },
-                { Q: 'What is 30 ÷ 5?', type: 'input answer', answerType: 'number', answer: '6' },
-                { Q: 'Which number is greater?', type: 'multiple choices', answer: '45', choices: ['12', '20', '45', '33'] },
-                { Q: 'What is the missing number: 3, 6, __, 12?', type: 'input answer', answerType: 'number', answer: '9' },
-                { Q: 'What is 100 - 75?', type: 'multiple choices', answer: '25', choices: ['35', '25', '50', '30'] },
-                { Q: 'What is 9 + 8?', type: 'input answer', answerType: 'number', answer: '17' },
-                { Q: 'Which of the following is a quadrilateral?', type: 'multiple choices', answer: 'Rectangle', choices: ['Circle', 'Rectangle', 'Triangle', 'Cone'] },
-                { Q: 'What is 10 more than 65?', type: 'input answer', answerType: 'number', answer: '75' },
-                { Q: 'Which shows a correct fraction: ½?', type: 'multiple choices', answer: 'Half', choices: ['Whole', 'One-third', 'Half', 'Zero'] },
-                { Q: 'What is 7 × 5?', type: 'input answer', answerType: 'number', answer: '35' },
-                { Q: 'What is the perimeter of a square with side 4?', type: 'input answer', answerType: 'number', answer: '16' },
-                { Q: 'Which is a unit of length?', type: 'multiple choices', answer: 'Meter', choices: ['Liter', 'Gram', 'Meter', 'Kilogram'] },
-                { Q: 'What is 9 less than 20?', type: 'input answer', answerType: 'number', answer: '11' },
-                { Q: 'How many sides does a hexagon have?', type: 'input answer', answerType: 'number', answer: '6' },
-                { Q: 'What is the product of 3 and 9?', type: 'multiple choices', answer: '27', choices: ['36', '18', '27', '30'] }
+                // { Q: 'What is 5 + 3?', type: 'input answer', answerType: 'number', answer: '8' },
+                // { Q: 'What is 12 - 4?', type: 'input answer', answerType: 'number', answer: '8' },
+                // { Q: 'What is the place value of 7 in 374?', type: 'input answer', answerType: 'number', answer: '70' },
+                // { Q: 'What is the shape with 3 sides?', type: 'multiple choices', answer: 'Triangle', choices: ['Circle', 'Rectangle', 'Triangle', 'Square'] },
+                // { Q: 'Which number is even?', type: 'multiple choices', answer: '8', choices: ['3', '5', '7', '8'] },
+                // { Q: 'What is 4 × 6?', type: 'input answer', answerType: 'number', answer: '24' },
+                // { Q: 'What is 30 ÷ 5?', type: 'input answer', answerType: 'number', answer: '6' },
+                // { Q: 'Which number is greater?', type: 'multiple choices', answer: '45', choices: ['12', '20', '45', '33'] },
+                // { Q: 'What is the missing number: 3, 6, __, 12?', type: 'input answer', answerType: 'number', answer: '9' },
+                // { Q: 'What is 100 - 75?', type: 'multiple choices', answer: '25', choices: ['35', '25', '50', '30'] },
+                // { Q: 'What is 9 + 8?', type: 'input answer', answerType: 'number', answer: '17' },
+                // { Q: 'Which of the following is a quadrilateral?', type: 'multiple choices', answer: 'Rectangle', choices: ['Circle', 'Rectangle', 'Triangle', 'Cone'] },
+                // { Q: 'What is 10 more than 65?', type: 'input answer', answerType: 'number', answer: '75' },
+                // { Q: 'Which shows a correct fraction: ½?', type: 'multiple choices', answer: 'Half', choices: ['Whole', 'One-third', 'Half', 'Zero'] },
+                // { Q: 'What is 7 × 5?', type: 'input answer', answerType: 'number', answer: '35' },
+                // { Q: 'What is the perimeter of a square with side 4?', type: 'input answer', answerType: 'number', answer: '16' },
+                // { Q: 'Which is a unit of length?', type: 'multiple choices', answer: 'Meter', choices: ['Liter', 'Gram', 'Meter', 'Kilogram'] },
+                // { Q: 'What is 9 less than 20?', type: 'input answer', answerType: 'number', answer: '11' },
+                // { Q: 'How many sides does a hexagon have?', type: 'input answer', answerType: 'number', answer: '6' },
+                // { Q: 'What is the product of 3 and 9?', type: 'multiple choices', answer: '27', choices: ['36', '18', '27', '30'] }
             ],
             CostumeQuestion:{Q:'',type:'',answer:'',answerType:'',choices:[]}
         }
@@ -242,6 +244,7 @@ async uploadLesson() {
 
     console.log("✅ File uploaded:", res.data);
     this.rawText = res.data.rawText;
+    this.questions.push(res.data.quiz);
     alert("Lesson uploaded successfully!");
   } catch (err) {
     console.error("❌ Upload failed:", err);
@@ -310,11 +313,11 @@ async uploadLesson() {
 
             // Push the new question
             this.questions.push({
-                Q: this.CostumeQuestion.Q,
+                question: this.CostumeQuestion.Q,
                 type: this.CostumeQuestion.type,
                 answerType: '',
                 answer: this.CostumeQuestion.answer,
-                choices: this.CostumeQuestion.choices.filter(choice => choice.trim() !== '')
+                options: this.CostumeQuestion.choices.filter(choice => choice.trim() !== '')
             });
 
             // Scroll to the new question after DOM updates
