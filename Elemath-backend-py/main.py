@@ -32,6 +32,8 @@ app = FastAPI(
 class LessonText(BaseModel):
     rawText: str
     num_questions: int = 10
+    language: str = "tagalog"
+    difficulty: str = "easy"
 
 @app.post("/generate-quiz")
 async def generate_quiz(data: LessonText):
@@ -43,9 +45,13 @@ async def generate_quiz(data: LessonText):
 
     prompt = (
         f"From the following lesson text, generate {data.num_questions} multiple-choice questions. "
+        f"Language: {data.language}\n"
+        f"Difficulty: {data.difficulty}\n"
         "Follow these strict formatting rules:\n"
-        "1. If a question contains or implies a scenario with people, places, names, or real-life context (e.g., 'Mrs. Gonzales spends her monthly income...'), treat it as a 'story-based' question. In that case, include a 'story' field containing ONLY the background text, without the question itself."
-        "2. If a question is math-related and requires solving, make sure it clearly states the problem and show relevant numbers or equations in the question.\n"
+        "1. If a question contains or implies a scenario with people, places, names, or real-life context "
+        "(e.g., 'Mrs. Gonzales spends her monthly income...'), treat it as a 'story-based' question. In that case, "
+        "include a 'story' field containing ONLY the background text, without the question itself.\n"
+        "2. If a question is math-related and requires solving, make sure it clearly states the problem and shows relevant numbers or equations in the question.\n"
         "3. Every question must have a 'topic' field describing its subject (e.g., 'Math - Percentage', 'Science - Physics', 'Reading - Comprehension').\n"
         "4. The 'options' field must be an array in this exact format: [\"A. option text\", \"B. option text\", \"C. option text\", \"D. option text\"].\n"
         "5. The 'answer' field must contain the full option text exactly as in 'options' (e.g., \"A. 25%\").\n"
@@ -56,6 +62,8 @@ async def generate_quiz(data: LessonText):
         "    \"question\": \"...\",\n"
         "    \"story\": \"...\", (optional, only if story-based)\n"
         "    \"topic\": \"...\",\n"
+        "    \"language\": \"...\",\n"
+        "    \"difficulty\": \"...\",\n"
         "    \"options\": [\"A. ...\", \"B. ...\", \"C. ...\", \"D. ...\"],\n"
         "    \"answer\": \"A. ...\",\n"
         "    \"explanation\": \"...\"\n"
@@ -64,6 +72,7 @@ async def generate_quiz(data: LessonText):
         "Do not include any text outside the JSON. No markdown, no extra commentary.\n"
         f"Lesson text:\n\n{data.rawText}"
     )
+
 
 
 

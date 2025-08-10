@@ -67,7 +67,7 @@ router.post("/upload", upload.single("lessonFile"), async (req, res) => {
         { headers: { "Content-Type": "application/json" } }
       );
 
-      console.log("📨 FastAPI replied:",JSON.stringify( fastapiResponse.data));
+      console.log("📨 FastAPI replied:",fastapiResponse.data);
     } catch (fastapiErr) {
       console.error("❌ Error sending to FastAPI:", fastapiErr.message);
     }
