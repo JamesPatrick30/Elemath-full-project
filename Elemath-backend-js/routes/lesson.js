@@ -10,6 +10,8 @@ const Tesseract = require("tesseract.js");
 const sharp = require("sharp");
 const pdfjsLib = require("pdfjs-dist/legacy/build/pdf.js");
 const axios = require("axios"); // <— Added to send to FastAPI
+const auth = require("../security/auth");
+const filesave = require("../models/lessonfile");
 const router = express.Router();
 
 // Polyfill DOMMatrix for Node.js (needed by pdfjs)
@@ -27,7 +29,7 @@ if (typeof global.DOMMatrix === "undefined") {
 const upload = multer({ dest: "uploads/" });
 
 // Upload and extract lesson file
-router.post("/upload", upload.single("lessonFile"), async (req, res) => {
+router.post("/upload",auth, upload.single("lessonFile"), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ message: "No file uploaded" });
@@ -60,6 +62,21 @@ router.post("/upload", upload.single("lessonFile"), async (req, res) => {
 
     fs.unlinkSync(filePath); // cleanup uploaded file
     // console.log("✅ OCR rawText:\n" + JSON.stringify(rawText));
+    const oldfile = await filesave.findOne({file:rawText,ownerId:req.user.id});
+
+    if(!oldfile){
+      const file = new filesave({
+        ownerId: req.user.id,
+        file:rawText
+      });
+      const outputfile = await file.save();
+      console.log('file :'+outputfile);
+    }else{
+      console.log('already save file : '+oldfile);
+    }
+    
+
+    
     let quiz=null;
     try {
       const fastapiResponse = await axios.post(
