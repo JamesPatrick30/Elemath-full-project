@@ -139,14 +139,16 @@
                 <h4>No.{{ index + 1 }}</h4>
                 <!-- TODO: fix the data -->
                 <p class="type">{{ question?.topic }}</p>
+                <p class="type">{{ question?.type }}</p>
                 <!-- <p class="type">{{ question.language }}</p> -->
+                <p v-if="question?.story">Story : {{ question?.story }}</p>
                 <p>{{ question.question }}</p>
-                <div class="multi">
+                <div class="multi" v-if="question?.options">
                     <div class="choices" v-for="Choice in question.options" :key="Choice" :class="(Choice===question.answer)? 'r-answer':'w-answer'" >
                         {{ Choice }}
                     </div>
                 </div>
-                <div class="con-input-a" v-if="question.type=== 'input answer'">
+                <div class="con-input-a" v-else>
                     <div class="input-answer" >
                       Answer:{{ question.answer }}
                     </div>
@@ -251,6 +253,7 @@ async uploadLesson() {
     alert("Lesson uploaded successfully!");
   } catch (err) {
     console.error("❌ Upload failed:", err);
+    alert('try again. someting went wrong.')
   }
 },
 
@@ -500,7 +503,7 @@ async uploadLesson() {
 .choices{
     font-weight: 800;
 
-    height: 40px;
+    min-height: 40px;
     display: flex;
     align-items: center;
     text-align: center;
