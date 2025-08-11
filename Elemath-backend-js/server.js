@@ -12,6 +12,7 @@ const http = require('http');
 const mongoose = require('mongoose');
 const { OAuth2Client } = require('google-auth-library');
 const router = express.Router();
+const filesave = require('./models/lessonfile.js')
 dotenv.config();
 // const client = new OAuth2Client(
 //   '651051530850-um6g1njmsd7qb1qu56tj5i4843mhkeio.apps.googleusercontent.com'
@@ -494,4 +495,32 @@ app.get('/get/grade/class',auth,async(req,res)=>{
   }catch(err){
     console.log(err);
   }
-})
+});
+app.post('/create-question',auth ,async(req,res)=>{
+  const {fileId} = req.body;
+
+  const file = await filesave.findById(fileId);
+  let quiz = '';
+  try {
+      const fastapiResponse = await axios.post(
+        "http://127.0.0.1:8000/generate-quiz", // FastAPI endpoint
+        { rawText }, // Send as JSON object
+        { headers: { "Content-Type": "application/json" } }
+      );
+
+      console.log("📨 FastAPI replied:",fastapiResponse.data);
+      let rawString = fastapiResponse.data.quiz;
+      rawString = rawString.replace(/```json|```/g, '').trim();
+
+      
+      try {
+        quiz = JSON.parse(rawString);
+        console.dir(quiz, { depth: null });
+      } catch (err) {
+        console.error('❌ Invalid JSON:', err.message);
+      }
+    } catch (fastapiErr) {
+      console.error("❌ Error sending to FastAPI:", fastapiErr.message);
+    }
+    res.json({quiz:quiz});
+});
