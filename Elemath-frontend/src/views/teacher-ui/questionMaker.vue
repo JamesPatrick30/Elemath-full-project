@@ -114,6 +114,30 @@
                     <input type="file" @change="onFileChange" />
                     <button @click="uploadLesson">Upload</button>
                     <p v-if="progress">Progress: {{ progress }}%</p>
+                    <input type="number" placeholder="Number" v-model="uploadGenerate.num_questions">
+                    <select class="t-o-q" v-model="uploadGenerate.type"  >
+                        <option disabled value="">-- Select a type --</option>
+                        <option value="multiple-choice">Multiple Choice</option>
+                        <option value="short-answer">short-answer</option>
+                        <option value="true-false">Multiple Choice</option>
+                        <option value="fill-in-the-blank">Multiple Choice</option>
+                    </select>
+                    
+                    <select class="t-o-q" v-model="uploadGenerate.lang"  >
+                        <option disabled value="">-- Language --</option>
+                        <option value="English">English</option>
+                        <option value="Tagalog">Tagalog</option>
+                    </select>
+
+                    <select class="t-o-q" v-model="uploadGenerate.difficulty"  >
+                        <option disabled value="">-- Select Difficulty --</option>
+                        <option value="easy">Easy</option>
+                        <option value="medium">Medium</option>
+                        <option value="hard">Hard</option>
+                        <option value="very-hard">Very Hard</option>
+                    </select>
+                    <button class="generate-btn" @click="generateQuestion()">Generate!</button>
+
             </div>
         </div>
       <div class="con-lobby">
@@ -166,6 +190,7 @@ import api from '@/axios';
 export default{
     data(){
         return{
+            uploadGenerate:{num_questions:0,type:'',topic:'',lang:'',difficulty:''},
             progress : 0,
             file : null,
             btnActive:{setting:true,Question:false,file:false},
@@ -219,66 +244,45 @@ export default{
                 // { Q: 'How many sides does a hexagon have?', type: 'input answer', answerType: 'number', answer: '6' },
                 // { Q: 'What is the product of 3 and 9?', type: 'multiple choices', answer: '27', choices: ['36', '18', '27', '30'] }
             ],
+            fileId: '',
             CostumeQuestion:{Q:'',type:'',answer:'',answerType:'',choices:[]}
         }
     },
     methods:{
-onFileChange(event) {
-  this.file = event.target.files[0];
-},
+    onFileChange(event) {
+        this.file = event.target.files[0];
+    },
 
-async uploadLesson() {
-  if (!this.file) {
-    alert("Please select a file first.");
-    return;
-  }
-  this.progress = 0;
-  const formData = new FormData();
-  formData.append("lessonFile", this.file); // must match backend
+    async uploadLesson() {
+        if (!this.file) {
+            alert("Please select a file first.");
+            return;
+        }
+        this.progress = 0;
+        const formData = new FormData();
+        formData.append("lessonFile", this.file); // must match backend
 
-  try {
-    const res = await api.post("/lesson/upload", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-      onUploadProgress: (progressEvent) => {
-        this.progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-      }
-    });
+        try {
+            const res = await api.post("/lesson/upload", formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+            onUploadProgress: (progressEvent) => {
+                this.progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            }
+            });
 
-    console.log("✅ File uploaded:", res.data);
-    // this.rawText = res.data.rawText;
-    
-    // res.data.quiz.forEach(q => {
-    //     this.questions.push(q);
-    // });
-    alert("Lesson uploaded successfully!");
-  } catch (err) {
-    console.error("❌ Upload failed:", err);
-    alert('try again. someting went wrong.')
-  }
-},
-
-        //  async uploadLesson(event) {
-        //     const file = event.target.files[0]
-        //     if (!file) return
-
-        //     const formData = new FormData()
-        //     formData.append('lessonFile', file)
-
-        //     try {
-        //         const res = await api.post('/lesson/upload', formData, {
-        //         headers: { 'Content-Type': 'multipart/form-data' },
-        //         onUploadProgress: (progressEvent) => {
-        //             this.progress = Math.round((progressEvent.loaded * 100) / progressEvent.total)
-        //         }
-        //         })
-
-        //         this.rawText = res.data.rawText
-        //         alert('✅ Lesson uploaded and extracted successfully!')
-        //     } catch (err) {
-        //         console.error('❌ Upload failed:', err)
-        //         alert('Upload failed: ' + (err.response?.data?.message || err.message))
-        //     }
-        //     },
+            console.log("✅ File uploaded:", res.data);
+            this.fileId = res.data.id;
+            // this.rawText = res.data.rawText;
+            
+            // res.data.quiz.forEach(q => {
+            //     this.questions.push(q);
+            // });
+            alert("Lesson uploaded successfully!");
+        } catch (err) {
+            console.error("❌ Upload failed:", err);
+            alert('try again. someting went wrong.')
+        }
+        },
 
         navClick(btn){
             this.btnActive.setting = false;
@@ -341,8 +345,19 @@ async uploadLesson() {
                 choices: []
             };
         },
-        clickAnswer(){
-            
+        async generateQuestion(){
+            try{
+                const res = await api.post('/create-question',{
+                    fileId:this.fileId,
+                    num_questions:this.uploadGenerate.num_questions,
+                    language:this.uploadGenerate.lang,
+                    difficulty:this.uploadGenerate.difficulty,
+                    question_type:this.uploadGenerate.type
+                });
+                console.log(res.data);
+            }catch(err){
+                console.log(err);
+            }
         }
 
     }

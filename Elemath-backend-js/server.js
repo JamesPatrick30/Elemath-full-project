@@ -12,7 +12,8 @@ const http = require('http');
 const mongoose = require('mongoose');
 const { OAuth2Client } = require('google-auth-library');
 const router = express.Router();
-const filesave = require('./models/lessonfile.js')
+const filesave = require('./models/lessonfile.js');
+const axios = require("axios");
 dotenv.config();
 // const client = new OAuth2Client(
 //   '651051530850-um6g1njmsd7qb1qu56tj5i4843mhkeio.apps.googleusercontent.com'
@@ -497,14 +498,15 @@ app.get('/get/grade/class',auth,async(req,res)=>{
   }
 });
 app.post('/create-question',auth ,async(req,res)=>{
-  const {fileId} = req.body;
+  const {fileId,num_questions,language,difficulty,question_type} = req.body;
 
   const file = await filesave.findById(fileId);
+  const rawText = file.file;
   let quiz = '';
   try {
       const fastapiResponse = await axios.post(
         "http://127.0.0.1:8000/generate-quiz", // FastAPI endpoint
-        { rawText }, // Send as JSON object
+        { rawText,num_questions,language,difficulty,question_type }, // Send as JSON object
         { headers: { "Content-Type": "application/json" } }
       );
 
