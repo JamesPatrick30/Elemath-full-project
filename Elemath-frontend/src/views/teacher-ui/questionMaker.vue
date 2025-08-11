@@ -354,8 +354,13 @@ export default{
                     difficulty:this.uploadGenerate.difficulty,
                     question_type:this.uploadGenerate.type
                 });
+                res.data.quiz.forEach(q => {
+                    this.questions.push(q);
+                });
                 console.log(res.data);
+                alert('created')
             }catch(err){
+                alert('Something went wrong, try again');
                 console.log(err);
             }
         }

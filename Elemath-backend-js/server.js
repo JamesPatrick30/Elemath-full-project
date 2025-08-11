@@ -502,6 +502,11 @@ app.post('/create-question',auth ,async(req,res)=>{
 
   const file = await filesave.findById(fileId);
   const rawText = file.file;
+  if(!rawText){
+    console.log('no file');
+    return res.status(404).json({message:'sada'});
+    
+  }
   let quiz = '';
   try {
       const fastapiResponse = await axios.post(
