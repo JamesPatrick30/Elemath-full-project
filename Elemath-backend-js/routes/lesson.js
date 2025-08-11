@@ -63,43 +63,45 @@ router.post("/upload",auth, upload.single("lessonFile"), async (req, res) => {
     fs.unlinkSync(filePath); // cleanup uploaded file
     // console.log("✅ OCR rawText:\n" + JSON.stringify(rawText));
     const oldfile = await filesave.findOne({file:rawText,ownerId:req.user.id});
-
+    let id = '';
     if(!oldfile){
       const file = new filesave({
         ownerId: req.user.id,
         file:rawText
       });
       const outputfile = await file.save();
-      console.log('file :'+outputfile);
+      id = outputfile._id;
+      // console.log('file :'+outputfile);
     }else{
       console.log('already save file : '+oldfile);
+      id = oldfile._id;
     }
     
 
     
-    let quiz=null;
-    try {
-      const fastapiResponse = await axios.post(
-        "http://127.0.0.1:8000/generate-quiz", // FastAPI endpoint
-        { rawText }, // Send as JSON object
-        { headers: { "Content-Type": "application/json" } }
-      );
+    // let quiz=null;
+    // try {
+    //   const fastapiResponse = await axios.post(
+    //     "http://127.0.0.1:8000/generate-quiz", // FastAPI endpoint
+    //     { rawText }, // Send as JSON object
+    //     { headers: { "Content-Type": "application/json" } }
+    //   );
 
-      console.log("📨 FastAPI replied:",fastapiResponse.data);
-      let rawString = fastapiResponse.data.quiz;
-      rawString = rawString.replace(/```json|```/g, '').trim();
+    //   console.log("📨 FastAPI replied:",fastapiResponse.data);
+    //   let rawString = fastapiResponse.data.quiz;
+    //   rawString = rawString.replace(/```json|```/g, '').trim();
 
       
-      try {
-        quiz = JSON.parse(rawString);
-        console.dir(quiz, { depth: null });
-      } catch (err) {
-        console.error('❌ Invalid JSON:', err.message);
-      }
-    } catch (fastapiErr) {
-      console.error("❌ Error sending to FastAPI:", fastapiErr.message);
-    }
-    res.json({ rawText,quiz:quiz });
+    //   try {
+    //     quiz = JSON.parse(rawString);
+    //     console.dir(quiz, { depth: null });
+    //   } catch (err) {
+    //     console.error('❌ Invalid JSON:', err.message);
+    //   }
+    // } catch (fastapiErr) {
+    //   console.error("❌ Error sending to FastAPI:", fastapiErr.message);
+    // }
+    res.json({ id:id });
 
   } catch (error) {
     console.error("❌ Error extracting lesson file:", error);

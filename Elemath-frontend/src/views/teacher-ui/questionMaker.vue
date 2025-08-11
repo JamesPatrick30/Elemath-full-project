@@ -245,11 +245,11 @@ async uploadLesson() {
     });
 
     console.log("✅ File uploaded:", res.data);
-    this.rawText = res.data.rawText;
+    // this.rawText = res.data.rawText;
     
-    res.data.quiz.forEach(q => {
-        this.questions.push(q);
-    });
+    // res.data.quiz.forEach(q => {
+    //     this.questions.push(q);
+    // });
     alert("Lesson uploaded successfully!");
   } catch (err) {
     console.error("❌ Upload failed:", err);
