@@ -53,7 +53,8 @@ export default {
                currentProfile: '',
                picCharacterb:false,
                titleQ:'',
-               cluster:false
+               cluster:false,
+               loadingn:true,
         };
     },
     methods: {
@@ -62,12 +63,23 @@ export default {
             this.cluster = true;
         },
         async createMode(id,mode){
-            alert('id : ' + id + ' mode : ' + mode);
+            try{
+                const res = await api.post('/create/mode',{
+                    id:id,
+                    mode:mode
+                });
+                alert(res.data.message);
+                this.$router.push({name:'question-ui'})
+            }catch(err){
+                console.log(err);
+                alert(err.response.data.message);
+            }
         },
         async getData() {
             try {
                 const res = await api.get('/data/teacher');
                 this.user = res.data;
+                this.loadingB = false;
                 this.currentProfile = this.user.profile;
                 console.log('Data fetched successfully:', res.data);
             } catch (err) {
@@ -169,7 +181,7 @@ export default {
             </div>
         </div>
     </div>
-    <body v-if="user">
+    <body v-if="!loadingB">
         <navbar />
         <main>
             <div class="con-m">

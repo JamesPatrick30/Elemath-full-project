@@ -73,8 +73,8 @@ app.get('/', (req, res) => {
 const lessonRoutes = require("./routes/lesson");
 app.use('/lesson',lessonRoutes);
 
-app.get('/api', (req, res) => {
-    res.json({ message: 'API is running' });
+app.get('/list', (req, res) => {
+    res.json({ message: list });
 });
 app.post('/api/login',async (req, res) => {
     const { username, password } = req.body;
@@ -537,12 +537,13 @@ app.post('/create/mode',auth,async (req,res)=>{
 
   const classFile = Gradebook.findOne({classId:id});
 
-  if(classFile){
+  if(!classFile){
     return res.status(404).json({message: 'Need to create Grade Book'});
   }
   
   list.push({
-    id:id
+    id:id,
+    mode,mode
   });
 
   res.json({message:'done'})
