@@ -547,4 +547,15 @@ app.post('/create/mode',auth,async (req,res)=>{
   });
 
   res.json({message:'done'})
+});
+
+app.post('/delete/mode',auth,(req,res)=>{
+  const {id} = req.body;
+
+  const index = list.findIndex(item => item.id === id);
+  if (index !== -1) {
+    list.splice(index, 1);
+    return res.json({ message: 'Mode deleted' });
+  }
+  res.status(404).json({ message: 'Mode not found' });
 })

@@ -54,13 +54,13 @@ export default {
                picCharacterb:false,
                titleQ:'',
                cluster:false,
-               loadingn:true,
+               loadingB:true,
         };
     },
     methods: {
         clusterOn(title){
             this.titleQ = title;
-            this.cluster = true;
+            this.cluster = true; 
         },
         async createMode(id,mode){
             try{
@@ -69,7 +69,7 @@ export default {
                     mode:mode
                 });
                 alert(res.data.message);
-                this.$router.push({name:'question-ui'})
+                this.$router.push({name:'question-ui',query: { i: id }});
             }catch(err){
                 console.log(err);
                 alert(err.response.data.message);

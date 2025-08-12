@@ -1,6 +1,6 @@
 <template>
     <main>
-        <button class="btn-back">Back</button>
+        <button class="btn-back" v-on:click="backBtn()">Back</button>
         <div class="con-q">
             <nav>
                 <ul>
@@ -245,10 +245,21 @@ export default{
                 // { Q: 'What is the product of 3 and 9?', type: 'multiple choices', answer: '27', choices: ['36', '18', '27', '30'] }
             ],
             fileId: '',
-            CostumeQuestion:{Q:'',type:'',answer:'',answerType:'',choices:[]}
+            CostumeQuestion:{Q:'',type:'',answer:'',answerType:'',choices:[]},
+            id: this.$route.query.i
         }
     },
     methods:{
+        async backBtn(){
+            try{
+                const res = await api.post('/delete/mode',{id:this.id});
+
+                // alert(res.data.message);
+                this.$router.push('/tc');
+            }catch(err){
+                console.log(err);
+            }
+        },
     onFileChange(event) {
         this.file = event.target.files[0];
     },
@@ -365,6 +376,9 @@ export default{
             }
         }
 
+    },
+    mounted(){
+        
     }
 }
 </script>
