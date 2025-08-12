@@ -11,7 +11,8 @@
             <button class="btn-cluster" @click="createQuarter(selectedClassId)">Create</button>
         </div>
     </div>
-    <body>
+    <loading v-if="reload"></loading>
+    <body v-else>
         <navbar></navbar>
         <main>
             <header>
@@ -83,12 +84,15 @@
 <script>
 import api from '@/axios';
 import navbar from './components/navbar.vue';
+import loading from './components/loading.vue';
 export default{
     components:{
-        navbar                   
+        navbar,
+        loading                   
     },
     data(){
         return{
+            reload: true,
             qname:'',
             clusterCreateGrade:false,
             user:null,
@@ -169,7 +173,6 @@ export default{
                 }
                 this.quarterSelected = data[0]._id;
                 this.getQuarter(data[0]._id);
-
                 // console.log('res get all record id '+ JSON.stringify(data));
             }catch(err){
                 console.log(err);
@@ -197,6 +200,8 @@ export default{
                 console.log('Student list:', res.data.sort((a, b) => a.name.localeCompare(b.name)));
                 this.getAllQuarter(classIn);
                 this.students = res.data.sort((a, b) => a.name.localeCompare(b.name));
+                this.reload = false;
+
             } catch (err) {
                 console.error('Error fetching class data:', err);
                 alert('Failed to load class data. Please try again later.');

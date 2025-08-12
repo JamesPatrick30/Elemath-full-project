@@ -170,6 +170,7 @@ export default {
 
                 console.log('Student list:', res.data);
                 this.students = res.data;
+                this.students = this.students.sort((a, b) => a.name.localeCompare(b.name));
             } catch (err) {
                 console.error('Error fetching class data:', err);
                 alert('Failed to load class data. Please try again later.');
