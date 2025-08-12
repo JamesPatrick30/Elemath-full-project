@@ -130,9 +130,9 @@
                 <div class="table">
                     <div class="table-head">
                         <div class="thead"><strong>Profile</strong></div>
-                        <div class="thead"><strong>First Name</strong></div>
-                        <div class="thead"><strong>Middle Name</strong></div>
-                        <div class="thead"><strong>Last Name</strong></div>
+                        <div class="thead"><strong>Name</strong></div>
+                        <!-- <div class="thead"><strong>Middle Name</strong></div>
+                        <div class="thead"><strong>Last Name</strong></div> -->
                         <div class="thead"><strong>LRN</strong></div>
                         <div class="thead"><strong>Password</strong></div>
                         <div class="thead"><strong>Action</strong></div>
@@ -141,9 +141,9 @@
                     <div class="table-body">
                         <div class="tr-body" v-for="student in students" :key="student.lrn">
                             <div class="tbody" id="it" alt="Profile" ><img id="img":src="student.profile" alt="Profile"></div>
-                                <div class="tbody"><p>{{student.firstname}}</p></div>
-                                <div class="tbody"><p>{{ student.middlename }}.</p></div>
-                                <div class="tbody"><p>{{student.lastname}}</p></div>
+                                <div class="tbody"><p>{{student.name}}</p></div>
+                                <!-- <div class="tbody"><p>{{ student.middlename }}.</p></div>
+                                <div class="tbody"><p>{{student.lastname}}</p></div> -->
                                 <div class="tbody"><p>{{student.lrn}}</p></div>
                                 <div class="tbody"><p>{{student.password}}</p></div> 
                             <div class="tbody">
@@ -241,6 +241,7 @@ export default{
 
                 console.log('Student list:', res.data);
                 this.students = res.data;
+                this.students = this.students.sort((a, b) => a.name.localeCompare(b.name));
             } catch (err) {
                 console.error('Error fetching class data:', err);
                 alert('Failed to load class data. Please try again later.');

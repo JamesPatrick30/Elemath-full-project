@@ -1,5 +1,5 @@
 <template>
-  <main v-if="getIn == true">
+  <main v-if="!getIn">
     <div class="horizontal-scroll">
       <section class="landing">
             <header>
@@ -223,7 +223,7 @@ export default {
       gameimage3: gameimage3,
       cluster: false,
       SignUpcluster:false,
-      getIn:false
+      getIn:true
     };
   },
   methods: {

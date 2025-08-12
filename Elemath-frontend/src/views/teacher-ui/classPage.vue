@@ -1,4 +1,5 @@
 <template>
+    <loading v-if="!user"></loading>
     <div class="create-con" v-if="createClassCluster">
         <div class="create">
             <button class="btn-close-cluster" @click="createClassCluster = false"><font-awesome-icon :icon="['fas', 'xmark']" size="lg"/></button>
@@ -7,7 +8,7 @@
             <button @click="createClass()" class="btn-cluster">Create Class</button>
         </div>
     </div>
-    <body>
+    <body v-if="user">
         <navbar/>
         <main>
             <h1 class="title">Class </h1>
@@ -66,8 +67,8 @@
                         <div class="table-head">
                             <div class="thead"><strong>Profile</strong></div>
                             <div class="thead"><strong>First Name</strong></div>
-                            <div class="thead"><strong>Middle Name</strong></div>
-                            <div class="thead"><strong>Last Name</strong></div>
+                            <!-- <div class="thead"><strong>Middle Name</strong></div>
+                            <div class="thead"><strong>Last Name</strong></div> -->
                             <div class="thead"><strong>LRN</strong></div>
                             <div class="thead"><strong>Password</strong></div>
                             <!-- <div class="thead"><strong>Action</strong></div> -->
@@ -76,9 +77,9 @@
                         <div class="table-body" v-if="students.length !== 0">
                             <div class="tr-body" v-for="student in students" :key="student.lrn">
                                 <div class="tbody" alt="Profile" ><img id="img":src="student.profile" alt="Profile"></div>
-                                <div class="tbody"><p>{{student.firstname}}</p></div>
-                                <div class="tbody"><p>{{ student.middlename }}.</p></div>
-                                <div class="tbody"><p>{{student.lastname}}</p></div>
+                                <div class="tbody"><p>{{student.name}}</p></div>
+                                <!-- <div class="tbody"><p>{{ student.middlename }}.</p></div>
+                                <div class="tbody"><p>{{student.lastname}}</p></div> -->
                                 <div class="tbody"><p>{{student.lrn}}</p></div>
                                 <div class="tbody"><p>{{student.password}}</p></div> 
                                 <!-- <div class="tbody">

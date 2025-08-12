@@ -270,7 +270,7 @@ app.post('/sign-up', async (req, res) => {
   }
 });
 
-app.get('/data/teacher', verifyRefreshToken,auth, async (req, res) => {
+app.get('/data/teacher',auth, async (req, res) => {
   try {
     // console.log('Authenticated user:', req.user);
     const user = await teacher_accoount.findById(req.user.id).populate('class');
