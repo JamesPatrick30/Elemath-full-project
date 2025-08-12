@@ -81,7 +81,7 @@ router.post('/google', async (req, res) => {
         httpOnly: true,
       secure: false,
       sameSite: 'lax',
-      maxAge: 15 * 60 * 1000 // 15 mins
+      maxAge: 90 * 24* 60 * 60 * 1000 // 15 mins
     });
     res.status(200).json({ email, name, picture,class: user.class.length });
   } catch (err) {
