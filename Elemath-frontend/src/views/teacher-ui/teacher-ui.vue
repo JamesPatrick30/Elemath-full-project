@@ -197,7 +197,7 @@ export default {
                         </table>
                     </div>
                 </div> -->
-                <div class="statistic" style="grid-area: statistic;">
+                <!-- <div class="statistic" style="grid-area: statistic;">
                 <h3>Class Chart</h3>
                 <div class="con-ch">
                     <apexChart
@@ -208,9 +208,9 @@ export default {
                         width="300"
                         height="300"
                     />
-                </div>
+                </div> -->
                     
-                </div>
+                <!-- </div> -->
         </div>
         </main>
         
