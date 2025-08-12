@@ -65,6 +65,10 @@ export default {
                 this.infoLastName = this.user.lastName;
                 this.classlength = this.user.class.length;
                 console.log('Data fetched successfully:', this.classlength);
+                if( this.classlength >0 ){
+                    this.$router.push('/th');
+                }
+                
             } catch (err) {
                 console.error('Error fetching data:', err);
                 if(err.response && err.response.status === 401) {

@@ -80,6 +80,9 @@ export default {
                 const res = await api.get('/data/teacher');
                 this.user = res.data;
                 this.loadingB = false;
+                if( this.user.class.length == 0 ){
+                    this.$router.push('/tc');
+                }
                 this.currentProfile = this.user.profile;
                 console.log('Data fetched successfully:', res.data);
             } catch (err) {

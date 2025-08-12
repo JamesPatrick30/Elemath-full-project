@@ -255,7 +255,7 @@ export default{
                 const res = await api.post('/delete/mode',{id:this.id});
 
                 // alert(res.data.message);
-                this.$router.push('/tc');
+                this.$router.push('/th');
             }catch(err){
                 console.log(err);
             }
