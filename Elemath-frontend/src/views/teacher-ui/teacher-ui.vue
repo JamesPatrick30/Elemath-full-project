@@ -124,6 +124,21 @@ export default {
 
 </script>
 <template>
+    <div class="profile-outer"  >
+        <div class="class-con">
+            <button><font-awesome-icon :icon="['fas', 'xmark']" size="lg"/></button>
+
+            <h2>title</h2>
+            <!-- TODO:FIX THE List -->
+            <ul>
+                <li v-for="classes in user?.class" :key="classes._id">
+                    <button>
+                        {{ classes.Class_name }}
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
     <div class="profile-outer"  v-if="picCharacterb == true">
         <div class="profile-con" >
             <div class="profile">
@@ -169,9 +184,9 @@ export default {
                             <h1>Window Card</h1>
                             <img class="teach" src="/images/teach.png" alt="">
                         </div>
-                        <div id="mode" class="challenge" style="grid-area: challenge;">
+                        <!-- <div id="mode" class="challenge" style="grid-area: challenge;">
                             <h1>Challenge Mode</h1>
-                        </div>
+                        </div> -->
                         <div id="mode" class="lesson" style="grid-area: lesson;">
                             <h1>Lessons</h1>
                         </div>
@@ -218,6 +233,48 @@ export default {
     <loading v-else></loading>
 </template>
 <style scoped>
+.class-con ul li{
+    height: 500px;
+    width: 450px;
+    background-color: rgb(88, 166, 255);
+    margin-bottom: 10px;
+}
+.class-con ul{
+    list-style: none;
+    gap: 10px;
+    justify-self: end;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    height: 100%;
+    width:450px;
+    overflow: auto;
+    scrollbar-width: none;
+    background-color: #2a713d;
+}
+.class-con button:hover{
+    color: red;
+}
+.class-con button{
+    height: fit-content;
+    width: fit-content;
+    border: none;
+    background-color: transparent;
+    align-self: flex-end;
+    /* margin-right: 5px;s */
+    left: auto;
+    color: rgb(253, 89, 89);
+}
+.class-con{
+    height: calc(100% - 100px);
+    width: 500px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+}
 *{
     font-family: 'BubbleBody Neue','Poppins', sans-serif;
 }
