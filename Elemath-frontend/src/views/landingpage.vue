@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <main v-if="getIn == true">
     <div class="horizontal-scroll">
       <section class="landing">
             <header>
@@ -222,7 +222,8 @@ export default {
       gameimage2: gameimage2,
       gameimage3: gameimage3,
       cluster: false,
-      SignUpcluster:false
+      SignUpcluster:false,
+      getIn:false
     };
   },
   methods: {
@@ -254,11 +255,15 @@ export default {
           }else{
             this.$router.push('th');
           }
+          return;
         }else if(res.data.role === 'student'){
           this.$router.push('/sd');
+          return;
         }
+        this.getIn = true;
       }catch(err){
         console.log(err)
+        this.getIn = true
       }
     }
   },
