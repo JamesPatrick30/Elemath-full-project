@@ -50,7 +50,8 @@ export default {
                 { name: 'think', image: '/characters/think.png'},
                 { name: 'yellow', image: '/characters/yellow.png'},
                ],
-               currentProfile: ''
+               currentProfile: '',
+               picCharacterb:false
         };
     },
     methods: {
@@ -58,6 +59,7 @@ export default {
             try {
                 const res = await api.get('/data/teacher');
                 this.user = res.data;
+                this.currentProfile = this.user.profile;
                 console.log('Data fetched successfully:', res.data);
             } catch (err) {
                 console.error('Error fetching data:', err);
@@ -84,9 +86,7 @@ export default {
             }
         },
         picCharacter(){
-            const con = document.getElementsByClassName('profile-outer')[0];
-            con.style.display = 'flex'; // or 'block', 'flex', etc.
-            this.currentProfile = this.user.profile
+            this.picCharacterb = true;
             console.log('click');
         },
         changeProfile(img){
@@ -106,8 +106,9 @@ export default {
                 alert('save!');
                 await this.getData();
                 console.log(res.data.message);
-                const con = document.getElementsByClassName('profile-outer')[0];
-                con.style.display = 'none'; // or 'block', 'flex', etc.
+                this.picCharacterb = false;
+                // const con = document.getElementsByClassName('profile-outer')[0];
+                // con.style.display = 'none'; // or 'block', 'flex', etc.
                 btn.disabled = false;
             }catch(err){
                 console.log('Error is :' + err)
@@ -123,11 +124,15 @@ export default {
 
 </script>
 <template>
-    <div class="profile-outer">
-        <div class="profile-con">
+    <div class="profile-outer"  v-if="picCharacterb == true">
+        <div class="profile-con" >
             <div class="profile">
                 <img :src="currentProfile" alt="">
-                <button @click="saveProfile()" class="btn-saveProfile">Save</button>
+                <div class="btn-profile-con">
+                    <button @click="saveProfile()" class="btn-saveProfile">Save</button>
+                    <button @click="picCharacterb = false" class="btn-cancelProfile">Cancel</button>
+                </div>
+                
             </div>
             <div class="characters">
                 <div class="character" @click="changeProfile(user?.googleprofile)" >
@@ -173,7 +178,7 @@ export default {
                     </div>
                     
                 </div>
-                <div class="list" style="grid-area: list;">
+                <!-- <div class="list" style="grid-area: list;">
                     <h1>Students</h1>
                     <div class="table-scroll">
                         <table>
@@ -191,7 +196,7 @@ export default {
                             </tbody>
                         </table>
                     </div>
-                </div>
+                </div> -->
                 <div class="statistic" style="grid-area: statistic;">
                 <h3>Class Chart</h3>
                 <div class="con-ch">
@@ -216,7 +221,23 @@ export default {
 *{
     font-family: 'BubbleBody Neue','Poppins', sans-serif;
 }
+.btn-profile-con{
+    display: flex;
+    gap: 10px;
+}
+.btn-cancelProfile{
+    cursor: pointer;
+    width: 100px;
+    height: 40px;
+    background-color: rgb(255, 90, 90);
+    color: white;
+    font-weight: 800;
+    border-radius: 10px;
+    border: none;
+    font-size: 15px;
+}
 .btn-saveProfile{
+    cursor: pointer;
     width: 100px;
     height: 40px;
     background-color: greenyellow;
@@ -273,10 +294,9 @@ export default {
 }
 .profile-outer{
 
-    display: none;
     height: 100vh;
     width: 100vw;
-    
+    display: flex;
     align-items: center;
     justify-content: center;
     background-color: rgba(0, 0, 0, 0.5);
