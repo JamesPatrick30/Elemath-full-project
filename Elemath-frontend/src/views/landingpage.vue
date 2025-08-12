@@ -223,7 +223,7 @@ export default {
       gameimage3: gameimage3,
       cluster: false,
       SignUpcluster:false,
-      getIn:true
+      getIn:false
     };
   },
   methods: {
@@ -260,10 +260,10 @@ export default {
           this.$router.push('/sd');
           return;
         }
-        this.getIn = true;
+        this.getIn = false;
       }catch(err){
         console.log(err)
-        this.getIn = true
+        this.getIn = false
       }
     }
   },

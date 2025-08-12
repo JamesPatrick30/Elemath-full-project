@@ -51,10 +51,19 @@ export default {
                 { name: 'yellow', image: '/characters/yellow.png'},
                ],
                currentProfile: '',
-               picCharacterb:false
+               picCharacterb:false,
+               titleQ:'',
+               cluster:false
         };
     },
     methods: {
+        clusterOn(title){
+            this.titleQ = title;
+            this.cluster = true;
+        },
+        async createMode(id,mode){
+            alert('id : ' + id + ' mode : ' + mode);
+        },
         async getData() {
             try {
                 const res = await api.get('/data/teacher');
@@ -124,19 +133,20 @@ export default {
 
 </script>
 <template>
-    <div class="profile-outer"  >
+    <div class="profile-outer" v-if="cluster" >
         <div class="class-con">
-            <button><font-awesome-icon :icon="['fas', 'xmark']" size="lg"/></button>
+            <button @click="cluster = false"><font-awesome-icon :icon="['fas', 'xmark']" size="lg"/></button>
 
-            <h2>title</h2>
+            <h2>{{ titleQ }}</h2>
             <!-- TODO:FIX THE List -->
-            <ul>
-                <li v-for="classes in user?.class" :key="classes._id">
-                    <button>
+             <div class="con-class">
+                <div class="class-s" v-for="classes in user?.class" :key="classes.Class_id" @click="createMode(classes.Class_id,titleQ)">
+                    
+                    <h1>
                         {{ classes.Class_name }}
-                    </button>
-                </li>
-            </ul>
+                    </h1>
+                </div>
+             </div>
         </div>
     </div>
     <div class="profile-outer"  v-if="picCharacterb == true">
@@ -177,17 +187,17 @@ export default {
                 </div>
                 <div class="body"  style="grid-area: body;">
                     <div class="con-b">
-                        <div id="mode" class="quiz" style="grid-area: quizmode;">
+                        <div id="mode" class="quiz" style="grid-area: quizmode;" v-on:click="clusterOn('QUIZ MODE')">
                             <h1>QUIZ MODE</h1>
                         </div>
-                        <div id="mode" class="windowcard" style="grid-area: windowcard;">
+                        <div id="mode" class="windowcard" style="grid-area: windowcard;" @click="clusterOn('Window Card')">
                             <h1>Window Card</h1>
                             <img class="teach" src="/images/teach.png" alt="">
                         </div>
                         <!-- <div id="mode" class="challenge" style="grid-area: challenge;">
                             <h1>Challenge Mode</h1>
                         </div> -->
-                        <div id="mode" class="lesson" style="grid-area: lesson;">
+                        <div id="mode" class="lesson" style="grid-area: lesson;" @click="clusterOn('Lessons')">
                             <h1>Lessons</h1>
                         </div>
                     </div>
@@ -233,26 +243,38 @@ export default {
     <loading v-else></loading>
 </template>
 <style scoped>
-.class-con ul li{
-    height: 500px;
-    width: 450px;
-    background-color: rgb(88, 166, 255);
-    margin-bottom: 10px;
+.class-con .con-class .class-s h1{
+    color: white;
 }
-.class-con ul{
+.class-con .con-class .class-s{
+    cursor: pointer;
+    border-radius: 10px;
+    min-height: 200px;
+    width: 450px;
+    background: linear-gradient(90deg, #58a6ff 0%, #a8f5ff 100%);
+    margin-bottom: 10px;
+    margin-top: 10px;
+    transition: 0.1s linear;
+}
+.class-con .con-class .class-s:hover{
+    background: linear-gradient(90deg, #58a6ff 40%, #a8f5ff 100%);
+    transform: scale(1.05);
+    transition: 0.1s linear;
+}
+.class-con .con-class{
     list-style: none;
     gap: 10px;
     justify-self: end;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    /* justify-content: center; */
     align-items: center;
 
-    height: 100%;
-    width:450px;
+    height: calc(100% - 30px);
+    width:100%;
     overflow: auto;
     scrollbar-width: none;
-    background-color: #2a713d;
+    /* background-color: #2a713d; */
 }
 .class-con button:hover{
     color: red;
@@ -274,6 +296,7 @@ export default {
     display: flex;
     flex-direction: column;
     border-radius: 10px;
+    align-items: center;
 }
 *{
     font-family: 'BubbleBody Neue','Poppins', sans-serif;
