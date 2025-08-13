@@ -26,8 +26,16 @@
                     </button>
                 </div>
                 
+<<<<<<< HEAD
                 <button class="submit" type="submit" @click="login()">Sign In</button>
                 <signGoogle ref="googleComponent" />
+=======
+                <button class="submit" type="submit" v-if="role=='student'" @click="Studentlogin()">Sign In</button>
+                <button class="submit" type="submit" v-if="role !='student'" @click="login()">Sign In</button> 
+                
+                
+                <signGoogle ref="googleComponent" v-if="role !== 'student'" />
+>>>>>>> st
                 
             </div>
         </main>
@@ -51,6 +59,24 @@ export default {
         };
     },
     methods: {
+        async Studentlogin(){
+            if (!this.email || !this.password) {
+                alert('Please fill in all fields');
+                return;
+            }
+            try{
+                const res = await api.post('/student-login',{
+                    email:this.email,
+                    password:this.password
+                });
+                this.$router.push({name : 'studentDashboard'});
+                alert(res.data.message);
+            }catch(err){
+                console.log(err);
+
+                alert(err.response.data.message);
+            }
+        },
         // Add methods for handling sign-in logic
         see(){
             this.showPassword = !this.showPassword;

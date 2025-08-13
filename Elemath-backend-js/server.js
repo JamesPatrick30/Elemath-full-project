@@ -113,6 +113,63 @@ app.post('/api/login',async (req, res) => {
     res.status(200).json({ message: 'Login successful', classCount: classCount });
     console.log('Login successful:', username);
 });
+
+app.post('/student-login', async (req, res) => {
+  const {email,password} = req.body;
+
+  if (!email || !password) {
+    return res.status(404).json({message:'invalid input'});
+  }
+  const student =await StudentClass.findOne({email:email});
+
+  if(!student) return res.status(404).json({message:'Student not yet enrolled'});
+
+  if (student.password !== password) return res.status(404).json({message:'Wrong password'});
+
+  const payload = {id:student._id,username:student.email,classId:student.classId};
+
+  res.cookie('access_token', createToken(payload).accessToken, {
+        httpOnly: true,
+        secure: false,       // true in production
+        sameSite: 'lax',     // 'none' only if cross-site
+        maxAge: 90 * 60 * 1000, // 90 minutes
+        path:'/'
+    });
+
+    // Refresh token cookie (90 days)
+    res.cookie('refresh_token', createToken(payload).refreshToken, {
+        httpOnly: true,
+        secure: false,       // true in production
+        sameSite: 'lax',
+        maxAge: 90 * 24 * 60 * 60 * 1000, // 90 days
+        path:'/'
+    });
+    res.status(200).json({ message: 'Login successful' });
+    console.log('Login successful:', student.name);
+})
+app.get('/get/student/data', auth, async (req, res) => {
+  const studentId = req.user.id; // Assuming the student ID is stored in the token payload
+  console.log('Student ID from token:', studentId);
+
+  const studentData = await StudentClass.findById(studentId).populate('classId');
+
+  if (!studentData) {
+    return res.status(404).json({ message: 'Student not found' });
+  }
+
+  console.log('Student data:', studentData);
+  res.status(200).json({
+    id: studentData._id,
+    name: studentData.name,
+    classId: studentData.classId,
+    profile: studentData.profile,
+    firstname: studentData.firstname,
+    middlename: studentData.middlename,
+    lastname: studentData.lastname,
+    lrn: studentData.lrn,
+    email: studentData.email
+  });
+});
 const Gradebook = require('./models/grade.js');
 
 app.post('/get/quarter',auth,async (req,res)=>{
@@ -558,4 +615,4 @@ app.post('/delete/mode',auth,(req,res)=>{
     return res.json({ message: 'Mode deleted' });
   }
   res.status(404).json({ message: 'Mode not found' });
-})
+});

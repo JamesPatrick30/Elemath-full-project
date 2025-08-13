@@ -4,6 +4,8 @@ import signin from '@/views/SignIn.vue'
 import SignUp from '@/views/SignUp.vue'
 import studentDashboard from '@/views/student-ui/studentDashboard.vue'
 import waitingLobby from '@/views/student-ui/waitingLobby.vue'
+import studentSetting from '@/views/student-ui/setting.vue'
+
 
 import setting from '@/views/teacher-ui/setting.vue'
 import teacberDashboard from '@/views/teacher-ui/teacber-dashboard.vue'
@@ -100,6 +102,12 @@ const router = createRouter({
       path: '/cc',
       name: 'createClass',
       component: classCreate
+    },
+
+    {
+      path:'/ss',
+      name: 'student-setting',
+      component:studentSetting
     }
 
   ],

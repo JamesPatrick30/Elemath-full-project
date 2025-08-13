@@ -6,15 +6,7 @@
             </div>
     <main>
         
-        <nav v-show="isNavVisible">
-            <img class="logo" src="/images/logo.jpg" alt="">
-            <ul>
-                <li class="item1">Home</li>
-                <li class="item2">Profile</li>
-                <li class="item3">History</li>
-                <li class="item4">Settings</li>
-            </ul>
-        </nav>
+        <navBarStudent></navBarStudent>
         <div class="content">
             
             <div class="info">
@@ -43,14 +35,16 @@
     </main>
 </template>
 <script>
+import navBarStudent from './components/navBarStudent.vue';
 import TreeComponent from '@/components/svg/IconTree1.vue';
 import TreeComponent2 from '@/components/svg/IconTree2.vue';
-
+import api from '@/axios';
 export default {
     name: 'StudentDashboard',
     components: {
         TreeComponent,
-        TreeComponent2
+        TreeComponent2,
+        navBarStudent
     },
     data() {
         return {
@@ -60,6 +54,22 @@ export default {
         };
     },
     methods: {
+        async getdata(){
+            try {
+                const response = await api.get('/get/student/data'); // Adjust the endpoint as needed
+                this.name = response.data.name || 'John Doe';
+                this.lrn = response.data.lrn || '1234567890';
+            } catch (error) {
+                console.error('Error fetching student data:', error);
+            }
+        },
+        async lookforQuiz(){
+            try{
+                const res = await api.post('/get/quiz');
+            }catch(err){
+                console.error('Error fetching quiz data:', err);
+            }
+        },
         SeeNav() {
             this.isNavVisible = !this.isNavVisible;
         },
@@ -70,6 +80,7 @@ export default {
     mounted() {
         window.addEventListener('resize', this.handleResize);
         this.handleResize();
+        this.getdata();
     },
     beforeDestroy() {
         window.removeEventListener('resize', this.handleResize);
