@@ -69,7 +69,13 @@ export default {
                 console.error('Error fetching student data:', error);
             }
         },
-        
+        async lookforQuiz(){
+            try{
+                const res = await api.post('/get/quiz');
+            }catch(err){
+                console.error('Error fetching quiz data:', err);
+            }
+        },
         SeeNav() {
             this.isNavVisible = !this.isNavVisible;
         },

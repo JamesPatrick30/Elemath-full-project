@@ -126,7 +126,7 @@ app.post('/student-login', async (req, res) => {
 
   if (student.password !== password) return res.status(404).json({message:'Wrong password'});
 
-  const payload = {id:student._id,username:student.email};
+  const payload = {id:student._id,username:student.email,classId:student.classId};
 
   res.cookie('access_token', createToken(payload).accessToken, {
         httpOnly: true,
