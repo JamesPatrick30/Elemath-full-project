@@ -121,7 +121,7 @@ app.post('/student-login', async (req, res) => {
     return res.status(404).json({message:'invalid input'});
   }
   const student =await StudentClass.findOne({email:email});
-  console.log('student : '+student);
+  
   if(!student) return res.status(404).json({message:'Student not yet enrolled'});
 
   if (student.password !== password) return res.status(404).json({message:'Wrong password'});
