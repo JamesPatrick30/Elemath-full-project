@@ -67,7 +67,7 @@
                     </div>
                     <div class="tbody">
                         <div class="tr" :id="index%2? 'line-2' : ''" v-for="(student,index) in students" :key="student.name">
-                            <div class="td-name"><h5 class="student-name">{{ student.name }}</h5></div>
+                            <div class="td-name"><h5 class="student-name" >{{ student.name }}</h5></div>
                             <div class="td-con">
                                 <div class="td" v-for="grades in gradeline(student.quiz,quizstotal)" :key="grades.lrn" :class="grades.pass? 'notpass':'pass'"><p>{{ grades.grade }}</p> </div>
                             </div>
@@ -322,7 +322,7 @@ export default{
 .student-name{
     margin: 0;
     padding: 0;
-    
+    margin-left: 10px;
 }
 *{
     font-family: 'BubbleBody Neue','Poppins', sans-serif;
@@ -423,14 +423,14 @@ body{
     text-justify:auto;
     height: 50px;
     width: 60px;
-    border: 1px solid black;
+    border: 1px solid rgb(117, 165, 255);
 }
 .td-total{
     text-align: center;
     text-justify:auto;
     height: 25px;
     width: 60px;
-    border: 1px solid black;
+    border: 1px solid rgb(117, 165, 255);
 }
 .td p,.td-total p{
     margin: 0;
@@ -452,6 +452,7 @@ body{
     border: 1px solid black;
 }
 .thead{
+    background-color: #ccc;
     height: 50px;
 }
 .th-con{
@@ -465,7 +466,7 @@ body{
     display: flex;
     height: 25px;
     width:calc(100% - 350px);
-    border: 1px solid black;
+    border: 1px solid rgb(117, 165, 255);
 }
 .th-name h3{
     margin: 0;
@@ -479,18 +480,19 @@ body{
     border: 1px solid black;
 }
 .td-name{
+    overflow: hidden;
     height: 25px;
     width: 300px;
     font-weight: 800;
-    text-align: center;
-    border: 1px solid black;
+    text-align: start;
+    border: 1px solid rgb(117, 165, 255);
 }
 th,td{
     outline: auto;
 }
 .table{
     
-    border: 1px solid black;
+    border: 1px solid rgb(255, 255, 255);
     height: 80%;
     width: 94%;
     /* background-color: rgb(216, 216, 216); */
