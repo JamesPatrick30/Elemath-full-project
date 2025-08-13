@@ -2,10 +2,12 @@
     <body>
         <navBarStudent></navBarStudent>
         Settings
+        <button @click="logout()">log out</button>
     </body>
     
 </template>
 <script>
+import api from '@/axios';
 import navBarStudent from './components/navBarStudent.vue';
 export default {
     components:{
@@ -14,6 +16,17 @@ export default {
     data(){
         return{
 
+        }
+    },
+    methods:{
+        async logout(){
+            try{
+                const res = await api.post('/api/logout');
+                this.$router.push('/')
+                alert(res.data.message);
+            }catch(err){
+                console.log(err);
+            }
         }
     }
 }

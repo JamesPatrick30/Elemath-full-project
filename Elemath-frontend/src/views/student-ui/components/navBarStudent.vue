@@ -2,10 +2,10 @@
     <nav v-show="isNavVisible">
             <img class="logo" src="/images/logo.jpg" alt="">
             <ul>
-                <li class="item1">Home</li>
-                <li class="item2">Profile</li>
+                <li class="item1" @click="this.$router.push({name:'studentDashboard'})">Home</li>
+                <li class="item2" >Profile</li>
                 <li class="item3">History</li>
-                <li class="item4">Settings</li>
+                <li class="item4" @click="this.$router.push({name:'student-setting'})">Settings</li>
             </ul>
         </nav>
 </template>
@@ -24,10 +24,11 @@ export default {
     },
 };
 </script>
-<style>
+<style scoped>
 nav {
     
-    width: 20%;
+    min-width: 250px;
+    max-width: 250px;
     height: 100%;
     background-color: #ffffff;
     display: flex;
