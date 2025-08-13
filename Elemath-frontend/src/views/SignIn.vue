@@ -27,7 +27,7 @@
                 </div>
                 
                 <button class="submit" type="submit" @click="login()">Sign In</button>
-                <signGoogle ref="googleComponent" v-if="role !== 'student'" />
+                <signGoogle ref="googleComponent" />
                 
             </div>
         </main>
