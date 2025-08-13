@@ -45,7 +45,7 @@
 <script>
 import TreeComponent from '@/components/svg/IconTree1.vue';
 import TreeComponent2 from '@/components/svg/IconTree2.vue';
-
+import api from '@/axios';
 export default {
     name: 'StudentDashboard',
     components: {
@@ -60,6 +60,16 @@ export default {
         };
     },
     methods: {
+        async getdata(){
+            try {
+                const response = await api.get('/get/student/data'); // Adjust the endpoint as needed
+                this.name = response.data.name || 'John Doe';
+                this.lrn = response.data.lrn || '1234567890';
+            } catch (error) {
+                console.error('Error fetching student data:', error);
+            }
+        },
+        
         SeeNav() {
             this.isNavVisible = !this.isNavVisible;
         },
@@ -70,6 +80,7 @@ export default {
     mounted() {
         window.addEventListener('resize', this.handleResize);
         this.handleResize();
+        this.getdata();
     },
     beforeDestroy() {
         window.removeEventListener('resize', this.handleResize);

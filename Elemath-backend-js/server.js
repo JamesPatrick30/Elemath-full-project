@@ -121,7 +121,7 @@ app.post('/student-login', async (req, res) => {
     return res.status(404).json({message:'invalid input'});
   }
   const student =await StudentClass.findOne({email:email});
-  
+
   if(!student) return res.status(404).json({message:'Student not yet enrolled'});
 
   if (student.password !== password) return res.status(404).json({message:'Wrong password'});
@@ -147,6 +147,29 @@ app.post('/student-login', async (req, res) => {
     res.status(200).json({ message: 'Login successful' });
     console.log('Login successful:', student.name);
 })
+app.get('/get/student/data', auth, async (req, res) => {
+  const studentId = req.user.id; // Assuming the student ID is stored in the token payload
+  console.log('Student ID from token:', studentId);
+
+  const studentData = await StudentClass.findById(studentId).populate('classId');
+
+  if (!studentData) {
+    return res.status(404).json({ message: 'Student not found' });
+  }
+
+  console.log('Student data:', studentData);
+  res.status(200).json({
+    id: studentData._id,
+    name: studentData.name,
+    classId: studentData.classId,
+    profile: studentData.profile,
+    firstname: studentData.firstname,
+    middlename: studentData.middlename,
+    lastname: studentData.lastname,
+    lrn: studentData.lrn,
+    email: studentData.email
+  });
+});
 const Gradebook = require('./models/grade.js');
 
 app.post('/get/quarter',auth,async (req,res)=>{
