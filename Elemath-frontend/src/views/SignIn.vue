@@ -26,7 +26,7 @@
                     </button>
                 </div>
                 
-                   <!-- <button class="submit" type="submit" v-if="role=='student'" @click="Studentlogin()">Student Sign In</button> -->
+                <button class="submit" type="submit" v-if="role=='student'" @click="Studentlogin()">Sign In</button>
                 <button class="submit" type="submit" v-if="role !='student'" @click="login()">Sign In</button> 
                 
                 
@@ -55,6 +55,10 @@ export default {
     },
     methods: {
         async Studentlogin(){
+            if (!this.email || !this.password) {
+                alert('Please fill in all fields');
+                return;
+            }
             try{
                 const res = await api.post('/student-login',{
                     email:this.email,
