@@ -25,8 +25,11 @@
                         </svg>
                     </button>
                 </div>
-                <button class="submit" type="submit" v-if="role=='student'" @click="Studentlogin()">Student Sign In</button>
-                <button class="submit" type="submit" v-else-if="role !='student'" @click="login()">Sign In</button>
+                
+                   <!-- <button class="submit" type="submit" v-if="role=='student'" @click="Studentlogin()">Student Sign In</button> -->
+                <button class="submit" type="submit" v-if="role !='student'" @click="login()">Sign In</button> 
+                
+                
                 <signGoogle ref="googleComponent" v-if="role !== 'student'" />
                 
             </div>
