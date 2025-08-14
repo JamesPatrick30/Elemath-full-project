@@ -512,10 +512,11 @@ app.post('/admin/trim-students', async (req, res) => {
 app.get('/role', auth, async (req, res) => {
   try {
     const id = req.user?.id;
+    console.log("User ID from token:", id);
     if (!id) {
       return res.status(400).json({ message: "Invalid token payload." });
     }
-
+    
     // Check teacher
     const teacher = await teacher_accoount.findById(id).populate('class');
     if (teacher) {

@@ -26,16 +26,16 @@
                     </button>
                 </div>
                 
-<<<<<<< HEAD
+<!-- <<<<<<< HEAD
                 <button class="submit" type="submit" @click="login()">Sign In</button>
                 <signGoogle ref="googleComponent" />
-=======
+======= -->
                 <button class="submit" type="submit" v-if="role=='student'" @click="Studentlogin()">Sign In</button>
                 <button class="submit" type="submit" v-if="role !='student'" @click="login()">Sign In</button> 
                 
                 
                 <signGoogle ref="googleComponent" v-if="role !== 'student'" />
->>>>>>> st
+<!-- >>>>>>> st -->
                 
             </div>
         </main>
