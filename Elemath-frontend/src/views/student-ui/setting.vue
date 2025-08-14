@@ -1,8 +1,11 @@
 <template>
     <body>
         <navBarStudent></navBarStudent>
-        Settings
-        <button @click="logout()">log out</button>
+        <main>
+            Settings
+            <button @click="logout()">log out</button>
+        </main>
+        
     </body>
     
 </template>
