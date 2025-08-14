@@ -72,4 +72,16 @@ nav ul li:hover{
     margin-top: 0%;
     margin-bottom: 10px;
 }
+@media screen and (max-width: 623px){
+    nav {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+    }
+    .logo {
+        width: 80%;
+        margin-top: 10px;
+    }
+}
 </style>

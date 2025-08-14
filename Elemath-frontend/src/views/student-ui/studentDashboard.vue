@@ -6,7 +6,7 @@
             </div>
     <main>
         
-        <navBarStudent></navBarStudent>
+        <navBarStudent class="nav" v-if="isNavVisible"></navBarStudent>
         <div class="content">
             
             <div class="info">
@@ -14,9 +14,9 @@
                  <h4>{{ lrn }}</h4>
             </div>
             <div class="joinQuiz">
-                <TreeComponent class="tree1"/>
+                <!-- <TreeComponent class="tree1"/>
                 <TreeComponent2 class="tree2"/>
-                <img class="frog" src="/images/frog2.png" alt="">
+                <img class="frog" src="/images/frog2.png" alt=""> -->
                 <h1>JoinQuiz</h1>
             </div>
             <div class="practicecontaner">
@@ -124,7 +124,8 @@ main::before {
   opacity: 0.8;
   z-index: -1;
 }
-nav {
+
+/* nav {
     
     width: 20%;
     height: 100%;
@@ -163,7 +164,7 @@ nav ul li:hover{
     transition: 0.3s;
     background-color: #4fc4f7;
     color: white;
-}
+} */
 .content{
     width: 100%;
     height: 100%;
@@ -326,6 +327,9 @@ nav ul li:hover{
 
 /* Mobile styles */
 @media screen and (max-width: 623px) {
+    /* .nav{
+    position: absolute;
+} */
     main {
         flex-direction: column;
         width: 100vw;
@@ -333,7 +337,7 @@ nav ul li:hover{
         min-height: 100vh;
         padding: 0;
     }
-    nav {
+    /* nav {
         display: none;
         width: 100vw;
         height: auto;
@@ -366,7 +370,7 @@ nav ul li:hover{
         
         background-color: #4fc4f7;
         color: white;
-    }
+    } */
     .content {
         width: 100vw;
         padding: 10px 0;
