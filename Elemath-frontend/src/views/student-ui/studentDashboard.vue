@@ -7,12 +7,17 @@
     <main>
         
         <navBarStudent class="nav" v-if="isNavVisible"></navBarStudent>
+        
         <div class="content">
+            <header>
+                
+                <div class="info">
+                    <h2>{{ name }}</h2>
+                    <h4>{{ lrn }}</h4>
+                </div>
+                <img :src="profilepic" alt="">
+            </header>
             
-            <div class="info">
-                 <h2>{{ name }}</h2>
-                 <h4>{{ lrn }}</h4>
-            </div>
             <div class="joinQuiz">
                 <!-- <TreeComponent class="tree1"/>
                 <TreeComponent2 class="tree2"/>
@@ -48,6 +53,7 @@ export default {
     },
     data() {
         return {
+            profilepic:'',
             name: 'John Doe', // Replace with actual data
             lrn: '1234567890', // Replace with actual data
             isNavVisible: window.matchMedia('(min-width: 623px)').matches // Responsive nav visibility
@@ -59,6 +65,7 @@ export default {
                 const response = await api.get('/get/student/data'); // Adjust the endpoint as needed
                 this.name = response.data.name || 'John Doe';
                 this.lrn = response.data.lrn || '1234567890';
+                this.profilepic = response.data.profile; // Default profile picture
             } catch (error) {
                 console.error('Error fetching student data:', error);
             }
@@ -124,47 +131,18 @@ main::before {
   opacity: 0.8;
   z-index: -1;
 }
-
-/* nav {
-    
-    width: 20%;
-    height: 100%;
-    background-color: #ffffff;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: baseline;
+header img{
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin: 10px;
 }
-nav ul {
-    margin-top: 20px;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+header{
     width: 100%;
-    font-family: 'BubbleBody Neue', 'Poppins', sans-serif;
-}
-nav ul li{
-    border-radius: 30px;
-    cursor: pointer;
-    width: 100%;
-    height: 40px;
+    text-align: right;
+    left: auto;
     display: flex;
-    align-items: center;
-    text-align: center;
-    justify-content: center;
-    color: #4fc4f7;
-    font-weight: bold;
-    font-family: 'BubbleBody Neue', 'Poppins', sans-serif;
-    transition: 0.3s;
 }
-nav ul li:hover{
-    transition: 0.3s;
-    background-color: #4fc4f7;
-    color: white;
-} */
 .content{
     width: 100%;
     height: 100%;
@@ -182,9 +160,9 @@ nav ul li:hover{
     gap: 0;
     margin: 0%;
     padding: 10px;
-    background-color:#a8f5ff ;
+    /* background-color:#a8f5ff ; */
     border-radius: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
     width: 90%;
     height: 90px;
     justify-content: center;
@@ -309,21 +287,6 @@ nav ul li:hover{
     color: white;
     font-family: 'BubbleBody Neue', 'Poppins', sans-serif;
 }
-/* @media screen and (max-width: 1024px){
-    main{
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-        justify-content: center;
-        align-items: center;
-    }
-    .info{
-        width: 100%;
-        padding: 0;
-    }
-} */
 
 /* Mobile styles */
 @media screen and (max-width: 623px) {
@@ -331,51 +294,20 @@ nav ul li:hover{
     position: absolute;
 } */
     main {
-        flex-direction: column;
+        /* flex-direction: column; */
         width: 100vw;
-        height: auto;
-        min-height: 100vh;
+        /* height: auto; */
+        height: fit-content;
         padding: 0;
+        margin: 0;
     }
-    /* nav {
-        display: none;
-        width: 100vw;
-        height: auto;
-        margin-top: 0%;
-        min-height: 60px;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        padding: 0;
-    }
-    nav ul {
-        flex-direction: column;
-        gap: 10px;
-        width: 100vw;
-        justify-content: center;
-        align-items: center;
-        font-size: 14px;
-        color: #4fc4f7;
-        padding: 5px;
-    }
-    nav ul li{
-        padding: 5px;
-        text-align: center;
-        justify-content: center;
-    }
-    nav ul li:hover{
-        width: 100%;
-        height: 30px;
-        
-        
-        background-color: #4fc4f7;
-        color: white;
-    } */
     .content {
         width: 100vw;
-        padding: 10px 0;
+        height: calc(100% -  30px);
+        padding: 0;
+        margin: 0;
     }
-    .info,
+    /* .info, */
     .joinQuiz,
     .practicecontaner,
     .did-you-know {
@@ -429,6 +361,7 @@ nav ul li:hover{
         justify-content: end;
         align-items: center;
         width: 100vw;
+        height: 30px;
         /* height: 40px;
         min-height: 40px; */
     }
@@ -446,6 +379,12 @@ nav ul li:hover{
         position: absolute;
         left: 2%;
         height: 30px;
+    }
+    .info h2{
+        font-size: 18px;
+    }
+    .info h2 {
+        font-size: 18px;
     }
 }
 </style>
