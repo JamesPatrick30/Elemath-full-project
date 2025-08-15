@@ -626,8 +626,11 @@ app.post('/delete/mode',auth,(req,res)=>{
 });
 
 io.on("connection", (socket) => {
-  console.log("Client connected");
+  
 
+  const cookies = cookie.parse(req.headers.cookie || "");
+  const token = cookies.access_token; // assuming cookie name is 'authToken'
+  console.log("Client connected : "+ token);
   // Send welcome message to client
   socket.send("Welcome to the WebSocket server!");
 
