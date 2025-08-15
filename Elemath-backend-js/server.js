@@ -622,7 +622,7 @@ app.post('/create/mode',auth,async (req,res)=>{
 
 app.post('/delete/mode',auth,(req,res)=>{
   const {id} = req.body;
-
+  console.log('delete mode id : '+id);
   const index = list.findIndex(item => item.id === id);
   if (index !== -1) {
     list.splice(index, 1);
@@ -659,7 +659,7 @@ io.use((socket, next) => {
 io.on("connection", (socket) => {
   console.log("Client connected:", socket.id);
 
-    socket.join(socket.user?.classId); // Join a room based on user ID
+  socket.join(socket.user?.classId); // Join a room based on user ID
     // Handle user disconnect
   socket.on('create-room', (data) => {
       console.log(`User ${socket.id} created room: ${data.roomId}`);

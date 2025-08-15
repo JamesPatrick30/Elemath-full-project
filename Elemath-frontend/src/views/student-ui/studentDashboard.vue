@@ -23,6 +23,7 @@
                 <TreeComponent2 class="tree2"/>
                 <img class="frog" src="/images/frog2.png" alt=""> -->
                 <h1>JoinQuiz</h1>
+                <p class="ongiong" v-if="ongiong">Join Now</p>
             </div>
             <div class="practicecontaner">
                 <div class="practice-test">
@@ -54,6 +55,7 @@ export default {
     },
     data() {
         return {
+            ongiong: false, // This should be set based on your logic
             profilepic:'',
             name: 'John Doe', // Replace with actual data
             lrn: '1234567890', // Replace with actual data
@@ -91,6 +93,7 @@ export default {
         this.getdata();
 
         socket.on('room-created', (data) => {
+            this.ongiong = true; // Set ongoing status based on room creation
             console.log('Lobby data received:', data);
             // Handle lobby data here
         });
@@ -102,6 +105,10 @@ export default {
 </script>
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=BubbleBody+Neue:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+.ongiong{
+    color:red;
+    font-weight: bold;
+}
 .logo{
     height: auto;
     width: 100%;
