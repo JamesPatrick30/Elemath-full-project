@@ -98,6 +98,9 @@ async def generate_quiz(data: LessonText):
             temperature=0.7,
         )
 
+        if not response.choices or not response.choices[0].message.content:
+            raise HTTPException(status_code=500, detail="AI returned no content")
+
         quiz_json = response.choices[0].message.content
         logger.info(f"Received quiz request: {quiz_json}" )
         return {"quiz": quiz_json}
