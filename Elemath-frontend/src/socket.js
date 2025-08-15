@@ -1,11 +1,18 @@
 // socket.js
-import { io } from 'socket.io-client';
+import { io } from "socket.io-client";
 
-const socket = io("http://localhost:3000");
+const socket = io("http://localhost:3000", {
+  withCredentials: true // sends cookies automatically
+});
 
 socket.on("connect", () => {
-  console.log("Socket connected with ID:", socket.id);  // Log socket ID for debugging
+  console.log("Connected:", socket.id);
 });
+
+socket.on("message", (msg) => {
+  console.log("Server says:", msg);
+});
+
 
 socket.on("disconnect", () => {
   console.log("Socket disconnected");
