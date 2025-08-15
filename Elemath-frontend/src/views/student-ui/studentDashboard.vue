@@ -40,6 +40,7 @@
     </main>
 </template>
 <script>
+import socket from '@/socket';
 import navBarStudent from './components/navBarStudent.vue';
 import TreeComponent from '@/components/svg/IconTree1.vue';
 import TreeComponent2 from '@/components/svg/IconTree2.vue';
@@ -88,6 +89,11 @@ export default {
         window.addEventListener('resize', this.handleResize);
         this.handleResize();
         this.getdata();
+
+        socket.on('lobby', (data) => {
+            console.log('Lobby data received:', data);
+            // Handle lobby data here
+        });
     },
     beforeDestroy() {
         window.removeEventListener('resize', this.handleResize);

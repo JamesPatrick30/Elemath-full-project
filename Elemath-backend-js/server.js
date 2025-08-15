@@ -34,7 +34,7 @@ const  {createToken} = require('./security/createToken.js');
 const verifyRefreshToken = require('./security/refreshtoken.js');
 const auth = require('./security/auth.js');
 // Load environment variables from .env file
-
+const cookie = require("cookie");
 // Middleware
 app.use(cors({
   origin: 'http://localhost:5173', // or whatever port your frontend uses
@@ -60,9 +60,15 @@ mongoose.connect(uri)
 // Routes
 const uploadRouter = require('./routes/upload.js');
 
+const { Server } = require("socket.io");
 
 // Create WebSocket server attached to the HTTP server
-const io = new WebSocket.Server({ server });
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:5173", // your Vue dev URL
+    credentials: true
+  }
+});
 
 
 app.use('/', uploadRouter); // Mount upload route
@@ -624,30 +630,41 @@ app.post('/delete/mode',auth,(req,res)=>{
   }
   res.status(404).json({ message: 'Mode not found' });
 });
+// Middleware to read cookie token
+io.use((socket, next) => {
+  // console.log("Handshake headers:", socket.handshake.headers);
+
+  const cookies = cookie.parse(socket.handshake.headers.cookie || "");
+  // console.log("Parsed cookies:", cookies);
+
+  const token = cookies.access_token; // change to your cookie name
+  if (!token) {
+    console.log("No token found, rejecting connection");
+    return next(new Error("Authentication error"));
+  }
+  try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      console.log("✅ Authenticated decoded:", decoded);
+      // next();
+    } catch (err) {
+      console.error("❌ Invalid token:", err.message);
+      return next(new Error("Authentication error"));
+    }
+  socket.token = token;
+  next();
+});
+
 
 io.on("connection", (socket) => {
-  
+  console.log("Client connected:", socket.id);
+    // Handle user disconnect
+  socket.on('disconnect', (reason) => {
+      console.log(`User disconnected: ${socket.id}, reason: ${reason}`);
 
-  const cookies = cookie.parse(req.headers.cookie || "");
-  const token = cookies.access_token; // assuming cookie name is 'authToken'
-  console.log("Client connected : "+ token);
-  // Send welcome message to client
-  socket.send("Welcome to the WebSocket server!");
+      // Automatically remove all listeners for this socket
+      socket.removeAllListeners();
 
-  // Handle incoming messages from the client
-  socket.on("message", (message) => {
-    console.log("Received:", message.toString());
-
-    // Broadcast the message to all connected clients
-    io.clients.forEach((client) => {
-      if (client.readyState === WebSocket.OPEN) {
-        client.send(`Echo: ${message}`);
-      }
-    });
-  });
-
-  // Handle client disconnect
-  socket.on("close", () => {
-    console.log("Client disconnected");
+      // Optional: do other cleanup (e.g., remove from room or active user list)
+      // socket.leaveAll(); 
   });
 });
