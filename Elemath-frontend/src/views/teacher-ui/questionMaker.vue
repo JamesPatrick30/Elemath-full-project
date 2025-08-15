@@ -195,6 +195,7 @@
     
 </template>
 <script>
+import socket from '@/socket';
 import api from '@/axios';
 export default{
     data(){
@@ -410,7 +411,11 @@ export default{
 
     },
     mounted(){
-        
+        socket.emit('create-room', { roomId: this.id });
+        socket.on('room-created', (data) => {
+            console.log('Room created:', data);
+            // Handle room creation confirmation here
+        });
     },
 }
 </script>

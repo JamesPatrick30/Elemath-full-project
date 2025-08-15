@@ -661,6 +661,12 @@ io.on("connection", (socket) => {
 
     socket.join(socket.user?.classId); // Join a room based on user ID
     // Handle user disconnect
+  socket.on('create-room', (data) => {
+      console.log(`User ${socket.id} created room: ${data.roomId}`);
+      socket.join(data.roomId);
+      io.to(data.roomId).emit('room-created', { message: 'join please' });
+      // socket.emit('room-created', { roomId: data.roomId });
+  });
   socket.on('disconnect', (reason) => {
       console.log(`User disconnected: ${socket.id}, reason: ${reason}`);
 

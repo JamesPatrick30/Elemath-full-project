@@ -90,7 +90,7 @@ export default {
         this.handleResize();
         this.getdata();
 
-        socket.on('lobby', (data) => {
+        socket.on('room-created', (data) => {
             console.log('Lobby data received:', data);
             // Handle lobby data here
         });
