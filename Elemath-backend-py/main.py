@@ -62,6 +62,7 @@ async def generate_quiz(data: LessonText):
         "and provide the expected correct answer(s) in the 'answer' field.\n"
         "7. The 'answer' field must contain the correct response (exact text for multiple-choice, expected answer for others).\n"
         "8. The 'explanation' field must briefly explain why the answer is correct.\n\n"
+        "9. If the answer is yes or no, just put 'yes' or 'no' in the answer field without any additional text.\n"
         "STRICT OUTPUT RULES:\n"
         "- Output must be valid JSON only — no markdown, no triple backticks, no explanations, no intro text.\n"
         "- Do NOT say 'Here’s the JSON', 'Sure, here’s...', or anything similar.\n"

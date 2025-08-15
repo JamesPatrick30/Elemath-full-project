@@ -177,6 +177,7 @@
                       Answer:{{ question.answer }}
                     </div>
                 </div>
+                <p> Explanation : {{ question.explanation }}</p>
                 
             </div>
         </div>
