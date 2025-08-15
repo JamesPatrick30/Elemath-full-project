@@ -99,7 +99,7 @@
                     <input
                         type="file"
                         id="moduleFile"
-                        accept=".pdf,.doc,.docx,.txt"
+                        accept=".pdf"
                         @change="handleFileUpload"
                         hidden
                     />
@@ -119,8 +119,8 @@
                         <option disabled value="">-- Select a type --</option>
                         <option value="multiple-choice">Multiple Choice</option>
                         <option value="short-answer">short-answer</option>
-                        <option value="true-false">Multiple Choice</option>
-                        <option value="fill-in-the-blank">Multiple Choice</option>
+                        <option value="true-false">true-false</option>
+                        <option value="fill-in-the-blank">fill-in-the-blank</option>
                     </select>
                     
                     <select class="t-o-q" v-model="uploadGenerate.lang"  >
