@@ -1,23 +1,25 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const multer = require('multer');
-const pdfParse = require('pdf-parse');
-const XLSX = require('xlsx');
-const Tesseract = require('tesseract.js');
-const fs = require('fs');
+// const multer = require('multer');
+// const pdfParse = require('pdf-parse');
+// const XLSX = require('xlsx');
+// const Tesseract = require('tesseract.js');
+// const fs = require('fs');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const app = express();
 const http = require('http');
 const mongoose = require('mongoose');
-const { OAuth2Client } = require('google-auth-library');
-const router = express.Router();
+// const { OAuth2Client } = require('google-auth-library');
+// const router = express.Router();
 const filesave = require('./models/lessonfile.js');
 const axios = require("axios");
 dotenv.config();
-// const client = new OAuth2Client(
-//   '651051530850-um6g1njmsd7qb1qu56tj5i4843mhkeio.apps.googleusercontent.com'
-// );
+
+
+//websocket
+const WebSocket = require("ws");
+
 const students = require('./models/students.js');
 const teacher_accoount = require('./models/teacher.js');
 const classes = require('./models/class.js');
@@ -57,6 +59,11 @@ mongoose.connect(uri)
   .catch(err => console.error('❌ Connection error:', err));
 // Routes
 const uploadRouter = require('./routes/upload.js');
+
+
+// Create WebSocket server attached to the HTTP server
+const io = new WebSocket.Server({ server });
+
 
 app.use('/', uploadRouter); // Mount upload route
 
@@ -616,4 +623,28 @@ app.post('/delete/mode',auth,(req,res)=>{
     return res.json({ message: 'Mode deleted' });
   }
   res.status(404).json({ message: 'Mode not found' });
+});
+
+io.on("connection", (socket) => {
+  console.log("Client connected");
+
+  // Send welcome message to client
+  socket.send("Welcome to the WebSocket server!");
+
+  // Handle incoming messages from the client
+  socket.on("message", (message) => {
+    console.log("Received:", message.toString());
+
+    // Broadcast the message to all connected clients
+    io.clients.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(`Echo: ${message}`);
+      }
+    });
+  });
+
+  // Handle client disconnect
+  socket.on("close", () => {
+    console.log("Client disconnected");
+  });
 });
