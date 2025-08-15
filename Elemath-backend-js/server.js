@@ -593,7 +593,7 @@ const list = [];
 app.post('/create/mode',auth,async (req,res)=>{
   const {id,mode}= req.body;
 
-  const classFile = Gradebook.findOne({classId:id});
+  const classFile =await Gradebook.findOne({classId:id});
 
   if(!classFile){
     return res.status(404).json({message: 'Need to create Grade Book'});
