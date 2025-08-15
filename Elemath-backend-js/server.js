@@ -635,6 +635,7 @@ io.use((socket, next) => {
   // console.log("Handshake headers:", socket.handshake.headers);
 
   const cookies = cookie.parse(socket.handshake.headers.cookie || "");
+
   // console.log("Parsed cookies:", cookies);
 
   const token = cookies.access_token; // change to your cookie name
@@ -644,19 +645,21 @@ io.use((socket, next) => {
   }
   try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      console.log("✅ Authenticated decoded:", decoded);
+      console.log("✅ Authenticated decoded in socket :", decoded);
+      socket.user = decoded; // Attach user data to socket
       // next();
     } catch (err) {
       console.error("❌ Invalid token:", err.message);
       return next(new Error("Authentication error"));
     }
-  socket.token = token;
   next();
 });
 
 
 io.on("connection", (socket) => {
   console.log("Client connected:", socket.id);
+
+    socket.join(socket.user?.classId); // Join a room based on user ID
     // Handle user disconnect
   socket.on('disconnect', (reason) => {
       console.log(`User disconnected: ${socket.id}, reason: ${reason}`);

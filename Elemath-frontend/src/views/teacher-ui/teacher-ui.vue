@@ -1,7 +1,7 @@
 <script>
 import api from '@/axios';
 import { Pie } from 'vue-chartjs'
-import VueApexCharts from 'vue3-apexcharts';
+import socket from '@/socket';
 import navbar from './components/navbar.vue';
 import loading from './components/loading.vue';
 export default {
@@ -141,6 +141,10 @@ export default {
     },
     mounted() {
         this.getData();
+        socket.on('lobby', (data) => {
+            console.log('Lobby data received:', data);
+            // Handle lobby data here
+        });
         // this.refreshtoken();
         // this.trimdb();
     }
