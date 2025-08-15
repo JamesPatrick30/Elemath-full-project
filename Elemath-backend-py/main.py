@@ -55,8 +55,18 @@ async def generate_quiz(data: LessonText):
         "(e.g., 'Mrs. Gonzales spends her monthly income...'), treat it as a 'story-based' question. In that case, "
         "include a 'story' field containing ONLY the background text, without the question itself.\n"
         "3. If a question is math-related and requires solving, make sure it clearly states the problem and shows relevant numbers or equations in the question.\n"
-        "4. If a question requires a table, represent the table as plain text using ASCII-style formatting (no HTML or Markdown tables) "
-        "and place it in a 'table' field as a string. If there is no table, omit the 'table' field.\n"
+        "4. If a question requires a table, represent it in the 'table' field as a multi-line ASCII table with borders using '+' and '|' characters, aligned columns, "
+        "and '\\n' for each new row. The table must be readable with aligned columns. "
+        "Example format:\n"
+        "\"+-----------+--------------------+\\n"
+        "| Country   | Population (M)     |\\n"
+        "+-----------+--------------------+\\n"
+        "| Country A | 50                 |\\n"
+        "| Country B | 80                 |\\n"
+        "| Country C | 65                 |\\n"
+        "| Country D | 45                 |\\n"
+        "+-----------+--------------------+\"\n"
+        "Do not output the table in a compact or inline format.\n"
         "5. Every question must have a 'topic' field describing its subject (e.g., 'Math - Percentage', 'Science - Physics', 'Reading - Comprehension').\n"
         "6. For multiple-choice questions, the 'options' field must be an array in this exact format: "
         "[\"A. option text\", \"B. option text\", \"C. option text\", \"D. option text\"].\n"
@@ -86,6 +96,7 @@ async def generate_quiz(data: LessonText):
         "]\n\n"
         f"Lesson text:\n\n{data.rawText}"
     )
+
 
 
 

@@ -165,6 +165,14 @@
                 <p class="type">{{ question?.topic }}</p>
                 <p class="type">{{ question?.type }}</p>
                 <!-- <p class="type">{{ question.language }}</p> -->
+                 <table border="1" cellpadding="5">
+                    <tbody>
+                    <tr v-for="(row, rIndex) in parseTables(question?.table)" :key="rIndex">
+                        <td>{{ row.country }}</td>
+                        <td>{{ row.population }}</td>
+                    </tr>
+                    </tbody>
+                </table>
                 <p v-if="question?.story">Story : {{ question?.story }}</p>
                 <p>{{ question.question }}</p>
                 <div class="multi" v-if="question?.options">
@@ -251,6 +259,29 @@ export default{
         }
     },
     methods:{
+        parseTables(rawData) {
+            if (!rawData || typeof rawData !== 'string') {
+                return []
+            }
+
+            // Split by "table:" marker
+            const tables = rawData
+                .split(/table:\s*'/)
+                .filter(t => t.trim() !== '')
+                .map(t => t.replace(/'$/, '').trim())
+
+            return tables.map(tableText => {
+                const lines = tableText.split('\n').map(l => l.trim()).filter(l => l)
+                const dataLines = lines.slice(1) // remove the first row (header)
+                return dataLines.map(line => {
+                const match = line.match(/^(.+?)(\d+)$/)
+                return {
+                    country: match ? match[1].trim() : '',
+                    population: match ? parseInt(match[2], 10) : 0
+                }
+                })
+            })
+            },
         async backBtn(){
             try{
                 const res = await api.post('/delete/mode',{id:this.id});
@@ -380,7 +411,7 @@ export default{
     },
     mounted(){
         
-    }
+    },
 }
 </script>
 <style scoped>
