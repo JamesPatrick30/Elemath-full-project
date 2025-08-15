@@ -55,14 +55,16 @@ async def generate_quiz(data: LessonText):
         "(e.g., 'Mrs. Gonzales spends her monthly income...'), treat it as a 'story-based' question. In that case, "
         "include a 'story' field containing ONLY the background text, without the question itself.\n"
         "3. If a question is math-related and requires solving, make sure it clearly states the problem and shows relevant numbers or equations in the question.\n"
-        "4. Every question must have a 'topic' field describing its subject (e.g., 'Math - Percentage', 'Science - Physics', 'Reading - Comprehension').\n"
-        "5. For multiple-choice questions, the 'options' field must be an array in this exact format: "
+        "4. If a question requires a table, represent the table as plain text using ASCII-style formatting (no HTML or Markdown tables) "
+        "and place it in a 'table' field as a string. If there is no table, omit the 'table' field.\n"
+        "5. Every question must have a 'topic' field describing its subject (e.g., 'Math - Percentage', 'Science - Physics', 'Reading - Comprehension').\n"
+        "6. For multiple-choice questions, the 'options' field must be an array in this exact format: "
         "[\"A. option text\", \"B. option text\", \"C. option text\", \"D. option text\"].\n"
-        "6. For short-answer, true-false, fill-in-the-blank, or other non-multiple-choice questions, omit 'options' "
+        "7. For short-answer, true-false, fill-in-the-blank, or other non-multiple-choice questions, omit 'options' "
         "and provide the expected correct answer(s) in the 'answer' field.\n"
-        "7. The 'answer' field must contain the correct response (exact text for multiple-choice, expected answer for others).\n"
-        "8. The 'explanation' field must briefly explain why the answer is correct.\n\n"
-        "9. If the answer is yes or no, just put 'yes' or 'no' in the answer field without any additional text.\n"
+        "8. The 'answer' field must contain the correct response (exact text for multiple-choice, expected answer for others).\n"
+        "9. The 'explanation' field must briefly explain why the answer is correct.\n"
+        "10. If the answer is yes or no, just put 'yes' or 'no' in the answer field without any additional text.\n\n"
         "STRICT OUTPUT RULES:\n"
         "- Output must be valid JSON only — no markdown, no triple backticks, no explanations, no intro text.\n"
         "- Do NOT say 'Here’s the JSON', 'Sure, here’s...', or anything similar.\n"
@@ -73,6 +75,7 @@ async def generate_quiz(data: LessonText):
         "    \"type\": \"multiple-choice\" | \"short-answer\" | \"true-false\" | \"fill-in-the-blank\" | \"matching\" | \"essay\",\n"
         "    \"question\": \"...\",\n"
         "    \"story\": \"...\", (optional, only if story-based)\n"
+        "    \"table\": \"...\", (optional, only if the question includes a table)\n"
         "    \"topic\": \"...\",\n"
         "    \"language\": \"...\",\n"
         "    \"difficulty\": \"...\",\n"
@@ -83,6 +86,7 @@ async def generate_quiz(data: LessonText):
         "]\n\n"
         f"Lesson text:\n\n{data.rawText}"
     )
+
 
 
 
