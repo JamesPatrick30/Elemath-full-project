@@ -626,6 +626,7 @@ app.post('/delete/mode',auth,(req,res)=>{
   const index = list.findIndex(item => item.id === id);
   if (index !== -1) {
     list.splice(index, 1);
+    io.to(id).emit('mode-deleted', { message: 'Mode deleted' });
     return res.json({ message: 'Mode deleted' });
   }
   res.status(404).json({ message: 'Mode not found' });
@@ -660,8 +661,12 @@ io.on("connection", (socket) => {
   console.log("Client connected:", socket.user.username);
 
   if(!socket.user || !socket.user.classId) {
-    console.log("❌ No classId found for user, rejecting connection : ", socket.user.username);
+    console.log("Teacher : ", socket.user.username);
     // return socket.disconnect();
+  }
+  if(!socket.user){
+    console.log("No user data found in socket, disconnecting...");
+    return socket.disconnect();
   }
   socket.join(socket.user?.classId); // Join a room based on user ID
     // Handle user disconnect
@@ -672,7 +677,7 @@ io.on("connection", (socket) => {
       // socket.emit('room-created', { roomId: data.roomId });
   });
   socket.on('disconnect', (reason) => {
-      console.log(`User disconnected: ${socket.id}, reason: ${reason}`);
+      console.log(`User disconnected: ${socket.id}, username : ${socket.user.username}`);
 
       // Automatically remove all listeners for this socket
       socket.removeAllListeners();

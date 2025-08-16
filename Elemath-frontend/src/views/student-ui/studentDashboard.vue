@@ -97,6 +97,10 @@ export default {
             console.log('Lobby data received:', data);
             // Handle lobby data here
         });
+        socket.on('mode-deleted',(data) => {
+            this.ongiong = false; // Reset ongoing status when mode is deleted
+            console.log('Mode deleted:', data);
+        });
     },
     beforeDestroy() {
         window.removeEventListener('resize', this.handleResize);
