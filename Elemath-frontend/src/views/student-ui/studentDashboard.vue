@@ -108,7 +108,8 @@ export default {
         window.addEventListener('resize', this.handleResize);
         this.handleResize();
         this.getdata();
-        
+        console.log(socket.listeners('room-created').length);
+        socket.removeAllListeners();
 
         socket.on('room-created', (data) => {
             this.ongiong = true; // Set ongoing status based on room creation

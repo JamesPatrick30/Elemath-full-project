@@ -412,12 +412,17 @@ export default{
     },
     mounted(){
         socket.connect();
+        socket.removeAllListeners();
+
+
         socket.emit('create-room', { roomId: this.id });
         socket.on('room-created', (data) => {
             console.log('Room created:', data);
             alert('Room created successfully! '+data.message);
             // Handle room creation confirmation here
         });
+        console.log(socket.listeners('room-created').length);
+
     },
 }
 </script>
