@@ -602,7 +602,7 @@ app.post('/create-question',auth ,async(req,res)=>{
     }
     res.json({quiz:quiz});
 });
-const list = []; 
+let list = []; 
 app.post('/create/mode',auth,async (req,res)=>{
   const {id,mode}= req.body;
 
