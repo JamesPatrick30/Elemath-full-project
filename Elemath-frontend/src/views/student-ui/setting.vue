@@ -31,7 +31,7 @@ export default {
                     console.log("Socket disconnected on logout");
                 }
                 this.$router.push('/')
-                alert(res.data.message);
+                // alert(res.data.message);
             }catch(err){
                 console.log(err);
             }

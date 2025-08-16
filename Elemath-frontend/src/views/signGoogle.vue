@@ -26,7 +26,7 @@ function handleGoogleCredentialResponse(response) {
   api.post('/google', { idToken })
     .then(res => {
       console.log('✅ Login success:', res.data);
-      alert('Login successful!');
+      // alert('Login successful!');
       socket.connect();
       if(res.data.class >0) {
         router.push({ name: 'teacher-ui' }); // 👈 Use router here
