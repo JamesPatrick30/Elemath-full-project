@@ -620,17 +620,26 @@ app.post('/create/mode',auth,async (req,res)=>{
   res.json({message:'done'})
 });
 
-app.post('/delete/mode',auth,(req,res)=>{
-  const {id} = req.body;
-  console.log('delete mode id : '+id);
-  const index = list.findIndex(item => item.id === id);
-  if (index !== -1) {
-    list.splice(index, 1);
-    io.to(id).emit('mode-deleted', { message: 'Mode deleted' });
-    return res.json({ message: 'Mode deleted' });
+app.post('/delete/mode', auth, (req, res) => {
+  const { id } = req.body;
+  console.log('delete mode id:', id);
+
+  // Count how many items match before deletion
+  const matches = list.filter(item => item.id === id).length;
+
+  if (matches > 0) {
+    // Keep only those that don't match the id
+    list = list.filter(item => item.id !== id);
+
+    // Notify all sockets in this room
+    io.to(id).emit('mode-deleted', { message: 'Mode deleted', count: matches });
+
+    return res.json({ message: `Deleted ${matches} mode(s)` });
   }
+
   res.status(404).json({ message: 'Mode not found' });
 });
+
 app.get('/get/mode', auth, (req, res) => {
   const id = req.query.id;          // comes in as a string
   console.log('get mode query:', req.query); // better logging
