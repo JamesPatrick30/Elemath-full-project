@@ -635,16 +635,16 @@ io.use((socket, next) => {
   // console.log("Handshake headers:", socket.handshake.headers);
 
   const cookies = cookie.parse(socket.handshake.headers.cookie || "");
-
+  const refreshToken = cookies.refresh_token; // change to your cookie name
   // console.log("Parsed cookies:", cookies);
 
   const token = cookies.access_token; // change to your cookie name
-  if (!token) {
+  if (!refreshToken) {
     console.log("No token found, rejecting connection");
     return next(new Error("Authentication error"));
   }
   try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
       console.log("✅ Authenticated decoded in socket :", decoded);
       socket.user = decoded; // Attach user data to socket
       // next();
@@ -657,8 +657,12 @@ io.use((socket, next) => {
 
 
 io.on("connection", (socket) => {
-  console.log("Client connected:", socket.id);
+  console.log("Client connected:", socket.user.username);
 
+  if(!socket.user || !socket.user.classId) {
+    console.log("❌ No classId found for user, rejecting connection : ", socket.user.username);
+    // return socket.disconnect();
+  }
   socket.join(socket.user?.classId); // Join a room based on user ID
     // Handle user disconnect
   socket.on('create-room', (data) => {
