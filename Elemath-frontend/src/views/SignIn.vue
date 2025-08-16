@@ -43,8 +43,10 @@
    
 </template>
 <script>
+import socket from '@/socket';
 import api from '@/axios';
 import signGoogle from './signGoogle.vue';
+import socket from '@/socket';
 export default {
     name: 'SignIn',
     components: {
@@ -69,6 +71,7 @@ export default {
                     email:this.email,
                     password:this.password
                 });
+                socket.connect();
                 this.$router.push({name : 'studentDashboard'});
                 alert(res.data.message);
             }catch(err){
@@ -91,6 +94,7 @@ export default {
                 });
                 if (response.status === 200) {
                     // Handle successful login, e.g., redirect to dashboard
+                    socket.connect();
                     this.$router.push({ name: 'teacher-ui' });
                     if(response.data.classCount === 0){
                         this.$router.push({ name: 'teacher-create-class' });
