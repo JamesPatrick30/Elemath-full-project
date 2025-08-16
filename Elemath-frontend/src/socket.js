@@ -1,7 +1,8 @@
 import { io } from "socket.io-client";
 
 const socket = io("http://localhost:3000", {
-  withCredentials: true // ✅ needed to send cookies
+  withCredentials: true, // ✅ needed to send cookies
+  autoConnect: false, // don’t connect immediately
 });
 
 socket.on("connect", () => {

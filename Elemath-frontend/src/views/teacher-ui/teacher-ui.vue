@@ -145,6 +145,10 @@ export default {
             console.log('Lobby data received:', data);
             // Handle lobby data here
         });
+        socket.on("connection", () => {
+            alert("Connected to server");
+            console.log("Connected:", socket.id);
+        });
         // this.refreshtoken();
         // this.trimdb();
     }

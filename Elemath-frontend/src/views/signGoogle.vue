@@ -5,6 +5,7 @@
 </template>
 
 <script setup>
+import socket from '@/socket';
 import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import api from '@/axios'; // Axios instance
@@ -26,6 +27,7 @@ function handleGoogleCredentialResponse(response) {
     .then(res => {
       console.log('✅ Login success:', res.data);
       alert('Login successful!');
+      socket.connect();
       if(res.data.class >0) {
         router.push({ name: 'teacher-ui' }); // 👈 Use router here
       }else{
