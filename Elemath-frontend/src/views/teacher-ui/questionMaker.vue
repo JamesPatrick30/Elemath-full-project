@@ -411,9 +411,11 @@ export default{
 
     },
     mounted(){
+        socket.connect();
         socket.emit('create-room', { roomId: this.id });
         socket.on('room-created', (data) => {
             console.log('Room created:', data);
+            alert('Room created successfully! '+data.message);
             // Handle room creation confirmation here
         });
     },

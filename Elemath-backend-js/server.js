@@ -631,6 +631,19 @@ app.post('/delete/mode',auth,(req,res)=>{
   }
   res.status(404).json({ message: 'Mode not found' });
 });
+app.get('/get/mode', auth, (req, res) => {
+  const id = req.query.id;          // comes in as a string
+  console.log('get mode query:', req.query); // better logging
+  console.log('id:', id);
+
+  // If list contains numbers, convert
+  const index = list.findIndex(item => String(item.id) === String(id));
+
+  if (index !== -1) {
+    return res.json({ quiz: true });
+  }
+  res.status(404).json({ quiz: false });
+});
 // Middleware to read cookie token
 io.use((socket, next) => {
   // console.log("Handshake headers:", socket.handshake.headers);

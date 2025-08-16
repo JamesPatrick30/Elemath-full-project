@@ -55,6 +55,7 @@ export default {
     },
     data() {
         return {
+            id:'',
             ongiong: false, // This should be set based on your logic
             profilepic:'',
             name: 'John Doe', // Replace with actual data
@@ -66,16 +67,32 @@ export default {
         async getdata(){
             try {
                 const response = await api.get('/get/student/data'); // Adjust the endpoint as needed
+                // console.log(response.data);
                 this.name = response.data.name || 'John Doe';
                 this.lrn = response.data.lrn || '1234567890';
                 this.profilepic = response.data.profile; // Default profile picture
+                this.id = response.data.classId._id; // Assuming the student ID is returned
+                // console.log('Student ID:', this.id);
+                await this.lookforQuiz();
+                socket.connect();
             } catch (error) {
                 console.error('Error fetching student data:', error);
             }
         },
         async lookforQuiz(){
             try{
-                const res = await api.post('/get/quiz');
+                if(!this.id){
+                    alert('No class ID found. Please check your data.'+this.id);
+                    return;
+                }
+                const res = await api.get('/get/mode',{
+                    params: {
+                        id: this.id
+                    }
+                });
+                if(res.data.quiz == true){
+                    this.ongiong = true;
+                }
             }catch(err){
                 console.error('Error fetching quiz data:', err);
             }
@@ -91,6 +108,7 @@ export default {
         window.addEventListener('resize', this.handleResize);
         this.handleResize();
         this.getdata();
+        
 
         socket.on('room-created', (data) => {
             this.ongiong = true; // Set ongoing status based on room creation
