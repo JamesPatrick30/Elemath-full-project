@@ -43,7 +43,7 @@
    
 </template>
 <script>
-import socket from '@/socket';
+// import socket from '@/socket';
 import api from '@/axios';
 import signGoogle from './signGoogle.vue';
 import socket from '@/socket';

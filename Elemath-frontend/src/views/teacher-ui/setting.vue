@@ -43,6 +43,7 @@
 </template>
 <script>
 import api from '@/axios';
+import socket from '@/socket';
 import navbar from './components/navbar.vue';
 import loading from './components/loading.vue';
 export default{
@@ -88,6 +89,11 @@ export default{
             try {
                 const response = await api.post('/api/logout');
                 console.log(response.data.message);
+
+                if (socket.connected) {
+                    socket.disconnect();
+                    console.log("Socket disconnected on logout");
+                }
                 this.$router.push('/'); // Redirect to the home page or login page
             } catch (error) {
                 console.error('Logout failed:', error);

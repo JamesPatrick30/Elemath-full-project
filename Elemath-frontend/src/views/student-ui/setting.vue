@@ -10,6 +10,7 @@
     
 </template>
 <script>
+import socket from '@/socket';
 import api from '@/axios';
 import navBarStudent from './components/navBarStudent.vue';
 export default {
@@ -25,6 +26,10 @@ export default {
         async logout(){
             try{
                 const res = await api.post('/api/logout');
+                if (socket.connected) {
+                    socket.disconnect();
+                    console.log("Socket disconnected on logout");
+                }
                 this.$router.push('/')
                 alert(res.data.message);
             }catch(err){
