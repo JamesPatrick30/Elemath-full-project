@@ -42,6 +42,7 @@ export default {
             name: '',
             lrn: '',
             profilepic: '',
+            id:''
         }
     },
     methods: {
@@ -61,10 +62,27 @@ export default {
                 // console.log('Student ID:', this.id);
                 socket.connect();
                 socket.emit('join-room', { roomId: this.classId,name:this.name,lrn:this.lrn,profile:this.profilepic });
+                await this.ListforQuiz();
             } catch (error) {
                 console.error('Error fetching student data:', error);
             }
-        }
+        },
+        async ListforQuiz(){
+            try{
+                if(!this.id){
+                    alert('No class ID found. Please check your data.'+this.id);
+                    return;
+                }
+                const res = await api.get('/get/mode/list',{
+                    params: {
+                        id: this.id
+                    }
+                });
+                this.students = res.data.list;
+            }catch(err){
+                console.error('Error fetching quiz data:', err);
+            }
+        },
     },
     mounted(){
         this.getdata();

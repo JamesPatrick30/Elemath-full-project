@@ -602,6 +602,7 @@ app.post('/create-question',auth ,async(req,res)=>{
     }
     res.json({quiz:quiz});
 });
+const dumpQuiz = require('./models/dumpquiz.js');
 let list = []; 
 app.post('/create/mode',auth,async (req,res)=>{
   const {id,mode}= req.body;
@@ -612,24 +613,34 @@ app.post('/create/mode',auth,async (req,res)=>{
     return res.status(404).json({message: 'Need to create Grade Book'});
   }
   
-  list.push({
-    id:id,
-    mode,mode
+  const createMode = new dumpQuiz({ 
+    quizId: id,
+    quizMode: mode,
+    quizName: '',
+    players: []
   });
+
+  await createMode.save();
+  // list.push({
+  //   id:id,
+  //   mode,mode
+  // });
 
   res.json({message:'done'})
 });
 
-app.post('/delete/mode', auth, (req, res) => {
+app.post('/delete/mode', auth,async (req, res) => {
   const { id } = req.body;
   console.log('delete mode id:', id);
 
   // Count how many items match before deletion
-  const matches = list.filter(item => item.id === id).length;
+  //const matches = list.filter(item => item.id === id).length;
 
-  if (matches > 0) {
+  const matches =await dumpQuiz.findOne({ quizId: id });
+  if (matches) {
     // Keep only those that don't match the id
-    list = list.filter(item => item.id !== id);
+    // list = list.filter(item => item.id !== id);
+    await dumpQuiz.deleteOne({ quizId: id });
 
     // Notify all sockets in this room
     io.to(id).emit('mode-deleted', { message: 'Mode deleted', count: matches });
@@ -646,12 +657,25 @@ app.get('/get/mode', auth, (req, res) => {
   console.log('id:', id);
 
   // If list contains numbers, convert
-  const index = list.findIndex(item => String(item.id) === String(id));
+  // const index = list.findIndex(item => String(item.id) === String(id));
+  const quiz = dumpQuiz.find({ quizId: id });
 
-  if (index !== -1) {
+  if (!quiz) {
     return res.json({ quiz: true });
   }
-  res.status(404).json({ quiz: false });
+  res.status(404).json({ quiz: false});
+});
+
+app.get('/get/mode/list', auth, async (req, res) => {
+  try {
+    const id = req.query.id; // comes in as a string
+    const list = await dumpQuiz.findOne({quizId:id}, { quizId: 1, quizMode: 1, _id: 0 });
+
+    res.status(200).json({ list: list });
+  }catch (error) {
+    console.error('Error fetching mode list:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  } 
 });
 // Middleware to read cookie token
 io.use((socket, next) => {
