@@ -197,7 +197,14 @@ export default{
                     classId: classIn
                 });
 
-                console.log('Student list:', res.data.sort((a, b) => a.name.localeCompare(b.name)));
+                // console.log('Student list:', res.data.sort((a, b) => a.name.localeCompare(b.name)));
+                if (res.data.length <= 0) {
+                    alert('No student in this class yet!');
+                    // this.$router.push('/tc');
+                    this.$router.push({ name: 'createClass',query: { i: classIn } });
+
+                    return;
+                }
                 this.getAllQuarter(classIn);
                 this.students = res.data.sort((a, b) => a.name.localeCompare(b.name));
                 this.reload = false;

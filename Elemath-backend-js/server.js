@@ -237,7 +237,7 @@ app.post('/create/record', auth, async (req, res) => {
     });
 
     const result = await book.save(); // ✅ await here
-    console.log("the create book :"+result);
+    console.log("the create book :"+ result);
     // 4. Respond with result
     res.status(201).json({ message: 'Gradebook created successfully.', result });
 
