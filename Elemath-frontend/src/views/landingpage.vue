@@ -259,8 +259,10 @@ export default {
         }else if(res.data.role === 'student'){
           this.$router.push('/sd');
           return;
+        }else{
+          this.getIn = false;
         }
-        this.getIn = false;
+        
       }catch(err){
         console.log(err)
         this.getIn = false
