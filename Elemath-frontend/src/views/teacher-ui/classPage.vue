@@ -306,7 +306,7 @@ export default {
     overflow-y: scroll;
     scrollbar-width: none;
     background-color: white;
-    height: inherit;
+    height: 100%;
 }
 /* .table-body:has(.tbody:hover){
     background-color: aqua;
