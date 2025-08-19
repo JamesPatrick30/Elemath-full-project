@@ -142,6 +142,7 @@ export default{
 
                 // optional: store result in a local state
                 this.gradebook = res.data.result;
+                await this.getAllQuarter(classId);
                 this.clusterCreateGrade = false;
             } catch (err) {
                 // Better error handling
