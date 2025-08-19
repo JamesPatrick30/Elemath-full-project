@@ -698,6 +698,11 @@ io.on("connection", (socket) => {
       io.to(data.roomId).emit('room-created', { message: 'join please' });
       // socket.emit('room-created', { roomId: data.roomId });
   });
+  socket.on('join-room', (data) => {
+      console.log(`User ${socket.id} joined room: ${data.roomId}`);
+      socket.join(data.roomId);
+      io.to(data.roomId).emit('player-joined', { player: data.name, lrn: data.lrn, profile: data.profile });
+  });
   socket.on('disconnect', (reason) => {
       console.log(`User disconnected: ${socket.id}, username : ${socket.user.username}`);
 

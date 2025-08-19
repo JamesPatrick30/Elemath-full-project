@@ -18,7 +18,7 @@
                 <img :src="profilepic" alt="">
             </header>
             
-            <div class="joinQuiz">
+            <div class="joinQuiz" @click="JoinBtn()">
                 <!-- <TreeComponent class="tree1"/>
                 <TreeComponent2 class="tree2"/>
                 <img class="frog" src="/images/frog2.png" alt=""> -->
@@ -64,6 +64,13 @@ export default {
         };
     },
     methods: {
+        JoinBtn(){
+            if(this.ongiong){
+                this.$router.push({ name: 'waiting-lobby',query: { i: this.id } });
+            }else{
+                alert('No ongoing quiz available.');
+            }
+        },
         async getdata(){
             try {
                 const response = await api.get('/get/student/data'); // Adjust the endpoint as needed

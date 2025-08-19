@@ -208,26 +208,26 @@ export default{
             questionOption:'Costumize',
 
             players : [
-                { name: 'James Patrick', lrn: '864178547844' },
-                { name: 'Alyssa Mae', lrn: '712345678901' },
-                { name: 'Marco Antonio', lrn: '623498713250' },
-                { name: 'Elaine Grace', lrn: '912378452167' },
-                { name: 'Jared Anthony', lrn: '834512967340' },
-                { name: 'Sophia Heart', lrn: '789431258610' },
-                { name: 'Liam Gabriel', lrn: '675849123045' },
-                { name: 'Chloe Anne', lrn: '702134958712' },
-                { name: 'Daniel Reyes', lrn: '834159762380' },
-                { name: 'Isabella Cruz', lrn: '912367845912' },
-                { name: 'Nathaniel Kyle', lrn: '691237845981' },
-                { name: 'Mikaela Joy', lrn: '710298345712' },
-                { name: 'Adrian Blake', lrn: '843215967124' },
-                { name: 'Bianca Rose', lrn: '764839125601' },
-                { name: 'Ethan Cruz', lrn: '875312964178' },
-                { name: 'Alexa Faith', lrn: '793415289031' },
-                { name: 'Zachary Neil', lrn: '681235794601' },
-                { name: 'Jasmine Rae', lrn: '904378214678' },
-                { name: 'Caleb Shawn', lrn: '823745190623' },
-                { name: 'Nicole Bea', lrn: '745931280147' },
+                // { name: 'James Patrick', lrn: '864178547844' },
+                // { name: 'Alyssa Mae', lrn: '712345678901' },
+                // { name: 'Marco Antonio', lrn: '623498713250' },
+                // { name: 'Elaine Grace', lrn: '912378452167' },
+                // { name: 'Jared Anthony', lrn: '834512967340' },
+                // { name: 'Sophia Heart', lrn: '789431258610' },
+                // { name: 'Liam Gabriel', lrn: '675849123045' },
+                // { name: 'Chloe Anne', lrn: '702134958712' },
+                // { name: 'Daniel Reyes', lrn: '834159762380' },
+                // { name: 'Isabella Cruz', lrn: '912367845912' },
+                // { name: 'Nathaniel Kyle', lrn: '691237845981' },
+                // { name: 'Mikaela Joy', lrn: '710298345712' },
+                // { name: 'Adrian Blake', lrn: '843215967124' },
+                // { name: 'Bianca Rose', lrn: '764839125601' },
+                // { name: 'Ethan Cruz', lrn: '875312964178' },
+                // { name: 'Alexa Faith', lrn: '793415289031' },
+                // { name: 'Zachary Neil', lrn: '681235794601' },
+                // { name: 'Jasmine Rae', lrn: '904378214678' },
+                // { name: 'Caleb Shawn', lrn: '823745190623' },
+                // { name: 'Nicole Bea', lrn: '745931280147' },
                 ].sort((a, b) => a.name.localeCompare(b.name)),
             
             questionGenerateSetting:{type:'',topic:'',lang:'',difficulty:''},
@@ -420,6 +420,10 @@ export default{
             console.log('Room created:', data);
             alert('Room created successfully! '+data.message);
             // Handle room creation confirmation here
+        });
+        socket.on('player-joined', (data) => {
+            console.log('Player joined:', data);
+            this.players.push({ name: data.player, lrn: data.lrn, profile: data.profile });
         });
         console.log(socket.listeners('room-created').length);
 
