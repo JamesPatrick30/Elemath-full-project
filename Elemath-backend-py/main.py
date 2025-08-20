@@ -1,10 +1,11 @@
 import os
 import json
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from pydantic import BaseModel
 from openai import OpenAI
 from dotenv import load_dotenv
 import logging
+from fastapi.responses import JSONResponse
 # Load environment variables
 load_dotenv()
 
@@ -27,7 +28,20 @@ app = FastAPI(
     description="Generate quizzes from lesson text",
     version="1.0"
 )
+# Middleware to check API Key
+@app.middleware("http")
+async def verify_api_key(request: Request, call_next):
+    api_key = request.headers.get("x-api-key")
 
+    if not api_key:
+        return JSONResponse(status_code=401, content={"detail": "Missing API Key"})
+
+    if  api_key != os.getenv("API_KEY"):
+        return JSONResponse(status_code=401, content={"detail": "Invalid API Key"})
+
+    # Continue request
+    response = await call_next(request)
+    return response
 # Request body schema
 class LessonText(BaseModel):
     rawText: str

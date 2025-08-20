@@ -583,7 +583,9 @@ app.post('/create-question',auth ,async(req,res)=>{
       const fastapiResponse = await axios.post(
         "http://127.0.0.1:8000/generate-quiz", // FastAPI endpoint
         { rawText,num_questions,language,difficulty,question_type }, // Send as JSON object
-        { headers: { "Content-Type": "application/json" } }
+        { headers: { "Content-Type": "application/json",
+          "x-api-key": process.env.API_KEY_AI // Include your API key here
+         } }
       );
 
       console.log("📨 FastAPI replied:",fastapiResponse.data);
