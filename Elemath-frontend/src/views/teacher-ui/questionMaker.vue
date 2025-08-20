@@ -165,14 +165,8 @@
                 <p class="type">{{ question?.topic }}</p>
                 <p class="type">{{ question?.type }}</p>
                 <!-- <p class="type">{{ question.language }}</p> -->
-                 <table border="1" cellpadding="5">
-                    <tbody>
-                    <tr v-for="(row, rIndex) in parseTables(question?.table)" :key="rIndex">
-                        <td>{{ row.country }}</td>
-                        <td>{{ row.population }}</td>
-                    </tr>
-                    </tbody>
-                </table>
+                <!-- Render ASCII table safely -->
+                <pre class="mono-table">{{ question.table }}</pre>
                 <p v-if="question?.story">Story : {{ question?.story }}</p>
                 <p>{{ question.question }}</p>
                 <div class="multi" v-if="question?.options">
@@ -567,7 +561,8 @@ export default{
     width: 70%;
     display: flex;
     text-align: center;
-    height: 50px;
+    min-height: 50px;
+    height: fit-content;
     align-items: center;
     justify-content: center;
 }
