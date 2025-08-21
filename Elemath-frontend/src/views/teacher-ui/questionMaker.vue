@@ -8,7 +8,7 @@
             <h2>File List</h2>
            
             <div class="file-in">
-                <div class="file-l" v-for="(file, index) in filelist" :key="index" @click="selectFile(file._id)">
+                <div class="file-l" v-for="(file, index) in filelist" :key="index" @click="selectFile(file._id,file.title)">
                     <h4>{{ file.title }}</h4>
                     <!-- <p>{{ file.summary }}</p> -->
                 </div>
@@ -196,8 +196,10 @@
                     <!-- <input type="file" @change="onFileChange" />
                     <button @click="uploadLesson">Upload</button>
                     <p v-if="progress">Progress: {{ progress }}%</p> -->
+                    
                     <div class="Question-options" v-if="fileId && !isDragging && !generatingLoading">
-                        <input type="number" placeholder="Number" v-model="uploadGenerate.num_questions">
+                        <h4>File Selected: {{ filetitle }}</h4>
+                        <input class="num-in" type="number" placeholder="Number" v-model="uploadGenerate.num_questions">
                             <select class="t-o-q" v-model="uploadGenerate.type"  >
                                 <option disabled value="">-- Select a type --</option>
                                 <option value="multiple-choice">Multiple Choice</option>
@@ -324,10 +326,12 @@ export default{
             fileCluster:true,
             generatingLoading: false, // <- add this
             fileloading: false,
+            filetitle:''
         }
     },
     methods:{
-        selectFile(file) {
+        selectFile(file,title) {
+            this.filetitle = title;
             this.fileCluster = false;
             this.fileId = file;
         },
@@ -447,7 +451,7 @@ export default{
             this.progress = 100;
             console.log("✅ File uploaded:", res.data);
             this.fileId = res.data.id;
-
+            this.filetitle = res.data.title;
             
 
             } catch (err) {
@@ -520,6 +524,10 @@ export default{
         },
         async generateQuestion(){
             try{
+                if(!this.fileId || !this.uploadGenerate.num_questions || !this.uploadGenerate.lang || !this.uploadGenerate.difficulty || !this.uploadGenerate.type){
+                    alert('Please fill in all fields');
+                    return;
+                }
                 this.generatingLoading = true;
                 this.generateBtnSwitch = true;
                 this.generateBtn = 'Generating...';
@@ -676,8 +684,12 @@ export default{
 
 
 .Question-options{
+    color: white;
+    margin-top: 10px;
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
     gap: 10px;
     width: 100%;
 }
@@ -1038,7 +1050,16 @@ export default{
 .t-o-q{
     width: 50%;
 }
-
+.num-in{
+    border: #54de63 solid;
+    font-size: 15px;
+    border-radius: 10px;
+    height: 40px;
+    width: 50%;
+}
+.num-in:focus{
+    outline: none;
+}
 .con-p{
     height: inherit;
 }

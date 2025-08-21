@@ -31,6 +31,7 @@ const upload = multer({ dest: "uploads/" });
 // Upload and extract lesson file
 router.post("/upload",auth, upload.single("lessonFile"), async (req, res) => {
   try {
+    let title = '';
     if (!req.file) {
       return res.status(400).json({ message: "No file uploaded" });
     }
@@ -97,10 +98,12 @@ router.post("/upload",auth, upload.single("lessonFile"), async (req, res) => {
       });
       const outputfile = await file.save();
       id = outputfile._id;
+      title = outputfile.title;
       // console.log('file :'+outputfile);
     }else{
       console.log('already save file : '+oldfile);
       id = oldfile._id;
+      title = oldfile.title;
     }
     
 
@@ -127,7 +130,7 @@ router.post("/upload",auth, upload.single("lessonFile"), async (req, res) => {
     // } catch (fastapiErr) {
     //   console.error("❌ Error sending to FastAPI:", fastapiErr.message);
     // }
-    res.json({ id:id });
+    res.json({ id:id,title:title });
 
   } catch (error) {
     console.error("❌ Error extracting lesson file:", error);
