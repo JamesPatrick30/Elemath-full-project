@@ -1,6 +1,6 @@
 import os
 import json
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, Body
 from pydantic import BaseModel
 from openai import OpenAI
 from dotenv import load_dotenv
@@ -74,18 +74,15 @@ async def generate_quiz(data: LessonText):
         "- 'story' must contain ONLY the background text (the setup/context) without the actual question.\n"
         "3. If a question references or compares data (numbers, categories, percentages, or similar), "
         "you MUST include a 'table' field. "
-        "- The 'table' must be formatted as a multi-line ASCII table with borders using '+' and '|' characters, aligned columns, and '\\n' for new rows.\n"
-        "- Do NOT compress the table into inline text or arrays.\n"
-        "- The table must only contain raw data (no explanations).\n"
-        "- Example format:\n"
-        "  +-----------+--------------------+\n"
-        "  | Country   | Population (M)     |\n"
-        "  +-----------+--------------------+\n"
-        "  | Country A | 50                 |\n"
-        "  | Country B | 80                 |\n"
-        "  | Country C | 65                 |\n"
-        "  | Country D | 45                 |\n"
-        "  +-----------+--------------------+\n"
+        "- The 'table' must be structured as **JSON**, not HTML.\n"
+        "- Format:\n"
+        "  \"table\": {\n"
+        "    \"head\": [\"Column1\", \"Column2\", ...],\n"
+        "    \"body\": [\n"
+        "      [\"Row1Col1\", \"Row1Col2\", ...],\n"
+        "      [\"Row2Col1\", \"Row2Col2\", ...]\n"
+        "    ]\n"
+        "  }\n"
         "- Only include the 'table' field if the question explicitly refers to tabular data; otherwise, omit it.\n"
         "4. Every question must have a 'topic' field describing its subject (e.g., 'Math - Percentage', 'Science - Physics', 'Reading - Comprehension').\n"
         "5. For multiple-choice questions, the 'options' field must be an array in this exact format: "
@@ -102,7 +99,7 @@ async def generate_quiz(data: LessonText):
         "10. All questions must strictly match the requested difficulty level.\n\n"
 
         "=== STRICT FORMAT RULES ===\n"
-        "- Every question that refers to or implies a dataset (numbers, categories, percentages, frequencies, survey results, or pie chart breakdowns) MUST include a 'table' field showing the raw dataset as an ASCII table.\n"
+        "- Every question that refers to or implies a dataset (numbers, categories, percentages, frequencies, survey results, or pie chart breakdowns) MUST include a 'table' field in JSON format, not HTML.\n"
         "- Every scenario-based question (e.g., involving people, time usage, survey situations, etc.) MUST include a 'story' field containing ONLY the background context, not the question.\n"
         "- The 'answer' field must contain ONLY the raw value or term (e.g., \"135\", \"Basketball\", \"37.5\"). Do NOT add words like \"degrees\" or \"percent\". Do NOT use full sentences in 'answer'.\n"
         "- For multiple-choice questions, the 'answer' must exactly copy the correct option as shown in 'options'. Example: 'B. 0.22'.\n"
@@ -119,7 +116,10 @@ async def generate_quiz(data: LessonText):
         "    \"type\": \"short-answer\",\n"
         "    \"question\": \"Ano ang pangunahing layunin ng paggawa ng pie graph batay sa lesson?\",\n"
         "    \"story\": \"...\", (optional)\n"
-        "    \"table\": \"...\", (optional)\n"
+        "    \"table\": {\n"
+        "      \"head\": [\"Category\", \"Value\"],\n"
+        "      \"body\": [[\"A\", \"20\"], [\"B\", \"30\"]]\n"
+        "    }, (optional)\n"
         "    \"topic\": \"Mathematics - Data Visualization\",\n"
         "    \"language\": \"Filipino\",\n"
         "    \"difficulty\": \"easy\",\n"
@@ -131,6 +131,8 @@ async def generate_quiz(data: LessonText):
         "=== LESSON TEXT (ONLY USE THIS FOR CONTENT) ===\n"
         f"{data.rawText}\n"
     )
+
+
 
 
 
@@ -165,3 +167,51 @@ async def generate_quiz(data: LessonText):
         import traceback
         traceback.print_exc()  # Print full error to terminal
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+    
+@app.post("/lesson")
+async def get_lesson(payload: dict = Body(...)):
+    """
+    Return the title and summary of a lesson.
+    """
+    lesson = payload.get("lesson", "")
+    if not lesson.strip():
+        raise HTTPException(status_code=400, detail="No lesson text provided.")
+
+    prompt = f"""
+        You are an AI summarizer. Your task is to analyze the following lesson text
+        and return a JSON object that contains:
+
+        - "title": A concise title for the lesson (max 15 words).
+        - "summary": A clear summary of the lesson (3–5 sentences).
+        - "content": A boolean. Use false if the lesson text is empty or has no useful content,
+        otherwise true.
+
+        Make sure the response is **valid JSON only** with no extra text.
+
+        === LESSON TEXT ===
+        {lesson}
+        """
+
+
+
+    try:
+        response = client.chat.completions.create(
+            model="openai/gpt-5-nano",
+            messages=[
+                {"role": "system", "content": "You are an educational AI that summarizes lessons."},
+                {"role": "user", "content": prompt},
+            ],
+            temperature=0.7,
+        )
+
+        if not response.choices or not response.choices[0].message.content:
+            raise HTTPException(status_code=500, detail="AI returned no content")
+
+        summary_json = response.choices[0].message.content
+        return {"summary": summary_json}
+
+    except json.JSONDecodeError:
+        raise HTTPException(status_code=500, detail="AI response was not valid JSON.")
+    except Exception as e:
+        import traceback
+        traceback.print_exc()

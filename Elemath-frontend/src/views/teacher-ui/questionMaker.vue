@@ -1,4 +1,21 @@
 <template>
+    <div class="file-cluster" v-if="fileCluster">
+        <button @click="fileCluster = false">Close</button>
+        <div class="file-list">
+            <div class="loading-con" v-if="fileloading">
+                <div class="loading"></div>
+            </div>
+            <h2>File List</h2>
+           
+            <div class="file-in">
+                <div class="file-l" v-for="(file, index) in filelist" :key="index" @click="selectFile(file._id,file.title)">
+                    <h4>{{ file.title }}</h4>
+                    <!-- <p>{{ file.summary }}</p> -->
+                </div>
+            </div>
+            
+        </div>
+    </div>
     <main>
         <button class="btn-back" v-on:click="backBtn()">Back</button>
         <div class="con-q">
@@ -94,7 +111,17 @@
                 <button class="btn-add" @click="addQuestion()">Add..</button>
             </div>
             <div class="con-file" v-if="btnActive.file">
-                <label for="moduleFile" class="upload-label">
+                <header class="top-bar">
+                    
+                    <h1 class="title">⚡ Powered by GPT-5</h1>
+                    <!-- <img
+                    class="logo"
+                    src="/images/cropgptlogo.png"
+
+                    alt="OpenAI Logo"
+                    /> -->
+                </header>
+                <!-- <label for="moduleFile" class="upload-label">
                     📄 Upload Module / Lesson File
                     <input
                         type="file"
@@ -104,40 +131,104 @@
                         hidden
                     />
                     </label>
-                    <p v-if="fileName" class="file-name">Selected: {{ fileName }}</p>
+                    <p v-if="fileName" class="file-name">Selected: {{ fileName }}</p> -->
 
-                    <select class="t-o-q" v-model="questionGenerateSetting.type"  >
+                    <!-- <select class="t-o-q" v-model="questionGenerateSetting.type"  >
                         <option disabled value="">-- Select a Language --</option>
                         <option value="multiple choices">Multiple Choice</option>
                         <option value="Costumize">Costumize</option>
-                    </select>
-                    <input type="file" @change="onFileChange" />
-                    <button @click="uploadLesson">Upload</button>
-                    <p v-if="progress">Progress: {{ progress }}%</p>
-                    <input type="number" placeholder="Number" v-model="uploadGenerate.num_questions">
-                    <select class="t-o-q" v-model="uploadGenerate.type"  >
-                        <option disabled value="">-- Select a type --</option>
-                        <option value="multiple-choice">Multiple Choice</option>
-                        <option value="short-answer">short-answer</option>
-                        <option value="true-false">true-false</option>
-                        <option value="fill-in-the-blank">fill-in-the-blank</option>
-                    </select>
+                    </select> -->
+                    <!-- <div>
+                        <button><font-awesome-icon icon="fa-solid fa-upload" />Upload New</button>
+                        <button><font-awesome-icon icon="fa-solid fa-file" />Select Existing</button>
+                    </div> -->
+                    <!-- Only show drop area while dragging -->
+                    <div
+                        v-if="isDragging && !generatingLoading"
+                        class="drop-area"
+                        @dragover.prevent
+                        @dragleave.prevent="isDragging = false"
+                        @drop.prevent="handleDrop"
+                    >
+                        <p>Drop your PDF here</p>
+                    </div>
+
+                    <!-- Hidden input to allow click selection if needed -->
+                    <!-- <input
+                        type="file"
+                        accept="application/pdf"
+                        ref="fileInput"
+                        @change="onFileChangeDrag"
+                        class="file-input"
+                    /> -->
                     
-                    <select class="t-o-q" v-model="uploadGenerate.lang"  >
-                        <option disabled value="">-- Language --</option>
-                        <option value="English">English</option>
-                        <option value="Tagalog">Tagalog</option>
-                    </select>
+                    <div class="file" v-if="!isDragging && !generatingLoading">
+                        <input
+                        v-if="!isDragging"
+                        id="fileInput"
+                        type="file"
+                        @change="onFileChange"
+                        accept="application/pdf"
+                        class="file-input"
+                        />
 
-                    <select class="t-o-q" v-model="uploadGenerate.difficulty"  >
-                        <option disabled value="">-- Select Difficulty --</option>
-                        <option value="easy">Easy</option>
-                        <option value="medium">Medium</option>
-                        <option value="hard">Hard</option>
-                        <option value="very-hard">Very Hard</option>
-                    </select>
-                    <button class="generate-btn" @click="generateQuestion()">Generate!</button>
+    <!-- Styled label as the "Choose File" button -->
+                    <label  for="fileInput" class="file-label"><font-awesome-icon icon="fa-solid fa-upload" /> Upload New</label>
+                    <button class="file-c" @click="openClusterFile()"><font-awesome-icon icon="fa-solid fa-file" />Select Existing</button>
+                    </div>
+                    
+                    <!-- Upload button -->
+                    <!-- <button 
+                    @click="uploadLesson" 
+                    class="upload-btn"
+                    :disabled="!file"
+                    >
+                    Upload
+                    </button> -->
 
+                    <!-- Progress -->
+                    <p v-if="progress > 0 && progress !== 100" class="progress-text">
+                        Progress: {{ progress }}%
+                    </p>
+
+
+
+                    <!-- <input type="file" @change="onFileChange" />
+                    <button @click="uploadLesson">Upload</button>
+                    <p v-if="progress">Progress: {{ progress }}%</p> -->
+                    
+                    <div class="Question-options" v-if="fileId && !isDragging && !generatingLoading">
+                        <h4>File Selected: {{ filetitle }}</h4>
+                        <input class="num-in" type="number" placeholder="Number" v-model="uploadGenerate.num_questions">
+                            <select class="t-o-q" v-model="uploadGenerate.type"  >
+                                <option disabled value="">-- Select a type --</option>
+                                <option value="multiple-choice">Multiple Choice</option>
+                                <option value="short-answer">short-answer</option>
+                                <option value="true-false">true-false</option>
+                                <option value="fill-in-the-blank">fill-in-the-blank</option>
+                            </select>
+                            
+                            <select class="t-o-q" v-model="uploadGenerate.lang"  >
+                                <option disabled value="">-- Language --</option>
+                                <option value="English">English</option>
+                                <option value="Tagalog">Tagalog</option>
+                            </select>
+
+                            <select class="t-o-q" v-model="uploadGenerate.difficulty"  >
+                                <option disabled value="">-- Select Difficulty --</option>
+                                <option value="easy">Easy</option>
+                                <option value="medium">Medium</option>
+                                <option value="hard">Hard</option>
+                                <option value="very-hard">Very Hard</option>
+                            </select>
+                            <button class="generate-btn" :disabled="generateBtnSwitch" @click="generateQuestion()">{{ generateBtn}}</button>
+
+                    </div>
+                    <div class="loading-generate" v-if="generatingLoading">
+                        <div class="loading-r"></div>
+                        <p class="typing">Generating questions...</p>
+                    </div>
+                    
             </div>
         </div>
       <div class="con-lobby">
@@ -166,7 +257,25 @@
                 <p class="type">{{ question?.type }}</p>
                 <!-- <p class="type">{{ question.language }}</p> -->
                 <!-- Render ASCII table safely -->
-                <pre class="mono-table">{{ question.table }}</pre>
+
+                <!-- //create the table here -->
+                 <!-- Dynamic Table -->
+            <table v-if="question?.table" class="custom-table">
+                <thead>
+                <tr>
+                    <th v-for="(header, hIndex) in question.table.head" :key="hIndex">
+                    {{ header }}
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="(row, rIndex) in question.table.body" :key="rIndex">
+                    <td v-for="(cell, cIndex) in row" :key="cIndex">
+                    {{ cell }}
+                    </td>
+                </tr>
+                </tbody>
+            </table>
                 <p v-if="question?.story">Story : {{ question?.story }}</p>
                 <p>{{ question.question }}</p>
                 <div class="multi" v-if="question?.options">
@@ -191,9 +300,13 @@
 <script>
 import socket from '@/socket';
 import api from '@/axios';
+
 export default{
     data(){
         return{
+            isDragging: false,
+            generateBtnSwitch: false,
+            generateBtn:'Generate',
             uploadGenerate:{num_questions:0,type:'',topic:'',lang:'',difficulty:''},
             progress : 0,
             file : null,
@@ -201,59 +314,75 @@ export default{
             btnLobby:{playes:false,Question:true},
             questionOption:'Costumize',
 
-            players : [
-                // { name: 'James Patrick', lrn: '864178547844' },
-                // { name: 'Alyssa Mae', lrn: '712345678901' },
-                // { name: 'Marco Antonio', lrn: '623498713250' },
-                // { name: 'Elaine Grace', lrn: '912378452167' },
-                // { name: 'Jared Anthony', lrn: '834512967340' },
-                // { name: 'Sophia Heart', lrn: '789431258610' },
-                // { name: 'Liam Gabriel', lrn: '675849123045' },
-                // { name: 'Chloe Anne', lrn: '702134958712' },
-                // { name: 'Daniel Reyes', lrn: '834159762380' },
-                // { name: 'Isabella Cruz', lrn: '912367845912' },
-                // { name: 'Nathaniel Kyle', lrn: '691237845981' },
-                // { name: 'Mikaela Joy', lrn: '710298345712' },
-                // { name: 'Adrian Blake', lrn: '843215967124' },
-                // { name: 'Bianca Rose', lrn: '764839125601' },
-                // { name: 'Ethan Cruz', lrn: '875312964178' },
-                // { name: 'Alexa Faith', lrn: '793415289031' },
-                // { name: 'Zachary Neil', lrn: '681235794601' },
-                // { name: 'Jasmine Rae', lrn: '904378214678' },
-                // { name: 'Caleb Shawn', lrn: '823745190623' },
-                // { name: 'Nicole Bea', lrn: '745931280147' },
-                ].sort((a, b) => a.name.localeCompare(b.name)),
+            players : [].sort((a, b) => a.name.localeCompare(b.name)),
             
             questionGenerateSetting:{type:'',topic:'',lang:'',difficulty:''},
 
-            questions:[
-                // { Q: 'What is 5 + 3?', type: 'input answer', answerType: 'number', answer: '8' },
-                // { Q: 'What is 12 - 4?', type: 'input answer', answerType: 'number', answer: '8' },
-                // { Q: 'What is the place value of 7 in 374?', type: 'input answer', answerType: 'number', answer: '70' },
-                // { Q: 'What is the shape with 3 sides?', type: 'multiple choices', answer: 'Triangle', choices: ['Circle', 'Rectangle', 'Triangle', 'Square'] },
-                // { Q: 'Which number is even?', type: 'multiple choices', answer: '8', choices: ['3', '5', '7', '8'] },
-                // { Q: 'What is 4 × 6?', type: 'input answer', answerType: 'number', answer: '24' },
-                // { Q: 'What is 30 ÷ 5?', type: 'input answer', answerType: 'number', answer: '6' },
-                // { Q: 'Which number is greater?', type: 'multiple choices', answer: '45', choices: ['12', '20', '45', '33'] },
-                // { Q: 'What is the missing number: 3, 6, __, 12?', type: 'input answer', answerType: 'number', answer: '9' },
-                // { Q: 'What is 100 - 75?', type: 'multiple choices', answer: '25', choices: ['35', '25', '50', '30'] },
-                // { Q: 'What is 9 + 8?', type: 'input answer', answerType: 'number', answer: '17' },
-                // { Q: 'Which of the following is a quadrilateral?', type: 'multiple choices', answer: 'Rectangle', choices: ['Circle', 'Rectangle', 'Triangle', 'Cone'] },
-                // { Q: 'What is 10 more than 65?', type: 'input answer', answerType: 'number', answer: '75' },
-                // { Q: 'Which shows a correct fraction: ½?', type: 'multiple choices', answer: 'Half', choices: ['Whole', 'One-third', 'Half', 'Zero'] },
-                // { Q: 'What is 7 × 5?', type: 'input answer', answerType: 'number', answer: '35' },
-                // { Q: 'What is the perimeter of a square with side 4?', type: 'input answer', answerType: 'number', answer: '16' },
-                // { Q: 'Which is a unit of length?', type: 'multiple choices', answer: 'Meter', choices: ['Liter', 'Gram', 'Meter', 'Kilogram'] },
-                // { Q: 'What is 9 less than 20?', type: 'input answer', answerType: 'number', answer: '11' },
-                // { Q: 'How many sides does a hexagon have?', type: 'input answer', answerType: 'number', answer: '6' },
-                // { Q: 'What is the product of 3 and 9?', type: 'multiple choices', answer: '27', choices: ['36', '18', '27', '30'] }
-            ],
+            questions:[],
             fileId: '',
             CostumeQuestion:{Q:'',type:'',answer:'',answerType:'',choices:[]},
-            id: this.$route.query.i
+            id: this.$route.query.i,
+            filelist: [],
+            fileCluster:true,
+            generatingLoading: false, // <- add this
+            fileloading: false,
+            filetitle:''
         }
     },
     methods:{
+        selectFile(file,title) {
+            this.filetitle = title;
+            this.fileCluster = false;
+            this.fileId = file;
+        },
+        async openClusterFile(){
+            this.fileCluster = true;
+            this.fileloading = true;
+            this.filelist = [];
+            try {
+                const res = await api.get('/lesson/list');
+                this.filelist = res.data.files;
+                this.fileloading = false;
+                console.log("✅ File list fetched:", this.filelist);
+                // alert(res.data.message);
+            } catch (err) {
+                console.error("❌ Error fetching file list:", err);
+                alert("Failed to load files. Please try again later.");
+                this.fileloading = false;
+            }
+            this.fileloading = false;
+        },
+        onDragOver(e) {
+            this.isDragging = true; 
+        },
+        onDragLeave(e) {
+        // Only hide if leaving the page/window
+            if (e.clientX === 0 && e.clientY === 0) {
+                this.isDragging = false;
+            }
+        },
+        onDropAnywhere(e) {
+          this.isDragging = false;
+        },
+        handleDrop(event) {
+            this.fileId = '';
+            const file = event.dataTransfer.files[0];
+            this.handleFile(file);
+        },
+        onFileChangeDrag(event) {
+            const file = event.target.files[0];
+            this.handleFile(file);
+        },
+        handleFile(file) {
+            if (!file) return;
+            if (file.type !== "application/pdf") {
+                alert("Only PDF files are allowed!");
+                return;
+            }
+            this.file = file;
+            this.progress = 0;
+            this.uploadLesson();
+        },
         parseTables(rawData) {
             if (!rawData || typeof rawData !== 'string') {
                 return []
@@ -288,7 +417,12 @@ export default{
             }
         },
     onFileChange(event) {
+        this.fileId = '';
         this.file = event.target.files[0];
+        this.progress = 0; // Reset progress on new file selection
+        if(this.file){
+            this.uploadLesson();
+        }
     },
 
     async uploadLesson() {
@@ -302,24 +436,29 @@ export default{
 
         try {
             const res = await api.post("/lesson/upload", formData, {
-            headers: { "Content-Type": "multipart/form-data" },
-            onUploadProgress: (progressEvent) => {
-                this.progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-            }
+                headers: { "Content-Type": "multipart/form-data" },
+                onUploadProgress: (progressEvent) => {
+                let uploaded = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+
+                // Cap at 80% during upload
+                if (uploaded < 80) {
+                    this.progress = uploaded;
+                }
+                },
             });
 
+            // Set progress to 100% when done
+            this.progress = 100;
             console.log("✅ File uploaded:", res.data);
             this.fileId = res.data.id;
-            // this.rawText = res.data.rawText;
+            this.filetitle = res.data.title;
             
-            // res.data.quiz.forEach(q => {
-            //     this.questions.push(q);
-            // });
-            alert("Lesson uploaded successfully!");
-        } catch (err) {
+
+            } catch (err) {
             console.error("❌ Upload failed:", err);
-            alert('try again. someting went wrong.')
-        }
+            alert(err.response?.data?.message || "Something went wrong during upload.");
+            }
+
         },
 
         navClick(btn){
@@ -385,6 +524,13 @@ export default{
         },
         async generateQuestion(){
             try{
+                if(!this.fileId || !this.uploadGenerate.num_questions || !this.uploadGenerate.lang || !this.uploadGenerate.difficulty || !this.uploadGenerate.type){
+                    alert('Please fill in all fields');
+                    return;
+                }
+                this.generatingLoading = true;
+                this.generateBtnSwitch = true;
+                this.generateBtn = 'Generating...';
                 const res = await api.post('/create-question',{
                     fileId:this.fileId,
                     num_questions:this.uploadGenerate.num_questions,
@@ -395,12 +541,21 @@ export default{
                 res.data.quiz.forEach(q => {
                     this.questions.push(q);
                 });
+                this.$nextTick(() => {
+                    const index = this.questions.length - 1;
+                    const el = document.getElementById(index.toString());
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                });
                 console.log(res.data);
-                alert('created')
+               
             }catch(err){
                 alert('Something went wrong, try again');
                 console.log(err);
             }
+            // alert('click!')
+            this.generatingLoading = false;
+            this.generateBtnSwitch = false;
+            this.generateBtn = 'Generate';
         }
 
     },
@@ -421,10 +576,262 @@ export default{
         });
         console.log(socket.listeners('room-created').length);
 
+        window.addEventListener("dragover", this.onDragOver);
+        window.addEventListener("dragleave", this.onDragLeave);
+        window.addEventListener("drop", this.onDropAnywhere);
+
     },
+    beforeUnmount() {
+    window.removeEventListener("dragover", this.onDragOver);
+    window.removeEventListener("dragleave", this.onDragLeave);
+    window.removeEventListener("drop", this.onDropAnywhere);
+  },
 }
 </script>
 <style scoped>
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.95rem;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.custom-table th {
+  background: #3f51b5;
+  color: white;
+  padding: 10px;
+  text-align: left;
+}
+
+.custom-table td {
+  padding: 10px;
+  border-top: 1px solid #ddd;
+}
+
+.custom-table tr:nth-child(even) {
+  background: #f9f9f9;
+}
+
+.loading{
+    border: 4px solid rgba(0, 0, 0, 0.1); /* light gray background */
+    border-top-color: #2563eb;             /* colored part of spinner */
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: auto;
+}
+.loading-con{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+}
+.file-cluster{
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    background-color: rgb(2, 2, 2,0.5);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.file-list{
+    width: 30%;
+    height: fit-content;
+    max-height: 80%;
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    overflow-y: auto;
+    /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); */
+}
+.loading-generate{
+    display: flex;
+    gap:  10px;
+}
+.loading-r{
+  border: 4px solid rgba(0, 0, 0, 0.1); /* light gray background */
+  border-top-color: #2563eb;             /* colored part of spinner */
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: auto;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes fade-caret {
+  0%   { opacity: 0; }
+  50%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.typing {
+    color: white;
+  display: inline-block;
+  animation: fade-caret 3s ease-in-out infinite;
+}
+
+
+.Question-options{
+    color: white;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+.drop-area {
+  /* position: fixed; */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 4px dashed #2563eb;
+  border-radius: 12px;
+  background: rgba(224, 231, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  color: #1f2937;
+  font-size: 1.25rem;
+}
+.top-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  /* background: #f3f4f6;
+  border-bottom: 1px solid #e5e7eb; */
+  /* justify-self: end; */
+  align-self: self-end;
+  left: auto;
+}
+.logo {
+  width: 20px;
+  height: auto;
+}
+.title {
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #111827;
+}
+.upload-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  max-width: 320px;
+  background: #fafafa;
+}
+.file-in{
+    scrollbar-width: none;
+    /* background-color: #0056b3; */
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    overflow-y: auto;
+    max-height: 400px; /* Limit height to prevent overflow */
+}
+/* .file-l:hover{
+    z-index: 10;
+    max-height: max-content;
+    overflow: visible;
+} */
+.file-l{
+    /* width: 100%; */
+    height: 150px;
+    /* overflow: hidden; */
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #7bbbff;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+}
+.file{
+    display: flex;
+    gap: 1em;
+
+}
+/* Hide ugly native input */
+.file-input {
+  display: none;
+}.file-label,
+.file-c {
+  display: inline-flex;          /* Align icon and text horizontally */
+  align-items: center;           /* Vertically center content */
+  justify-content: center;
+  height: 40px;                  /* Set same height */
+  padding: 0 16px;               /* Horizontal padding */
+  font-size: 16px;
+  /* border: 1px solid #2563eb;    Optional styling */
+  border: none;
+  border-radius: 6px;
+  /* background-color: #2563eb; */
+  color: white;
+  cursor: pointer;
+  gap: 8px;                      /* Space between icon and text */
+  transition: background-color 0.2s;
+}
+.file-c{
+    background-color: #ffeb3b;
+}
+.file-label{
+    background-color: #2563eb;    /* Blue background */
+}
+.file-c:hover{
+    background-color: #f3ff83;
+    
+}
+.file-label:hover {
+  background-color: #1e40af;
+}
+
+.file-input {
+  display: none;                 /* Hide the actual file input */
+}
+
+.file-label:hover {
+  background: #1e40af;
+}
+
+.upload-btn {
+  padding: 0.5rem 1rem;
+  background: #111827;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.upload-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.progress-text {
+  font-size: 0.85rem;
+  color: #374151;
+}
 .progress-container {
   width: 100%;
   height: 20px;
@@ -643,7 +1050,16 @@ export default{
 .t-o-q{
     width: 50%;
 }
-
+.num-in{
+    border: #54de63 solid;
+    font-size: 15px;
+    border-radius: 10px;
+    height: 40px;
+    width: 50%;
+}
+.num-in:focus{
+    outline: none;
+}
 .con-p{
     height: inherit;
 }

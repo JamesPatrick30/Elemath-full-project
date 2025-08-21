@@ -31,6 +31,7 @@ const upload = multer({ dest: "uploads/" });
 // Upload and extract lesson file
 router.post("/upload",auth, upload.single("lessonFile"), async (req, res) => {
   try {
+    let title = '';
     if (!req.file) {
       return res.status(400).json({ message: "No file uploaded" });
     }
@@ -40,16 +41,22 @@ router.post("/upload",auth, upload.single("lessonFile"), async (req, res) => {
     let rawText = "";
 
     if (ext === ".pdf") {
-      const buffer = fs.readFileSync(filePath);
-      const parsed = await pdfParse(buffer);
+      try {
+        const buffer = fs.readFileSync(filePath);
+        const parsed = await pdfParse(buffer);
 
-      if (parsed.text.trim()) {
-        rawText = parsed.text;
-      } else {
-        console.log("📷 Switching to OCR mode (image-based PDF)");
+        if (parsed.text && parsed.text.trim()) {
+          rawText = parsed.text;
+          console.log("✅ Extracted with pdf-parse");
+        } else {
+          console.log("📷 No text found, switching to OCR mode...");
+          rawText = await extractPdfWithOcr(filePath);
+        }
+      } catch (err) {
+        console.warn("⚠️ pdf-parse failed, using OCR instead:", err.message);
         rawText = await extractPdfWithOcr(filePath);
       }
-    } else if (ext === ".docx" || ext === ".doc") {
+    }else if (ext === ".docx" || ext === ".doc") {
       rawText = await new Promise((resolve, reject) => {
         textract.fromFileWithPath(filePath, (err, text) => {
           if (err) reject(err);
@@ -61,20 +68,42 @@ router.post("/upload",auth, upload.single("lessonFile"), async (req, res) => {
     }
 
     fs.unlinkSync(filePath); // cleanup uploaded file
-    // console.log("✅ OCR rawText:\n" + JSON.stringify(rawText));
+    console.log("✅ OCR rawText:\n" + JSON.stringify(rawText));
     const oldfile = await filesave.findOne({file:rawText,ownerId:req.user.id});
     let id = '';
     if(!oldfile){
+      let d = null;
+      try {
+        const fastapiResponse = await axios.post(
+              "http://127.0.0.1:8000/lesson", // FastAPI endpoint
+              { lesson:rawText}, // Send as JSON object
+              { headers: { "Content-Type": "application/json",
+                "x-api-key": process.env.API_KEY_AI // Include your API key here
+               } }
+      );
+      console.log("📨 FastAPI replied:", fastapiResponse.data.summary);
+      d = JSON.parse( fastapiResponse.data.summary);
+      if (d.content === false) {
+        return res.status(400).json({ message: "No useful content in the lesson text" });
+      }
+      } catch (error) {
+        console.error("❌ Error processing file:", error);
+      }
+      
       const file = new filesave({
         ownerId: req.user.id,
-        file:rawText
+        file:rawText,
+        title: d.title || "Untitled Lesson",
+        summary: d.summary || "No summary available",
       });
       const outputfile = await file.save();
       id = outputfile._id;
+      title = outputfile.title;
       // console.log('file :'+outputfile);
     }else{
       console.log('already save file : '+oldfile);
       id = oldfile._id;
+      title = oldfile.title;
     }
     
 
@@ -101,7 +130,7 @@ router.post("/upload",auth, upload.single("lessonFile"), async (req, res) => {
     // } catch (fastapiErr) {
     //   console.error("❌ Error sending to FastAPI:", fastapiErr.message);
     // }
-    res.json({ id:id });
+    res.json({ id:id,title:title });
 
   } catch (error) {
     console.error("❌ Error extracting lesson file:", error);

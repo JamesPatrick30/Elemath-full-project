@@ -3,6 +3,8 @@ const Schema = mongoose.Schema;
 
 const lessonFile = new Schema({
     ownerId:String,
+    title: String,
+    summary: String,
     file:String,
     dateCreated: { type: Date, default: Date.now }
 })
