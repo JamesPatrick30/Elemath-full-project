@@ -6,25 +6,22 @@ import App from './App.vue'
 import router from './router'
 import VueApexCharts from "vue3-apexcharts";
 
-import { library } from '@fortawesome/fontawesome-svg-core';
+// import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faUserPen } from '@fortawesome/free-solid-svg-icons';
-import {faList} from '@fortawesome/free-solid-svg-icons';
-import {faUpload} from '@fortawesome/free-solid-svg-icons';
-import {faFile} from '@fortawesome/free-solid-svg-icons';
-// Add icons to the library
-library.add(faUserPen,faList,faUpload,faFile);
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { library } from '@fortawesome/fontawesome-svg-core';
+// import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { 
+  faUserPen, faList, faUpload, faFile, 
+  faTrash, faXmark, faSort, faUserPlus 
+} from '@fortawesome/free-solid-svg-icons';
+import { faFloppyDisk } from '@fortawesome/free-regular-svg-icons';
 
-library.add(faTrash);
-import { faFloppyDisk } from '@fortawesome/free-regular-svg-icons'; // 👈 your icon
-import { faXmark } from '@fortawesome/free-solid-svg-icons';
-library.add(faXmark);
-library.add(faFloppyDisk);
-import {faSort} from '@fortawesome/free-solid-svg-icons';
-library.add(faSort);
-import { faUserPlus } from '@fortawesome/free-solid-svg-icons';
-library.add(faUserPlus);
+library.add(
+  faUserPen, faList, faUpload, faFile,
+  faTrash, faXmark, faSort, faUserPlus,
+  faFloppyDisk
+);
+
 const app = createApp(App)
 app.use(VueApexCharts);
 // Register the FontAwesomeIcon component globally

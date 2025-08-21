@@ -1,4 +1,19 @@
 <template>
+    <!-- <div class="file-cluster" v-if="fileCluster">
+        <div class="file-list">
+            <h2>File List</h2>
+            <button @click="fileCluster = false">Close</button>
+            <div class="loading-con" v-if="fileloading">
+                <div class="loading"></div>
+            </div>
+            <div class="file" v-for="(file, index) in filelist" :key="index">
+                <p>{{ file.question }}</p>
+                <p>Type: {{ file.type }}</p>
+                <p>Answer: {{ file.answer }}</p>
+                <p v-if="file.options">Options: {{ file.options.join(', ') }}</p>
+            </div>
+        </div>
+    </div> -->
     <main>
         <button class="btn-back" v-on:click="backBtn()">Back</button>
         <div class="con-q">
@@ -157,7 +172,7 @@
 
     <!-- Styled label as the "Choose File" button -->
                     <label  for="fileInput" class="file-label"><font-awesome-icon icon="fa-solid fa-upload" /> Upload New</label>
-                    <button class="file-c"><font-awesome-icon icon="fa-solid fa-file" />Select Existing</button>
+                    <button class="file-c" v-on:click="openClusterFile"><font-awesome-icon icon="fa-solid fa-file" />Select Existing</button>
                     </div>
                     
                     <!-- Upload button -->
@@ -263,9 +278,11 @@
 <script>
 import socket from '@/socket';
 import api from '@/axios';
+import { isFileLoadingAllowed } from 'vite';
 export default{
     data(){
         return{
+            fileCluster:true,
             isDragging: false,
             generateBtnSwitch: false,
             generateBtn:'Generate',
@@ -283,10 +300,24 @@ export default{
             questions:[],
             fileId: '',
             CostumeQuestion:{Q:'',type:'',answer:'',answerType:'',choices:[]},
-            id: this.$route.query.i
+            id: this.$route.query.i,
+            filelist: [],
         }
     },
     methods:{
+        async openClusterFile(){
+            this.fileCluster = true;
+            this.fileloading = true;
+            // try {
+            //     const res = await api.get('/lesson/list');
+            //     this.filelist = res.data.files;
+            //     this.fileloading = false;
+            // } catch (err) {
+            //     console.error("❌ Error fetching file list:", err);
+            //     alert("Failed to load files. Please try again later.");
+            //     this.fileloading = false;
+            // }
+        },
         onDragOver(e) {
             this.isDragging = true; 
         },
@@ -513,6 +544,40 @@ export default{
 }
 </script>
 <style scoped>
+.loading{
+    border: 4px solid rgba(0, 0, 0, 0.1); /* light gray background */
+    border-top-color: #2563eb;             /* colored part of spinner */
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: auto;
+}
+.loading-con{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+.file-cluster{
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    background-color: rgb(2, 2, 2,0.5);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.file-list{
+    width: 30%;
+    height: 80%;
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    overflow-y: auto;
+    /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); */
+}
 .loading-generate{
     display: flex;
     gap:  10px;
