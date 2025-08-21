@@ -323,7 +323,7 @@ export default{
             CostumeQuestion:{Q:'',type:'',answer:'',answerType:'',choices:[]},
             id: this.$route.query.i,
             filelist: [],
-            fileCluster:true,
+            fileCluster:false,
             generatingLoading: false, // <- add this
             fileloading: false,
             filetitle:''
@@ -567,7 +567,7 @@ export default{
         socket.emit('create-room', { roomId: this.id });
         socket.on('room-created', (data) => {
             console.log('Room created:', data);
-            alert('Room created successfully! '+data.message);
+            // alert('Room created successfully! '+data.message);
             // Handle room creation confirmation here
         });
         socket.on('player-joined', (data) => {
