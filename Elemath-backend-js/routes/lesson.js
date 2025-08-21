@@ -40,16 +40,22 @@ router.post("/upload",auth, upload.single("lessonFile"), async (req, res) => {
     let rawText = "";
 
     if (ext === ".pdf") {
-      const buffer = fs.readFileSync(filePath);
-      const parsed = await pdfParse(buffer);
+      try {
+        const buffer = fs.readFileSync(filePath);
+        const parsed = await pdfParse(buffer);
 
-      if (parsed.text.trim()) {
-        rawText = parsed.text;
-      } else {
-        console.log("📷 Switching to OCR mode (image-based PDF)");
+        if (parsed.text && parsed.text.trim()) {
+          rawText = parsed.text;
+          console.log("✅ Extracted with pdf-parse");
+        } else {
+          console.log("📷 No text found, switching to OCR mode...");
+          rawText = await extractPdfWithOcr(filePath);
+        }
+      } catch (err) {
+        console.warn("⚠️ pdf-parse failed, using OCR instead:", err.message);
         rawText = await extractPdfWithOcr(filePath);
       }
-    } else if (ext === ".docx" || ext === ".doc") {
+    }else if (ext === ".docx" || ext === ".doc") {
       rawText = await new Promise((resolve, reject) => {
         textract.fromFileWithPath(filePath, (err, text) => {
           if (err) reject(err);
@@ -61,13 +67,31 @@ router.post("/upload",auth, upload.single("lessonFile"), async (req, res) => {
     }
 
     fs.unlinkSync(filePath); // cleanup uploaded file
-    // console.log("✅ OCR rawText:\n" + JSON.stringify(rawText));
+    console.log("✅ OCR rawText:\n" + JSON.stringify(rawText));
     const oldfile = await filesave.findOne({file:rawText,ownerId:req.user.id});
     let id = '';
     if(!oldfile){
+      let d = null;
+      try {
+        const fastapiResponse = await axios.post(
+              "http://127.0.0.1:8000/lesson", // FastAPI endpoint
+              { lesson:rawText}, // Send as JSON object
+              { headers: { "Content-Type": "application/json",
+                "x-api-key": process.env.API_KEY_AI // Include your API key here
+               } }
+      );
+      console.log("📨 FastAPI replied:", fastapiResponse.data.summary);
+      d = JSON.parse( fastapiResponse.data.summary);
+      
+      } catch (error) {
+        console.error("❌ Error processing file:", error);
+      }
+      
       const file = new filesave({
         ownerId: req.user.id,
-        file:rawText
+        file:rawText,
+        title: d.title || "Untitled Lesson",
+        summary: d.summary || "No summary available",
       });
       const outputfile = await file.save();
       id = outputfile._id;

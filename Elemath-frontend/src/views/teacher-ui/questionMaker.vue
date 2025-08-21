@@ -94,7 +94,7 @@
                 <button class="btn-add" @click="addQuestion()">Add..</button>
             </div>
             <div class="con-file" v-if="btnActive.file">
-                <label for="moduleFile" class="upload-label">
+                <!-- <label for="moduleFile" class="upload-label">
                     📄 Upload Module / Lesson File
                     <input
                         type="file"
@@ -104,13 +104,37 @@
                         hidden
                     />
                     </label>
-                    <p v-if="fileName" class="file-name">Selected: {{ fileName }}</p>
+                    <p v-if="fileName" class="file-name">Selected: {{ fileName }}</p> -->
 
-                    <select class="t-o-q" v-model="questionGenerateSetting.type"  >
+                    <!-- <select class="t-o-q" v-model="questionGenerateSetting.type"  >
                         <option disabled value="">-- Select a Language --</option>
                         <option value="multiple choices">Multiple Choice</option>
                         <option value="Costumize">Costumize</option>
-                    </select>
+                    </select> -->
+                    <input
+                        id="fileInput"
+                        type="file"
+                        @change="onFileChange"
+                        class="file-input"
+                        />
+
+    <!-- Styled label as the "Choose File" button -->
+                    <label for="fileInput" class="file-label">Choose File</label>
+
+                    <!-- Upload button -->
+                    <button 
+                    @click="uploadLesson" 
+                    class="upload-btn"
+                    :disabled="!file"
+                    >
+                    Upload
+                    </button>
+
+                    <!-- Progress -->
+                    <p v-if="progress" class="progress-text">
+                    Progress: {{ progress }}%
+                    </p>
+
                     <input type="file" @change="onFileChange" />
                     <button @click="uploadLesson">Upload</button>
                     <p v-if="progress">Progress: {{ progress }}%</p>
@@ -136,7 +160,7 @@
                         <option value="hard">Hard</option>
                         <option value="very-hard">Very Hard</option>
                     </select>
-                    <button class="generate-btn" @click="generateQuestion()">Generate!</button>
+                    <button class="generate-btn" :disabled="generateBtnSwitch" @click="generateQuestion()">{{ generateBtn}}</button>
 
             </div>
         </div>
@@ -194,6 +218,8 @@ import api from '@/axios';
 export default{
     data(){
         return{
+            generateBtnSwitch: false,
+            generateBtn:'Generate',
             uploadGenerate:{num_questions:0,type:'',topic:'',lang:'',difficulty:''},
             progress : 0,
             file : null,
@@ -289,6 +315,7 @@ export default{
         },
     onFileChange(event) {
         this.file = event.target.files[0];
+        this.progress = 0; // Reset progress on new file selection
     },
 
     async uploadLesson() {
@@ -385,22 +412,27 @@ export default{
         },
         async generateQuestion(){
             try{
-                const res = await api.post('/create-question',{
-                    fileId:this.fileId,
-                    num_questions:this.uploadGenerate.num_questions,
-                    language:this.uploadGenerate.lang,
-                    difficulty:this.uploadGenerate.difficulty,
-                    question_type:this.uploadGenerate.type
-                });
-                res.data.quiz.forEach(q => {
-                    this.questions.push(q);
-                });
-                console.log(res.data);
+                this.generateBtnSwitch = true;
+                this.generateBtn = 'Generating...';
+                // const res = await api.post('/create-question',{
+                //     fileId:this.fileId,
+                //     num_questions:this.uploadGenerate.num_questions,
+                //     language:this.uploadGenerate.lang,
+                //     difficulty:this.uploadGenerate.difficulty,
+                //     question_type:this.uploadGenerate.type
+                // });
+                // res.data.quiz.forEach(q => {
+                //     this.questions.push(q);
+                // });
+                // console.log(res.data);
                 alert('created')
             }catch(err){
                 alert('Something went wrong, try again');
                 console.log(err);
             }
+            alert('click!')
+            // this.generateBtnSwitch = false;
+            // this.generateBtn = 'Generate';
         }
 
     },
@@ -425,6 +457,58 @@ export default{
 }
 </script>
 <style scoped>
+.upload-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  max-width: 320px;
+  background: #fafafa;
+}
+
+/* Hide ugly native input */
+.file-input {
+  display: none;
+}
+
+.file-label {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background: #2563eb;
+  color: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  text-align: center;
+  transition: background 0.2s ease;
+}
+
+.file-label:hover {
+  background: #1e40af;
+}
+
+.upload-btn {
+  padding: 0.5rem 1rem;
+  background: #111827;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.upload-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.progress-text {
+  font-size: 0.85rem;
+  color: #374151;
+}
 .progress-container {
   width: 100%;
   height: 20px;

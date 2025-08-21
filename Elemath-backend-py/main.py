@@ -1,6 +1,6 @@
 import os
 import json
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, Body
 from pydantic import BaseModel
 from openai import OpenAI
 from dotenv import load_dotenv
@@ -165,3 +165,48 @@ async def generate_quiz(data: LessonText):
         import traceback
         traceback.print_exc()  # Print full error to terminal
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+    
+@app.post("/lesson")
+async def get_lesson(payload: dict = Body(...)):
+    """
+    Return the title and summary of a lesson.
+    """
+    lesson = payload.get("lesson", "")
+    if not lesson.strip():
+        raise HTTPException(status_code=400, detail="No lesson text provided.")
+
+    prompt = f"""
+        You are an AI summarizer. Your task is to analyze the following lesson text
+        and return a JSON object that contains:
+
+        - "title": A concise title for the lesson (max 15 words).
+        - "summary": A clear summary of the lesson (3–5 sentences).
+
+        Make sure the response is **valid JSON only** with no extra text.
+
+        === LESSON TEXT ===
+        {lesson}
+        """
+
+
+    try:
+        response = client.chat.completions.create(
+            model="openai/gpt-5-nano",
+            messages=[
+                {"role": "system", "content": "You are an educational AI that summarizes lessons."},
+                {"role": "user", "content": prompt},
+            ],
+            temperature=0.7,
+        )
+
+        if not response.choices or not response.choices[0].message.content:
+            raise HTTPException(status_code=500, detail="AI returned no content")
+
+        summary_json = response.choices[0].message.content
+        return {"summary": summary_json}
+
+    except json.JSONDecodeError:
+        raise HTTPException(status_code=500, detail="AI response was not valid JSON.")
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
