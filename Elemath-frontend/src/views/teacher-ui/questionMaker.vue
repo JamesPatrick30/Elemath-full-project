@@ -127,7 +127,7 @@
                     </div> -->
                     <!-- Only show drop area while dragging -->
                     <div
-                        v-if="isDragging"
+                        v-if="isDragging && !generatingLoading"
                         class="drop-area"
                         @dragover.prevent
                         @dragleave.prevent="isDragging = false"
@@ -145,7 +145,7 @@
                         class="file-input"
                     /> -->
                     
-                    <div class="file" v-if="!isDragging">
+                    <div class="file" v-if="!isDragging && !generatingLoading">
                         <input
                         v-if="!isDragging"
                         id="fileInput"
@@ -179,7 +179,7 @@
                     <!-- <input type="file" @change="onFileChange" />
                     <button @click="uploadLesson">Upload</button>
                     <p v-if="progress">Progress: {{ progress }}%</p> -->
-                    <div class="Question-options" v-if="fileId && !isDragging">
+                    <div class="Question-options" v-if="fileId && !isDragging && !generatingLoading">
                         <input type="number" placeholder="Number" v-model="uploadGenerate.num_questions">
                             <select class="t-o-q" v-model="uploadGenerate.type"  >
                                 <option disabled value="">-- Select a type --</option>
@@ -204,6 +204,10 @@
                             </select>
                             <button class="generate-btn" :disabled="generateBtnSwitch" @click="generateQuestion()">{{ generateBtn}}</button>
 
+                    </div>
+                    <div class="loading-generate" v-if="generatingLoading">
+                        <div class="loading-r"></div>
+                        <p class="typing">Generating questions...</p>
                     </div>
                     
             </div>
@@ -272,53 +276,11 @@ export default{
             btnLobby:{playes:false,Question:true},
             questionOption:'Costumize',
 
-            players : [
-                // { name: 'James Patrick', lrn: '864178547844' },
-                // { name: 'Alyssa Mae', lrn: '712345678901' },
-                // { name: 'Marco Antonio', lrn: '623498713250' },
-                // { name: 'Elaine Grace', lrn: '912378452167' },
-                // { name: 'Jared Anthony', lrn: '834512967340' },
-                // { name: 'Sophia Heart', lrn: '789431258610' },
-                // { name: 'Liam Gabriel', lrn: '675849123045' },
-                // { name: 'Chloe Anne', lrn: '702134958712' },
-                // { name: 'Daniel Reyes', lrn: '834159762380' },
-                // { name: 'Isabella Cruz', lrn: '912367845912' },
-                // { name: 'Nathaniel Kyle', lrn: '691237845981' },
-                // { name: 'Mikaela Joy', lrn: '710298345712' },
-                // { name: 'Adrian Blake', lrn: '843215967124' },
-                // { name: 'Bianca Rose', lrn: '764839125601' },
-                // { name: 'Ethan Cruz', lrn: '875312964178' },
-                // { name: 'Alexa Faith', lrn: '793415289031' },
-                // { name: 'Zachary Neil', lrn: '681235794601' },
-                // { name: 'Jasmine Rae', lrn: '904378214678' },
-                // { name: 'Caleb Shawn', lrn: '823745190623' },
-                // { name: 'Nicole Bea', lrn: '745931280147' },
-                ].sort((a, b) => a.name.localeCompare(b.name)),
+            players : [].sort((a, b) => a.name.localeCompare(b.name)),
             
             questionGenerateSetting:{type:'',topic:'',lang:'',difficulty:''},
 
-            questions:[
-                // { Q: 'What is 5 + 3?', type: 'input answer', answerType: 'number', answer: '8' },
-                // { Q: 'What is 12 - 4?', type: 'input answer', answerType: 'number', answer: '8' },
-                // { Q: 'What is the place value of 7 in 374?', type: 'input answer', answerType: 'number', answer: '70' },
-                // { Q: 'What is the shape with 3 sides?', type: 'multiple choices', answer: 'Triangle', choices: ['Circle', 'Rectangle', 'Triangle', 'Square'] },
-                // { Q: 'Which number is even?', type: 'multiple choices', answer: '8', choices: ['3', '5', '7', '8'] },
-                // { Q: 'What is 4 × 6?', type: 'input answer', answerType: 'number', answer: '24' },
-                // { Q: 'What is 30 ÷ 5?', type: 'input answer', answerType: 'number', answer: '6' },
-                // { Q: 'Which number is greater?', type: 'multiple choices', answer: '45', choices: ['12', '20', '45', '33'] },
-                // { Q: 'What is the missing number: 3, 6, __, 12?', type: 'input answer', answerType: 'number', answer: '9' },
-                // { Q: 'What is 100 - 75?', type: 'multiple choices', answer: '25', choices: ['35', '25', '50', '30'] },
-                // { Q: 'What is 9 + 8?', type: 'input answer', answerType: 'number', answer: '17' },
-                // { Q: 'Which of the following is a quadrilateral?', type: 'multiple choices', answer: 'Rectangle', choices: ['Circle', 'Rectangle', 'Triangle', 'Cone'] },
-                // { Q: 'What is 10 more than 65?', type: 'input answer', answerType: 'number', answer: '75' },
-                // { Q: 'Which shows a correct fraction: ½?', type: 'multiple choices', answer: 'Half', choices: ['Whole', 'One-third', 'Half', 'Zero'] },
-                // { Q: 'What is 7 × 5?', type: 'input answer', answerType: 'number', answer: '35' },
-                // { Q: 'What is the perimeter of a square with side 4?', type: 'input answer', answerType: 'number', answer: '16' },
-                // { Q: 'Which is a unit of length?', type: 'multiple choices', answer: 'Meter', choices: ['Liter', 'Gram', 'Meter', 'Kilogram'] },
-                // { Q: 'What is 9 less than 20?', type: 'input answer', answerType: 'number', answer: '11' },
-                // { Q: 'How many sides does a hexagon have?', type: 'input answer', answerType: 'number', answer: '6' },
-                // { Q: 'What is the product of 3 and 9?', type: 'multiple choices', answer: '27', choices: ['36', '18', '27', '30'] }
-            ],
+            questions:[],
             fileId: '',
             CostumeQuestion:{Q:'',type:'',answer:'',answerType:'',choices:[]},
             id: this.$route.query.i
@@ -495,27 +457,29 @@ export default{
         },
         async generateQuestion(){
             try{
+                this.generatingLoading = true;
                 this.generateBtnSwitch = true;
                 this.generateBtn = 'Generating...';
-                // const res = await api.post('/create-question',{
-                //     fileId:this.fileId,
-                //     num_questions:this.uploadGenerate.num_questions,
-                //     language:this.uploadGenerate.lang,
-                //     difficulty:this.uploadGenerate.difficulty,
-                //     question_type:this.uploadGenerate.type
-                // });
-                // res.data.quiz.forEach(q => {
-                //     this.questions.push(q);
-                // });
-                // console.log(res.data);
-                alert('created')
+                const res = await api.post('/create-question',{
+                    fileId:this.fileId,
+                    num_questions:this.uploadGenerate.num_questions,
+                    language:this.uploadGenerate.lang,
+                    difficulty:this.uploadGenerate.difficulty,
+                    question_type:this.uploadGenerate.type
+                });
+                res.data.quiz.forEach(q => {
+                    this.questions.push(q);
+                });
+                console.log(res.data);
+               
             }catch(err){
                 alert('Something went wrong, try again');
                 console.log(err);
             }
-            alert('click!')
-            // this.generateBtnSwitch = false;
-            // this.generateBtn = 'Generate';
+            // alert('click!')
+            this.generatingLoading = false;
+            this.generateBtnSwitch = false;
+            this.generateBtn = 'Generate';
         }
 
     },
@@ -549,6 +513,38 @@ export default{
 }
 </script>
 <style scoped>
+.loading-generate{
+    display: flex;
+    gap:  10px;
+}
+.loading-r{
+  border: 4px solid rgba(0, 0, 0, 0.1); /* light gray background */
+  border-top-color: #2563eb;             /* colored part of spinner */
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: auto;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes fade-caret {
+  0%   { opacity: 0; }
+  50%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.typing {
+    color: white;
+  display: inline-block;
+  animation: fade-caret 3s ease-in-out infinite;
+}
+
+
 .Question-options{
     display: flex;
     flex-direction: column;
