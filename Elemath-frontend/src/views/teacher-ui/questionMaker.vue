@@ -255,7 +255,25 @@
                 <p class="type">{{ question?.type }}</p>
                 <!-- <p class="type">{{ question.language }}</p> -->
                 <!-- Render ASCII table safely -->
-                <pre class="mono-table">{{ question.table }}</pre>
+
+                <!-- //create the table here -->
+                 <!-- Dynamic Table -->
+            <table v-if="question?.table" class="custom-table">
+                <thead>
+                <tr>
+                    <th v-for="(header, hIndex) in question.table.head" :key="hIndex">
+                    {{ header }}
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="(row, rIndex) in question.table.body" :key="rIndex">
+                    <td v-for="(cell, cIndex) in row" :key="cIndex">
+                    {{ cell }}
+                    </td>
+                </tr>
+                </tbody>
+            </table>
                 <p v-if="question?.story">Story : {{ question?.story }}</p>
                 <p>{{ question.question }}</p>
                 <div class="multi" v-if="question?.options">
@@ -563,6 +581,33 @@ export default{
 }
 </script>
 <style scoped>
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.95rem;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.custom-table th {
+  background: #3f51b5;
+  color: white;
+  padding: 10px;
+  text-align: left;
+}
+
+.custom-table td {
+  padding: 10px;
+  border-top: 1px solid #ddd;
+}
+
+.custom-table tr:nth-child(even) {
+  background: #f9f9f9;
+}
+
 .loading{
     border: 4px solid rgba(0, 0, 0, 0.1); /* light gray background */
     border-top-color: #2563eb;             /* colored part of spinner */
