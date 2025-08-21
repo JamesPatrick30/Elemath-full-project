@@ -613,17 +613,26 @@ export default{
   height: 40px;                  /* Set same height */
   padding: 0 16px;               /* Horizontal padding */
   font-size: 16px;
-  border: 1px solid #2563eb;    /* Optional styling */
+  /* border: 1px solid #2563eb;    Optional styling */
+  border: none;
   border-radius: 6px;
-  background-color: #2563eb;
+  /* background-color: #2563eb; */
   color: white;
   cursor: pointer;
   gap: 8px;                      /* Space between icon and text */
   transition: background-color 0.2s;
 }
-
-.file-label:hover,
-.file-c:hover {
+.file-c{
+    background-color: #ffeb3b;
+}
+.file-label{
+    background-color: #2563eb;    /* Blue background */
+}
+.file-c:hover{
+    background-color: #f3ff83;
+    
+}
+.file-label:hover {
   background-color: #1e40af;
 }
 
