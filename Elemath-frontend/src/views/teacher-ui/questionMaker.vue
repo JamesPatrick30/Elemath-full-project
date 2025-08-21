@@ -144,7 +144,9 @@
                         @change="onFileChangeDrag"
                         class="file-input"
                     /> -->
-                    <input
+                    
+                    <div class="file" v-if="!isDragging">
+                        <input
                         v-if="!isDragging"
                         id="fileInput"
                         type="file"
@@ -154,8 +156,10 @@
                         />
 
     <!-- Styled label as the "Choose File" button -->
-                    <label v-if="!isDragging" for="fileInput" class="file-label"><font-awesome-icon icon="fa-solid fa-upload" /> Upload New</label>
-
+                    <label  for="fileInput" class="file-label"><font-awesome-icon icon="fa-solid fa-upload" /> Upload New</label>
+                    <button class="file-c"><font-awesome-icon icon="fa-solid fa-file" />Select Existing</button>
+                    </div>
+                    
                     <!-- Upload button -->
                     <!-- <button 
                     @click="uploadLesson" 
@@ -166,37 +170,42 @@
                     </button> -->
 
                     <!-- Progress -->
-                    <p v-if="progress" class="progress-text">
-                    Progress: {{ progress }}%
+                    <p v-if="progress > 0 && progress !== 100" class="progress-text">
+                        Progress: {{ progress }}%
                     </p>
+
+
 
                     <!-- <input type="file" @change="onFileChange" />
                     <button @click="uploadLesson">Upload</button>
                     <p v-if="progress">Progress: {{ progress }}%</p> -->
-                    <input type="number" placeholder="Number" v-model="uploadGenerate.num_questions">
-                    <select class="t-o-q" v-model="uploadGenerate.type"  >
-                        <option disabled value="">-- Select a type --</option>
-                        <option value="multiple-choice">Multiple Choice</option>
-                        <option value="short-answer">short-answer</option>
-                        <option value="true-false">true-false</option>
-                        <option value="fill-in-the-blank">fill-in-the-blank</option>
-                    </select>
+                    <div class="Question-options" v-if="fileId && !isDragging">
+                        <input type="number" placeholder="Number" v-model="uploadGenerate.num_questions">
+                            <select class="t-o-q" v-model="uploadGenerate.type"  >
+                                <option disabled value="">-- Select a type --</option>
+                                <option value="multiple-choice">Multiple Choice</option>
+                                <option value="short-answer">short-answer</option>
+                                <option value="true-false">true-false</option>
+                                <option value="fill-in-the-blank">fill-in-the-blank</option>
+                            </select>
+                            
+                            <select class="t-o-q" v-model="uploadGenerate.lang"  >
+                                <option disabled value="">-- Language --</option>
+                                <option value="English">English</option>
+                                <option value="Tagalog">Tagalog</option>
+                            </select>
+
+                            <select class="t-o-q" v-model="uploadGenerate.difficulty"  >
+                                <option disabled value="">-- Select Difficulty --</option>
+                                <option value="easy">Easy</option>
+                                <option value="medium">Medium</option>
+                                <option value="hard">Hard</option>
+                                <option value="very-hard">Very Hard</option>
+                            </select>
+                            <button class="generate-btn" :disabled="generateBtnSwitch" @click="generateQuestion()">{{ generateBtn}}</button>
+
+                    </div>
                     
-                    <select class="t-o-q" v-model="uploadGenerate.lang"  >
-                        <option disabled value="">-- Language --</option>
-                        <option value="English">English</option>
-                        <option value="Tagalog">Tagalog</option>
-                    </select>
-
-                    <select class="t-o-q" v-model="uploadGenerate.difficulty"  >
-                        <option disabled value="">-- Select Difficulty --</option>
-                        <option value="easy">Easy</option>
-                        <option value="medium">Medium</option>
-                        <option value="hard">Hard</option>
-                        <option value="very-hard">Very Hard</option>
-                    </select>
-                    <button class="generate-btn" :disabled="generateBtnSwitch" @click="generateQuestion()">{{ generateBtn}}</button>
-
             </div>
         </div>
       <div class="con-lobby">
@@ -329,6 +338,7 @@ export default{
           this.isDragging = false;
         },
         handleDrop(event) {
+            this.fileId = '';
             const file = event.dataTransfer.files[0];
             this.handleFile(file);
         },
@@ -380,6 +390,7 @@ export default{
             }
         },
     onFileChange(event) {
+        this.fileId = '';
         this.file = event.target.files[0];
         this.progress = 0; // Reset progress on new file selection
         if(this.file){
@@ -398,24 +409,27 @@ export default{
 
         try {
             const res = await api.post("/lesson/upload", formData, {
-            headers: { "Content-Type": "multipart/form-data" },
-            onUploadProgress: (progressEvent) => {
-                this.progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-            }
+                headers: { "Content-Type": "multipart/form-data" },
+                onUploadProgress: (progressEvent) => {
+                let uploaded = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+
+                // Cap at 80% during upload
+                if (uploaded < 80) {
+                    this.progress = uploaded;
+                }
+                },
             });
 
+            // Set progress to 100% when done
+            this.progress = 100;
             console.log("✅ File uploaded:", res.data);
             this.fileId = res.data.id;
-            // this.rawText = res.data.rawText;
-            
-            // res.data.quiz.forEach(q => {
-            //     this.questions.push(q);
-            // });
-            alert("Lesson uploaded successfully!");
-        } catch (err) {
+
+            } catch (err) {
             console.error("❌ Upload failed:", err);
             alert(err.response?.data?.message || "Something went wrong during upload.");
-        }
+            }
+
         },
 
         navClick(btn){
@@ -535,6 +549,12 @@ export default{
 }
 </script>
 <style scoped>
+.Question-options{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
 .drop-area {
   /* position: fixed; */
   top: 0;
@@ -582,22 +602,37 @@ export default{
   background: #fafafa;
 }
 
+.file{
+    display: flex;
+    gap: 1em;
+}
 /* Hide ugly native input */
 .file-input {
   display: none;
+}.file-label,
+.file-c {
+  display: inline-flex;          /* Align icon and text horizontally */
+  align-items: center;           /* Vertically center content */
+  justify-content: center;
+  height: 40px;                  /* Set same height */
+  padding: 0 16px;               /* Horizontal padding */
+  font-size: 16px;
+  border: 1px solid #2563eb;    /* Optional styling */
+  border-radius: 6px;
+  background-color: #2563eb;
+  color: white;
+  cursor: pointer;
+  gap: 8px;                      /* Space between icon and text */
+  transition: background-color 0.2s;
 }
 
-.file-label {
-    height: 50px;
-  display: inline-block;
-  padding: 0.5rem 1rem;
-  background: #2563eb;
-  color: #fff;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  text-align: center;
-  transition: background 0.2s ease;
+.file-label:hover,
+.file-c:hover {
+  background-color: #1e40af;
+}
+
+.file-input {
+  display: none;                 /* Hide the actual file input */
 }
 
 .file-label:hover {
