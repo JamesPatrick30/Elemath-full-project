@@ -1,5 +1,5 @@
 <template>
-    <!-- <div class="file-cluster" v-if="fileCluster">
+    <div class="file-cluster" v-if="fileCluster">
         <div class="file-list">
             <h2>File List</h2>
             <button @click="fileCluster = false">Close</button>
@@ -13,7 +13,7 @@
                 <p v-if="file.options">Options: {{ file.options.join(', ') }}</p>
             </div>
         </div>
-    </div> -->
+    </div>
     <main>
         <button class="btn-back" v-on:click="backBtn()">Back</button>
         <div class="con-q">
@@ -278,11 +278,10 @@
 <script>
 import socket from '@/socket';
 import api from '@/axios';
-import { isFileLoadingAllowed } from 'vite';
+
 export default{
     data(){
         return{
-            fileCluster:true,
             isDragging: false,
             generateBtnSwitch: false,
             generateBtn:'Generate',
@@ -302,6 +301,9 @@ export default{
             CostumeQuestion:{Q:'',type:'',answer:'',answerType:'',choices:[]},
             id: this.$route.query.i,
             filelist: [],
+            fileCluster:true,
+            generatingLoading: false, // <- add this
+            fileloading: false,
         }
     },
     methods:{
