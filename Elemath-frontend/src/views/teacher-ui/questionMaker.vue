@@ -94,6 +94,16 @@
                 <button class="btn-add" @click="addQuestion()">Add..</button>
             </div>
             <div class="con-file" v-if="btnActive.file">
+                <header class="top-bar">
+                    
+                    <h1 class="title">⚡ Powered by GPT-5</h1>
+                    <!-- <img
+                    class="logo"
+                    src="/images/cropgptlogo.png"
+
+                    alt="OpenAI Logo"
+                    /> -->
+                </header>
                 <!-- <label for="moduleFile" class="upload-label">
                     📄 Upload Module / Lesson File
                     <input
@@ -111,33 +121,58 @@
                         <option value="multiple choices">Multiple Choice</option>
                         <option value="Costumize">Costumize</option>
                     </select> -->
+                    <!-- <div>
+                        <button><font-awesome-icon icon="fa-solid fa-upload" />Upload New</button>
+                        <button><font-awesome-icon icon="fa-solid fa-file" />Select Existing</button>
+                    </div> -->
+                    <!-- Only show drop area while dragging -->
+                    <div
+                        v-if="isDragging"
+                        class="drop-area"
+                        @dragover.prevent
+                        @dragleave.prevent="isDragging = false"
+                        @drop.prevent="handleDrop"
+                    >
+                        <p>Drop your PDF here</p>
+                    </div>
+
+                    <!-- Hidden input to allow click selection if needed -->
+                    <!-- <input
+                        type="file"
+                        accept="application/pdf"
+                        ref="fileInput"
+                        @change="onFileChangeDrag"
+                        class="file-input"
+                    /> -->
                     <input
+                        v-if="!isDragging"
                         id="fileInput"
                         type="file"
                         @change="onFileChange"
+                        accept="application/pdf"
                         class="file-input"
                         />
 
     <!-- Styled label as the "Choose File" button -->
-                    <label for="fileInput" class="file-label">Choose File</label>
+                    <label v-if="!isDragging" for="fileInput" class="file-label"><font-awesome-icon icon="fa-solid fa-upload" /> Upload New</label>
 
                     <!-- Upload button -->
-                    <button 
+                    <!-- <button 
                     @click="uploadLesson" 
                     class="upload-btn"
                     :disabled="!file"
                     >
                     Upload
-                    </button>
+                    </button> -->
 
                     <!-- Progress -->
                     <p v-if="progress" class="progress-text">
                     Progress: {{ progress }}%
                     </p>
 
-                    <input type="file" @change="onFileChange" />
+                    <!-- <input type="file" @change="onFileChange" />
                     <button @click="uploadLesson">Upload</button>
-                    <p v-if="progress">Progress: {{ progress }}%</p>
+                    <p v-if="progress">Progress: {{ progress }}%</p> -->
                     <input type="number" placeholder="Number" v-model="uploadGenerate.num_questions">
                     <select class="t-o-q" v-model="uploadGenerate.type"  >
                         <option disabled value="">-- Select a type --</option>
@@ -218,6 +253,7 @@ import api from '@/axios';
 export default{
     data(){
         return{
+            isDragging: false,
             generateBtnSwitch: false,
             generateBtn:'Generate',
             uploadGenerate:{num_questions:0,type:'',topic:'',lang:'',difficulty:''},
@@ -280,6 +316,36 @@ export default{
         }
     },
     methods:{
+        onDragOver(e) {
+            this.isDragging = true; 
+        },
+        onDragLeave(e) {
+        // Only hide if leaving the page/window
+            if (e.clientX === 0 && e.clientY === 0) {
+                this.isDragging = false;
+            }
+        },
+        onDropAnywhere(e) {
+          this.isDragging = false;
+        },
+        handleDrop(event) {
+            const file = event.dataTransfer.files[0];
+            this.handleFile(file);
+        },
+        onFileChangeDrag(event) {
+            const file = event.target.files[0];
+            this.handleFile(file);
+        },
+        handleFile(file) {
+            if (!file) return;
+            if (file.type !== "application/pdf") {
+                alert("Only PDF files are allowed!");
+                return;
+            }
+            this.file = file;
+            this.progress = 0;
+            this.uploadLesson();
+        },
         parseTables(rawData) {
             if (!rawData || typeof rawData !== 'string') {
                 return []
@@ -316,6 +382,9 @@ export default{
     onFileChange(event) {
         this.file = event.target.files[0];
         this.progress = 0; // Reset progress on new file selection
+        if(this.file){
+            this.uploadLesson();
+        }
     },
 
     async uploadLesson() {
@@ -345,7 +414,7 @@ export default{
             alert("Lesson uploaded successfully!");
         } catch (err) {
             console.error("❌ Upload failed:", err);
-            alert('try again. someting went wrong.')
+            alert(err.response?.data?.message || "Something went wrong during upload.");
         }
         },
 
@@ -453,10 +522,55 @@ export default{
         });
         console.log(socket.listeners('room-created').length);
 
+        window.addEventListener("dragover", this.onDragOver);
+        window.addEventListener("dragleave", this.onDragLeave);
+        window.addEventListener("drop", this.onDropAnywhere);
+
     },
+    beforeUnmount() {
+    window.removeEventListener("dragover", this.onDragOver);
+    window.removeEventListener("dragleave", this.onDragLeave);
+    window.removeEventListener("drop", this.onDropAnywhere);
+  },
 }
 </script>
 <style scoped>
+.drop-area {
+  /* position: fixed; */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 4px dashed #2563eb;
+  border-radius: 12px;
+  background: rgba(224, 231, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  color: #1f2937;
+  font-size: 1.25rem;
+}
+.top-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  /* background: #f3f4f6;
+  border-bottom: 1px solid #e5e7eb; */
+  /* justify-self: end; */
+  align-self: self-end;
+  left: auto;
+}
+.logo {
+  width: 20px;
+  height: auto;
+}
+.title {
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #111827;
+}
 .upload-box {
   display: flex;
   flex-direction: column;
@@ -474,6 +588,7 @@ export default{
 }
 
 .file-label {
+    height: 50px;
   display: inline-block;
   padding: 0.5rem 1rem;
   background: #2563eb;

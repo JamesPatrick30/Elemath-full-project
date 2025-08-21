@@ -82,7 +82,9 @@ router.post("/upload",auth, upload.single("lessonFile"), async (req, res) => {
       );
       console.log("📨 FastAPI replied:", fastapiResponse.data.summary);
       d = JSON.parse( fastapiResponse.data.summary);
-      
+      if (d.content === false) {
+        return res.status(400).json({ message: "No useful content in the lesson text" });
+      }
       } catch (error) {
         console.error("❌ Error processing file:", error);
       }

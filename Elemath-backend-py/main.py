@@ -181,12 +181,15 @@ async def get_lesson(payload: dict = Body(...)):
 
         - "title": A concise title for the lesson (max 15 words).
         - "summary": A clear summary of the lesson (3–5 sentences).
+        - "content": A boolean. Use false if the lesson text is empty or has no useful content,
+        otherwise true.
 
         Make sure the response is **valid JSON only** with no extra text.
 
         === LESSON TEXT ===
         {lesson}
         """
+
 
 
     try:

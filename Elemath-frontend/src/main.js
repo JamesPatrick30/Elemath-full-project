@@ -10,9 +10,10 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faUserPen } from '@fortawesome/free-solid-svg-icons';
 import {faList} from '@fortawesome/free-solid-svg-icons';
-
+import {faUpload} from '@fortawesome/free-solid-svg-icons';
+import {faFile} from '@fortawesome/free-solid-svg-icons';
 // Add icons to the library
-library.add(faUserPen,faList);
+library.add(faUserPen,faList,faUpload,faFile);
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
 library.add(faTrash);
