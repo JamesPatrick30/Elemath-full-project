@@ -1,17 +1,19 @@
 <template>
     <div class="file-cluster" v-if="fileCluster">
+        <button @click="fileCluster = false">Close</button>
         <div class="file-list">
-            <h2>File List</h2>
-            <button @click="fileCluster = false">Close</button>
             <div class="loading-con" v-if="fileloading">
                 <div class="loading"></div>
             </div>
-            <div class="file" v-for="(file, index) in filelist" :key="index">
-                <p>{{ file.question }}</p>
-                <p>Type: {{ file.type }}</p>
-                <p>Answer: {{ file.answer }}</p>
-                <p v-if="file.options">Options: {{ file.options.join(', ') }}</p>
+            <h2>File List</h2>
+           
+            <div class="file-in">
+                <div class="file-l" v-for="(file, index) in filelist" :key="index" @click="selectFile(file._id)">
+                    <h4>{{ file.title }}</h4>
+                    <!-- <p>{{ file.summary }}</p> -->
+                </div>
             </div>
+            
         </div>
     </div>
     <main>
@@ -172,7 +174,7 @@
 
     <!-- Styled label as the "Choose File" button -->
                     <label  for="fileInput" class="file-label"><font-awesome-icon icon="fa-solid fa-upload" /> Upload New</label>
-                    <button class="file-c" v-on:click="openClusterFile"><font-awesome-icon icon="fa-solid fa-file" />Select Existing</button>
+                    <button class="file-c" @click="openClusterFile()"><font-awesome-icon icon="fa-solid fa-file" />Select Existing</button>
                     </div>
                     
                     <!-- Upload button -->
@@ -307,18 +309,26 @@ export default{
         }
     },
     methods:{
+        selectFile(file) {
+            this.fileCluster = false;
+            this.fileId = file;
+        },
         async openClusterFile(){
             this.fileCluster = true;
             this.fileloading = true;
-            // try {
-            //     const res = await api.get('/lesson/list');
-            //     this.filelist = res.data.files;
-            //     this.fileloading = false;
-            // } catch (err) {
-            //     console.error("❌ Error fetching file list:", err);
-            //     alert("Failed to load files. Please try again later.");
-            //     this.fileloading = false;
-            // }
+            this.filelist = [];
+            try {
+                const res = await api.get('/lesson/list');
+                this.filelist = res.data.files;
+                this.fileloading = false;
+                console.log("✅ File list fetched:", this.filelist);
+                // alert(res.data.message);
+            } catch (err) {
+                console.error("❌ Error fetching file list:", err);
+                alert("Failed to load files. Please try again later.");
+                this.fileloading = false;
+            }
+            this.fileloading = false;
         },
         onDragOver(e) {
             this.isDragging = true; 
@@ -420,6 +430,8 @@ export default{
             console.log("✅ File uploaded:", res.data);
             this.fileId = res.data.id;
 
+            
+
             } catch (err) {
             console.error("❌ Upload failed:", err);
             alert(err.response?.data?.message || "Something went wrong during upload.");
@@ -503,6 +515,11 @@ export default{
                 res.data.quiz.forEach(q => {
                     this.questions.push(q);
                 });
+                this.$nextTick(() => {
+                    const index = this.questions.length - 1;
+                    const el = document.getElementById(index.toString());
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                });
                 console.log(res.data);
                
             }catch(err){
@@ -559,7 +576,7 @@ export default{
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100%;
+    height: 200px;
 }
 .file-cluster{
     position: fixed;
@@ -573,7 +590,8 @@ export default{
 }
 .file-list{
     width: 30%;
-    height: 80%;
+    height: fit-content;
+    max-height: 80%;
     background-color: white;
     border-radius: 10px;
     padding: 20px;
@@ -664,10 +682,36 @@ export default{
   max-width: 320px;
   background: #fafafa;
 }
-
+.file-in{
+    scrollbar-width: none;
+    /* background-color: #0056b3; */
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    overflow-y: auto;
+    max-height: 400px; /* Limit height to prevent overflow */
+}
+/* .file-l:hover{
+    z-index: 10;
+    max-height: max-content;
+    overflow: visible;
+} */
+.file-l{
+    /* width: 100%; */
+    height: 150px;
+    /* overflow: hidden; */
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #7bbbff;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+}
 .file{
     display: flex;
     gap: 1em;
+
 }
 /* Hide ugly native input */
 .file-input {

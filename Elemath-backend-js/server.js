@@ -679,6 +679,17 @@ app.get('/get/mode/list', auth, async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   } 
 });
+const lessonfile = require('./models/lessonfile.js');
+app.get('/lesson/list',auth, async (req, res) => {
+  const id = req.user.id; // Assuming the user ID is stored in the token payload
+  const lessons = await lessonfile.find({ ownerId: id },{file:0, __v:0}).sort({ dateCreated: -1 }); // Sort by dateCreated in descending order
+
+  if (!lessons || lessons.length === 0) {
+    return res.status(404).json({ message: 'No lessons found' });
+  }
+  res.json({ files: lessons });
+});
+
 // Middleware to read cookie token
 io.use((socket, next) => {
   // console.log("Handshake headers:", socket.handshake.headers);
