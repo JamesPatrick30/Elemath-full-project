@@ -1,11 +1,13 @@
 <template>
     <div class="file-cluster" v-if="fileCluster">
-        <button @click="fileCluster = false">Close</button>
+        
         <div class="file-list">
+            <button @click="fileCluster = false" class="close-btn"><font-awesome-icon icon="fa-solid fa-xmark" style="color: #ff0000;" size="lg"/></button>
+            <h2>File List</h2>
             <div class="loading-con" v-if="fileloading">
                 <div class="loading"></div>
             </div>
-            <h2>File List</h2>
+            
            
             <div class="file-in">
                 <div class="file-l" v-for="(file, index) in filelist" :key="index" @click="selectFile(file._id,file.title)">
@@ -114,35 +116,9 @@
                 <header class="top-bar">
                     
                     <h1 class="title">⚡ Powered by GPT-5</h1>
-                    <!-- <img
-                    class="logo"
-                    src="/images/cropgptlogo.png"
 
-                    alt="OpenAI Logo"
-                    /> -->
                 </header>
-                <!-- <label for="moduleFile" class="upload-label">
-                    📄 Upload Module / Lesson File
-                    <input
-                        type="file"
-                        id="moduleFile"
-                        accept=".pdf"
-                        @change="handleFileUpload"
-                        hidden
-                    />
-                    </label>
-                    <p v-if="fileName" class="file-name">Selected: {{ fileName }}</p> -->
-
-                    <!-- <select class="t-o-q" v-model="questionGenerateSetting.type"  >
-                        <option disabled value="">-- Select a Language --</option>
-                        <option value="multiple choices">Multiple Choice</option>
-                        <option value="Costumize">Costumize</option>
-                    </select> -->
-                    <!-- <div>
-                        <button><font-awesome-icon icon="fa-solid fa-upload" />Upload New</button>
-                        <button><font-awesome-icon icon="fa-solid fa-file" />Select Existing</button>
-                    </div> -->
-                    <!-- Only show drop area while dragging -->
+              
                     <div
                         v-if="isDragging && !generatingLoading"
                         class="drop-area"
@@ -639,6 +615,13 @@ export default{
 }
 </script>
 <style scoped>
+.close-btn{
+    justify-self: end;
+    align-self: flex-end;
+    left: auto;
+    background-color: transparent;
+    border: none;
+}
 .bar-chart{
     width: 100%;
 }
@@ -691,6 +674,7 @@ export default{
     background-color: rgb(2, 2, 2,0.5);
     z-index: 100;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
 }
@@ -700,8 +684,10 @@ export default{
     max-height: 80%;
     background-color: white;
     border-radius: 10px;
-    padding: 20px;
+    padding: 10px;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
     /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); */
 }
 .loading-generate{
@@ -810,6 +796,7 @@ export default{
 .file-l{
     /* width: 100%; */
     height: 150px;
+    color: white;
     /* overflow: hidden; */
     padding: 10px;
     border-radius: 10px;
