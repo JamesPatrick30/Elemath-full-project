@@ -116,7 +116,9 @@
                 <header class="top-bar">
                     
                     <h1 class="title">⚡ Powered by GPT-5</h1>
-
+                    <p class="text-xs text-gray-500 mt-2 italic">
+                        ⚠️ This AI is specialized in <span class="font-semibold">Mathematics</span>.
+                    </p>
                 </header>
               
                     <div
@@ -748,6 +750,13 @@ export default{
   color: #1f2937;
   font-size: 1.25rem;
 }
+.top-bar h1,.top-bar p {
+    margin: 0;
+}
+.top-bar p{
+    font-size: 0.55rem;
+    /* color: #6b7280; */
+}
 .top-bar {
   display: flex;
   align-items: center;
@@ -758,6 +767,8 @@ export default{
   /* justify-self: end; */
   align-self: self-end;
   left: auto;
+  display: flex;
+  flex-direction: column;
 }
 .logo {
   width: 20px;
@@ -767,6 +778,8 @@ export default{
   font-size: 0.8rem;
   font-weight: bold;
   color: #111827;
+  display: flex;
+  flex-direction: column;
 }
 .upload-box {
   display: flex;

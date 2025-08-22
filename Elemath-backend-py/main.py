@@ -68,11 +68,27 @@ async def generate_quiz(data: LessonText):
         f"Question type: {data.question_type}\n\n"
 
         "=== QUIZ GENERATION RULES (DO NOT TREAT AS LESSON CONTENT) ===\n"
-        "1. Every question must include a 'type' field matching the requested question type.\n"
+        "1. Every question must include the following fields:\n"
+        "   - 'type' (matching the requested question type)\n"
+        "   - 'question' (the actual question text)\n"
+        "   - 'topic' (lesson topic)\n"
+        "   - 'language' (same as requested language)\n"
+        "   - 'difficulty' (same as requested difficulty)\n"
+        "   - 'answer' (correct answer)\n"
+        "   - 'explanation' (short justification)\n\n"
+
         "2. If the question has context (people, places, survey, dataset scenario), include a 'story' field.\n"
         "   - The 'story' must ONLY contain the background context, not the actual question.\n"
+
         "3. If the question uses or implies a dataset (numbers, percentages, categories, survey results, comparisons), you MUST include 'tabletype' and 'table'.\n"
         "   - 'tabletype' must be one of: \"Table\", \"Pie\", \"Bar\", \"Line\".\n\n"
+
+        "⚠️ SPECIAL MATH RULE ⚠️\n"
+        "- If the LESSON is about charts (Pie Graph, Bar Graph, Line Graph):\n"
+        "  → ALL questions must be about constructing, interpreting, or analyzing the given chart data.\n"
+        "  → Do NOT create general reading comprehension questions.\n"
+        "  → Always focus on numbers, percentages, categories, angles, or steps in graph construction.\n"
+        "  → NEVER use 'tabletype: Table' for chart lessons. Always output the correct chart type: 'Pie', 'Bar', or 'Line'.\n\n"
 
         "=== TABLE RULES ===\n"
         "- If 'tabletype' is \"Table\":\n"
@@ -117,13 +133,12 @@ async def generate_quiz(data: LessonText):
         "  }\n\n"
 
         "4. If no dataset is referenced, omit 'tabletype' and 'table'.\n"
-        "5. Every question must have 'topic', 'language', 'difficulty', 'answer', and 'explanation'.\n"
-        "6. For multiple-choice: include 'options' array in the format [\"A. ...\", \"B. ...\", \"C. ...\", \"D. ...\"].\n"
+        "5. For multiple-choice: include 'options' array in the format [\"A. ...\", \"B. ...\", \"C. ...\", \"D. ...\"].\n"
         "   - The 'answer' must exactly match one of the options including the letter.\n"
-        "7. For non-multiple-choice (short-answer, true-false, etc.): omit 'options' and keep only the raw answer value.\n"
+        "6. For short-answer: the 'answer' must be only a single word or name (no full sentences).\n"
+        "7. For true-false: the 'answer' must be strictly 'true' or 'false' (not yes/no).\n"
         "8. Do NOT add units or extra words in 'answer'. Example: use \"90\", not \"90°\"; use \"Basketball\", not \"Basketball sport\".\n"
-        "9. The 'explanation' must briefly justify the answer.\n"
-        "10. If yes/no, just output 'yes' or 'no' in 'answer'.\n\n"
+        "9. The 'explanation' must briefly justify the answer.\n\n"
 
         "=== STRICT FORMAT RULES ===\n"
         "- Entire output must be a valid JSON array only.\n"
@@ -134,6 +149,10 @@ async def generate_quiz(data: LessonText):
         f"=== LESSON TEXT (ONLY USE THIS FOR CONTENT) ===\n"
         f"{data.rawText}\n"
     )
+
+
+
+
 
 
 
