@@ -1,11 +1,13 @@
 <template>
     <div class="file-cluster" v-if="fileCluster">
-        <button @click="fileCluster = false">Close</button>
+        
         <div class="file-list">
+            <button @click="fileCluster = false" class="close-btn"><font-awesome-icon icon="fa-solid fa-xmark" style="color: #ff0000;" size="lg"/></button>
+            <h2>File List</h2>
             <div class="loading-con" v-if="fileloading">
                 <div class="loading"></div>
             </div>
-            <h2>File List</h2>
+            
            
             <div class="file-in">
                 <div class="file-l" v-for="(file, index) in filelist" :key="index" @click="selectFile(file._id,file.title)">
@@ -114,35 +116,11 @@
                 <header class="top-bar">
                     
                     <h1 class="title">⚡ Powered by GPT-5</h1>
-                    <!-- <img
-                    class="logo"
-                    src="/images/cropgptlogo.png"
-
-                    alt="OpenAI Logo"
-                    /> -->
+                    <p class="text-xs text-gray-500 mt-2 italic">
+                        ⚠️ This AI is specialized in <span class="font-semibold">Mathematics</span>.
+                    </p>
                 </header>
-                <!-- <label for="moduleFile" class="upload-label">
-                    📄 Upload Module / Lesson File
-                    <input
-                        type="file"
-                        id="moduleFile"
-                        accept=".pdf"
-                        @change="handleFileUpload"
-                        hidden
-                    />
-                    </label>
-                    <p v-if="fileName" class="file-name">Selected: {{ fileName }}</p> -->
-
-                    <!-- <select class="t-o-q" v-model="questionGenerateSetting.type"  >
-                        <option disabled value="">-- Select a Language --</option>
-                        <option value="multiple choices">Multiple Choice</option>
-                        <option value="Costumize">Costumize</option>
-                    </select> -->
-                    <!-- <div>
-                        <button><font-awesome-icon icon="fa-solid fa-upload" />Upload New</button>
-                        <button><font-awesome-icon icon="fa-solid fa-file" />Select Existing</button>
-                    </div> -->
-                    <!-- Only show drop area while dragging -->
+              
                     <div
                         v-if="isDragging && !generatingLoading"
                         class="drop-area"
@@ -260,22 +238,69 @@
 
                 <!-- //create the table here -->
                  <!-- Dynamic Table -->
-            <table v-if="question?.table" class="custom-table">
-                <thead>
-                <tr>
-                    <th v-for="(header, hIndex) in question.table.head" :key="hIndex">
-                    {{ header }}
-                    </th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="(row, rIndex) in question.table.body" :key="rIndex">
-                    <td v-for="(cell, cIndex) in row" :key="cIndex">
-                    {{ cell }}
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+                  {{ question?.tabletype }}
+                  <div class="bar-chart" v-if="question?.tabletype == 'Line'">
+                    <apexChart
+                        type="line"
+                        height="230"
+                        :series="question.table.LineChart.series"
+                        :options="question.table.LineChart.options"
+                    />
+                  </div>
+                  <div v-if="question?.tabletype == 'Bar'" class="bar-chart">
+                    <apexChart
+                        type="bar"
+                        height="230"
+                       
+                        :series="question.table.BarChart.series"
+                        :options="question.table.BarChart.options"
+                        
+                    />
+                    
+                  </div>
+                  <div v-if="question?.tabletype == 'Pie'">
+                    <apexChart
+                        type="pie"
+                        height="200"
+                        :series="question?.table.PieChart.series"
+                        :options="question?.table.PieChart.options"
+                        />
+                  </div>
+                 <div v-if="question?.tabletype == 'Table'">
+                    <table v-if="question?.table" class="custom-table">
+                        <thead>
+                        <tr>
+                            <th v-for="(header, hIndex) in question.table.head" :key="hIndex">
+                            {{ header }}
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="(row, rIndex) in question.table.body" :key="rIndex">
+                            <td v-for="(cell, cIndex) in row" :key="cIndex">
+                            {{ cell }}
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <table v-if="question?.table.Table" class="custom-table">
+                        <thead>
+                        <tr>
+                            <th v-for="(header, hIndex) in question.table.Table.head" :key="hIndex">
+                            {{ header }}
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="(row, rIndex) in question.table.Table.body" :key="rIndex">
+                            <td v-for="(cell, cIndex) in row" :key="cIndex">
+                            {{ cell }}
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                 </div>
+                
                 <p v-if="question?.story">Story : {{ question?.story }}</p>
                 <p>{{ question.question }}</p>
                 <div class="multi" v-if="question?.options">
@@ -300,8 +325,11 @@
 <script>
 import socket from '@/socket';
 import api from '@/axios';
-
+import ApexChart from "vue3-apexcharts"
 export default{
+    components: {
+        ApexChart
+    },
     data(){
         return{
             isDragging: false,
@@ -589,6 +617,16 @@ export default{
 }
 </script>
 <style scoped>
+.close-btn{
+    justify-self: end;
+    align-self: flex-end;
+    left: auto;
+    background-color: transparent;
+    border: none;
+}
+.bar-chart{
+    width: 100%;
+}
 .custom-table {
   width: 100%;
   border-collapse: collapse;
@@ -638,6 +676,7 @@ export default{
     background-color: rgb(2, 2, 2,0.5);
     z-index: 100;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
 }
@@ -647,8 +686,10 @@ export default{
     max-height: 80%;
     background-color: white;
     border-radius: 10px;
-    padding: 20px;
+    padding: 10px;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
     /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); */
 }
 .loading-generate{
@@ -709,6 +750,13 @@ export default{
   color: #1f2937;
   font-size: 1.25rem;
 }
+.top-bar h1,.top-bar p {
+    margin: 0;
+}
+.top-bar p{
+    font-size: 0.55rem;
+    /* color: #6b7280; */
+}
 .top-bar {
   display: flex;
   align-items: center;
@@ -719,6 +767,8 @@ export default{
   /* justify-self: end; */
   align-self: self-end;
   left: auto;
+  display: flex;
+  flex-direction: column;
 }
 .logo {
   width: 20px;
@@ -728,6 +778,8 @@ export default{
   font-size: 0.8rem;
   font-weight: bold;
   color: #111827;
+  display: flex;
+  flex-direction: column;
 }
 .upload-box {
   display: flex;
@@ -757,6 +809,7 @@ export default{
 .file-l{
     /* width: 100%; */
     height: 150px;
+    color: white;
     /* overflow: hidden; */
     padding: 10px;
     border-radius: 10px;
