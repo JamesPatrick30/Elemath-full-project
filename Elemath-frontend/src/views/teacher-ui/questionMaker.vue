@@ -260,22 +260,69 @@
 
                 <!-- //create the table here -->
                  <!-- Dynamic Table -->
-            <table v-if="question?.table" class="custom-table">
-                <thead>
-                <tr>
-                    <th v-for="(header, hIndex) in question.table.head" :key="hIndex">
-                    {{ header }}
-                    </th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="(row, rIndex) in question.table.body" :key="rIndex">
-                    <td v-for="(cell, cIndex) in row" :key="cIndex">
-                    {{ cell }}
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+                  {{ question?.tabletype }}
+                  <div class="bar-chart" v-if="question?.tabletype == 'Line'">
+                    <apexChart
+                        type="line"
+                        height="230"
+                        :series="question.table.LineChart.series"
+                        :options="question.table.LineChart.options"
+                    />
+                  </div>
+                  <div v-if="question?.tabletype == 'Bar'" class="bar-chart">
+                    <apexChart
+                        type="bar"
+                        height="230"
+                       
+                        :series="question.table.BarChart.series"
+                        :options="question.table.BarChart.options"
+                        
+                    />
+                    
+                  </div>
+                  <div v-if="question?.tabletype == 'Pie'">
+                    <apexChart
+                        type="pie"
+                        height="200"
+                        :series="question?.table.PieChart.series"
+                        :options="question?.table.PieChart.options"
+                        />
+                  </div>
+                 <div v-if="question?.tabletype == 'Table'">
+                    <table v-if="question?.table" class="custom-table">
+                        <thead>
+                        <tr>
+                            <th v-for="(header, hIndex) in question.table.head" :key="hIndex">
+                            {{ header }}
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="(row, rIndex) in question.table.body" :key="rIndex">
+                            <td v-for="(cell, cIndex) in row" :key="cIndex">
+                            {{ cell }}
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <table v-if="question?.table.Table" class="custom-table">
+                        <thead>
+                        <tr>
+                            <th v-for="(header, hIndex) in question.table.Table.head" :key="hIndex">
+                            {{ header }}
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="(row, rIndex) in question.table.Table.body" :key="rIndex">
+                            <td v-for="(cell, cIndex) in row" :key="cIndex">
+                            {{ cell }}
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                 </div>
+                
                 <p v-if="question?.story">Story : {{ question?.story }}</p>
                 <p>{{ question.question }}</p>
                 <div class="multi" v-if="question?.options">
@@ -300,8 +347,11 @@
 <script>
 import socket from '@/socket';
 import api from '@/axios';
-
+import ApexChart from "vue3-apexcharts"
 export default{
+    components: {
+        ApexChart
+    },
     data(){
         return{
             isDragging: false,
@@ -589,6 +639,9 @@ export default{
 }
 </script>
 <style scoped>
+.bar-chart{
+    width: 100%;
+}
 .custom-table {
   width: 100%;
   border-collapse: collapse;
