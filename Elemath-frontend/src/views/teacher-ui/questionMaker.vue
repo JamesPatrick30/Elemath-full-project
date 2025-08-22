@@ -41,79 +41,7 @@
 
 
                 <div class="con-generate" v-if="questionOption === 'Generate'">
-                    <select class="t-o-q" v-model="questionGenerateSetting.type"  >
-                        <option disabled value="">-- Select a type --</option>
-                        <option value="multiple choices">Multiple Choice</option>
-                        <option value="Costumize">Costumize</option>
-                    </select>
-                    <select name="Topic" class="t-o-q" v-model="questionGenerateSetting.topic" >
-                        <option disabled value="">-- Select a Math Topic --</option>
-                        <!-- Grade 5 Topics -->
-                        <option disabled>Grade 5 Topics</option>
-                        <option value="Place Value and Rounding">Place Value and Rounding</option>
-                        <option value="Multiplying and Dividing Fractions">Multiplying and Dividing Fractions</option>
-                        <option value="Operations on Decimals">Operations on Decimals</option>
-                        <option value="Measurement (Length, Mass, Capacity)">Measurement (Length, Mass, Capacity)</option>
-                        <option value="Volume and Surface Area of Solids">Volume and Surface Area of Solids</option>
-                        <option value="Simple and Compound Interest">Simple and Compound Interest</option>
-                        <option value="Interpreting Data and Graphs">Interpreting Data and Graphs</option>
-                        <option value="Angles and Triangles">Angles and Triangles</option>
-
-                        <!-- Grade 6 Topics -->
-                        <option disabled>Grade 6 Topics</option>
-                        <option value="Ratio and Proportion">Ratio and Proportion</option>
-                        <option value="Percent and Its Applications">Percent and Its Applications</option>
-                        <option value="Algebraic Expressions">Algebraic Expressions</option>
-                        <option value="Patterns and Number Sequences">Patterns and Number Sequences</option>
-                        <option value="Geometry of Solids">Geometry of Solids</option>
-                        <option value="Statistics and Probability">Statistics and Probability</option>
-                        <option value="Speed, Distance, and Time">Speed, Distance, and Time</option>
-                        <option value="Problem Solving with Multi-step Word Problems">Problem Solving with Multi-step Word Problems</option>
-                    </select>
-                    <select class="t-o-q" v-model="questionGenerateSetting.lang"  >
-                        <option disabled value="">-- Language --</option>
-                        <option value="English">English</option>
-                        <option value="Tagalog">Tagalog</option>
-                    </select>
-
-                    <select class="t-o-q" v-model="questionGenerateSetting.difficulty"  >
-                        <option disabled value="">-- Select Difficulty --</option>
-                        <option value="easy">Easy</option>
-                        <option value="medium">Medium</option>
-                        <option value="hard">Hard</option>
-                        <option value="very-hard">Very Hard</option>
-                    </select>
-                    <button class="generate-btn">Generate!</button>
-                </div>
-                <div v-if="questionOption === 'Costumize'" class="Costumize">
-                    <textarea  class="q-input" id="" placeholder="Question.." v-model="CostumeQuestion.Q"></textarea>
-                    <select class="t-o-q" v-model="CostumeQuestion.type"  >
-                        <option disabled value="">-- Select a type --</option>
-                        <option value="multiple choices">Multiple Choice</option>
-                        <option value="input answer">input answer</option>
-                    </select>
-                    <br>
-                    <div class="multi" v-if="CostumeQuestion.type === 'multiple choices'">
-                        <input class="input-c" type="text" v-model="CostumeQuestion.choices[0]" placeholder="choices...">
-                        <input class="input-c" type="text" v-model="CostumeQuestion.choices[1]" placeholder="choices...">
-                        <input class="input-c" type="text" v-model="CostumeQuestion.choices[2]" placeholder="choices...">
-                        <input class="input-c" type="text" v-model="CostumeQuestion.choices[3]" placeholder="choices...">
-                        <select class="t-o-q" v-model="CostumeQuestion.answer"  >
-
-                        <option disabled value="">-- Select a Answer --</option>
-                            <option v-for="Choice in CostumeQuestion?.choices.filter(choice => choice.trim() !== '')" :key="Choice" :value="Choice" @click="" >{{ Choice }}</option>
-                            
-                        </select>
-                    </div>
-                    <div class="con-input-a" v-else-if="CostumeQuestion.type==='input answer'">
-                        <input type="text" class="input-a" placeholder="Answer.." v-model="CostumeQuestion.answer">
-                    </div>
-                    
-                </div>
-                <button class="btn-add" @click="addQuestion()">Add..</button>
-            </div>
-            <div class="con-file" v-if="btnActive.file">
-                <header class="top-bar">
+                    <header class="top-bar">
                     
                     <h1 class="title">⚡ Powered by GPT-5</h1>
                     <p class="text-xs text-gray-500 mt-2 italic">
@@ -206,6 +134,36 @@
                         <div class="loading-r"></div>
                         <p class="typing">Generating questions...</p>
                     </div>
+                </div>
+                <div v-if="questionOption === 'Costumize'" class="Costumize">
+                    <textarea  class="q-input" id="" placeholder="Question.." v-model="CostumeQuestion.Q"></textarea>
+                    <select class="t-o-q" v-model="CostumeQuestion.type"  >
+                        <option disabled value="">-- Select a type --</option>
+                        <option value="multiple choices">Multiple Choice</option>
+                        <option value="input answer">input answer</option>
+                    </select>
+                    <br>
+                    <div class="multi" v-if="CostumeQuestion.type === 'multiple choices'">
+                        <input class="input-c" type="text" v-model="CostumeQuestion.choices[0]" placeholder="choices...">
+                        <input class="input-c" type="text" v-model="CostumeQuestion.choices[1]" placeholder="choices...">
+                        <input class="input-c" type="text" v-model="CostumeQuestion.choices[2]" placeholder="choices...">
+                        <input class="input-c" type="text" v-model="CostumeQuestion.choices[3]" placeholder="choices...">
+                        <select class="t-o-q" v-model="CostumeQuestion.answer"  >
+
+                        <option disabled value="">-- Select a Answer --</option>
+                            <option v-for="Choice in CostumeQuestion?.choices.filter(choice => choice.trim() !== '')" :key="Choice" :value="Choice" @click="" >{{ Choice }}</option>
+                            
+                        </select>
+                    </div>
+                    <div class="con-input-a" v-else-if="CostumeQuestion.type==='input answer'">
+                        <input type="text" class="input-a" placeholder="Answer.." v-model="CostumeQuestion.answer">
+                    </div>
+                    
+                </div>
+                <!-- <button class="btn-add" @click="addQuestion()">Add..</button> -->
+            </div>
+            <div class="con-file" v-if="btnActive.file">
+                
                     
             </div>
         </div>
@@ -1176,7 +1134,7 @@ option{
 .con-Questions,
 .con-file{
 
-    height: 80%;
+    min-height: 80%;
 
     display: flex;
     flex-direction: column;
