@@ -76,10 +76,14 @@
             </div>
             <div class="edit-cluster-body" v-else>
                 <p>lrn {{ elrn }}</p>
-                <input type="text" placeholder="First Name " v-model="efname" :class="warning? 'not-warning' : 'warning'">
-                <input type="text" placeholder="Middle Name" v-model="emname" :class="warning? 'not-warning' : 'warning'">
-                <input type="text" placeholder="Last Name" v-model="elname" :class="warning? 'not-warning' : 'warning'">
-                <input type="text" placeholder="Password" v-model="epassword" :class="warning? 'not-warning' : 'warning'">
+                <label for="FirstName ">First Name </label>
+                <input name="FirstName" type="text" placeholder="First Name " v-model="efname" :class="warning? 'not-warning' : 'warning'">
+                <label for="MiddleName">Middle Name</label>
+                <input name="MiddleName" type="text" placeholder="Middle Name" v-model="emname" :class="warning? 'not-warning' : 'warning'">
+                <label for="LastName">Last Name</label>
+                <input name="LastName" type="text" placeholder="Last Name" v-model="elname" :class="warning? 'not-warning' : 'warning'">
+                <label for="password">Password</label>
+                <input name="password" type="text" placeholder="Password" v-model="epassword" :class="warning? 'not-warning' : 'warning'">
             </div>
             <footer class="cluster-footer">
                 <button v-if="!editordelete" class="btn-cluster-action-delete" @click="deletestudent()"><font-awesome-icon :icon="['fas', 'trash']" style="color: white;" /> DELETE</button>
@@ -517,7 +521,15 @@ export default{
 }
 </script>
 <style scoped>
+.edit-cluster-body label{
+    font-size: 12px;
+    margin: 0;
+    justify-self: baseline;
+    align-self: self-start;
+    left: auto;
+}
 .edit-cluster-body{
+    width: fit-content;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -615,6 +627,7 @@ progress {
     display: flex ;
     justify-content: end;
     align-items: center;
+    width: 100%;
 }
 .btn-cluster-action-edit{
    border: none;
@@ -685,11 +698,11 @@ progress {
 }
 .cluster{
     background-color: white;
-    height: 450px;
+    height: fit-content;
     width: 350px;
     border-radius: 10px;
     display: flex;
-    /* align-items: center; */
+    align-items: center;
      flex-direction: column;
     /* justify-content: center;   */
 }
