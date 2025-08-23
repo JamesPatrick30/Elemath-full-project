@@ -534,17 +534,52 @@ app.post('/data/teacher/classname',auth,async (req,res)=>{
   res.status(200).json({classname: classvar.Class_name});
 });
 
+app.post('/edit/student', auth ,async ( req,res )=>{
+  
+  try{
+    const { lrn, fname, mname, lname,password } = req.body;
+
+    const student = await StudentClass.findOne({ lrn :lrn});
+    
+    if (!student) return res.status(404).json({message : 'student not found'});
+    const name =  lname + '. ' +fname  + ' ' + mname + ', ';
+    console.log('the name is : '+ name);
+    await StudentClass.updateOne(
+      { lrn : lrn },
+      { $set: {
+          name:name,
+          firstname: fname,
+          middlename: mname,
+          lastname: lname,
+          password: password
+        }
+      }
+    );
+    await redisClient.del(`classData:${student.classId}`); // Clear cache for this class
+    res.json({message : 'success'});
+  }catch(err){
+    console.log(err);
+    res.status(500).json({message : 'server error'});
+  }
+});
 app.delete('/remove/student', auth ,async ( req,res )=>{
-  const { lrn } = req.body;
+  
+  try{
+    const { lrn } = req.body;
 
-  const student = await StudentClass.findOne({ lrn : lrn });
+    const student = await StudentClass.findOne({ lrn : lrn });
+    console.log('student : '+ student + ' lrn : '+ lrn);
+    
+    if (!student) return res.status(404).json({message : 'student not found'});
 
-  if (!student) return res.status(404).json({message : 'student not found'});
-
-  const deletedata = await StudentClass.findOneAndDelete({lrn : lrn});
-
-  console.log(deletedata);
-  res.json({message : 'success'});
+    const deletedata = await StudentClass.findOneAndDelete({lrn : lrn});
+    await redisClient.del(`classData:${deletedata.classId}`); // Clear cache for this class
+    console.log('deletedata: '+ deletedata);
+    res.json({message : 'success'});
+  }catch(err){
+    console.log(err);
+    res.status(500).json({message : 'server error'});
+  }
 });
 app.post('/admin/trim-students', async (req, res) => {
   try {

@@ -66,15 +66,24 @@
                 <h1 v-if="editordelete" style="color: #ffda03;">Edit</h1>
                 <h1 v-else style="color: red;">Delete</h1>
             </div>
-            <div class="cluster-body">
+            <div v-if="!editordelete" class="cluster-body">
                 <p>lrn {{ elrn }}</p>
+                <p>{{ ename }}</p>
                 <p>First Name : {{ efname }}</p>
                 <p>Middle Name : {{ emname }}</p>
                 <p>Last Name : {{ elname }}</p>
                 <p>Password : {{ epassword }}</p>
             </div>
+            <div class="edit-cluster-body" v-else>
+                <p>lrn {{ elrn }}</p>
+                <input type="text" placeholder="First Name " v-model="efname" :class="warning? 'not-warning' : 'warning'">
+                <input type="text" placeholder="Middle Name" v-model="emname" :class="warning? 'not-warning' : 'warning'">
+                <input type="text" placeholder="Last Name" v-model="elname" :class="warning? 'not-warning' : 'warning'">
+                <input type="text" placeholder="Password" v-model="epassword" :class="warning? 'not-warning' : 'warning'">
+            </div>
             <footer class="cluster-footer">
-                <button @click="deletestudent()"><font-awesome-icon :icon="['fas', 'trash']" style="color: white;" /> DELETE</button>
+                <button v-if="!editordelete" class="btn-cluster-action-delete" @click="deletestudent()"><font-awesome-icon :icon="['fas', 'trash']" style="color: white;" /> DELETE</button>
+                <button v-if="editordelete" class="btn-cluster-action-edit" @click="editstudent()">Save</button>
             </footer>
             
         </div>
@@ -150,6 +159,7 @@
                                 <button class="action-btn" id="edit-icon" @click="openCluster(
                                         true,
                                         student.lrn,
+                                        student.name,
                                         student.firstname,
                                         student.middlename,
                                         student.lastname,
@@ -160,6 +170,7 @@
                                     @click="openCluster(
                                         false,
                                         student.lrn,
+                                        student.name,
                                         student.firstname,
                                         student.middlename,
                                         student.lastname,
@@ -216,6 +227,7 @@ export default{
             classname: '',
             loading:false,
 
+            ename:'',
             efname:'',
             elrn:'',
             emname:'',
@@ -230,6 +242,30 @@ export default{
         }
     },
     methods:{
+        async editstudent(){
+            this.loading = true;
+            try{
+                if( !this.elrn || !this.efname || !this.emname || !this.elname || !this.epassword ){
+                    alert('Fill up the form')
+                    return
+                }
+                this.loading = true;
+                const res = await api.post('/edit/student',{
+                    lrn:this.elrn,
+                    fname:this.efname,
+                    mname:this.emname,
+                    lname:this.elname,
+                    password:this.epassword
+                });
+                this.getClassData(this.classid);
+            }catch(err){
+                console.log(err);
+                this.loading = false;
+                alert(err.status.data.message);
+            }
+            this.cluster = !this.cluster;
+            this.loading = false;
+        },
         addorupload(up){
             this.uploadFile =up;
         },
@@ -359,8 +395,9 @@ export default{
                 }
             }
         },
-        openCluster(edit,lrn,fname,mname,lname,password){
+        openCluster(edit,lrn,name,fname,mname,lname,password){
             this.cluster = !this.cluster;
+            this.ename = name;
             this.editordelete = edit;
             this.efname=fname;
             this.elrn = lrn;
@@ -375,6 +412,11 @@ export default{
         async deletestudent(){
             this.loading = true;
             this.cluster = false;
+            if(!this.Dlrn){
+                alert('Select a student to delete');
+                this.loading = false;
+                return;
+            }
             try{
                 const res = await api.delete('/remove/student',{
                     data: { lrn: this.Dlrn }
@@ -475,6 +517,11 @@ export default{
 }
 </script>
 <style scoped>
+.edit-cluster-body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 .list-table{
     height: 90%;
     width: 90%;
@@ -569,7 +616,21 @@ progress {
     justify-content: end;
     align-items: center;
 }
-.cluster-footer button{
+.btn-cluster-action-edit{
+   border: none;
+    background-color: rgb(228, 231, 43);
+    color: white;
+    border-radius: 5px;
+    font-weight: 800;
+    height: 35px;
+    width: 70px;
+    padding: 7px;
+    margin-right:3px;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+}
+.cluster-footer .btn-cluster-action-delete{
     border: none;
     background-color: red;
     color: white;
