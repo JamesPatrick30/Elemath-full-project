@@ -73,6 +73,26 @@ const io = new Server(server, {
 //   console.error('❌ Redis connection error:', err);
 // });
 
+async function Cache(key, data) {
+  const existingData = await redisClient.get(key);
+
+  if (existingData) {
+    console.log('Cache hit for key:', key);
+    return JSON.parse(existingData);
+  }
+
+  // Proper usage: set(key, value, options)
+  await redisClient.set(key, JSON.stringify(data), { EX: 3600 });
+
+  console.log('cached : ' + key);
+  return data;
+}
+
+
+
+app.use(express.static('public')); // Serve static files from 'public' directory
+
+// Mount the upload route
 app.use('/', uploadRouter); // Mount upload route
 
 const uploadlist = require('./routes/uploadlist.js');
@@ -342,13 +362,30 @@ app.post('/sign-up', async (req, res) => {
   }
 });
 
-app.get('/data/teacher',auth, async (req, res) => {
+async function casheTeacherData(req,res,next){
+  const userId = req.user.id;
+  const cacheKey = `teacher:${userId}`;
+
+  try {
+    const cachedData = await redisClient.get(cacheKey);
+    if (cachedData) {
+      console.log('Cache hit for key:', cacheKey);
+      return res.status(200).json(JSON.parse( cachedData));
+    }
+    next();
+  } catch (error) {
+    console.error('Error fetching teacher data:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+} 
+app.get('/data/teacher',auth,casheTeacherData, async (req, res) => {
   try {
     // console.log('Authenticated user:', req.user);
     const user = await teacher_accoount.findById(req.user.id).populate('class');
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
+    await redisClient.set('teacher:${userId}', JSON.stringify(user), { EX: 3600 });
     res.status(200).json(user);
   } catch (error) {
     console.error('Error fetching teacher data:', error);
@@ -453,16 +490,34 @@ app.post('/enroll-student',auth,async(req,res)=>{
   
 
 
-})
-app.post('/get/classData',auth,async(req,res)=>{
+});
+async function classCache(req,res,next){
+  const {classId} = req.body;
+  const cacheKey = `classData:${classId}`;
+
+  try {
+    const cachedData = await redisClient.get(cacheKey);
+    if (cachedData) {
+      console.log('Cache hit for key:', cacheKey);
+      return res.status(200).json(JSON.parse( cachedData));
+    }
+    next();
+  } catch (error) {
+    console.error('Error fetching class data:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
+app.post('/get/classData',auth,classCache,async(req,res)=>{
   const {classId } = req.body;
 
   try{
+
     const classIn = await classes.findOne({_id : classId});
     if(!classIn) return res.status(404).json({message: 'class doesnt exist'});
 
     const list = await StudentClass.find({classId : classId});
     console.log('list :'+classIn);
+    await redisClient.set(`classData:${classId}`, JSON.stringify(list), { EX: 3600 });
     res.status(200).json(list);
   }catch(err){
     console.log(err);
