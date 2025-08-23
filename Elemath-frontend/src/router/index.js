@@ -5,7 +5,7 @@ import SignUp from '@/views/SignUp.vue'
 import studentDashboard from '@/views/student-ui/studentDashboard.vue'
 import waitingLobby from '@/views/student-ui/waitingLobby.vue'
 import studentSetting from '@/views/student-ui/setting.vue'
-
+import testarea from '@/views/student-ui/testarea.vue'
 
 import setting from '@/views/teacher-ui/setting.vue'
 import teacberDashboard from '@/views/teacher-ui/teacber-dashboard.vue'
@@ -21,6 +21,11 @@ import Grade from '@/views/teacher-ui/Grade.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path : '/test',
+      name : 'testarea',
+      component: testarea
+    },
     {
       path :'/g',
       name:'grade',
