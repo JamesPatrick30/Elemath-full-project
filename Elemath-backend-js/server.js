@@ -1,39 +1,29 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-// const multer = require('multer');
-// const pdfParse = require('pdf-parse');
-// const XLSX = require('xlsx');
-// const Tesseract = require('tesseract.js');
-// const fs = require('fs');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const app = express();
 const http = require('http');
 const mongoose = require('mongoose');
-// const { OAuth2Client } = require('google-auth-library');
-// const router = express.Router();
 const filesave = require('./models/lessonfile.js');
 const axios = require("axios");
 dotenv.config();
 
-
+//redis client
+const redisClient = require('./redis/redisClient.js');
 //websocket
 const WebSocket = require("ws");
-
 const students = require('./models/students.js');
 const teacher_accoount = require('./models/teacher.js');
 const classes = require('./models/class.js');
 const StudentClass = require('./models/student.js');
-
 const PORT = process.env.PORT || 3000;
 const uri = process.env.MONGODB_URL;
-// const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
-// import auth from './security/auth.js';
+
 const  {createToken} = require('./security/createToken.js');
 const verifyRefreshToken = require('./security/refreshtoken.js');
 const auth = require('./security/auth.js');
-// Load environment variables from .env file
 const cookie = require("cookie");
 // Middleware
 app.use(cors({
@@ -70,6 +60,18 @@ const io = new Server(server, {
   }
 });
 
+
+// const { createAdapter } = require('@socket.io/redis-adapter');
+
+// const pubClient = redis.createClient({ url: process.env.REDIS_URL });
+// const subClient = pubClient.duplicate();
+
+// Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
+//   io.adapter(createAdapter(pubClient, subClient));
+//   console.log('✅ Redis adapter connected for Socket.IO');
+// }).catch(err => {
+//   console.error('❌ Redis connection error:', err);
+// });
 
 app.use('/', uploadRouter); // Mount upload route
 
