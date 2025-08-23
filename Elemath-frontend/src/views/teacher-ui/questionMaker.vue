@@ -179,7 +179,7 @@
             <h3>Players : {{ players.length }}</h3>
             <div class="con-w-p" >
                 <div class="players"v-for="(player, index) in players" :key="index" :draggable="true">
-                    {{ player.name }}
+                    {{ player.player }}
                 </div>
             </div>
             
@@ -542,10 +542,21 @@ export default{
             this.generatingLoading = false;
             this.generateBtnSwitch = false;
             this.generateBtn = 'Generate';
+        },
+        async getmodedata(){
+            try {
+                const res = await api.get(`/get/mode/data`,{params: { id: this.id } });
+            
+                console.log('Mode data:', res.data);
+                this.players = res.data.modeData || [];
+            } catch (err) {
+                console.error('Error fetching mode data:', err);
+            }
         }
 
     },
     mounted(){
+        this.getmodedata();
         socket.connect();
         socket.removeAllListeners();
 
@@ -558,7 +569,7 @@ export default{
         });
         socket.on('player-joined', (data) => {
             console.log('Player joined:', data);
-            this.players.push({ name: data.player, lrn: data.lrn, profile: data.profile });
+            this.players.push({ player: data.player, lrn: data.lrn, profile: data.profile });
         });
         console.log(socket.listeners('room-created').length);
 

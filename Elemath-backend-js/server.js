@@ -696,8 +696,7 @@ app.post('/create-question',auth ,async(req,res)=>{
     }
     res.json({quiz:quiz});
 });
-const dumpQuiz = require('./models/dumpquiz.js');
-let list = []; 
+
 app.post('/create/mode',auth,async (req,res)=>{
   const {id,mode}= req.body;
 
@@ -707,18 +706,15 @@ app.post('/create/mode',auth,async (req,res)=>{
     return res.status(404).json({message: 'Need to create Grade Book'});
   }
   
-  const createMode = new dumpQuiz({ 
+  const createMode = { 
     quizId: id,
     quizMode: mode,
     quizName: '',
     players: []
-  });
+  };
 
-  await createMode.save();
-  // list.push({
-  //   id:id,
-  //   mode,mode
-  // });
+  await redisClient.set(`mode:${id}`, JSON.stringify(createMode), { EX: 3600 });
+
 
   res.json({message:'done'})
 });
@@ -730,11 +726,9 @@ app.post('/delete/mode', auth,async (req, res) => {
   // Count how many items match before deletion
   //const matches = list.filter(item => item.id === id).length;
 
-  const matches =await dumpQuiz.findOne({ quizId: id });
+  const matches =await redisClient.exists(`mode:${id}`);
   if (matches) {
-    // Keep only those that don't match the id
-    // list = list.filter(item => item.id !== id);
-    await dumpQuiz.deleteOne({ quizId: id });
+    await redisClient.del(`mode:${id}`);
 
     // Notify all sockets in this room
     io.to(id).emit('mode-deleted', { message: 'Mode deleted', count: matches });
@@ -745,27 +739,31 @@ app.post('/delete/mode', auth,async (req, res) => {
   res.status(404).json({ message: 'Mode not found' });
 });
 
-app.get('/get/mode', auth, (req, res) => {
+app.get('/get/mode', auth,async (req, res) => {
   const id = req.query.id;          // comes in as a string
-  console.log('get mode query:', req.query); // better logging
-  console.log('id:', id);
+  // console.log('get mode query:', req.query); // better logging
+  // console.log('id:', id);
 
   // If list contains numbers, convert
   // const index = list.findIndex(item => String(item.id) === String(id));
-  const quiz = dumpQuiz.find({ quizId: id });
+  const quiz = await redisClient.exists(`mode:${id}`);
 
   if (!quiz) {
-    return res.json({ quiz: true });
+    return res.json({ quiz: false });
   }
-  res.status(404).json({ quiz: false});
+  res.status(404).json({ quiz: true});
 });
 
 app.get('/get/mode/list', auth, async (req, res) => {
   try {
     const id = req.query.id; // comes in as a string
-    const list = await dumpQuiz.findOne({quizId:id}, { quizId: 1, quizMode: 1, _id: 0 });
-
-    res.status(200).json({ list: list });
+    const quiz = await redisClient.get(`mode:${id}`);
+    console.log('get mode list query:', quiz); // better logging
+    if (!quiz) {
+      return res.status(404).json({ message: 'No modes found' });
+    }
+    const list = JSON.parse(quiz);
+    res.status(200).json({ list: list.players });
   }catch (error) {
     console.error('Error fetching mode list:', error);
     res.status(500).json({ message: 'Internal server error' });
@@ -806,7 +804,20 @@ io.use((socket, next) => {
     }
   next();
 });
+app.get('/get/mode/data',auth, async (req, res) => {
+  const id = req.query.id; // comes in as a string
+  console.log('get mode data query:', req.query); // better logging
+  console.log('id:', id);
 
+  const quiz = await redisClient.get(`mode:${id}`);
+  if (!quiz) {
+    return res.status(404).json({ message: 'No mode found' });
+  }
+  const modeData = JSON.parse(quiz);
+  console.log('Mode data:', modeData);
+  // Return only the players array
+  res.status(200).json({ modeData: modeData.players });
+});
 
 io.on("connection", (socket) => {
   console.log("Client connected:", socket.user.username);
@@ -827,10 +838,28 @@ io.on("connection", (socket) => {
       io.to(data.roomId).emit('room-created', { message: 'join please' });
       // socket.emit('room-created', { roomId: data.roomId });
   });
-  socket.on('join-room', (data) => {
+  socket.on('join-room',async (data) => {
       console.log(`User ${socket.id} joined room: ${data.roomId}`);
       socket.join(data.roomId);
-      io.to(data.roomId).emit('player-joined', { player: data.name, lrn: data.lrn, profile: data.profile });
+      const mode =await redisClient.get(`mode:${data.roomId}`);
+      if(!mode) {
+        socket.emit('no-mode', { message: 'No mode found, please create one.' });
+        return;
+      }
+      // Add player to mode in Redis
+      const modeData = JSON.parse(mode);
+      // Check if player already exists
+      const playerExists = modeData.players.some(player => player.lrn === data.lrn);
+      if (!playerExists) {
+        modeData.players.push({ player: data.name, lrn: data.lrn, profile: data.profile });
+        await redisClient.set(`mode:${data.roomId}`, JSON.stringify(modeData), { EX: 3600 });
+        console.log('Updated mode data:', modeData);
+        io.to(data.roomId).emit('player-joined', { player: data.name, lrn: data.lrn, profile: data.profile });
+      } else {
+        console.log(`Player with LRN ${data.lrn} already exists in mode.`);
+      }
+      // Notify all clients in the room about the new player
+      
   });
   socket.on('disconnect', (reason) => {
       console.log(`User disconnected: ${socket.id}, username : ${socket.user.username}`);
