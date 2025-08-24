@@ -706,6 +706,7 @@ app.post('/create/mode',auth,async (req,res)=>{
   
   const createMode = { 
     quizId: id,
+    start:false,
     quizMode: mode,
     quizName: '',
     players: []
@@ -795,11 +796,10 @@ app.get('/get/mode/data',auth, async (req, res) => {
 //============================================redis=========================================================
 init().then(async () => {
   // Subscribe to 'action' channel
-  await subClient.subscribe("action", (message) => {
-    console.log("📩 [Redis Subscriber] Player joined:", message);
-
-    // You can broadcast this to all connected sockets or a room
-    io.emit('player-joined-redis', { player: message });
+  await subClient.subscribe("action", (data) => {
+    const payload = JSON.parse(data);
+    // payload: {id:data.roomId,action:'game-start',payload:{started:true}}
+    io.to(payload.id).emit(payload.action,payload.payload);
   });
 }).catch(err => console.error("Redis init error:", err));
 
@@ -847,6 +847,15 @@ io.on("connection", (socket) => {
       io.to(data.roomId).emit('room-created', { message: 'join please' });
       // socket.emit('room-created', { roomId: data.roomId });
   });
+  socket.on('game-start',async (data)=>{
+    const mode =await redisClient.get(`mode:${data.roomId}`);
+    let modeData = JSON.parse(mode);
+    modeData.start = true;
+
+    await redisClient.set(`mode:${data.roomId}`, JSON.stringify(modeData), { EX: 3600 });
+
+    await pubClient.publish('action',JSON.stringify({id:data.roomId,action:'game-start',payload:{started:true}}));
+  })
   socket.on('join-room',async (data) => {
       console.log(`User ${socket.id} joined room: ${data.roomId}`);
       socket.join(data.roomId);

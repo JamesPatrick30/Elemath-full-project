@@ -5,36 +5,7 @@ export default {
     name: 'waitingLobby',
     data() {
         return {
-            students: [
-                // { name: 'John Doe', lrn: '123456789' },
-                // { name: 'Jane Smith', lrn: '987654321' },
-                // { name: 'Alice Johnson', lrn: '456789123' },
-                // { name: 'Bob Brown', lrn: '321654987' },
-                // { name: 'Charlie White', lrn: '789123456' },
-                // { name: 'Diana Green', lrn: '654321789' },
-                // { name: 'Ethan Blue', lrn: '159753486' },
-                // { name: 'Fiona Black', lrn: '753159852' },
-                // { name: 'George Red', lrn: '852963741' },
-                // { name: 'Hannah Yellow', lrn: '963852741' },
-                // { name: 'Ian Purple', lrn: '741258963' },
-                // { name: 'Julia Orange', lrn: '258369147' },
-                // { name: 'Kevin Pink', lrn: '369147258' },
-                // { name: 'Laura Cyan', lrn: '147258369' },
-                // { name: 'Mike Gray', lrn: '258741963' },
-                // { name: 'Nina Violet', lrn: '369852147' },
-                // { name: 'Oscar Teal', lrn: '852147963' },
-                // { name: 'Paula Maroon', lrn: '963741852' },
-                // { name: 'Quinn Gold', lrn: '741963258' },
-                // { name: 'Rita Silver', lrn: '258963147' },
-                // { name: 'Sam Bronze', lrn: '369258741' },
-                // { name: 'Tina Copper', lrn: '147369852' },
-                // { name: 'Ursula Steel', lrn: '258147963' },
-                // { name: 'Victor Brass', lrn: '369852741' },
-                // { name: 'Wendy Zinc', lrn: '852963147' },
-                // { name: 'Xander Lead', lrn: '963741258' },
-                // { name: 'Yara Aluminum', lrn: '741258369' },
-                // { name: 'Zane Nickel', lrn: '258369147' }
-            ],
+            students: [],
             showInfo: false,
             infoName: 'Patrick',
             infoLrn: '976976986546',
@@ -93,6 +64,9 @@ export default {
         socket.on('player-joined', (data) => {
             this.students.push(data);
             console.log('New student joined:', data);
+        });
+        socket.on('game-start',(data)=>{
+            this.$router.push({ name: 'testarea',query: { data } });
         });
     }
 }

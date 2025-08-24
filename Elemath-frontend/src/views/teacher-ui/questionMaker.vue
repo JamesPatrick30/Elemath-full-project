@@ -276,7 +276,7 @@
             </div>
         </div>
       </div>
-      <button class="btn-start">start</button>
+      <button @click="startGame()" class="btn-start">start</button>
     </main>
     
 </template>
@@ -316,6 +316,9 @@ export default{
         }
     },
     methods:{
+        startGame(){
+            socket.emit('game-start',{roomId:this.id});
+        },
         selectFile(file,title) {
             this.filetitle = title;
             this.fileCluster = false;
