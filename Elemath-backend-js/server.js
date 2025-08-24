@@ -312,7 +312,6 @@ app.post('/refresh-token', verifyRefreshToken, (req, res) => {
 });
 
 app.post('/api/logout', (req, res) => {
-    console.log("Logout request cookies:", req.cookies);
   res.clearCookie('access_token', {
     httpOnly: true,
     sameSite: 'Strict',
@@ -746,11 +745,12 @@ app.get('/get/mode', auth,async (req, res) => {
   // If list contains numbers, convert
   // const index = list.findIndex(item => String(item.id) === String(id));
   const quiz = await redisClient.exists(`mode:${id}`);
-
-  if (!quiz) {
+  console.log(quiz);
+  if (quiz== 0) {
     return res.json({ quiz: false });
   }
-  res.status(404).json({ quiz: true});
+  console.log('ping')
+  res.json({ quiz: true});
 });
 
 app.get('/get/mode/list', auth, async (req, res) => {
@@ -778,7 +778,20 @@ app.get('/lesson/list',auth, async (req, res) => {
   }
   res.json({ files: lessons });
 });
+app.get('/get/mode/data',auth, async (req, res) => {
+  const id = req.query.id; // comes in as a string
+  console.log('get mode data query:', req.query); // better logging
+  console.log('id:', id);
 
+  const quiz = await redisClient.get(`mode:${id}`);
+  if (!quiz) {
+    return res.status(404).json({ message: 'No mode found' });
+  }
+  const modeData = JSON.parse(quiz);
+  console.log('Mode data:', modeData);
+  // Return only the players array
+  res.status(200).json({ modeData: modeData.players });
+});
 //============================================redis=========================================================
 init().then(async () => {
   // Subscribe to 'action' channel
@@ -813,20 +826,7 @@ io.use((socket, next) => {
     }
   next();
 });
-app.get('/get/mode/data',auth, async (req, res) => {
-  const id = req.query.id; // comes in as a string
-  console.log('get mode data query:', req.query); // better logging
-  console.log('id:', id);
 
-  const quiz = await redisClient.get(`mode:${id}`);
-  if (!quiz) {
-    return res.status(404).json({ message: 'No mode found' });
-  }
-  const modeData = JSON.parse(quiz);
-  console.log('Mode data:', modeData);
-  // Return only the players array
-  res.status(200).json({ modeData: modeData.players });
-});
 
 io.on("connection", (socket) => {
   console.log("Client connected:", socket.user.username);
