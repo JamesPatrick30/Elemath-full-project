@@ -808,7 +808,6 @@ io.use((socket, next) => {
   }
   try {
       const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
-      console.log("✅ Authenticated decoded in socket :", decoded);
       socket.user = decoded; // Attach user data to socket
       // next();
     } catch (err) {
