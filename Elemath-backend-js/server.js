@@ -11,6 +11,8 @@ dotenv.config();
 
 //redis client
 const redisClient = require('./redis/redisClient.js');
+const {init,pubClient,subClient} = require('./redis/redispubsub.js');
+
 //websocket
 const WebSocket = require("ws");
 const students = require('./models/students.js');
@@ -780,6 +782,17 @@ app.get('/lesson/list',auth, async (req, res) => {
   res.json({ files: lessons });
 });
 
+//============================================redis=========================================================
+init().then(async () => {
+  // Subscribe to 'action' channel
+  await subClient.subscribe("action", (message) => {
+    console.log("📩 [Redis Subscriber] Player joined:", message);
+
+    // You can broadcast this to all connected sockets or a room
+    io.emit('player-joined-redis', { player: message });
+  });
+}).catch(err => console.error("Redis init error:", err));
+
 // Middleware to read cookie token
 io.use((socket, next) => {
   // console.log("Handshake headers:", socket.handshake.headers);
@@ -854,6 +867,8 @@ io.on("connection", (socket) => {
         modeData.players.push({ player: data.name, lrn: data.lrn, profile: data.profile });
         await redisClient.set(`mode:${data.roomId}`, JSON.stringify(modeData), { EX: 3600 });
         console.log('Updated mode data:', modeData);
+
+        await pubClient.publish('action',data.name);
         io.to(data.roomId).emit('player-joined', { player: data.name, lrn: data.lrn, profile: data.profile });
       } else {
         console.log(`Player with LRN ${data.lrn} already exists in mode.`);
