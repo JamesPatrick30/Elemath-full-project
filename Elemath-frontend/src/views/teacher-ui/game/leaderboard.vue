@@ -347,4 +347,9 @@ main{
         opacity: 0;
     }
 }
+@media (max-width: 600px){
+    .top-player{
+        width: 100%;
+    }
+}
 </style>
