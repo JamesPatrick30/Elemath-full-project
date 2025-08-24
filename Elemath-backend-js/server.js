@@ -186,15 +186,12 @@ app.post('/student-login', async (req, res) => {
 })
 app.get('/get/student/data', auth, async (req, res) => {
   const studentId = req.user.id; // Assuming the student ID is stored in the token payload
-  console.log('Student ID from token:', studentId);
 
   const studentData = await StudentClass.findById(studentId).populate('classId');
 
   if (!studentData) {
     return res.status(404).json({ message: 'Student not found' });
   }
-
-  console.log('Student data:', studentData);
   res.status(200).json({
     id: studentData._id,
     name: studentData.name,
