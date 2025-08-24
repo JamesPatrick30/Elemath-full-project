@@ -11,16 +11,22 @@ import setting from '@/views/teacher-ui/setting.vue'
 import teacberDashboard from '@/views/teacher-ui/teacber-dashboard.vue'
 import teacherCreateClass from '@/views/teacher-ui/teacher-createClass.vue'
 import teacherUi from '@/views/teacher-ui/teacher-ui.vue'
-import questionMaker from '@/views/teacher-ui/questionMaker.vue'
+import questionMaker from '@/views/teacher-ui/game/questionMaker.vue'
 import classPage from '@/views/teacher-ui/classPage.vue'
 import classCreate from '@/views/teacher-ui/createClass.vue'
 import signGoogle from '@/views/signGoogle.vue'
 import Analytics from '@/views/teacher-ui/Analytics.vue'
 import addlist from '@/views/admin-ui/addlist.vue'
 import Grade from '@/views/teacher-ui/Grade.vue'
+import leaderboard from '@/views/teacher-ui/game/leaderboard.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path: '/l',
+      name: 'leaderboard',
+      component: leaderboard
+    },
     {
       path : '/test',
       name : 'testarea',
