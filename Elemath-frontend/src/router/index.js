@@ -3,9 +3,10 @@ import landingpage from '@/views/landingpage.vue'
 import signin from '@/views/SignIn.vue'
 import SignUp from '@/views/SignUp.vue'
 import studentDashboard from '@/views/student-ui/studentDashboard.vue'
-import waitingLobby from '@/views/student-ui/waitingLobby.vue'
+import waitingLobby from '@/views/student-ui/game/waitingLobby.vue'
 import studentSetting from '@/views/student-ui/setting.vue'
-import testarea from '@/views/student-ui/testarea.vue'
+import testarea from '@/views/student-ui/game/testarea.vue'
+import donegame from '@/views/student-ui/game/donegame.vue'
 
 import setting from '@/views/teacher-ui/setting.vue'
 import teacberDashboard from '@/views/teacher-ui/teacber-dashboard.vue'
@@ -22,6 +23,11 @@ import leaderboard from '@/views/teacher-ui/game/leaderboard.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path:'rev',
+      name:'rev',
+      component:donegame
+    },
     {
       path: '/l',
       name: 'leaderboard',
