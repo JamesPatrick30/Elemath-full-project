@@ -29,7 +29,7 @@
                 </ul>
             </nav>
             <div class="con-settings" v-if="btnActive.setting">
-                <input type="text" placeholder="Time" class="input-a">
+                <input type="text" placeholder="Time" class="input-a" v-model="time">
                 <input type="text" placeholder="Passing Score" class="input-a">
             </div>
             <div class="con-Questions" v-if="btnActive.Question">
@@ -312,12 +312,26 @@ export default{
             fileCluster:false,
             generatingLoading: false, // <- add this
             fileloading: false,
-            filetitle:''
+            filetitle:'',
+            time:0
         }
     },
     methods:{
         startGame(){
-            socket.emit('game-start',{roomId:this.id});
+            if(this.time == 0 ){
+                alert('⚠️ Time limit not set. Please configure a timer before starting.');
+                return;
+            }
+            if(this.questions.length == 0){
+                alert('⚠️ No questions available. Please add questions before starting.');
+                return;
+            }
+            if(this.players.length == 0){
+                alert('⚠️ No players joined yet. Waiting for players...');
+                return;
+            }
+            socket.emit('game-start',{roomId:this.id,questions:this.questions,time:this.time});
+            this.$router.push({name:'leaderboard',query: { i: this.id }});
         },
         selectFile(file,title) {
             this.filetitle = title;

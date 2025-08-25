@@ -1,6 +1,7 @@
 <script>
 import ApexChart from "vue3-apexcharts"
-// import api from '@/api';
+import api from '@/axios';
+
 export default {
     name: "TestArea",
     components: { ApexChart },
@@ -32,7 +33,10 @@ export default {
                 "C. The line decreases from January to June.",
                 "D. The line peaks in February."
             ],
-            topic:'Understanding Bar and Line Graphs'
+            topic:'Understanding Bar and Line Graphs',
+            id:'',
+            table:null,
+            tabletype:''
         }
     },
     methods: {
@@ -54,18 +58,67 @@ export default {
                     }else{
                         this.color = this.colors[5];
                     }
+                    // ⏱ Save progress on every tick
+                    localStorage.setItem("timeLeft", this.timeLeft);
                 } else {
+                localStorage.removeItem("timeLeft");
                 clearInterval(this.timer);
                 }
             }, 1000);
         },
+        async getIDres(answer){
+            try{
+                const res =await api.post('/get/mode/question',
+                    {answer:answer}
+                );
+                if(res.data.done){
+                    alert('done..');
+                    return;
+                }
+                this.get1st();
+                // console.log('Id : '+res.data.id);
+                // this.id = res.data.id;
+            }catch(err){
+                console.log(err);
+            }
+        },
+        async get1st(){
+            try{
+                const res =await api.get('/get/mode/question/1st');
+                console.log('Id : '+JSON.stringify(res.data));
+                const data = res.data.question;
+                // this.id = res.data.id;
+                if(data.done){
+                    alert('done.');
+                }
+                this.question=data.question;
+                this.options = data?.options;
+                this.story = data?.story;
+                this.totaltime = res.data.time * 60;
+                this.table = data?.table;
+                this.tabletype = data?.tabletype;
+                const time2 = localStorage.getItem('timeLeft');
+                console.log(time2);
+                if(time2 == 0){
+                    console.log(time2);
+                    this.timeLeft = time2;
+                    return;
+                }
+                this.timeLeft = res.data.time * 60;
+            }catch(err){
+                console.log(err);
+            }
+        }
     },
     mounted() {
+        // this.getIDres();
+        this.get1st();
         this.startTimer();
         
     },
-    computed: {
-    },
+    beforeMount(){
+        // localStorage.setItem('timeLeft',this.timeLeft);
+    }
 }
 </script>
 <template>
@@ -79,19 +132,19 @@ export default {
         <main>
             
             
-            <!-- <ApexChart
+            <ApexChart v-if="tabletype === 'Line'"
                 type="line"
-                :series="LineChart.series"
-                :options="LineChart.options"
+                :series="table.LineChart.series"
+                :options="table.LineChart.options"
                 class="charts"
-            /> -->
+            />
             <div class="question">
-                <p>Story. {{ story }}</p>
+                <p v-if="story" >{{ story }}</p>
                 <p>{{ question }}</p>
             </div>
             <div class="answer-con">
-                <div class="option" v-if="options.length != 0">
-                    <button class="option-c" v-for="(choice,index) in options" :key="index">{{ choice }}</button>
+                <div class="option" v-if="options">
+                    <button class="option-c" v-for="(choice,index) in options" :key="index" @click="getIDres(choice)">{{ choice }}</button>
                 </div>
                 <div v-else class="input-text">
                     <input  type="text">
@@ -180,12 +233,16 @@ main{
     /* box-shadow: 0 0 10px rgba(0,0,0,0.1); */
 }
 .charts {
+    /* align-self: baseline; */
+    position: absolute;
+    top: 10%;
     display: flex;
     justify-content: center;
     align-items: center;
     width: 300px;      /* Set chart width */
     height: 200px;     /* Set chart height */
-    margin: 20px auto; /* Center the chart horizontally */
+    /* justify-self: baseline; */
+    
     background-color: #f9f9f9; /* Optional background */
     border-radius: 10px;       /* Rounded corners */
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Optional shadow */

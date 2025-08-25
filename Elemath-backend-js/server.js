@@ -708,8 +708,10 @@ app.post('/create/mode',auth,async (req,res)=>{
     quizId: id,
     start:false,
     quizMode: mode,
+    gametime: 0,
     quizName: '',
-    players: []
+    players: [],
+    questions:[]
   };
 
   await redisClient.set(`mode:${id}`, JSON.stringify(createMode), { EX: 3600 });
@@ -793,6 +795,41 @@ app.get('/get/mode/data',auth, async (req, res) => {
   // Return only the players array
   res.status(200).json({ modeData: modeData.players });
 });
+app.get('/get/mode/question/1st',auth,async(req,res)=>{
+  const mode =await redisClient.get(`mode:${req.user.classId}`);
+  const modeData = JSON.parse(mode);
+  let player = modeData.players.find(p => p.lrn === req.user.username);
+  const qin = player.qIn;
+
+    modeData.players.find(p => p.lrn === req.user.username).qIn+=1;
+    res.json({question:modeData.questions[qin + 1],done:false,time:modeData.gametime});
+});
+app.post('/get/mode/question',auth,async (req,res)=>{
+  const {answer} = req.body;
+  const mode =await redisClient.get(`mode:${req.user.classId}`);
+  // console.log('mode in get : '+mode);
+  let modeData = JSON.parse(mode);
+  let player = modeData.players.find(p => p.lrn === req.user.username);
+  const qin = player.qIn;
+  if((qin + 1) === (modeData.questions.length)){
+    res.json({question:{},done:true});
+    return
+  }
+  if(qin != (modeData.questions.length - 1)){
+    const question = modeData.questions[qin];
+    if(question.answer === answer){
+      modeData.players.find(p => p.lrn === req.user.username).score+=1;
+    }
+    modeData.players.find(p => p.lrn === req.user.username).qIn+=1;
+    res.json({question:modeData.questions[qin + 1],done:false});
+    setgameData(`mode:${req.user.classId}`,modeData);
+    return;
+  }
+  
+});
+async function setgameData(id,payload) {
+  await redisClient.set(id, JSON.stringify(payload), { EX: 3600 });
+}
 //============================================redis=========================================================
 init().then(async () => {
   // Subscribe to 'action' channel
@@ -850,9 +887,12 @@ io.on("connection", (socket) => {
   socket.on('game-start',async (data)=>{
     const mode =await redisClient.get(`mode:${data.roomId}`);
     let modeData = JSON.parse(mode);
+    modeData.gametime = data.time;
     modeData.start = true;
-
-    await redisClient.set(`mode:${data.roomId}`, JSON.stringify(modeData), { EX: 3600 });
+    modeData.questions = data.questions;
+    console.log('mode data : '+JSON.stringify(modeData));
+    // await redisClient.set(`mode:${data.roomId}`, JSON.stringify(modeData), { EX: 3600 });
+    setgameData(`mode:${data.roomId}`,modeData);
 
     await pubClient.publish('action',JSON.stringify({id:data.roomId,action:'game-start',payload:{started:true}}));
   })
@@ -869,12 +909,13 @@ io.on("connection", (socket) => {
       // Check if player already exists
       const playerExists = modeData.players.some(player => player.lrn === data.lrn);
       if (!playerExists) {
-        modeData.players.push({ player: data.name, lrn: data.lrn, profile: data.profile });
-        await redisClient.set(`mode:${data.roomId}`, JSON.stringify(modeData), { EX: 3600 });
+        modeData.players.push({ player: data.name, lrn: data.lrn, profile: data.profile,score:0,qIn:0 });
+        // await redisClient.set(`mode:${data.roomId}`, JSON.stringify(modeData), { EX: 3600 });
+        setgameData(`mode:${data.roomId}`,modeData);
         console.log('Updated mode data:', modeData);
 
-        await pubClient.publish('action',data.name);
-        io.to(data.roomId).emit('player-joined', { player: data.name, lrn: data.lrn, profile: data.profile });
+        await pubClient.publish('action',JSON.stringify({id:data.roomId,action:'player-joined',payload:{ player: data.name, lrn: data.lrn, profile: data.profile }}));
+        // io.to(data.roomId).emit('player-joined', { player: data.name, lrn: data.lrn, profile: data.profile });
       } else {
         console.log(`Player with LRN ${data.lrn} already exists in mode.`);
       }
