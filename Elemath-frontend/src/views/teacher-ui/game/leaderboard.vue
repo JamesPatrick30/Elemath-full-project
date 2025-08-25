@@ -22,28 +22,7 @@ export default{
                 '#E74C3C',
                 '#3498DB'
             ],
-            players: [
-                // { name: 'James Patrick Sanchez', score: 20, time: 30 },
-                // { name: 'Maria Lopez', score: 18, time: 28 },
-                // { name: 'John Smith', score: 17, time: 32 },
-                // { name: 'Emily Johnson', score: 16, time: 29 },
-                // { name: 'Michael Brown', score: 15, time: 31 },
-                // { name: 'Jessica Davis', score: 14, time: 27 },
-                // { name: 'David Wilson', score: 13, time: 33 },
-                // { name: 'Sarah Miller', score: 12, time: 26 },
-                // { name: 'Daniel Martinez', score: 11, time: 34 },
-                // { name: 'Ashley Anderson', score: 10, time: 25 },
-                // { name: 'Matthew Thomas', score: 9, time: 35 },
-                // { name: 'Olivia Taylor', score: 8, time: 24 },
-                // { name: 'Joshua Moore', score: 7, time: 36 },
-                // { name: 'Sophia Jackson', score: 6, time: 23 },
-                // { name: 'Christopher White', score: 5, time: 37 },
-                // { name: 'Ava Harris', score: 4, time: 22 },
-                // { name: 'Andrew Clark', score: 3, time: 38 },
-                // { name: 'Isabella Lewis', score: 2, time: 21 },
-                // { name: 'Ryan Lee', score: 1, time: 39 },
-                // { name: 'Mia Walker', score: 0, time: 20 }
-            ],
+            players: [],
             roomId:this.$route.query.i,
             stillPlaying:0
         }
@@ -56,7 +35,7 @@ export default{
                         id:this.roomId
                     }
                 });
-                this.players = res.data.players;
+                this.players = res.data.players.sort((a, b) => b.score - a.score);
                 this.stillPlaying = res.data.playing;
             }catch(err){
                 console.log(err);
