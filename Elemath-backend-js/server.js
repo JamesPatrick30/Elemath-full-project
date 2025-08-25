@@ -816,7 +816,11 @@ app.post('/get/mode/question',auth,async (req,res)=>{
   if(question.answer === answer){
     scoreP+=1;
     modeData.players.find(p => p.lrn === req.user.username).score+=1;
+    modeData.players.find(p => p.lrn === req.user.username).rev.push[{q:question,playerAnswer:answer,correct:true}];
+  }else{
+    modeData.players.find(p => p.lrn === req.user.username).rev.push[{q:question,playerAnswer:answer,correct:false}];
   }
+  
   if((qin + 1) === (modeData.questions.length)){
     modeData.players.find(p => p.lrn === req.user.username).done=true;
     setgameData(`mode:${req.user.classId}`,modeData);
@@ -925,7 +929,7 @@ io.on("connection", (socket) => {
       // Check if player already exists
       const playerExists = modeData.players.some(player => player.lrn === data.lrn);
       if (!playerExists) {
-        modeData.players.push({ player: data.name, lrn: data.lrn, profile: data.profile,score:0,qIn:0,done:false });
+        modeData.players.push({ player: data.name, lrn: data.lrn, profile: data.profile,score:0,qIn:0,done:false,rev:[] });
         // await redisClient.set(`mode:${data.roomId}`, JSON.stringify(modeData), { EX: 3600 });
         setgameData(`mode:${data.roomId}`,modeData);
         console.log('Updated mode data:', modeData);
