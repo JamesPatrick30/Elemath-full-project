@@ -800,9 +800,8 @@ app.get('/get/mode/question/1st',auth,async(req,res)=>{
   const modeData = JSON.parse(mode);
   let player = modeData.players.find(p => p.lrn === req.user.username);
   const qin = player.qIn;
-
-    modeData.players.find(p => p.lrn === req.user.username).qIn+=1;
-    res.json({question:modeData.questions[qin + 1],done:false,time:modeData.gametime});
+  modeData.players.find(p => p.lrn === req.user.username).qIn+=1;
+  res.json({question:modeData.questions[qin + 1],done:false,time:modeData.gametime});
 });
 app.post('/get/mode/question',auth,async (req,res)=>{
   const {answer} = req.body;
