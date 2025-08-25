@@ -1,6 +1,11 @@
 <script>
-
+import TreeComponent from '@/components/svg/IconTree1.vue';
+import TreeComponent2 from '@/components/svg/IconTree2.vue';
 export default{
+    components:{
+        TreeComponent,
+        TreeComponent2
+    },
     data(){
         return{
             Colors: [
@@ -85,8 +90,16 @@ export default{
                 </div>
             </div>
         </div>
-
+        <div class="playerstat">
+                <div class="playerIn">
+                    <p>✅ {{ players.length }} players done</p>
+                </div>
+                <div class="playerIn" id="playersep">
+                    <p>🎮 {{ players.length }} still playing</p>
+                </div>
+            </div>
         <div class="playes-con">
+            
             <div class="player">
                 <div class="name">
                     <p>Name</p>
@@ -114,6 +127,33 @@ export default{
 </template>
 
 <style scoped>
+#playersep{
+    /* background: #73a533; */
+
+    border-left: #73a533 2px solid;
+}
+.playerstat{
+    width: 60%;
+    transition: 0.2s linear;
+    margin-bottom: 10px;
+    height: 70px;
+    /* width: 100%; */
+    display: flex;
+    /* background-color: #412070; */
+    background: #5e8130;
+
+    border-radius: 20px;
+}
+.playerIn{
+    height: 100%;
+    width: 100%;
+    text-align: center;
+    align-content: center;
+}
+.playerIn p{
+    color: white;
+    font-weight: 800;
+}
 .title{
     color: white;
 }
@@ -147,7 +187,9 @@ export default{
 .player:hover{
     transform: scale(1.02);
     transition: 0.2s linear;
-    background-color: #532e86;
+    /* background-color: #532e86; */
+    background: #73a533;
+
 
 }
 .player{
@@ -156,7 +198,9 @@ export default{
     height: 70px;
     width: 100%;
     display: flex;
-    background-color: #412070;
+    /* background-color: #412070; */
+    background: #5e8130;
+
     border-radius: 20px;
 }
 .playes-con{
@@ -207,7 +251,9 @@ export default{
     border: #a97142 5px solid;
 }
 .top1,.top2,.top3{
-    background-color: #412070;
+    /* background-color: #412070; */
+    background: #895737;
+
 
     /* margin-top: 10px; */
     height: 240px;
@@ -264,14 +310,17 @@ main{
     z-index: 1;
     height: 100vh;
     width: 100vw;
-    background-color: #643b9f;
+    background: #a8e15e;
+    display: flex;
+    flex-direction: column;
 }
+
 .background  .box div{
     
     position: absolute;
     width: 60px;
     height: 60px;
-    border: white 1px solid;
+    border: white 3px solid;
     background-color: transparent;
     z-index: 0;
 }
@@ -280,8 +329,8 @@ main{
     top: 12%;
     left: 18%;
     animation: animation 8s linear infinite;
-    /* Assign a custom property for each child to randomize duration */
-    --i: 0.1;
+    /* Assign a custom property for each child to randomize duration
+    --i: 0.1; */
 }
 .background .box div:nth-child(2) {
     top: 25%;
