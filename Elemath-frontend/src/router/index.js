@@ -24,7 +24,7 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path:'rev',
+      path:'/rev',
       name:'rev',
       component:donegame
     },
