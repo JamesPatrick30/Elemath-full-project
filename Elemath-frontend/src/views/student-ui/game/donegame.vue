@@ -1,3 +1,35 @@
+<script>
+import api from '@/axios';
+export default{
+    data(){
+        return{
+            rev:null,
+            score:0
+        }
+        
+    },
+    methods:{
+        async getdata(){
+            try{
+                const res = await api.get('/get/mode/player/rev');
+                this.rev = res.data.rev;
+                this.score = res.data.score;
+                console.log(res.data);
+            }catch(err){
+                console.log(err);
+            }
+        },
+        colorpic(realans,value,player){
+            if(player == value) return '#ff7b00';
+            if(realans == value) return '#8ee71a';
+            return '#ff4444';
+        }
+    },
+    mounted(){
+        this.getdata();
+    }
+}
+</script>
 <template>
     <div class="background">
         <div class="box">
@@ -13,8 +45,86 @@
             <div></div>
         </div>
     </div>
+    <main>
+        <h1 class="score">Score : {{ score }}</h1>
+        <div class="con">
+            <div class="rev" v-for="(c,index) in rev" :key="index" :class="c.correct? 'correct' : 'wrong'">
+                <p>{{ c.q.question }}</p>
+
+                <div class="con-option">
+                    <div class="option" v-for="(value,index) in c.q.options" :key="index" :style="{backgroundColor:colorpic(c.q.answer,value,c.playerAnswer)}">
+                        <p>{{ value }}</p>
+                    </div>
+                </div>
+                <p>Explanation: {{ c.q.explanation }}</p>
+            </div>
+        </div>
+    </main>
 </template>
 <style scoped>
+.score{
+    color: white;
+}
+.correct-option{
+    background-color: #8ee71a;
+}
+.wrong-option{
+    background-color: #ff4444;
+}
+.option{
+    color: white;
+    border-radius: 10px;
+    margin: 5px;
+    width: 100%;
+    height: fit-content;
+    text-align: center;
+}
+.con-option{
+    width: 80%;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.con{
+    width: 80%;
+    height: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+.rev{
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    background-color: white;
+    height: fit-content;
+    border-radius: 10px;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.wrong{
+    border: #ff4444 3px solid;
+    /* background-color: #ff4444; */
+}
+.correct{
+    border: #b4ff52 3px solid;
+    /* background-color: #b4ff52; */
+}
+main{
+    position: absolute;
+    z-index: 3;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 .background{
     position: fixed;
     z-index: 1;

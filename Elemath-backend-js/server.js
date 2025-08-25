@@ -816,9 +816,9 @@ app.post('/get/mode/question',auth,async (req,res)=>{
   if(question.answer === answer){
     scoreP+=1;
     modeData.players.find(p => p.lrn === req.user.username).score+=1;
-    modeData.players.find(p => p.lrn === req.user.username).rev.push[{q:question,playerAnswer:answer,correct:true}];
+    modeData.players.find(p => p.lrn === req.user.username).rev.push({q:question,playerAnswer:answer,correct:true});
   }else{
-    modeData.players.find(p => p.lrn === req.user.username).rev.push[{q:question,playerAnswer:answer,correct:false}];
+    modeData.players.find(p => p.lrn === req.user.username).rev.push({q:question,playerAnswer:answer,correct:false});
   }
   
   if((qin + 1) === (modeData.questions.length)){
@@ -846,7 +846,16 @@ app.get('/get/mode/player/done',auth,async(req,res)=>{
   const players = modeData.players.filter(p => p.done);
   const playing = modeData.players.filter(p => !p.done);
   res.json({players:players,playing:playing});
-})
+});
+app.get('/get/mode/player/rev',auth,async(req,res)=>{
+  const data = await redisClient.get(`mode:${req.user.classId}`);
+  
+  const modeData = JSON.parse(data);
+  const player = modeData.players.find(p => p.lrn === req.user.username);
+  // console.log(player);
+  const rev = player.rev;
+  res.json({rev:rev,score:player.score});
+});
 async function setgameData(id,payload) {
   await redisClient.set(id, JSON.stringify(payload), { EX: 3600 });
 }
