@@ -836,7 +836,12 @@ app.post('/get/mode/question',auth,async (req,res)=>{
   }
 });
 app.get('/get/mode/player/done',auth,async(req,res)=>{
-
+  const {id} = req.query;
+  const data = await redisClient.get(`mode:${id}`);
+  const modeData = JSON.parse(data);
+  const players = modeData.players.filter(p => p.done);
+  const playing = modeData.players.filter(p => !p.done);
+  res.json({players:players,playing:playing});
 })
 async function setgameData(id,payload) {
   await redisClient.set(id, JSON.stringify(payload), { EX: 3600 });

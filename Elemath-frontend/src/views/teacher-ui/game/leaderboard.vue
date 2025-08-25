@@ -2,6 +2,7 @@
 import TreeComponent from '@/components/svg/IconTree1.vue';
 import TreeComponent2 from '@/components/svg/IconTree2.vue';
 import socket from '@/socket';
+import api from '@/axios';
 export default{
     components:{
         TreeComponent,
@@ -42,17 +43,36 @@ export default{
                 // { name: 'Isabella Lewis', score: 2, time: 21 },
                 // { name: 'Ryan Lee', score: 1, time: 39 },
                 // { name: 'Mia Walker', score: 0, time: 20 }
-            ]
-            
+            ],
+            roomId:this.$route.query.i,
+            stillPlaying:0
+        }
+    },
+    methods:{
+        async getdata(){
+            try{
+                const res = await api.get('/get/mode/player/done',{
+                    params:{
+                        id:this.roomId
+                    }
+                });
+                this.players = res.data.players;
+                this.stillPlaying = res.data.playing;
+            }catch(err){
+                console.log(err);
+            }
         }
     },
     mounted(){
+        this.getdata();
         socket.connect();
+        socket.removeAllListeners();
         socket.on('player-done',(data)=>{
-            alert('done player');
-            console.log(data);
-            this.players.push(data);
-            
+            this.getdata();
+            // alert('done player');
+            // console.log(data);
+            // this.players.push(data);
+
         })
     }
 }
@@ -105,7 +125,7 @@ export default{
                     <p>✅ {{ players.length }} players done</p>
                 </div>
                 <div class="playerIn" id="playersep">
-                    <p>🎮 {{ players.length }} still playing</p>
+                    <p>🎮 {{ stillPlaying.length }} still playing</p>
                 </div>
             </div>
         <div class="playes-con">
