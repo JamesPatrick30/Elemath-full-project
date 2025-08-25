@@ -72,7 +72,7 @@ export default {
                     {answer:answer}
                 );
                 if(res.data.done){
-                    alert('done..');
+                    this.$router.push('/rev');
                     return;
                 }
                 this.get1st();
@@ -89,7 +89,8 @@ export default {
                 const data = res.data.question;
                 // this.id = res.data.id;
                 if(data.done){
-                    alert('done.');
+                    this.$router.push('/rev');
+
                 }
                 this.question=data.question;
                 this.options = data?.options;
