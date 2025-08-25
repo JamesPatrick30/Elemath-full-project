@@ -1,6 +1,7 @@
 <script>
 import TreeComponent from '@/components/svg/IconTree1.vue';
 import TreeComponent2 from '@/components/svg/IconTree2.vue';
+import socket from '@/socket';
 export default{
     components:{
         TreeComponent,
@@ -44,6 +45,13 @@ export default{
             ]
             
         }
+    },
+    mounted(){
+        socket.connect();
+        socket.on('player-done',(data)=>{
+            alert('done player');
+            console.log(data);
+        })
     }
 }
 </script>

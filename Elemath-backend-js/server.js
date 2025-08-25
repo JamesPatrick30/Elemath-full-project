@@ -800,8 +800,8 @@ app.get('/get/mode/question/1st',auth,async(req,res)=>{
   const modeData = JSON.parse(mode);
   let player = modeData.players.find(p => p.lrn === req.user.username);
   const qin = player.qIn;
-  modeData.players.find(p => p.lrn === req.user.username).qIn+=1;
-  res.json({question:modeData.questions[qin + 1],done:false,time:modeData.gametime});
+  // modeData.players.find(p => p.lrn === req.user.username).qIn+=1;
+  res.json({question:modeData.questions[qin],done:false,time:modeData.gametime});
 });
 app.post('/get/mode/question',auth,async (req,res)=>{
   const {answer} = req.body;
@@ -809,22 +809,31 @@ app.post('/get/mode/question',auth,async (req,res)=>{
   // console.log('mode in get : '+mode);
   let modeData = JSON.parse(mode);
   let player = modeData.players.find(p => p.lrn === req.user.username);
+  let scoreP = player.score;
   const qin = player.qIn;
+  const question = modeData.questions[qin];
+  console.log('answer input : '+answer + ' real answer : '+question.answer);
+  if(question.answer === answer){
+    scoreP+=1;
+    modeData.players.find(p => p.lrn === req.user.username).score+=1;
+  }
   if((qin + 1) === (modeData.questions.length)){
+    modeData.players.find(p => p.lrn === req.user.username).done=true;
+    setgameData(`mode:${req.user.classId}`,modeData);
+    await pubClient.publish('action',JSON.stringify({id:req.user.classId,action:'player-done',payload:{player:player.name,score:scoreP}}));
     res.json({question:{},done:true});
-    return
+    return;
   }
   if(qin != (modeData.questions.length - 1)){
-    const question = modeData.questions[qin];
-    if(question.answer === answer){
-      modeData.players.find(p => p.lrn === req.user.username).score+=1;
-    }
+    // const question = modeData.questions[qin];
+    // if(question.answer === answer){
+    //   modeData.players.find(p => p.lrn === req.user.username).score+=1;
+    // }
     modeData.players.find(p => p.lrn === req.user.username).qIn+=1;
     res.json({question:modeData.questions[qin + 1],done:false});
     setgameData(`mode:${req.user.classId}`,modeData);
     return;
   }
-  
 });
 async function setgameData(id,payload) {
   await redisClient.set(id, JSON.stringify(payload), { EX: 3600 });
@@ -908,7 +917,7 @@ io.on("connection", (socket) => {
       // Check if player already exists
       const playerExists = modeData.players.some(player => player.lrn === data.lrn);
       if (!playerExists) {
-        modeData.players.push({ player: data.name, lrn: data.lrn, profile: data.profile,score:0,qIn:0 });
+        modeData.players.push({ player: data.name, lrn: data.lrn, profile: data.profile,score:0,qIn:0,done:false });
         // await redisClient.set(`mode:${data.roomId}`, JSON.stringify(modeData), { EX: 3600 });
         setgameData(`mode:${data.roomId}`,modeData);
         console.log('Updated mode data:', modeData);
