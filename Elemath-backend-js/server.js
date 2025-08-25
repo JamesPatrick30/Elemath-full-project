@@ -820,7 +820,7 @@ app.post('/get/mode/question',auth,async (req,res)=>{
   if((qin + 1) === (modeData.questions.length)){
     modeData.players.find(p => p.lrn === req.user.username).done=true;
     setgameData(`mode:${req.user.classId}`,modeData);
-    await pubClient.publish('action',JSON.stringify({id:req.user.classId,action:'player-done',payload:{player:player.name,score:scoreP}}));
+    await pubClient.publish('action',JSON.stringify({id:req.user.classId,action:'player-done',payload:{player:player.player,score:scoreP}}));
     res.json({question:{},done:true});
     return;
   }
@@ -835,6 +835,9 @@ app.post('/get/mode/question',auth,async (req,res)=>{
     return;
   }
 });
+app.get('/get/mode/player/done',auth,async(req,res)=>{
+
+})
 async function setgameData(id,payload) {
   await redisClient.set(id, JSON.stringify(payload), { EX: 3600 });
 }
