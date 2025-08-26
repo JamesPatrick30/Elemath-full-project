@@ -37,6 +37,14 @@ export default{
                 });
                 this.players = res.data.players.sort((a, b) => b.score - a.score);
                 this.stillPlaying = res.data.playing;
+                if(this.stillPlaying.length == 0){
+                    try{
+                        const res = await api.post('/mode/done');
+                        alert(res.data.message);
+                    }catch(err){
+                        console.log(err);
+                    }
+                }
             }catch(err){
                 console.log(err);
             }
