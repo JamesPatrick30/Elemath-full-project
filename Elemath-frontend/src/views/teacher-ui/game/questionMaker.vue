@@ -29,6 +29,7 @@
                 </ul>
             </nav>
             <div class="con-settings" v-if="btnActive.setting">
+                <label for="">Time</label>
                 <input type="text" placeholder="Time" class="input-a" v-model="time">
                 <input type="text" placeholder="Passing Score" class="input-a">
             </div>
