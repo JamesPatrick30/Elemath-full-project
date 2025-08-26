@@ -35,7 +35,7 @@
             <div class="con-Questions" v-if="btnActive.Question">
                 <select name="" id="" v-model="questionOption" >
                     <option value="Generate">Generate</option>
-                    <option value="Costumize">Costumize</option>
+                    <option value="Costumize">Customize</option>
                 </select>
                 
 
@@ -313,7 +313,7 @@ export default{
             generatingLoading: false, // <- add this
             fileloading: false,
             filetitle:'',
-            time:0
+            time:null
         }
     },
     methods:{
