@@ -60,7 +60,7 @@ export default{
 nav {
     min-width: 250px;
     max-width: 250px;
-    height: 100%;
+    height: 100vh;
     background-color: #ffffff;
     display: flex;
     flex-direction: column;
