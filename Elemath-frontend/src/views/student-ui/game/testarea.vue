@@ -1,0 +1,301 @@
+<script>
+import ApexChart from "vue3-apexcharts"
+import api from '@/axios';
+
+export default {
+    name: "TestArea",
+    components: { ApexChart },
+    data() {
+        return {
+            persent: 100,
+            story:'A business tracks monthly sales; May is lower than April.',
+            question:'Which month shows a dip in sales compared to the previous month in the line graph?',
+            colors: ['#5bb450','#3b8132','#e8e337','#e69b00','#e70000','#820000'],
+            color:'',
+            timer: null,
+            timeLeft: 10, // Example: 60 seconds
+            totaltime: 10,
+            LineChart: {
+                series: [
+                    { name: "Quiz", data: [80, 70, 90, 77, 85, 92] }
+                ],
+                options: {
+                    chart: { background: "#fff" },
+                    colors: ["#4fc4f7"],
+                    stroke: { curve: "smooth", width: 3 },
+                    xaxis: { categories: ["Mon","Tue","Wed","Thu","Fri","Sat"] },
+                    grid: { borderColor: "#e0e0e0" }
+                }
+            },
+            options: [
+                "A. The line shows an overall increase from January to June.",
+                "B. The line shows no change across months.",
+                "C. The line decreases from January to June.",
+                "D. The line peaks in February."
+            ],
+            topic:'Understanding Bar and Line Graphs',
+            id:'',
+            table:null,
+            tabletype:''
+        }
+    },
+    methods: {
+        startTimer() {
+            this.timer = setInterval(() => {
+                if (this.timeLeft > 0) {
+                    this.timeLeft--;
+                    this.persent = (this.timeLeft / this.totaltime) * 100;
+                    if(this.persent > 83){
+                        this.color = this.colors[0];
+                    }else if (this.persent > 67){
+                        this.color = this.colors[1];
+                    }else if (this.persent > 51){
+                        this.color = this.colors[2];
+                    }else if (this.persent > 35){
+                        this.color = this.colors[3];
+                    }else if (this.persent > 19){
+                        this.color = this.colors[4];
+                    }else{
+                        this.color = this.colors[5];
+                    }
+                    // ⏱ Save progress on every tick
+                    localStorage.setItem("timeLeft", this.timeLeft);
+                } else {
+                localStorage.removeItem("timeLeft");
+                clearInterval(this.timer);
+                }
+            }, 1000);
+        },
+        async getIDres(answer){
+            try{
+                const res =await api.post('/get/mode/question',
+                    {answer:answer}
+                );
+                if(res.data.done){
+                    this.$router.push('/rev');
+                    return;
+                }
+                this.get1st();
+                // console.log('Id : '+res.data.id);
+                // this.id = res.data.id;
+            }catch(err){
+                console.log(err);
+            }
+        },
+        async get1st(){
+            try{
+                const res =await api.get('/get/mode/question/1st');
+                console.log('Id : '+JSON.stringify(res.data));
+                const data = res.data.question;
+                // this.id = res.data.id;
+                if(data.done){
+                    this.$router.push('/rev');
+
+                }
+                this.question=data.question;
+                this.options = data?.options;
+                this.story = data?.story;
+                this.totaltime = res.data.time * 60;
+                this.table = data?.table;
+                this.tabletype = data?.tabletype;
+                const time2 = localStorage.getItem('timeLeft');
+                console.log(time2);
+                if(time2 == 0){
+                    console.log(time2);
+                    this.timeLeft = time2;
+                    return;
+                }
+                this.timeLeft = res.data.time * 60;
+            }catch(err){
+                console.log(err);
+            }
+        }
+    },
+    mounted() {
+        // this.getIDres();
+        this.get1st();
+        this.startTimer();
+        
+    },
+    beforeMount(){
+        // localStorage.setItem('timeLeft',this.timeLeft);
+    }
+}
+</script>
+<template>
+    <body>
+        <header>
+                    
+            <p> {{ topic }}</p>
+            
+        </header> 
+        <div class="timer" :style="{width: persent+ '%',backgroundColor: color } "></div>
+        <main>
+            
+            
+            <ApexChart v-if="tabletype === 'Line'"
+                type="line"
+                :series="table.LineChart.series"
+                :options="table.LineChart.options"
+                class="charts"
+            />
+            <div class="question">
+                <p v-if="story" >{{ story }}</p>
+                <p>{{ question }}</p>
+            </div>
+            <div class="answer-con">
+                <div class="option" v-if="options">
+                    <button class="option-c" v-for="(choice,index) in options" :key="index" @click="getIDres(choice)">{{ choice }}</button>
+                </div>
+                <div v-else class="input-text">
+                    <input  type="text">
+                    <button>Submit</button>
+                </div>
+                
+            </div>
+        </main>
+    </body>
+</template>
+<style scoped>
+.answer-con .input-text input:focus{
+    outline: white;
+    
+}
+.answer-con .input-text input{
+    font-weight: 700;
+    background-color:#8385eb;
+    color: white;
+    border: white 2px solid;
+}
+.answer-con .input-text input, .answer-con .input-text button{
+    height: 40px;
+    border-radius: 10px;
+}
+.answer-con .input-text button{
+    background-color:#8385eb;
+    font-weight: 600;
+    color: white;
+    border: none;
+    transition: 0.3s linear;
+}
+.answer-con .input-text button:hover{
+    transform: scale(1.03);
+    transition: 0.3s linear;
+    background-color:#7577ff;
+}
+.answer-con .input-text button:active{
+    transform: scale(1);
+    transition: 0.3s linear;
+    background-color: rgb(62, 51, 218);
+}
+.answer-con .input-text{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.answer-con {
+    position: fixed;
+    bottom: 10px;
+    left: 50%;          /* move left edge to middle of viewport */
+    transform: translateX(-50%); /* shift element back by half its width */
+    height: 30%;
+    width: 90%;
+}
+header p {
+    margin: 0;
+    font-weight: 800;
+    color: white;
+}
+.question p{
+    font-weight: 600;
+    font-size: 13px;
+    color:rgb(62, 51, 218) ;
+}
+body{
+    background-image: url('/images/bg.png');
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-size: cover;
+    background-position: center;
+}
+main{
+    width: 80%;
+    height: 100vh;
+    /* background-color: white; */
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* box-shadow: 0 0 10px rgba(0,0,0,0.1); */
+}
+.charts {
+    /* align-self: baseline; */
+    position: absolute;
+    top: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 300px;      /* Set chart width */
+    height: 200px;     /* Set chart height */
+    /* justify-self: baseline; */
+    
+    background-color: #f9f9f9; /* Optional background */
+    border-radius: 10px;       /* Rounded corners */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Optional shadow */
+}
+header{
+    width: 100%;
+    height: 7%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    /* padding: 20px; */
+    background-color:#8385eb;
+}
+.timer{
+    position: relative;
+    bottom: 0;
+    height: 5px;
+    transition: all 1s linear;
+}
+.option {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columns, width fits content */
+    gap: 20px; /* space between buttons */
+    justify-content: center; /* center the whole grid horizontally */
+    align-items: center;     /* optional, center vertically if row height is taller */
+    width: 100%;             /* full container width */
+}
+
+.option-c {
+    color: white;
+    background-color: rgb(112, 112, 255);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s linear;
+    animation: firsttime 0.3s 0.3s linear;
+}
+@keyframes firsttime {
+    from{
+        transform: scale(1.2);
+    }
+    to{
+        transform: scale(1);
+
+    }
+}
+.option-c:hover{
+    transform: scale(1.1);
+    transition: 0.3s linear;
+}
+*{
+    font-family: 'BubbleBody Neue', 'Poppins', sans-serif;
+}
+</style>

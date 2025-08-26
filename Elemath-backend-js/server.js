@@ -1,39 +1,31 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-// const multer = require('multer');
-// const pdfParse = require('pdf-parse');
-// const XLSX = require('xlsx');
-// const Tesseract = require('tesseract.js');
-// const fs = require('fs');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const app = express();
 const http = require('http');
 const mongoose = require('mongoose');
-// const { OAuth2Client } = require('google-auth-library');
-// const router = express.Router();
 const filesave = require('./models/lessonfile.js');
 const axios = require("axios");
 dotenv.config();
 
+//redis client
+const redisClient = require('./redis/redisClient.js');
+const {init,pubClient,subClient} = require('./redis/redispubsub.js');
 
 //websocket
 const WebSocket = require("ws");
-
 const students = require('./models/students.js');
 const teacher_accoount = require('./models/teacher.js');
 const classes = require('./models/class.js');
 const StudentClass = require('./models/student.js');
-
 const PORT = process.env.PORT || 3000;
 const uri = process.env.MONGODB_URL;
-// const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
-// import auth from './security/auth.js';
+
 const  {createToken} = require('./security/createToken.js');
 const verifyRefreshToken = require('./security/refreshtoken.js');
 const auth = require('./security/auth.js');
-// Load environment variables from .env file
 const cookie = require("cookie");
 // Middleware
 app.use(cors({
@@ -71,6 +63,38 @@ const io = new Server(server, {
 });
 
 
+// const { createAdapter } = require('@socket.io/redis-adapter');
+
+// const pubClient = redis.createClient({ url: process.env.REDIS_URL });
+// const subClient = pubClient.duplicate();
+
+// Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
+//   io.adapter(createAdapter(pubClient, subClient));
+//   console.log('✅ Redis adapter connected for Socket.IO');
+// }).catch(err => {
+//   console.error('❌ Redis connection error:', err);
+// });
+
+async function Cache(key, data) {
+  const existingData = await redisClient.get(key);
+
+  if (existingData) {
+    console.log('Cache hit for key:', key);
+    return JSON.parse(existingData);
+  }
+
+  // Proper usage: set(key, value, options)
+  await redisClient.set(key, JSON.stringify(data), { EX: 3600 });
+
+  console.log('cached : ' + key);
+  return data;
+}
+
+
+
+app.use(express.static('public')); // Serve static files from 'public' directory
+
+// Mount the upload route
 app.use('/', uploadRouter); // Mount upload route
 
 const uploadlist = require('./routes/uploadlist.js');
@@ -162,15 +186,12 @@ app.post('/student-login', async (req, res) => {
 })
 app.get('/get/student/data', auth, async (req, res) => {
   const studentId = req.user.id; // Assuming the student ID is stored in the token payload
-  console.log('Student ID from token:', studentId);
 
   const studentData = await StudentClass.findById(studentId).populate('classId');
 
   if (!studentData) {
     return res.status(404).json({ message: 'Student not found' });
   }
-
-  console.log('Student data:', studentData);
   res.status(200).json({
     id: studentData._id,
     name: studentData.name,
@@ -291,7 +312,6 @@ app.post('/refresh-token', verifyRefreshToken, (req, res) => {
 });
 
 app.post('/api/logout', (req, res) => {
-    console.log("Logout request cookies:", req.cookies);
   res.clearCookie('access_token', {
     httpOnly: true,
     sameSite: 'Strict',
@@ -340,13 +360,30 @@ app.post('/sign-up', async (req, res) => {
   }
 });
 
-app.get('/data/teacher',auth, async (req, res) => {
+async function casheTeacherData(req,res,next){
+  const userId = req.user.id;
+  const cacheKey = `teacher:${userId}`;
+
+  try {
+    const cachedData = await redisClient.get(cacheKey);
+    if (cachedData) {
+      console.log('Cache hit for key:', cacheKey);
+      return res.status(200).json(JSON.parse( cachedData));
+    }
+    next();
+  } catch (error) {
+    console.error('Error fetching teacher data:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+} 
+app.get('/data/teacher',auth,casheTeacherData, async (req, res) => {
   try {
     // console.log('Authenticated user:', req.user);
     const user = await teacher_accoount.findById(req.user.id).populate('class');
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
+    await redisClient.set('teacher:${userId}', JSON.stringify(user), { EX: 3600 });
     res.status(200).json(user);
   } catch (error) {
     console.error('Error fetching teacher data:', error);
@@ -451,16 +488,34 @@ app.post('/enroll-student',auth,async(req,res)=>{
   
 
 
-})
-app.post('/get/classData',auth,async(req,res)=>{
+});
+async function classCache(req,res,next){
+  const {classId} = req.body;
+  const cacheKey = `classData:${classId}`;
+
+  try {
+    const cachedData = await redisClient.get(cacheKey);
+    if (cachedData) {
+      console.log('Cache hit for key:', cacheKey);
+      return res.status(200).json(JSON.parse( cachedData));
+    }
+    next();
+  } catch (error) {
+    console.error('Error fetching class data:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
+app.post('/get/classData',auth,classCache,async(req,res)=>{
   const {classId } = req.body;
 
   try{
+
     const classIn = await classes.findOne({_id : classId});
     if(!classIn) return res.status(404).json({message: 'class doesnt exist'});
 
     const list = await StudentClass.find({classId : classId});
     console.log('list :'+classIn);
+    await redisClient.set(`classData:${classId}`, JSON.stringify(list), { EX: 3600 });
     res.status(200).json(list);
   }catch(err){
     console.log(err);
@@ -477,17 +532,52 @@ app.post('/data/teacher/classname',auth,async (req,res)=>{
   res.status(200).json({classname: classvar.Class_name});
 });
 
+app.post('/edit/student', auth ,async ( req,res )=>{
+  
+  try{
+    const { lrn, fname, mname, lname,password } = req.body;
+
+    const student = await StudentClass.findOne({ lrn :lrn});
+    
+    if (!student) return res.status(404).json({message : 'student not found'});
+    const name =  lname + '. ' +fname  + ' ' + mname + ', ';
+    console.log('the name is : '+ name);
+    await StudentClass.updateOne(
+      { lrn : lrn },
+      { $set: {
+          name:name,
+          firstname: fname,
+          middlename: mname,
+          lastname: lname,
+          password: password
+        }
+      }
+    );
+    await redisClient.del(`classData:${student.classId}`); // Clear cache for this class
+    res.json({message : 'success'});
+  }catch(err){
+    console.log(err);
+    res.status(500).json({message : 'server error'});
+  }
+});
 app.delete('/remove/student', auth ,async ( req,res )=>{
-  const { lrn } = req.body;
+  
+  try{
+    const { lrn } = req.body;
 
-  const student = await StudentClass.findOne({ lrn : lrn });
+    const student = await StudentClass.findOne({ lrn : lrn });
+    console.log('student : '+ student + ' lrn : '+ lrn);
+    
+    if (!student) return res.status(404).json({message : 'student not found'});
 
-  if (!student) return res.status(404).json({message : 'student not found'});
-
-  const deletedata = await StudentClass.findOneAndDelete({lrn : lrn});
-
-  console.log(deletedata);
-  res.json({message : 'success'});
+    const deletedata = await StudentClass.findOneAndDelete({lrn : lrn});
+    await redisClient.del(`classData:${deletedata.classId}`); // Clear cache for this class
+    console.log('deletedata: '+ deletedata);
+    res.json({message : 'success'});
+  }catch(err){
+    console.log(err);
+    res.status(500).json({message : 'server error'});
+  }
 });
 app.post('/admin/trim-students', async (req, res) => {
   try {
@@ -604,8 +694,7 @@ app.post('/create-question',auth ,async(req,res)=>{
     }
     res.json({quiz:quiz});
 });
-const dumpQuiz = require('./models/dumpquiz.js');
-let list = []; 
+
 app.post('/create/mode',auth,async (req,res)=>{
   const {id,mode}= req.body;
 
@@ -615,18 +704,18 @@ app.post('/create/mode',auth,async (req,res)=>{
     return res.status(404).json({message: 'Need to create Grade Book'});
   }
   
-  const createMode = new dumpQuiz({ 
+  const createMode = { 
     quizId: id,
+    start:false,
     quizMode: mode,
+    gametime: 0,
     quizName: '',
-    players: []
-  });
+    players: [],
+    questions:[]
+  };
 
-  await createMode.save();
-  // list.push({
-  //   id:id,
-  //   mode,mode
-  // });
+  await redisClient.set(`mode:${id}`, JSON.stringify(createMode), { EX: 3600 });
+
 
   res.json({message:'done'})
 });
@@ -638,11 +727,9 @@ app.post('/delete/mode', auth,async (req, res) => {
   // Count how many items match before deletion
   //const matches = list.filter(item => item.id === id).length;
 
-  const matches =await dumpQuiz.findOne({ quizId: id });
+  const matches =await redisClient.exists(`mode:${id}`);
   if (matches) {
-    // Keep only those that don't match the id
-    // list = list.filter(item => item.id !== id);
-    await dumpQuiz.deleteOne({ quizId: id });
+    await redisClient.del(`mode:${id}`);
 
     // Notify all sockets in this room
     io.to(id).emit('mode-deleted', { message: 'Mode deleted', count: matches });
@@ -653,27 +740,32 @@ app.post('/delete/mode', auth,async (req, res) => {
   res.status(404).json({ message: 'Mode not found' });
 });
 
-app.get('/get/mode', auth, (req, res) => {
+app.get('/get/mode', auth,async (req, res) => {
   const id = req.query.id;          // comes in as a string
-  console.log('get mode query:', req.query); // better logging
-  console.log('id:', id);
+  // console.log('get mode query:', req.query); // better logging
+  // console.log('id:', id);
 
   // If list contains numbers, convert
   // const index = list.findIndex(item => String(item.id) === String(id));
-  const quiz = dumpQuiz.find({ quizId: id });
-
-  if (!quiz) {
-    return res.json({ quiz: true });
+  const quiz = await redisClient.exists(`mode:${id}`);
+  console.log(quiz);
+  if (quiz== 0) {
+    return res.json({ quiz: false });
   }
-  res.status(404).json({ quiz: false});
+  console.log('ping')
+  res.json({ quiz: true});
 });
 
 app.get('/get/mode/list', auth, async (req, res) => {
   try {
     const id = req.query.id; // comes in as a string
-    const list = await dumpQuiz.findOne({quizId:id}, { quizId: 1, quizMode: 1, _id: 0 });
-
-    res.status(200).json({ list: list });
+    const quiz = await redisClient.get(`mode:${id}`);
+    console.log('get mode list query:', quiz); // better logging
+    if (!quiz) {
+      return res.status(404).json({ message: 'No modes found' });
+    }
+    const list = JSON.parse(quiz);
+    res.status(200).json({ list: list.players });
   }catch (error) {
     console.error('Error fetching mode list:', error);
     res.status(500).json({ message: 'Internal server error' });
@@ -689,6 +781,93 @@ app.get('/lesson/list',auth, async (req, res) => {
   }
   res.json({ files: lessons });
 });
+app.get('/get/mode/data',auth, async (req, res) => {
+  const id = req.query.id; // comes in as a string
+  console.log('get mode data query:', req.query); // better logging
+  console.log('id:', id);
+
+  const quiz = await redisClient.get(`mode:${id}`);
+  if (!quiz) {
+    return res.status(404).json({ message: 'No mode found' });
+  }
+  const modeData = JSON.parse(quiz);
+  console.log('Mode data:', modeData);
+  // Return only the players array
+  res.status(200).json({ modeData: modeData.players });
+});
+app.get('/get/mode/question/1st',auth,async(req,res)=>{
+  const mode =await redisClient.get(`mode:${req.user.classId}`);
+  const modeData = JSON.parse(mode);
+  let player = modeData.players.find(p => p.lrn === req.user.username);
+  const qin = player.qIn;
+  // modeData.players.find(p => p.lrn === req.user.username).qIn+=1;
+  res.json({question:modeData.questions[qin],done:false,time:modeData.gametime});
+});
+app.post('/get/mode/question',auth,async (req,res)=>{
+  const {answer} = req.body;
+  const mode =await redisClient.get(`mode:${req.user.classId}`);
+  // console.log('mode in get : '+mode);
+  let modeData = JSON.parse(mode);
+  let player = modeData.players.find(p => p.lrn === req.user.username);
+  let scoreP = player.score;
+  const qin = player.qIn;
+  const question = modeData.questions[qin];
+  console.log('answer input : '+answer + ' real answer : '+question.answer);
+  if(question.answer === answer){
+    scoreP+=1;
+    modeData.players.find(p => p.lrn === req.user.username).score+=1;
+    modeData.players.find(p => p.lrn === req.user.username).rev.push({q:question,playerAnswer:answer,correct:true});
+  }else{
+    modeData.players.find(p => p.lrn === req.user.username).rev.push({q:question,playerAnswer:answer,correct:false});
+  }
+  
+  if((qin + 1) === (modeData.questions.length)){
+    modeData.players.find(p => p.lrn === req.user.username).done=true;
+    setgameData(`mode:${req.user.classId}`,modeData);
+    await pubClient.publish('action',JSON.stringify({id:req.user.classId,action:'player-done',payload:{player:player.player,score:scoreP}}));
+    res.json({question:{},done:true});
+    return;
+  }
+  if(qin != (modeData.questions.length - 1)){
+    // const question = modeData.questions[qin];
+    // if(question.answer === answer){
+    //   modeData.players.find(p => p.lrn === req.user.username).score+=1;
+    // }
+    modeData.players.find(p => p.lrn === req.user.username).qIn+=1;
+    res.json({question:modeData.questions[qin + 1],done:false});
+    setgameData(`mode:${req.user.classId}`,modeData);
+    return;
+  }
+});
+app.get('/get/mode/player/done',auth,async(req,res)=>{
+  const {id} = req.query;
+  const data = await redisClient.get(`mode:${id}`);
+  const modeData = JSON.parse(data);
+  const players = modeData.players.filter(p => p.done);
+  const playing = modeData.players.filter(p => !p.done);
+  res.json({players:players,playing:playing});
+});
+app.get('/get/mode/player/rev',auth,async(req,res)=>{
+  const data = await redisClient.get(`mode:${req.user.classId}`);
+  
+  const modeData = JSON.parse(data);
+  const player = modeData.players.find(p => p.lrn === req.user.username);
+  // console.log(player);
+  const rev = player.rev;
+  res.json({rev:rev,score:player.score});
+});
+async function setgameData(id,payload) {
+  await redisClient.set(id, JSON.stringify(payload), { EX: 3600 });
+}
+//============================================redis=========================================================
+init().then(async () => {
+  // Subscribe to 'action' channel
+  await subClient.subscribe("action", (data) => {
+    const payload = JSON.parse(data);
+    // payload: {id:data.roomId,action:'game-start',payload:{started:true}}
+    io.to(payload.id).emit(payload.action,payload.payload);
+  });
+}).catch(err => console.error("Redis init error:", err));
 
 // Middleware to read cookie token
 io.use((socket, next) => {
@@ -705,7 +884,6 @@ io.use((socket, next) => {
   }
   try {
       const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
-      console.log("✅ Authenticated decoded in socket :", decoded);
       socket.user = decoded; // Attach user data to socket
       // next();
     } catch (err) {
@@ -735,10 +913,43 @@ io.on("connection", (socket) => {
       io.to(data.roomId).emit('room-created', { message: 'join please' });
       // socket.emit('room-created', { roomId: data.roomId });
   });
-  socket.on('join-room', (data) => {
+  socket.on('game-start',async (data)=>{
+    const mode =await redisClient.get(`mode:${data.roomId}`);
+    let modeData = JSON.parse(mode);
+    modeData.gametime = data.time;
+    modeData.start = true;
+    modeData.questions = data.questions;
+    console.log('mode data : '+JSON.stringify(modeData));
+    // await redisClient.set(`mode:${data.roomId}`, JSON.stringify(modeData), { EX: 3600 });
+    setgameData(`mode:${data.roomId}`,modeData);
+
+    await pubClient.publish('action',JSON.stringify({id:data.roomId,action:'game-start',payload:{started:true}}));
+  })
+  socket.on('join-room',async (data) => {
       console.log(`User ${socket.id} joined room: ${data.roomId}`);
       socket.join(data.roomId);
-      io.to(data.roomId).emit('player-joined', { player: data.name, lrn: data.lrn, profile: data.profile });
+      const mode =await redisClient.get(`mode:${data.roomId}`);
+      if(!mode) {
+        socket.emit('no-mode', { message: 'No mode found, please create one.' });
+        return;
+      }
+      // Add player to mode in Redis
+      const modeData = JSON.parse(mode);
+      // Check if player already exists
+      const playerExists = modeData.players.some(player => player.lrn === data.lrn);
+      if (!playerExists) {
+        modeData.players.push({ player: data.name, lrn: data.lrn, profile: data.profile,score:0,qIn:0,done:false,rev:[] });
+        // await redisClient.set(`mode:${data.roomId}`, JSON.stringify(modeData), { EX: 3600 });
+        setgameData(`mode:${data.roomId}`,modeData);
+        console.log('Updated mode data:', modeData);
+
+        await pubClient.publish('action',JSON.stringify({id:data.roomId,action:'player-joined',payload:{ player: data.name, lrn: data.lrn, profile: data.profile }}));
+        // io.to(data.roomId).emit('player-joined', { player: data.name, lrn: data.lrn, profile: data.profile });
+      } else {
+        console.log(`Player with LRN ${data.lrn} already exists in mode.`);
+      }
+      // Notify all clients in the room about the new player
+      
   });
   socket.on('disconnect', (reason) => {
       console.log(`User disconnected: ${socket.id}, username : ${socket.user.username}`);

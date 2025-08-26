@@ -133,7 +133,8 @@ async def generate_quiz(data: LessonText):
         "  }\n\n"
 
         "4. If no dataset is referenced, omit 'tabletype' and 'table'.\n"
-        "5. For multiple-choice: include 'options' array in the format [\"A. ...\", \"B. ...\", \"C. ...\", \"D. ...\"].\n"
+        "5. If 'type' is multiple-choice:\n"
+        "   - You MUST include an 'options' array in the format [\"A. ...\", \"B. ...\", \"C. ...\", \"D. ...\"].\n"
         "   - The 'answer' must exactly match one of the options including the letter.\n"
         "6. For short-answer: the 'answer' must be only a single word or name (no full sentences).\n"
         "7. For true-false: the 'answer' must be strictly 'true' or 'false' (not yes/no).\n"
@@ -144,11 +145,13 @@ async def generate_quiz(data: LessonText):
         "- Entire output must be a valid JSON array only.\n"
         "- Do not output explanations outside JSON.\n"
         "- Start with '[' and end with ']'.\n"
-        "- If nothing can be generated, output [].\n\n"
+        "- If nothing can be generated, output [].\n"
+        "- If 'type' is multiple-choice and options are missing, the output is invalid. Always include options in this case.\n\n"
 
         f"=== LESSON TEXT (ONLY USE THIS FOR CONTENT) ===\n"
         f"{data.rawText}\n"
     )
+
 
 
 

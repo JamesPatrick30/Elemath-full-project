@@ -88,10 +88,7 @@ export default {
         },
         async lookforQuiz(){
             try{
-                if(!this.id){
-                    alert('No class ID found. Please check your data.'+this.id);
-                    return;
-                }
+                
                 const res = await api.get('/get/mode',{
                     params: {
                         id: this.id
@@ -115,6 +112,7 @@ export default {
         window.addEventListener('resize', this.handleResize);
         this.handleResize();
         this.getdata();
+        this.lookforQuiz();
         console.log(socket.listeners('room-created').length);
         socket.removeAllListeners();
 

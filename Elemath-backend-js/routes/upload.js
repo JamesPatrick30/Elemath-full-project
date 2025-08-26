@@ -2,6 +2,7 @@ const multer = require('multer');
 const xlsx = require('xlsx');
 // const Student = require('../models/students'); // your student model
 // const classes = require('../models/class.js');
+const redisClient = require('../redis/redisClient');
 const express = require('express');
 const router = express.Router();
 // const path = require('path');
@@ -244,6 +245,7 @@ router.post('/upload', upload.single('file'), async (req, res) => {
         const db = await studentenrolled.insertMany(fulldata);
         console.log('db : ' +JSON.stringify(missing, null, 2));
         console.log('lrns : ' + enrolled);
+        await redisClient.del(`classData:${classId}`); // Clear cache for this class
         // console.log('count : '+ students.length);
         res.json({ studentReadCount :students.length,insterted : db,enrolled : enrolled, failed : failed });
 
