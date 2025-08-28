@@ -6,14 +6,26 @@
             <p>Name</p>
         </div>
         <div class="btncon">
-            <button><font-awesome-icon icon="fa-solid fa-house" /> Dash Board</button>
-            <button><font-awesome-icon icon="fa-solid fa-gear" /> Settings</button>
+            <button @click="goDashboard"><font-awesome-icon icon="fa-solid fa-house"  /> Dash Board</button>
+            <button @click="goSettings"><font-awesome-icon icon="fa-solid fa-gear" /> Settings</button>
             <button><font-awesome-icon icon="fa-solid fa-arrow-right-from-bracket" /> Log out</button>
         </div>
         
     </body>
     
 </template>
+<script>
+export default{
+    methods:{
+        goDashboard(){
+            this.$router.push('/ds');
+        },
+        goSettings(){
+            this.$router.push('/ts');
+        }
+    }
+}
+</script>
 <style scoped>
 .btncon{
     width: 100%;
