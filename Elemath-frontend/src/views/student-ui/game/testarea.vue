@@ -1,10 +1,10 @@
 <script>
 import ApexChart from "vue3-apexcharts"
 import api from '@/axios';
-
+import greenbg from "../components/greenbg.vue";
 export default {
     name: "TestArea",
-    components: { ApexChart },
+    components: { ApexChart,greenbg },
     data() {
         return {
             persent: 100,
@@ -92,6 +92,7 @@ export default {
                     this.$router.push('/rev');
 
                 }
+                this.topic = data.topic;
                 this.question=data.question;
                 this.options = data?.options;
                 this.story = data?.story;
@@ -123,6 +124,7 @@ export default {
 }
 </script>
 <template>
+    <greenbg></greenbg>
     <body>
         <header>
                     
@@ -156,7 +158,7 @@ export default {
                   <div v-if="question?.tabletype == 'Pie'">
                     <apexChart
                         type="pie"
-                        height="200"
+
                         :series="table?.PieChart.series"
                         :options="table?.PieChart.options"
                         />
@@ -273,8 +275,14 @@ header p {
     font-size: 13px;
     color:rgb(62, 51, 218) ;
 }
+.question{
+    background-color: white;
+    padding: 10px;
+    border-radius: 10px;
+}
 body{
-    background-image: url('/images/bg.png');
+    /* background-image: url('/images/bg.png'); */
+    position: absolute;
     width: 100%;
     height: 100vh;
     display: flex;
@@ -359,5 +367,23 @@ header{
 }
 *{
     font-family: 'BubbleBody Neue', 'Poppins', sans-serif;
+}
+@media screen and (min-width: 600px) and (max-width: 1023px){
+    .option-c{
+        height: 100px;
+    }
+}
+@media screen and (min-width: 1024px){
+    .option-c{
+        height: 70px;
+        font-size: 15px;
+    }
+    .charts{
+        height: 250px;
+        width: 400px;
+    }
+    .question{
+        font-size: 25px;
+    }
 }
 </style>
