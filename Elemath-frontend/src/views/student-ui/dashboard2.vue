@@ -36,7 +36,7 @@ export default{
 }
 </script>
 <template>
-    <!-- <div class="background">
+    <div class="background">
         <div class="box">
             <div></div>
             <div></div>
@@ -49,18 +49,25 @@ export default{
             <div></div>
             <div></div>
         </div>
-    </div> -->
+    </div>
     <body>
         <header>
             <img class="profile" src="/characters/takos.png" alt="">
             <div class="textcon">
                 <p class="welcome">Welcome Back!</p>
-                <p class="name">james</p>
+                    <p class="name">james</p>
+                
+                
             </div>
         </header>
         <main>
             <div class="con-main">
-                <div class="join"></div>
+                <div class="join">
+                    <div class="text-area-join">
+                        <p class="jointxt">Join</p>
+                    </div>
+                    <img src="/images/LESSON2.png" alt="">
+                </div>
                 <!-- <div class="awards"></div> -->
             </div>
             <p class="title">Lessons</p>
@@ -85,11 +92,29 @@ export default{
     </body>
 </template>
 <style scoped>
+.join .text-area-join .jointxt{
+    position: relative;
+    font-size: 50px;
+    top: 5%;
+    left: 40px;
+    font-weight: 700;
+    color: rgb(255, 255, 255);
+}
+.join .text-area-join{
+    text-align: center;
+}
+.join img{
+    height: 180px;
+    position:relative;
+    left: 20%;
+    top: -20px;
+    
+}
 .lesson img{
     height: 100px;
 }
 .lesson p{
-    color: white;
+    color: black;
     height: 100px;
     overflow: hidden;
     font-weight: 600;
@@ -119,7 +144,7 @@ export default{
 .lesson {
   flex: 0 0 150px; /* fixed width slide */
   height: 200px;
-  background-color: #a8e15e;
+  background-color: white;
   margin-right: 10px;
   scroll-snap-align: start; /* snap to start of container */
   border-radius: 10px;
@@ -136,7 +161,7 @@ body{
     z-index: 1900;
     height: 100vh;
     width: 100vw;
-    background-color: rgb(243, 243, 243);
+    /* background-color: rgb(243, 243, 243); */
     overflow-x: hidden;
     /* display: flex;
     flex-direction: column;
@@ -155,9 +180,11 @@ main{
     background-color: azure;
 }
 .join{
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    display: flex;
     border-radius: 40px;
     height: 100%;
-    background-color: aquamarine;
+    background-color: #53e1fd;
 }
 .con-main{
     margin-top: 10px;
@@ -287,6 +314,21 @@ header{
     to{
         transform: scale(1.5) rotate(360deg)  translateY(-90px);
         opacity: 0;
+    }
+}
+@media screen and (min-width: 1024px){
+    .con-main{
+        height: 300px;
+    }
+    .join img{
+        height: 300px;
+        /* justify-self: end; */
+        left:65%;
+        /* right: 0 */
+    }
+    .join .text-area-join .jointxt{
+        font-size: 70px;
+        left: 100px;
     }
 }
 </style>
