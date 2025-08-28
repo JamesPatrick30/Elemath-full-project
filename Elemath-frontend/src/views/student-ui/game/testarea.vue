@@ -100,7 +100,7 @@ export default {
                 this.table = data?.table;
                 this.tabletype = data?.tabletype;
                 const time2 = localStorage.getItem('timeLeft');
-                console.log(time2);
+                console.log(this.table);
                 if(time2 == 0){
                     console.log(time2);
                     this.timeLeft = time2;
@@ -165,23 +165,23 @@ export default {
                         />
                   <!-- </div> -->
                  <div v-if="tabletype == 'Table'">
-                    <table v-if="question?.table" class="custom-table">
+                    <table  class="custom-table">
                         <thead>
                         <tr>
-                            <th v-for="(header, hIndex) in table.head" :key="hIndex">
+                            <th v-for="(header, hIndex) in table?.head" :key="hIndex">
                             {{ header }}
                             </th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="(row, rIndex) in table.body" :key="rIndex">
+                        <tr v-for="(row, rIndex) in table?.body" :key="rIndex">
                             <td v-for="(cell, cIndex) in row" :key="cIndex">
                             {{ cell }}
                             </td>
                         </tr>
                         </tbody>
                     </table>
-                    <table v-if="question?.table.Table" class="custom-table">
+                    <!-- <table v-if="table" class="custom-table">
                         <thead>
                         <tr>
                             <th v-for="(header, hIndex) in table.Table.head" :key="hIndex">
@@ -196,7 +196,7 @@ export default {
                             </td>
                         </tr>
                         </tbody>
-                    </table>
+                    </table> -->
                  </div>
             <!-- <ApexChart v-if="tabletype === 'Line'"
                 type="line"
@@ -222,6 +222,34 @@ export default {
     </body>
 </template>
 <style scoped>
+
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.95rem;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.custom-table th {
+  background: #3f51b5;
+  color: white;
+  padding: 10px;
+  text-align: left;
+}
+
+.custom-table td {
+  padding: 10px;
+  border-top: 1px solid #ddd;
+}
+
+.custom-table tr:nth-child(even) {
+  background: #f9f9f9;
+}
+
 .answer-con .input-text input:focus{
     outline: white;
     
