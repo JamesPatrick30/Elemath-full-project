@@ -67,14 +67,16 @@ export default{
             <p class="small-title">Grade 5</p>
             <div class="lesson-con">
                 <div class="lesson" v-for="(value,index) in sortgrade5()" :key="index" @click="alertnof()">
-                        <h4>{{value.topic}}</h4>
+                    <img src="/images/BOOK.png" alt="">
+                        <p>{{value.topic}}</p>
                 </div>
             </div>
             <p class="small-title">Grade 6</p>
 
             <div class="lesson-con">
                 <div class="lesson" v-for="(value,index) in sortgrade6()" :key="index" @click="alertnof()">
-                        <h4>{{value.topic}}</h4>
+                    <img src="/images/BOOK.png" alt="">
+                        <p>{{value.topic}}</p>
                 </div>
             </div>
         </main>
@@ -83,6 +85,15 @@ export default{
     </body>
 </template>
 <style scoped>
+.lesson img{
+    height: 100px;
+}
+.lesson p{
+    color: white;
+    height: 100px;
+    overflow: hidden;
+    font-weight: 600;
+}
 .small-title{
     font-size: 15px ;
     font-weight: 800;
@@ -100,6 +111,7 @@ export default{
   display: flex;
   flex-direction: row;
   overflow-x: auto;
+  scrollbar-width: thin;
   scroll-snap-type: x mandatory; /* enables snap */
   -webkit-overflow-scrolling: touch; /* smoother on mobile */
 }
@@ -112,9 +124,12 @@ export default{
   scroll-snap-align: start; /* snap to start of container */
   border-radius: 10px;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  /* justify-content: center; */
   align-items: center;
   font-size: 20px;
+  text-align: center;
+  overflow: hidden;
 }
 body{
     position: absolute;
