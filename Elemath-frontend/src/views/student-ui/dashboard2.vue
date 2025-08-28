@@ -37,6 +37,9 @@ export default{
             const Array = this.lessons.filter(lesson => lesson.grade === 6);
             return Array;
         },
+        switchNav(){
+            this.navshow = !this.navshow;
+        }
     }
 }
 </script>
@@ -58,7 +61,7 @@ export default{
 
     <body>
         <header>
-            <img class="profile" src="/characters/takos.png" alt="" @click="navshow=true">
+            <img class="profile" src="/characters/takos.png" alt="" @click="switchNav">
             <div class="textcon">
                 <p class="welcome">Welcome Back!</p>
                     <p class="name">james</p>
@@ -173,6 +176,7 @@ body{
     height: 100vh;
     width: 100vw;
     overflow-x: hidden;
+    scrollbar-width: thin;
 }
 main{
     width: 100%;

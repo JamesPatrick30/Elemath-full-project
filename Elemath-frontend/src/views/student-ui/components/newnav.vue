@@ -57,6 +57,7 @@ body{
     max-height: fit-content;
     max-width: 200px;
     margin: 10px;
+    margin-top: 65px;
     z-index: 10000;
     background-color: white;
     display: flex;
