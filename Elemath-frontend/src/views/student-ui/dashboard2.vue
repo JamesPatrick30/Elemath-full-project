@@ -143,8 +143,8 @@ export default{
         </header>
         <main>
             <div class="con-main">
-                <div class="join">
-                    <div class="text-area-join" @click="JoinBtn()">
+                <div class="join" @click="JoinBtn()">
+                    <div class="text-area-join" >
                         <p class="jointxt">Join</p>
                         <p class="ongiong" v-if="ongiong">Join Now</p>
 
