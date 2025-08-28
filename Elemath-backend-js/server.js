@@ -862,10 +862,87 @@ app.get('/get/mode/player/rev',auth,async(req,res)=>{
   const rev = player.rev;
   res.json({rev:rev,score:player.score});
 });
-app.post('/mode/done',auth,(req,res)=>{
-  console.log('ping /mode/done');
-  res.json({message:'all players are done.'});
+async function addQuizAndAnalysis(classId, quiz, chartPoint) {
+  return await Gradebook.findOneAndUpdate(
+    { classId },
+    {
+      $push: {
+        quizzes: quiz,
+        "analysis.lineChart": chartPoint
+      }
+    },
+    { new: true, sort: { dateCreated: -1 } } // return updated doc
+  ).exec();
+}
+app.post('/mode/done', auth, async (req, res) => {
+  try {
+    const { id } = req.body;
+
+    // 1. Pull modeData from Redis
+    const data = await redisClient.get(`mode:${id}`);
+    if (!data) return res.status(404).json({ error: "Mode not found" });
+    const modeData = JSON.parse(data);
+
+    const players = modeData.players;  // present
+    const allStudents = await StudentClass.find({ classId: id }); // enrolled
+
+    // 2. Build quiz students list
+    const quizStudents = allStudents.map(stud => {
+      const player = players.find(p => p.lrn === stud.lrn);
+      return player
+        ? {
+            lrn: stud.lrn,
+            name: player.player,
+            score: player.score ?? 0,
+            done: player.done ?? true
+          }
+        : {
+            lrn: stud.lrn,
+            name: `${stud.firstname} ${stud.lastname}`,
+            score: 0,
+            done: false
+          };
+    });
+
+    // 3. Compute average
+    const totalAverage =
+      quizStudents.reduce((sum, s) => sum + s.score, 0) / quizStudents.length;
+
+    // 4. Create new quiz entry from modeData
+    const newQuiz = {
+      quizId: modeData.quizId,
+      quizname: modeData.quizName || "Untitled Quiz",
+      total: modeData.questions.length,
+      students: quizStudents,
+      totalAverage,
+      lowAnalysis: [], // could be derived: hardest Qs
+      questions: modeData.questions.map((q, idx) => ({
+        number: (idx + 1).toString(),
+        question: q.question,
+        answer: q.answer,
+        choices: q.options
+      }))
+    };
+
+    // 5. ApexChart data point
+    const chartPoint = { x: newQuiz.quizname, y: totalAverage };
+
+    // 6. Save into Gradebook
+    const updated = await addQuizAndAnalysis(id, newQuiz, chartPoint);
+    console.log(updated);
+    await redisClient.del(`mode:${id}`);
+
+    res.json({
+      message: "Quiz saved successfully",
+      quiz: newQuiz,
+      analysisPoint: chartPoint
+    });
+  } catch (err) {
+    console.error("Error in /mode/done:", err);
+    res.status(500).json({ error: "Server error" });
+  }
 });
+
 async function setgameData(id,payload) {
   await redisClient.set(id, JSON.stringify(payload), { EX: 3600 });
 }
