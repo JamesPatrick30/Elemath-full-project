@@ -84,7 +84,7 @@ export default{
                         id: this.id
                     }
                 });
-                if(res.data.started){
+                if(res.data.started == true){
                     this.started = true;
                 }
                 if(res.data.quiz == true){

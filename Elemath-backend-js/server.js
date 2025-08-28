@@ -748,7 +748,7 @@ app.get('/get/mode', auth,async (req, res) => {
   // If list contains numbers, convert
   // const index = list.findIndex(item => String(item.id) === String(id));
   const quiz = await redisClient.get(`mode:${id}`);
-  const data = JSON.parse(quiz);
+  // const data = JSON.parse(quiz);
   console.log(quiz);
   if (!quiz) {
     return res.json({ quiz: false,started:false });
