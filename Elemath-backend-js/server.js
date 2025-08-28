@@ -747,13 +747,19 @@ app.get('/get/mode', auth,async (req, res) => {
 
   // If list contains numbers, convert
   // const index = list.findIndex(item => String(item.id) === String(id));
-  const quiz = await redisClient.exists(`mode:${id}`);
+  const quiz = await redisClient.get(`mode:${id}`);
+  const data = JSON.parse(quiz);
   console.log(quiz);
-  if (quiz== 0) {
-    return res.json({ quiz: false });
+  if (!quiz) {
+    return res.json({ quiz: false,started:false });
   }
-  console.log('ping')
-  res.json({ quiz: true});
+  if(data.start){
+    res.json({ quiz: true,started:true});
+    return
+  }
+  
+  // console.log('ping')
+  res.json({ quiz: true,started:false});
 });
 
 app.get('/get/mode/list', auth, async (req, res) => {

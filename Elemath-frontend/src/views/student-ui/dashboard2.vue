@@ -27,6 +27,7 @@ export default{
                 { topic: 'Patterns and Algebra (Simple Equations)', grade: 6 },
                 { topic: 'Statistics and Probability (Graphs, Data Analysis)', grade: 6 }
             ],
+            started:false,
             navshow:false,
             id:'',
             ongiong: false, // This should be set based on your logic
@@ -49,6 +50,11 @@ export default{
             this.navshow = !this.navshow;
         },
         JoinBtn(){
+            this.lookforQuiz();
+            if(this.started){
+                alert('the quiz started');
+                return;
+            }
             if(this.ongiong){
                 this.$router.push({ name: 'waiting-lobby',query: { i: this.id } });
             }else{
@@ -78,6 +84,9 @@ export default{
                         id: this.id
                     }
                 });
+                if(res.data.started){
+                    this.started = true;
+                }
                 if(res.data.quiz == true){
                     this.ongiong = true;
                 }

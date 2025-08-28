@@ -155,14 +155,15 @@ export default {
                     />
                     
                   <!-- </div> -->
-                  <div v-if="question?.tabletype == 'Pie'">
+                  <!-- <div > -->
                     <apexChart
                         type="pie"
-
+                        v-if="tabletype == 'Pie'"
+                        class="charts"
                         :series="table?.PieChart.series"
                         :options="table?.PieChart.options"
                         />
-                  </div>
+                  <!-- </div> -->
                  <div v-if="tabletype == 'Table'">
                     <table v-if="question?.table" class="custom-table">
                         <thead>
