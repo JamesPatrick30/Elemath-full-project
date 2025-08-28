@@ -316,6 +316,22 @@ header{
         opacity: 0;
     }
 }
+@media screen and (min-width: 600px){
+    .con-main{
+        height: 360px;
+    }
+    .join img{
+        height: 320px;
+
+        /* left:-10px; */
+        right: -10px;
+
+    }
+    .join .text-area-join .jointxt{
+        font-size: 70px;
+        left: 100px;
+    }
+}
 @media screen and (min-width: 1024px){
     .con-main{
         height: 300px;
