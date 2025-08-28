@@ -1,4 +1,6 @@
 <script>
+import socket from '@/socket';
+import api from '@/axios';
 import newnav from './components/newnav.vue';
 export default{
     components:{
@@ -25,7 +27,13 @@ export default{
                 { topic: 'Patterns and Algebra (Simple Equations)', grade: 6 },
                 { topic: 'Statistics and Probability (Graphs, Data Analysis)', grade: 6 }
             ],
-            navshow:false
+            navshow:false,
+            id:'',
+            ongiong: false, // This should be set based on your logic
+            profilepic:'',
+            name: 'John Doe', // Replace with actual data
+            lrn: '1234567890', // Replace with actual data
+            isNavVisible: window.matchMedia('(min-width: 623px)').matches // Responsive nav visibility
         }
     },
     methods:{
@@ -39,7 +47,71 @@ export default{
         },
         switchNav(){
             this.navshow = !this.navshow;
+        },
+        JoinBtn(){
+            if(this.ongiong){
+                this.$router.push({ name: 'waiting-lobby',query: { i: this.id } });
+            }else{
+                alert('No ongoing quiz available.');
+            }
+        },
+        async getdata(){
+            try {
+                const response = await api.get('/get/student/data'); // Adjust the endpoint as needed
+                // console.log(response.data);
+                this.name = response.data.name || 'John Doe';
+                this.lrn = response.data.lrn || '1234567890';
+                this.profilepic = response.data.profile; // Default profile picture
+                this.id = response.data.classId._id; // Assuming the student ID is returned
+                // console.log('Student ID:', this.id);
+                await this.lookforQuiz();
+                socket.connect();
+            } catch (error) {
+                console.error('Error fetching student data:', error);
+            }
+        },
+        async lookforQuiz(){
+            try{
+                
+                const res = await api.get('/get/mode',{
+                    params: {
+                        id: this.id
+                    }
+                });
+                if(res.data.quiz == true){
+                    this.ongiong = true;
+                }
+            }catch(err){
+                console.error('Error fetching quiz data:', err);
+            }
+        },
+        SeeNav() {
+            this.isNavVisible = !this.isNavVisible;
+        },
+        handleResize() {
+            this.isNavVisible = window.matchMedia('(min-width: 623px)').matches;
         }
+    },
+    mounted() {
+        window.addEventListener('resize', this.handleResize);
+        this.handleResize();
+        this.getdata();
+        this.lookforQuiz();
+        console.log(socket.listeners('room-created').length);
+        socket.removeAllListeners();
+
+        socket.on('room-created', (data) => {
+            this.ongiong = true; // Set ongoing status based on room creation
+            console.log('Lobby data received:', data);
+            // Handle lobby data here
+        });
+        socket.on('mode-deleted',(data) => {
+            this.ongiong = false; // Reset ongoing status when mode is deleted
+            console.log('Mode deleted:', data);
+        });
+    },
+    beforeDestroy() {
+        window.removeEventListener('resize', this.handleResize);
     }
 }
 </script>
@@ -72,8 +144,10 @@ export default{
         <main>
             <div class="con-main">
                 <div class="join">
-                    <div class="text-area-join">
+                    <div class="text-area-join" @click="JoinBtn()">
                         <p class="jointxt">Join</p>
+                        <p class="ongiong" v-if="ongiong">Join Now</p>
+
                     </div>
                     <img src="/images/LESSON2.png" alt="">
                 </div>
@@ -105,6 +179,15 @@ export default{
 <style scoped>
 newnav{
     width: 200px;
+}
+.ongiong{
+    position: relative;
+    font-size: 20px;
+    /* top: 5%; */
+    bottom: 30px;
+    left: 40px;
+    font-weight: 700;
+    color: rgb(221, 57, 57);
 }
 .join .text-area-join .jointxt{
     position: relative;
