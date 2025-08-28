@@ -7,11 +7,14 @@ import router from './router';
 import VueApexCharts from 'vue3-apexcharts';
 
 // FontAwesome
+
 import { library } from '@fortawesome/fontawesome-svg-core';
+import {faArrowRightFromBracket} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { 
   faUserPen, faList, faUpload, faFile, 
-  faTrash, faXmark, faSort, faUserPlus 
+  faTrash, faXmark, faSort, faUserPlus,
+  faGear,faHouse
 } from '@fortawesome/free-solid-svg-icons';
 import { faFloppyDisk } from '@fortawesome/free-regular-svg-icons';
 
@@ -19,7 +22,8 @@ import { faFloppyDisk } from '@fortawesome/free-regular-svg-icons';
 library.add(
   faUserPen, faList, faUpload, faFile,
   faTrash, faXmark, faSort, faUserPlus,
-  faFloppyDisk
+  faFloppyDisk, faArrowRightFromBracket,
+  faGear, faHouse
 );
 
 const app = createApp(App);

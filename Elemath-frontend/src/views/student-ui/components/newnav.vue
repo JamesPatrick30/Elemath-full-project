@@ -1,15 +1,27 @@
 <template>
     <body>
         <div class="con">
+            <br>
             <img class="profile" src="/characters/takos.png" alt="">
             <p>Name</p>
         </div>
-        <button>Dash Board</button>
-        <button>Settings</button>
+        <div class="btncon">
+            <button><font-awesome-icon icon="fa-solid fa-house" /> Dash Board</button>
+            <button><font-awesome-icon icon="fa-solid fa-gear" /> Settings</button>
+            <button><font-awesome-icon icon="fa-solid fa-arrow-right-from-bracket" /> Log out</button>
+        </div>
+        
     </body>
     
 </template>
 <style scoped>
+.btncon{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
 .con p{
     font-weight: 700;
 }
@@ -27,19 +39,30 @@
     width: 70px;
 }
 body{
+    padding: 20px;
+    border-radius: 5px;
     position: fixed;
-    height: fit-content;
-    width: 200px;
+    max-height: fit-content;
+    max-width: 200px;
+    margin: 10px;
     z-index: 10000;
     background-color: white;
     display: flex;
     flex-direction: column;
 }
 button{
+    border: none;
+    border-top: rgb(233, 233, 233) 2px solid;
+    width: calc(100% - 10px);
     font-family: 'BubbleBody Neue','Poppins', sans-serif;
     font-size: large;
-    border: none;
-    width: 200px;
+    color: rgb(100, 100, 100);
+    /* width: 200px; */
     background-color: white;
+    text-align: left;
+}
+button:hover{
+    transform: scale(1.01);
+    background-color: rgb(245, 245, 245);
 }
 </style>

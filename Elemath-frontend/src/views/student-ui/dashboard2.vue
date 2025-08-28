@@ -25,6 +25,7 @@ export default{
                 { topic: 'Patterns and Algebra (Simple Equations)', grade: 6 },
                 { topic: 'Statistics and Probability (Graphs, Data Analysis)', grade: 6 }
             ],
+            navshow:false
         }
     },
     methods:{
@@ -57,7 +58,7 @@ export default{
 
     <body>
         <header>
-            <img class="profile" src="/characters/takos.png" alt="">
+            <img class="profile" src="/characters/takos.png" alt="" @click="navshow=true">
             <div class="textcon">
                 <p class="welcome">Welcome Back!</p>
                     <p class="name">james</p>
@@ -95,7 +96,7 @@ export default{
         <br>
         <br>
     </body>
-    <newnav></newnav>
+    <newnav v-show="navshow"></newnav>
 
 </template>
 <style scoped>
@@ -171,11 +172,7 @@ body{
     z-index: 1900;
     height: 100vh;
     width: 100vw;
-    /* background-color: rgb(243, 243, 243); */
     overflow-x: hidden;
-    /* display: flex;
-    flex-direction: column;
-    align-items: center; */
 }
 main{
     width: 100%;
