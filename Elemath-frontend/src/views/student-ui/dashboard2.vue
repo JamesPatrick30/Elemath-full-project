@@ -1,5 +1,9 @@
 <script>
+import newnav from './components/newnav.vue';
 export default{
+    components:{
+        newnav
+    },
     data(){
         return{
             lessons: [
@@ -50,6 +54,7 @@ export default{
             <div></div>
         </div>
     </div>
+
     <body>
         <header>
             <img class="profile" src="/characters/takos.png" alt="">
@@ -90,8 +95,13 @@ export default{
         <br>
         <br>
     </body>
+    <newnav></newnav>
+
 </template>
 <style scoped>
+newnav{
+    width: 200px;
+}
 .join .text-area-join .jointxt{
     position: relative;
     font-size: 50px;
@@ -316,7 +326,7 @@ header{
         opacity: 0;
     }
 }
-@media screen and (min-width: 600px){
+@media screen and (min-width: 600px) and (max-width: 1023px){
     .con-main{
         height: 360px;
     }
@@ -345,6 +355,12 @@ header{
     .join .text-area-join .jointxt{
         font-size: 70px;
         left: 100px;
+    }
+    .title{
+        font-size: 45px;
+    }
+    .small-title{
+        font-size: 30px;
     }
 }
 </style>
