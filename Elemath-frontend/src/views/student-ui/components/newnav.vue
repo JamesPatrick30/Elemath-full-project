@@ -2,8 +2,8 @@
     <body>
         <div class="con">
             <br>
-            <img class="profile" src="/characters/takos.png" alt="">
-            <p>Name</p>
+            <img class="profile" :src="info.profile" alt="">
+            <p>{{ info.name }}</p>
         </div>
         <div class="btncon">
             <button @click="goDashboard"><font-awesome-icon icon="fa-solid fa-house"  /> Dash Board</button>
@@ -16,6 +16,12 @@
 </template>
 <script>
 export default{
+    props: {
+        info: {
+            type: Object,
+            required: true
+        }
+    },
     methods:{
         goDashboard(){
             this.$router.push('/ds');

@@ -142,12 +142,10 @@ export default{
 
     <body>
         <header>
-            <img class="profile" src="/characters/takos.png" alt="" @click="switchNav">
+            <img class="profile" :src="profilepic" alt="" @click="switchNav">
             <div class="textcon">
                 <p class="welcome">Welcome Back!</p>
-                    <p class="name">james</p>
-                
-                
+                <p class="name">{{ name }}</p>
             </div>
         </header>
         <main>
@@ -182,7 +180,7 @@ export default{
         <br>
         <br>
     </body>
-    <newnav v-show="navshow"></newnav>
+    <newnav :info="{name:name,profile:profilepic}" v-show="navshow"></newnav>
 
 </template>
 <style scoped>
@@ -308,13 +306,14 @@ main{
 }
 .welcome{
     font-size: 10px;
-    color: rgb(122, 122, 122);
+    color: rgb(110, 110, 110);
 }
 .name{
     /* margin: 0; */
     
     font-weight: 700;
     font-size: 15px;
+    /* color: white; */
 }
 .profile{
     height: 50px;

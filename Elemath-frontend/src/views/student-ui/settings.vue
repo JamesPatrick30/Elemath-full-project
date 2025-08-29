@@ -1,6 +1,7 @@
 <script>
 import greenbg from './components/greenbg.vue';
 import newnav from './components/newnav.vue';
+import api from '@/axios';
 export default{
     components:{
         greenbg,
@@ -8,13 +9,36 @@ export default{
     },
     data(){
         return{
-            navshow:false
+            navshow:false,
+            profile:'',
+            username:''
         }
     },
     methods:{
         switchNav(){
             this.navshow = !this.navshow;
+        },
+        gotorouter(name){
+            if(!name) return alert('this feature is not avalable');
+            this.$router.push({name:name});
+        },
+        async getdata(){
+            try {
+                const response = await api.get('/get/student/data'); // Adjust the endpoint as needed
+                // console.log(response.data);
+                this.username = response.data.name || 'John Doe';
+                this.profile = response.data.profile;
+                console.log('Student ID:', response.data);
+                await this.lookforQuiz();
+                socket.connect();
+            } catch (error) {
+                console.error('Error fetching student data:', error);
+            }
+            return;
         }
+    },
+    mounted(){
+        this.getdata();
     }
 }
 </script>
@@ -22,14 +46,14 @@ export default{
     <greenbg></greenbg>
     <body>
         <header>
-            <img class="profile" src="/characters/takos.png" alt="" @click="switchNav">
+            <img class="profile" :src="profile" alt="" @click="switchNav">
             <div class="textcon">
                 <p class="welcome">Welcome Back!</p>
-                <p class="name">james</p>
+                <p class="name">{{ username }}</p>
             </div>
         </header>
         <div class="con">
-            <div class="box">
+            <div class="box" @click="gotorouter()">
                 <div class="text">
                     <h3>Basic Info</h3>
                     <p>It’s the profile card of the system — the simple facts that identify you or the app.</p>
@@ -51,9 +75,18 @@ export default{
                 
 
             </div>
+            <div class="box" @click="gotorouter('reports')">
+                <div class="text">
+                    <h3>Report a Bug</h3>
+                    <p>Found a problem? Let us know so we can fix it!</p>
+                </div>
+                <img src="/images/Profile icon.png" alt="">
+
+            </div>
         </div>
     </body>
-    <newnav v-show="navshow"></newnav>
+    <newnav :info="{name:username,profile:profile}" v-show="navshow"></newnav>
+
 </template>
 <style scoped>
 .box {

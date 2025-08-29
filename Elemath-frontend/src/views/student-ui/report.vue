@@ -1,38 +1,59 @@
 <template>
-  <form @submit.prevent="sendBug" class="form-container">
+    <greenbg></greenbg>
+    <body>
+        <header>
+            <img class="profile" :src="profile" alt="" @click="switchNav">
+            <div class="textcon">
+                <p class="welcome">Welcome Back!</p>
+                    <p class="name">{{ username }}</p>
+                
+                
+            </div>
+        </header>
+        <form @submit.prevent="sendBug" class="form-container">
     
-    <select v-model="module" class="input">
-      <option disabled value="">Select Module</option>
-      <option>Quiz</option>
-      <option>Profile</option>
-      <option>Other</option>
-    </select>
+            <select v-model="module" class="input">
+            <option disabled value="">Select Module</option>
+            <option>Quiz</option>
+            <option>Profile</option>
+            <option>Other</option>
+            </select>
 
-    <textarea v-model="description" placeholder="Describe the problem" class="input"></textarea>
+            <textarea v-model="description" placeholder="Describe the problem" class="input"></textarea>
 
 
-    <textarea v-model="sudgest" placeholder="Share your suggestions…" class="input"></textarea>
+            <textarea v-model="sudgest" placeholder="Share your suggestions…" class="input" ></textarea>
 
-    <input type="file" @change="handleFiles" multiple accept="image/*" />
+            <input type="file" @change="handleFiles" multiple accept="image/*" />
 
-    <div v-if="files.length" class="file-preview">
-        Selected screenshots:
-        <div class="preview-container">
-            <img v-for="(file, index) in files" 
-                :key="index" 
-                :src="getObjectURL(file)" 
-                :alt="file.name"
-                class="preview-img" />
-        </div>
-  </div>
+            <div v-if="files.length" class="file-preview">
+                Selected screenshots:
+                <div class="preview-container">
+                    <img v-for="(file, index) in files" 
+                        :key="index" 
+                        :src="getObjectURL(file)" 
+                        :alt="file.name"
+                        class="preview-img" />
+                </div>
+            </div> 
 
-    <button type="submit" class="btn">Report Bug</button>
-  </form>
+            <button type="submit" class="btn">Report Bug</button>
+        </form>
+    </body>
+    <newnav :info="{name:name,profile:profilepic}" v-show="navshow"></newnav>
+
+
 </template>
 
 <script>
+import newnav from './components/newnav.vue';
+import greenbg from './components/greenbg.vue';
 import api from '@/axios';
 export default {
+    components:{
+        greenbg,
+        newnav
+    },
   data() {
     return {
       name: '',
@@ -40,10 +61,16 @@ export default {
       module: '',
       description: '',
       sudgest:'',
-      files: []
+      files: [],
+      navshow:false,
+      username:'',
+      profile:''
     };
   },
   methods: {
+    switchNav(){
+            this.navshow = !this.navshow;
+        },
     // handleFiles(event) {
     //   const selectedFiles = Array.from(event.target.files);
     //   if (selectedFiles.length > 5) {
@@ -99,13 +126,65 @@ export default {
     },
     getObjectURL(file) {
       return file ? window.URL.createObjectURL(file) : '';
+    },
+    async getdata(){
+        try {
+            const response = await api.get('/get/student/data'); // Adjust the endpoint as needed
+            // console.log(response.data);
+            this.username = response.data.name || 'John Doe';
+            this.profile = response.data.profile;
+            console.log('Student ID:', response.data);
+            await this.lookforQuiz();
+            socket.connect();
+        } catch (error) {
+            console.error('Error fetching student data:', error);
+        }
+        return;
     }
 
+  },
+  mounted(){
+    this.getdata();
   }
 };
 </script>
 
 <style scoped>
+*{
+    font-family: 'BubbleBody Neue','Poppins', sans-serif;
+}
+.welcome,.name{
+    margin: 0;
+    padding: 0;
+    margin-left: 10px;
+}
+.welcome{
+    font-size: 10px;
+        color: rgb(110, 110, 110);
+
+}
+.name{
+    /* margin: 0; */
+    
+    font-weight: 700;
+    font-size: 15px;
+}
+.profile{
+    height: 50px;
+    border-radius: 50%;
+}
+header{
+    padding: 10px;
+    /* border-radius: 10px; */
+    width: fit-content;
+    display: flex;
+    /* background-color: white; */
+}
+body{
+    position: absolute;
+    z-index: 10;
+    
+}
 .preview-container {
   display: flex;
   gap: 10px;
@@ -129,6 +208,7 @@ export default {
 }
 
 .input {
+    resize: none;
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
