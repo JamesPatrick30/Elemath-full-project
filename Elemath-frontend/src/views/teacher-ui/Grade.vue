@@ -69,7 +69,7 @@
                         <div class="tr" :id="index%2? 'line-2' : ''" v-for="(student,index) in students" :key="student.name">
                             <div class="td-name"><h5 class="student-name" >{{ student.name }}</h5></div>
                             <div class="td-con">
-                                <div class="td" v-for="grades in gradeline(student.quiz,quizstotal)" :key="grades.lrn" :class="grades.pass? 'notpass':'pass'"><p>{{ grades.grade }}</p> </div>
+                                <div class="td" v-for="grades in student.quizs" :key="grades.lrn" :class="grades.pass? 'notpass':'pass'"><p>{{ grades.score }}ss</p> </div>
                             </div>
                             <div class="td-total" :class="average(student.quiz).pass ? 'pass' : 'notpass'"><p>{{ average(student.quiz).average }}</p></div>
                         </div>
@@ -103,7 +103,8 @@ export default{
             quarterSelected:null,
             quizs:[],
             // quizstotal: [10, 20, 25, 15, 30, 50, 40, 35, 45, 60],
-            students: [].sort((a, b) => a.name.localeCompare(b.name)),
+            students: [],       // list of students in the class
+            dataset: [],
 
             line:0
         }
@@ -185,36 +186,60 @@ export default{
                 const res = await api.post('/get/quarter',{
                     quaterId:quaterId
                 });
+                
                 this.quizs = res.data.quizzes;
-                // console.log(res.data.quizzes);
+                console.log(res.data);
             }catch(err){
                 console.log(err);
             }
         },
         async getClassData(classIn) {
-            try {
-                console.log('class id : '+classIn);
-                const res = await api.post('/get/classData', {
-                    classId: classIn
-                });
+    try {
+      console.log('class id : ' + classIn);
+      const res = await api.post('/get/classData', { classId: classIn });
 
-                // console.log('Student list:', res.data.sort((a, b) => a.name.localeCompare(b.name)));
-                if (res.data.length <= 0) {
-                    alert('No student in this class yet!');
-                    // this.$router.push('/tc');
-                    this.$router.push({ name: 'createClass',query: { i: classIn } });
+      if (res.data.length <= 0) {
+        alert('No student in this class yet!');
+        this.$router.push({ name: 'createClass', query: { i: classIn } });
+        return;
+      }
 
-                    return;
-                }
-                this.getAllQuarter(classIn);
-                this.students = res.data.sort((a, b) => a.name.localeCompare(b.name));
-                this.reload = false;
+      // Sort students by name
+      this.students = res.data.sort((a, b) => a.name.localeCompare(b.name));
+      this.reload = false;
 
-            } catch (err) {
-                console.error('Error fetching class data:', err);
-                alert('Failed to load class data. Please try again later.');
-            }
-        },
+      // After fetching students, get their quiz data
+      await this.getAllQuarter(classIn);
+
+      // Build dataset
+      this.dataset = this.students.map(student => {
+        // Find all quiz scores for this student
+        const quizScores = this.quizs.flatMap(quiz => {
+          const matched = quiz.students.find(s => s.lrn === student.lrn);
+          if (matched) {
+            return [{
+              quizId: quiz.quizId,
+              quizName: quiz.quizname,
+              score: matched.score
+            }];
+          }
+          return [];
+        });
+
+        return {
+          lrn: student.lrn,
+          name: student.name,
+          quizs: quizScores
+        };
+      });
+
+      console.log('Structured dataset:', this.dataset);
+
+    } catch (err) {
+      console.error('Error fetching class data:', err);
+      alert('Failed to load class data. Please try again later.');
+    }
+  },
         async getData() {
             try {
                 const res = await api.get('/get/grade/class');
@@ -250,17 +275,17 @@ export default{
                 console.warn("gradeline called with invalid data");
                 return [];
             }
-            // const list = [];
-            // let i = this.line;
-            // for( i ; i < this.line + 7 && i < grades.length; i++){
-            //     let pass = false;
-            //     if (grades[i] < (quizstotal[i] * 0.75)){
-            //         pass = true;
-            //     }
-            //     list.push({grade:grades[i],pass:pass});
-            // }
-            // console.log('line : '+list);
-            // return list;
+            const list = [];
+            let i = this.line;
+            for( i ; i < this.line + 7 && i < grades.length; i++){
+                let pass = false;
+                if (grades[i] < (quizstotal[i] * 0.75)){
+                    pass = true;
+                }
+                list.push({grade:grades[i],pass:pass});
+            }
+            console.log('line : '+list);
+            return list;
         },
         add(){
             if(this.line < (this.students[0].quiz.length - 7)){
