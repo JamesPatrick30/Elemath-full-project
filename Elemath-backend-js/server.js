@@ -7,6 +7,8 @@ const http = require('http');
 const mongoose = require('mongoose');
 const filesave = require('./models/lessonfile.js');
 const axios = require("axios");
+const nodemailer = require('nodemailer'); // ✅ use require instead of import
+const multer = require('multer');
 dotenv.config();
 
 //redis client
@@ -14,7 +16,7 @@ const redisClient = require('./redis/redisClient.js');
 const {init,pubClient,subClient} = require('./redis/redispubsub.js');
 
 //websocket
-const WebSocket = require("ws");
+// const WebSocket = require("ws");
 const students = require('./models/students.js');
 const teacher_accoount = require('./models/teacher.js');
 const classes = require('./models/class.js');
@@ -27,6 +29,10 @@ const  {createToken} = require('./security/createToken.js');
 const verifyRefreshToken = require('./security/refreshtoken.js');
 const auth = require('./security/auth.js');
 const cookie = require("cookie");
+
+//email
+
+
 // Middleware
 app.use(cors({
   origin: 'http://localhost:5173', // or whatever port your frontend uses
@@ -845,6 +851,57 @@ app.post('/get/mode/question',auth,async (req,res)=>{
     return;
   }
 });
+const storage = multer.memoryStorage();
+const upload = multer({ 
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // max 5MB per file
+  fileFilter: (req, file, cb) => {
+    const allowed = /jpeg|jpg|png|gif/;
+    const ext = file.originalname.toLowerCase();
+    if (allowed.test(ext)) cb(null, true);
+    else cb(new Error('Only images are allowed'));
+  }
+});
+
+// Nodemailer transporter
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  }
+});
+
+// Route
+app.post('/report/student', auth, upload.array('screenshots', 5), async (req, res) => {
+  try {
+    const { name, email, module, description } = req.body;
+    const files = req.files || [];
+
+    const attachments = files.map(file => ({
+      filename: file.originalname,
+      content: file.buffer
+    }));
+
+    const info = await transporter.sendMail({
+      from: `"ELEMATH" <${process.env.EMAIL_USER}>`,
+      to: process.env.EMAIL_PROGRAMMER,
+      subject: "🐞 Bug Report",
+      text: `Bug Report
+From: ${name || 'Anonymous'} <${email || 'N/A'}>
+Module: ${module || 'N/A'}
+Description: ${description || 'No description provided'}`,
+      attachments
+    });
+
+    console.log("✅ Email sent:", info.messageId);
+    res.json({ success: true, message: "Bug report sent!" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Error sending bug report." });
+  }
+});
+
 app.get('/get/mode/player/done',auth,async(req,res)=>{
   const {id} = req.query;
   const data = await redisClient.get(`mode:${id}`);
@@ -906,7 +963,7 @@ app.post('/mode/done', auth, async (req, res) => {
 
     // 3. Compute average
     const totalAverage =
-      quizStudents.reduce((sum, s) => sum + s.score, 0) / quizStudents.length;
+      players.reduce((sum, s) => sum + s.score, 0) / players.length;
 
     // 4. Create new quiz entry from modeData
     const newQuiz = {
