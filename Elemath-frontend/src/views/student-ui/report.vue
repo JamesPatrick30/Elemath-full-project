@@ -10,9 +10,10 @@
 
     <textarea v-model="description" placeholder="Describe the problem" class="input"></textarea>
 
-    <input type="file" @change="handleFiles" multiple accept="image/*" />
 
-    <textarea v-model="description" placeholder="Describe the problem" class="input"></textarea>
+    <textarea v-model="sudgest" placeholder="Share your suggestions…" class="input"></textarea>
+
+    <input type="file" @change="handleFiles" multiple accept="image/*" />
 
     <div v-if="files.length" class="file-preview">
         Selected screenshots:
@@ -38,18 +39,19 @@ export default {
       email: '',
       module: '',
       description: '',
+      sudgest:'',
       files: []
     };
   },
   methods: {
-    handleFiles(event) {
-      const selectedFiles = Array.from(event.target.files);
-      if (selectedFiles.length > 5) {
-        alert('You can upload up to 5 screenshots only.');
-        return;
-      }
-      this.files = selectedFiles;
-    },
+    // handleFiles(event) {
+    //   const selectedFiles = Array.from(event.target.files);
+    //   if (selectedFiles.length > 5) {
+    //     alert('You can upload up to 5 screenshots only.');
+    //     return;
+    //   }
+    //   this.files = selectedFiles;
+    // },
     async sendBug() {
         if (!this.module || !this.description) {
             alert('Module and description are required.');
@@ -60,6 +62,7 @@ export default {
         formData.append('name', this.name);
         formData.append('email', this.email);
         formData.append('module', this.module);
+        formData.append('suggestion',this.sudgest);
         formData.append('description', this.description);
         this.files.forEach(file => formData.append('screenshots', file));
 
