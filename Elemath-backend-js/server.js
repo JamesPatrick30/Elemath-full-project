@@ -888,9 +888,9 @@ app.post('/report/student', auth, upload.array('screenshots', 5), async (req, re
       to: process.env.EMAIL_PROGRAMMER,
       subject: "🐞 Bug Report",
       text: `Bug Report
-From: ${name || 'Anonymous'} <${email || 'N/A'}>
-Module: ${module || 'N/A'}
-Description: ${description || 'No description provided'}`,
+        From: ${name || 'Anonymous'} <${email || 'N/A'}>
+        Module: ${module || 'N/A'}
+        Description: ${description || 'No description provided'}`,
       attachments
     });
 
