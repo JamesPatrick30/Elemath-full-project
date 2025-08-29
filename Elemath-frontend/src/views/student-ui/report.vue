@@ -24,7 +24,14 @@
 
             <textarea v-model="sudgest" placeholder="Share your suggestions…" class="input" ></textarea>
 
-            <input type="file" @change="handleFiles" multiple accept="image/*" />
+            <!-- <input type="file" @change="handleFiles" multiple accept="image/*" /> -->
+            <div class="file-upload">
+                <label class="upload-btn">
+                Select Images
+                <input type="file" @change="handleFiles" multiple accept="image/*" />
+                </label>
+                <!-- <p v-if="files.length">Selected files: {{ files.length }}</p> -->
+            </div>
 
             <div v-if="files.length" class="file-preview">
                 Selected screenshots:
@@ -40,7 +47,7 @@
             <button type="submit" class="btn">Report Bug</button>
         </form>
     </body>
-    <newnav :info="{name:name,profile:profilepic}" v-show="navshow"></newnav>
+    <newnav :info="{name:username,profile:profile}" v-show="navshow"></newnav>
 
 
 </template>
@@ -150,6 +157,33 @@ export default {
 </script>
 
 <style scoped>
+.file-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.upload-btn {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #4fc4f7;
+  color: white;
+  font-weight: 600;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.upload-btn:hover {
+  background-color: #3bb0e0;
+}
+
+/* Hide the native file input */
+.upload-btn input[type="file"] {
+  display: none;
+}
 *{
     font-family: 'BubbleBody Neue','Poppins', sans-serif;
 }
@@ -220,6 +254,7 @@ body{
 }
 
 .btn {
+    font-weight: 600;
   padding: 10px;
   background-color: #4CAF50;
   color: white;
