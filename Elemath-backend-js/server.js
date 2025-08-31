@@ -635,7 +635,9 @@ app.get('/chart', auth, async (req, res) => {
     };
 
     // --- Improvement Chart: compare averages across quizzes ---
+    const transitions = quizAverages.length - 1; // total number of comparisons
     const improvements = [];
+
     for (let i = 1; i < quizAverages.length; i++) {
       if (quizAverages[i] > quizAverages[i - 1]) improvements.push("Improved");
       else if (quizAverages[i] < quizAverages[i - 1]) improvements.push("Declined");
@@ -648,14 +650,23 @@ app.get('/chart', auth, async (req, res) => {
       Declined: improvements.filter(v => v === "Declined").length
     };
 
+    // Convert counts to percentage
+    const improvementPercentages = {};
+    for (const key in improvementCounts) {
+      improvementPercentages[key] = transitions > 0 
+        ? (improvementCounts[key] / transitions) * 100 
+        : 0;
+    }
+
     const ImprovementChart = {
-      series: Object.values(improvementCounts),
+      series: Object.values(improvementPercentages),
       options: {
-        labels: Object.keys(improvementCounts),
-        colors: ["#28a745", "#ffc107", "#dc3545"],
+        labels: Object.keys(improvementPercentages),
+        colors: ["#28a745", "#ffc107", "#dc3545"], // green, yellow, red
         legend: { position: "right" }
       }
     };
+
 
     // --- Topic Mastery BarChart: lowest performing topics ---
     const topicStats = {}; // { topic: { correct, total } }

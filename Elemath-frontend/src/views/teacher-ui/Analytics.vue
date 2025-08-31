@@ -163,7 +163,7 @@ export default {
                 this.PieChart = res.data.PieChart;
                 this.LowTopicBarChart = res.data.LowTopicBarChart;
                 
-                console.log('res get all record id '+ JSON.stringify(res.data));
+                console.log('res get all record id '+ JSON.stringify(this.improvementChart));
             }catch(err){
                 console.log(err);
             }
