@@ -55,7 +55,7 @@
           <apexChart
             type="bar"
             height="230"
-            width="280"
+          
             :series="barChart.series"
             :options="barChart.options"
           />
