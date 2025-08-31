@@ -975,7 +975,7 @@ app.get('/get/mode/list', auth, async (req, res) => {
   try {
     const id = req.query.id; // comes in as a string
     const quiz = await redisClient.get(`mode:${id}`);
-    console.log('get mode list query:', quiz); // better logging
+
     if (!quiz) {
       return res.status(404).json({ message: 'No modes found' });
     }
@@ -1198,7 +1198,7 @@ app.post('/mode/done', auth, async (req, res) => {
     // 4. Create new quiz entry from modeData
     const newQuiz = {
       quizId: modeData.quizId,
-      quizname: modeData.quizName || "Untitled Quiz",
+      quizname: modeData.quizName || new Date().toISOString().split('T')[0] ,
       total: modeData.questions.length,
       students: quizStudents,
       totalAverage,
@@ -1219,6 +1219,7 @@ app.post('/mode/done', auth, async (req, res) => {
     // 6. Save into Gradebook
     const updated = await addQuizAndAnalysis(id, newQuiz, chartPoint);
     console.log(updated);
+    await redisClient.del(`chart:${id}`);
     await redisClient.del(`mode:${id}`);
 
     res.json({

@@ -8,13 +8,15 @@
         <div class="btncon">
             <button @click="goDashboard"><font-awesome-icon icon="fa-solid fa-house"  /> Dash Board</button>
             <button @click="goSettings"><font-awesome-icon icon="fa-solid fa-gear" /> Settings</button>
-            <button><font-awesome-icon icon="fa-solid fa-arrow-right-from-bracket" /> Log out</button>
+            <button @click="logout()"><font-awesome-icon icon="fa-solid fa-arrow-right-from-bracket" /> Log out</button>
         </div>
         
     </body>
     
 </template>
 <script>
+import socket from '@/socket';
+import api from '@/axios';
 export default{
     props: {
         info: {
@@ -28,6 +30,19 @@ export default{
         },
         goSettings(){
             this.$router.push('/ts');
+        },
+        async logout(){
+            try{
+                const res = await api.post('/api/logout');
+                if (socket.connected) {
+                    socket.disconnect();
+                    // console.log("Socket disconnected on logout");
+                }
+                this.$router.push('/')
+                // alert(res.data.message);
+            }catch(err){
+                console.log(err);
+            }
         }
     }
 }

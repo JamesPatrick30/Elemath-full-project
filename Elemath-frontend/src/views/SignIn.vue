@@ -72,7 +72,7 @@ export default {
                     password:this.password
                 });
                 socket.connect();
-                this.$router.push({name : 'studentDashboard'});
+                this.$router.push({name : 'dash2'});
                 alert(res.data.message);
             }catch(err){
                 console.log(err);
