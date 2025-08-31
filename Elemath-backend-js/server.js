@@ -552,6 +552,118 @@ app.post('/get/classData',auth,classCache,async(req,res)=>{
     console.log(err);
   }
 });
+app.get('/chart', auth, async (req, res) => {
+  try {
+    const classId  = req.query.classId; // or req.body depending on your client
+    const gradebook = await Gradebook.findOne({ classId: classId });
+    if (!gradebook) return res.status(404).json({ message: 'No data found' });
+
+    // console.log(JSON.stringify(gradebook));
+    // --- LineChart: quiz averages ---
+    // --- LineChart: quiz averages as percentage ---
+    const quizNames = gradebook.quizzes.map(q => q.quizname);
+
+    // compute percentage = (totalAverage / quiz.total) * 100
+    const quizAverages = gradebook.quizzes.map(q =>
+      (q.totalAverage / q.total) * 100
+    );
+
+    const LineChart = {
+      series: [{ name: "Quiz Average (%)", data: quizAverages }],
+      options: {
+        chart: { background: "#fff" },
+        colors: ["#4fc4f7"],
+        stroke: { curve: "smooth", width: 3 },
+        xaxis: { categories: quizNames },
+        grid: { borderColor: "#e0e0e0" },
+        yaxis: { max: 100, min: 0, title: { text: "Percentage (%)" } }
+      }
+    };
+
+
+    // --- BarChart: sort top scores of last quiz ---
+    // --- BarChart: top 10 scores of last quiz ---
+    const lastQuiz = gradebook.quizzes.at(-1);
+    // --- BarChart: top 10 students by average grade across all quizzes ---
+const studentTotals = {}; // { lrn: { name, totalScore, quizzes } }
+
+// accumulate scores across quizzes
+for (const quiz of gradebook.quizzes) {
+  for (const s of quiz.students) {
+    if (!studentTotals[s.lrn]) {
+      studentTotals[s.lrn] = { name: s.name, totalScore: 0, quizzes: 0 };
+    }
+    studentTotals[s.lrn].totalScore += s.score;
+    studentTotals[s.lrn].quizzes += 1;
+  }
+}
+
+// compute averages
+const studentAverages = Object.values(studentTotals).map(s => ({
+  name: s.name,
+  average: s.totalScore / s.quizzes * 10
+}));
+
+// sort and take top 10
+const topStudents = studentAverages
+  .sort((a, b) => b.average - a.average)
+  .slice(0, 10);
+
+const BarChart = {
+  series: [{ name: "Average Score", data: topStudents.map(s => s.average) }],
+  options: {
+    chart: { background: "#fff" },
+    colors: ["#FF9800"],
+    plotOptions: { bar: { horizontal: true, borderRadius: 5 } },
+    xaxis: { categories: topStudents.map(s => s.name) }
+  }
+};
+
+    // console.log(sortedStudents.map(s => s.name));
+    // --- PieChart: pass vs fail (last quiz) ---
+    const passMark = Math.ceil(lastQuiz.total / 2); // pass if >=50%
+    let pass = 0, fail = 0;
+    lastQuiz.students.forEach(s => s.score >= passMark ? pass++ : fail++);
+
+    const PieChart = {
+      series: [fail, pass],
+      options: {
+        labels: ["Failed", "Pass"],
+        colors: ["#FF5252", "#4CAF50"],
+        legend: { position: "right" }
+      }
+    };
+
+    // --- Improvement Chart: compare averages across quizzes ---
+    const improvements = [];
+    for (let i = 1; i < quizAverages.length; i++) {
+      if (quizAverages[i] > quizAverages[i - 1]) improvements.push("Improved");
+      else if (quizAverages[i] < quizAverages[i - 1]) improvements.push("Declined");
+      else improvements.push("No Change");
+    }
+
+    const improvementCounts = {
+      Improved: improvements.filter(v => v === "Improved").length,
+      "No Change": improvements.filter(v => v === "No Change").length,
+      Declined: improvements.filter(v => v === "Declined").length
+    };
+
+    const ImprovementChart = {
+      series: Object.values(improvementCounts),
+      options: {
+        labels: Object.keys(improvementCounts),
+        colors: ["#28a745", "#ffc107", "#dc3545"],
+        legend: { position: "right" }
+      }
+    };
+
+    res.json({ LineChart, BarChart, PieChart, ImprovementChart });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 app.post('/data/teacher/classname',auth,async (req,res)=>{
   const { classid } = req.body;
