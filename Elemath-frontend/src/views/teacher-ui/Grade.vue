@@ -191,7 +191,7 @@ export default{
                 const res = await api.post('/get/quarter', {
                     quaterId: quaterId
                 });
-
+                if(res.data.students.length == 0) return;
                 if (res.data && Array.isArray(res.data.students) ) {
                     // Sort students alphabetically by name
                     this.students = res.data.students.sort((a, b) => 
@@ -322,6 +322,8 @@ export default{
             return list;
         },
         average(grades){
+            let average = null;
+            if(!grades) return average = 'Na'
             let pass = false;
             // let average = 100;//(Total / grades.length).toFixed(2);
             // if(this.quizs){
@@ -337,7 +339,7 @@ export default{
             if((Total / grades.length)>75){
                 pass = true
             }
-            const average = (Total/grades.length)*100;
+            average = (Total/grades.length)*100;
              console.log('grade : '+JSON.stringify(grades));
             return {average,pass};
            

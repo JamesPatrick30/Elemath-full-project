@@ -11,6 +11,8 @@ const studentSchema = new mongoose.Schema({
 const questionSchema = new mongoose.Schema({
   number: String,
   question:String,
+  studentCorrect:Number,
+  topic:String,
   answer:{type: mongoose.Schema.Types.Mixed},
   choices: {
     type: [mongoose.Schema.Types.Mixed],

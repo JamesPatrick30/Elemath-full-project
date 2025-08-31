@@ -36,7 +36,8 @@ export default {
             topic:'Understanding Bar and Line Graphs',
             id:'',
             table:null,
-            tabletype:''
+            tabletype:'',
+            inputanswer:''
         }
     },
     methods: {
@@ -213,8 +214,8 @@ export default {
                     <button class="option-c" v-for="(choice,index) in options" :key="index" @click="getIDres(choice)">{{ choice }}</button>
                 </div>
                 <div v-else class="input-text">
-                    <input  type="text">
-                    <button>Submit</button>
+                    <input  type="text" v-model="inputanswer">
+                    <button @click="getIDres(inputanswer)">Submit</button>
                 </div>
                 
             </div>

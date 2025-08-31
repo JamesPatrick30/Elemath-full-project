@@ -51,14 +51,14 @@
         </div> -->
         <div class="item4">
           <h4 class="analysis-title">
-            Question Difficulty Breakdown
+            Lowest Scoring Topics
           </h4>
           <apexChart
             type="bar"
             width="100%"
             height="387"
-            :series="barChart.series"
-            :options="barChart.options"
+            :series="LowTopicBarChart?.series"
+            :options="LowTopicBarChart?.options"
           />
         </div>
         <div class="item5">
@@ -66,13 +66,24 @@
             Improvement
           </h4>
           <div class="pie-con">
-            <apexChart
+            <!-- <apexChart
               type="pie"
               height="200"
               width="100%"
-              :series="improvementChart.series"
-              :options="improvementChart.options"
-            />
+              :series="improvementChart?.series"
+              :options="improvementChart?.options"
+            /> -->
+            <div v-if="improvementChart.series.some(v => v > 0)">
+              <apexChart
+                type="pie"
+                height="210"
+                :series="improvementChart.series"
+                :options="improvementChart.options"
+              />
+            </div>
+            <div v-else>
+              <p>No improvement data yet.</p>
+            </div>
           </div>
         </div>
       </div>
@@ -129,7 +140,8 @@ export default {
       },
       classInput:null,
       selectedClassId:null,
-      class:null
+      class:null,
+      LowTopicBarChart:null
     }
   },
   methods:{
@@ -149,6 +161,8 @@ export default {
                 this.barChart = res.data.BarChart;
                 this.improvementChart = res.data.ImprovementChart;
                 this.PieChart = res.data.PieChart;
+                this.LowTopicBarChart = res.data.LowTopicBarChart;
+                
                 console.log('res get all record id '+ JSON.stringify(res.data));
             }catch(err){
                 console.log(err);

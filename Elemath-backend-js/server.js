@@ -585,39 +585,39 @@ app.get('/chart', auth, async (req, res) => {
     // --- BarChart: top 10 scores of last quiz ---
     const lastQuiz = gradebook.quizzes.at(-1);
     // --- BarChart: top 10 students by average grade across all quizzes ---
-const studentTotals = {}; // { lrn: { name, totalScore, quizzes } }
+    const studentTotals = {}; // { lrn: { name, totalScore, quizzes } }
 
-// accumulate scores across quizzes
-for (const quiz of gradebook.quizzes) {
-  for (const s of quiz.students) {
-    if (!studentTotals[s.lrn]) {
-      studentTotals[s.lrn] = { name: s.name, totalScore: 0, quizzes: 0 };
+    // accumulate scores across quizzes
+    for (const quiz of gradebook.quizzes) {
+      for (const s of quiz.students) {
+        if (!studentTotals[s.lrn]) {
+          studentTotals[s.lrn] = { name: s.name, totalScore: 0, quizzes: 0 };
+        }
+        studentTotals[s.lrn].totalScore += s.score;
+        studentTotals[s.lrn].quizzes += 1;
+      }
     }
-    studentTotals[s.lrn].totalScore += s.score;
-    studentTotals[s.lrn].quizzes += 1;
-  }
-}
 
-// compute averages
-const studentAverages = Object.values(studentTotals).map(s => ({
-  name: s.name,
-  average: s.totalScore / s.quizzes * 10
-}));
+    // compute averages
+    const studentAverages = Object.values(studentTotals).map(s => ({
+      name: s.name,
+      average: s.totalScore / s.quizzes * 10
+    }));
 
-// sort and take top 10
-const topStudents = studentAverages
-  .sort((a, b) => b.average - a.average)
-  .slice(0, 10);
+    // sort and take top 10
+    const topStudents = studentAverages
+      .sort((a, b) => b.average - a.average)
+      .slice(0, 10);
 
-const BarChart = {
-  series: [{ name: "Average Score", data: topStudents.map(s => s.average) }],
-  options: {
-    chart: { background: "#fff" },
-    colors: ["#FF9800"],
-    plotOptions: { bar: { horizontal: true, borderRadius: 5 } },
-    xaxis: { categories: topStudents.map(s => s.name) }
-  }
-};
+    const BarChart = {
+      series: [{ name: "Average Score", data: topStudents.map(s => s.average) }],
+      options: {
+        chart: { background: "#fff" },
+        colors: ["#FF9800"],
+        plotOptions: { bar: { horizontal: true, borderRadius: 5 } },
+        xaxis: { categories: topStudents.map(s => s.name) }
+      }
+    };
 
     // console.log(sortedStudents.map(s => s.name));
     // --- PieChart: pass vs fail (last quiz) ---
@@ -657,7 +657,42 @@ const BarChart = {
       }
     };
 
-    res.json({ LineChart, BarChart, PieChart, ImprovementChart });
+    // --- Topic Mastery BarChart: lowest performing topics ---
+    const topicStats = {}; // { topic: { correct, total } }
+
+    // aggregate per topic
+    for (const quiz of gradebook.quizzes) {
+      for (const q of quiz.questions) {
+        if (!topicStats[q.topic]) {
+          topicStats[q.topic] = { correct: 0, total: 0 };
+        }
+        topicStats[q.topic].correct += q.studentCorrect;
+        topicStats[q.topic].total += quiz.students.length; // each student attempted
+      }
+    }
+
+    // compute percentage per topic
+    const topicPerformance = Object.entries(topicStats).map(([topic, stats]) => ({
+      topic,
+      percentage: stats.total > 0 ? (stats.correct / stats.total) * 100 : 0
+    }));
+
+    // sort by weakest topics (ascending)
+    const weakestTopics = topicPerformance.sort((a, b) => a.percentage - b.percentage);
+
+    // Take bottom 5 topics to highlight weaknesses
+    const LowTopicBarChart = {
+      series: [{ name: "Mastery (%)", data: weakestTopics.slice(0, 5).map(t => t.percentage) }],
+      options: {
+        chart: { background: "#fff" },
+        colors: ["#e53935"], // red to emphasize weak
+        plotOptions: { bar: { horizontal: true, borderRadius: 5 } },
+        xaxis: { categories: weakestTopics.slice(0, 5).map(t => t.topic) },
+        yaxis: { max: 100, min: 0, title: { text: "Percentage (%)" } }
+      }
+    };
+
+    res.json({ LineChart, BarChart, PieChart, ImprovementChart, LowTopicBarChart });
 
   } catch (err) {
     console.error(err);
@@ -891,7 +926,7 @@ app.get('/get/mode', auth,async (req, res) => {
   // If list contains numbers, convert
   // const index = list.findIndex(item => String(item.id) === String(id));
   const quiz = await redisClient.get(`mode:${id}`);
-  // const data = JSON.parse(quiz);
+  const data = JSON.parse(quiz);
   console.log(quiz);
   if (!quiz) {
     return res.json({ quiz: false,started:false });
@@ -952,42 +987,67 @@ app.get('/get/mode/question/1st',auth,async(req,res)=>{
   // modeData.players.find(p => p.lrn === req.user.username).qIn+=1;
   res.json({question:modeData.questions[qin],done:false,time:modeData.gametime});
 });
-app.post('/get/mode/question',auth,async (req,res)=>{
-  const {answer} = req.body;
-  const mode =await redisClient.get(`mode:${req.user.classId}`);
-  // console.log('mode in get : '+mode);
+app.post('/get/mode/question', auth, async (req, res) => {
+  const { answer } = req.body;
+  const mode = await redisClient.get(`mode:${req.user.classId}`);
+  console.log('mode in get : ' + mode);
+
   let modeData = JSON.parse(mode);
   let player = modeData.players.find(p => p.lrn === req.user.username);
   let scoreP = player.score;
   const qin = player.qIn;
   const question = modeData.questions[qin];
-  console.log('answer input : '+answer + ' real answer : '+question.answer);
-  if(question.answer === answer){
-    scoreP+=1;
-    modeData.players.find(p => p.lrn === req.user.username).score+=1;
-    modeData.players.find(p => p.lrn === req.user.username).rev.push({q:question,playerAnswer:answer,correct:true});
-  }else{
-    modeData.players.find(p => p.lrn === req.user.username).rev.push({q:question,playerAnswer:answer,correct:false});
+
+  console.log('answer input : ' + answer + ' real answer : ' + question.answer);
+
+  // normalize answers (ignore case + spaces)
+  const normalizedAnswer = answer.trim().toLowerCase();
+  const normalizedCorrect = question.answer.trim().toLowerCase();
+
+  if (normalizedAnswer === normalizedCorrect) {
+    scoreP += 1;
+
+    // update player score
+    player.score += 1;
+
+    // increment question's studentCorrect counter
+    modeData.questions[qin].studentCorrect += 1;
+
+    // save review with correct=true
+    player.rev.push({ q: question, playerAnswer: answer, correct: true });
+  } else {
+    player.rev.push({ q: question, playerAnswer: answer, correct: false });
   }
-  
-  if((qin + 1) === (modeData.questions.length)){
-    modeData.players.find(p => p.lrn === req.user.username).done=true;
-    setgameData(`mode:${req.user.classId}`,modeData);
-    await pubClient.publish('action',JSON.stringify({id:req.user.classId,action:'player-done',payload:{player:player.player,score:scoreP}}));
-    res.json({question:{},done:true});
+
+  // check if this was the last question
+  if ((qin + 1) === modeData.questions.length) {
+    player.done = true;
+
+    setgameData(`mode:${req.user.classId}`, modeData);
+
+    await pubClient.publish(
+      'action',
+      JSON.stringify({
+        id: req.user.classId,
+        action: 'player-done',
+        payload: { player: player.player, score: scoreP }
+      })
+    );
+
+    res.json({ question: {}, done: true });
     return;
   }
-  if(qin != (modeData.questions.length - 1)){
-    // const question = modeData.questions[qin];
-    // if(question.answer === answer){
-    //   modeData.players.find(p => p.lrn === req.user.username).score+=1;
-    // }
-    modeData.players.find(p => p.lrn === req.user.username).qIn+=1;
-    res.json({question:modeData.questions[qin + 1],done:false});
-    setgameData(`mode:${req.user.classId}`,modeData);
+
+  // otherwise, go to next question
+  if (qin !== (modeData.questions.length - 1)) {
+    player.qIn += 1;
+
+    res.json({ question: modeData.questions[qin + 1], done: false });
+    setgameData(`mode:${req.user.classId}`, modeData);
     return;
   }
 });
+
 const storage = multer.memoryStorage();
 const upload = multer({ 
   storage,
@@ -1114,9 +1174,11 @@ app.post('/mode/done', auth, async (req, res) => {
       lowAnalysis: [], // could be derived: hardest Qs
       questions: modeData.questions.map((q, idx) => ({
         number: (idx + 1).toString(),
+        topic:q.topic,
         question: q.question,
         answer: q.answer,
-        choices: q.options
+        choices: q.options,
+        studentCorrect: q.studentCorrect
       }))
     };
 
@@ -1196,18 +1258,32 @@ io.on("connection", (socket) => {
       io.to(data.roomId).emit('room-created', { message: 'join please' });
       // socket.emit('room-created', { roomId: data.roomId });
   });
-  socket.on('game-start',async (data)=>{
-    const mode =await redisClient.get(`mode:${data.roomId}`);
-    let modeData = JSON.parse(mode);
-    modeData.gametime = data.time;
-    modeData.start = true;
-    modeData.questions = data.questions;
-    console.log('mode data : '+JSON.stringify(modeData));
-    // await redisClient.set(`mode:${data.roomId}`, JSON.stringify(modeData), { EX: 3600 });
-    setgameData(`mode:${data.roomId}`,modeData);
+socket.on('game-start', async (data) => {
+  const mode = await redisClient.get(`mode:${data.roomId}`);
+  let modeData = JSON.parse(mode);
 
-    await pubClient.publish('action',JSON.stringify({id:data.roomId,action:'game-start',payload:{started:true}}));
-  })
+  modeData.gametime = data.time;
+  modeData.start = true;
+
+  // add studentCorrect:0 to each question
+  modeData.questions = data.questions.map(q => ({
+    ...q,
+    studentCorrect: 0
+  }));
+
+  console.log('questions : ' + JSON.stringify(modeData.questions));
+  console.log('mode data : ' + JSON.stringify(modeData));
+
+  // store back in redis
+  setgameData(`mode:${data.roomId}`, modeData);
+
+  await pubClient.publish('action', JSON.stringify({
+    id: data.roomId,
+    action: 'game-start',
+    payload: { started: true }
+  }));
+});
+
   socket.on('join-room',async (data) => {
       console.log(`User ${socket.id} joined room: ${data.roomId}`);
       socket.join(data.roomId);
