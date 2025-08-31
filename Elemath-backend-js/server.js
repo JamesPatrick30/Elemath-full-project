@@ -856,6 +856,10 @@ app.get('/get/mode/player/rev',auth,async(req,res)=>{
   const rev = player.rev;
   res.json({rev:rev,score:player.score});
 });
+app.post('/mode/done',auth,(req,res)=>{
+  console.log('ping /mode/done');
+  res.json({message:'all players are done.'});
+});
 async function setgameData(id,payload) {
   await redisClient.set(id, JSON.stringify(payload), { EX: 3600 });
 }

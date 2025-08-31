@@ -132,13 +132,75 @@ export default {
         <div class="timer" :style="{width: persent+ '%',backgroundColor: color } "></div>
         <main>
             
-            
-            <ApexChart v-if="tabletype === 'Line'"
+            <!-- <div class="bar-chart" > -->
+                    <apexChart
+                        type="line"
+                        v-if="tabletype == 'Line'"
+               
+                        class="charts"
+                        :series="table?.LineChart.series"
+                        :options="table?.LineChart.options"
+                    />
+                  <!-- </div> -->
+                  <!-- <div v-if="tabletype == 'Bar'" class="charts"> -->
+                    <apexChart
+                        type="bar"
+                        v-if="tabletype == 'Bar'"
+                        class="charts"
+                        :series="table?.BarChart.series"
+                        :options="table?.BarChart.options"
+                        
+                    />
+                    
+                  <!-- </div> -->
+                  <div v-if="question?.tabletype == 'Pie'">
+                    <apexChart
+                        type="pie"
+                        height="200"
+                        :series="table?.PieChart.series"
+                        :options="table?.PieChart.options"
+                        />
+                  </div>
+                 <div v-if="tabletype == 'Table'">
+                    <table v-if="question?.table" class="custom-table">
+                        <thead>
+                        <tr>
+                            <th v-for="(header, hIndex) in table.head" :key="hIndex">
+                            {{ header }}
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="(row, rIndex) in table.body" :key="rIndex">
+                            <td v-for="(cell, cIndex) in row" :key="cIndex">
+                            {{ cell }}
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <table v-if="question?.table.Table" class="custom-table">
+                        <thead>
+                        <tr>
+                            <th v-for="(header, hIndex) in table.Table.head" :key="hIndex">
+                            {{ header }}
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="(row, rIndex) in table.Table.body" :key="rIndex">
+                            <td v-for="(cell, cIndex) in row" :key="cIndex">
+                            {{ cell }}
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                 </div>
+            <!-- <ApexChart v-if="tabletype === 'Line'"
                 type="line"
                 :series="table.LineChart.series"
                 :options="table.LineChart.options"
                 class="charts"
-            />
+            /> -->
             <div class="question">
                 <p v-if="story" >{{ story }}</p>
                 <p>{{ question }}</p>

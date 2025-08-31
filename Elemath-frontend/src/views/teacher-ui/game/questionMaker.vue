@@ -29,13 +29,14 @@
                 </ul>
             </nav>
             <div class="con-settings" v-if="btnActive.setting">
+                <label for="">Time</label>
                 <input type="text" placeholder="Time" class="input-a" v-model="time">
                 <input type="text" placeholder="Passing Score" class="input-a">
             </div>
             <div class="con-Questions" v-if="btnActive.Question">
                 <select name="" id="" v-model="questionOption" >
                     <option value="Generate">Generate</option>
-                    <option value="Costumize">Costumize</option>
+                    <option value="Costumize">Customize</option>
                 </select>
                 
 
@@ -313,7 +314,7 @@ export default{
             generatingLoading: false, // <- add this
             fileloading: false,
             filetitle:'',
-            time:0
+            time:null
         }
     },
     methods:{

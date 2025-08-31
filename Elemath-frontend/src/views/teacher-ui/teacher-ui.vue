@@ -29,6 +29,25 @@ export default {
             pieoption: {
                 labels: ['asf', 'uj0', 'ouh']
             },
+            lessons: [
+                { topic: 'Whole Numbers', grade: 5 },
+                { topic: 'Fractions', grade: 5 },
+                { topic: 'Decimals', grade: 5 },
+                { topic: 'Ratio and Proportion', grade: 5 },
+                { topic: 'Percent', grade: 5 },
+                { topic: 'Measurement (Length, Mass, Capacity)', grade: 5 },
+                { topic: 'Geometry (Polygons, Perimeter, Area)', grade: 5 },
+                { topic: 'Patterns and Algebra', grade: 5 },
+                { topic: 'Statistics and Probability', grade: 5 },
+
+                { topic: 'Integers', grade: 6 },
+                { topic: 'Fractions and Decimals (Operations)', grade: 6 },
+                { topic: 'Ratio, Proportion, and Percent', grade: 6 },
+                { topic: 'Measurement (Area, Volume, Surface Area)', grade: 6 },
+                { topic: 'Geometry (Angles, Circles, Solids)', grade: 6 },
+                { topic: 'Patterns and Algebra (Simple Equations)', grade: 6 },
+                { topic: 'Statistics and Probability (Graphs, Data Analysis)', grade: 6 }
+            ],
             user:null,
             characters:[
                 { name: 'robot', image: '/characters/robot.png' },
@@ -138,6 +157,17 @@ export default {
                 console.log('Error is :' + err)
             }
         },
+        sortgrade5(){
+            const Array = this.lessons.filter(lesson => lesson.grade === 5);
+            return Array;
+        },
+        sortgrade6(){
+            const Array = this.lessons.filter(lesson => lesson.grade === 6);
+            return Array;
+        },
+        alertnof(){
+            alert('No features available yet');
+        }
     },
     mounted() {
         this.getData();
@@ -193,13 +223,55 @@ export default {
         </div>
     </div>
     <body v-if="!loadingB">
-        <navbar />
+        <navbar class="navbar"/>
         <main>
-            <div class="con-m">
-                <div class="header" style="grid-area: header;">
-                    <div class="image-contaner" @click="picCharacter()">
+            
+            <header>
+                <div class="image-contaner" @click="picCharacter()"> 
                         <!-- <img :src="user.profile" alt=""> -->
-                         <img :src="user?.profile" alt="profile">
+                        <img :src="user?.profile" alt="profile">
+                    </div>
+                    
+                    <div class="text-area">
+                        <p class="user-name">welcome back. {{ user?.username }}</p>
+                        <p class="user-id">ID : {{ user?._id }}</p>
+                    </div>
+            </header>
+            <div class="mode-con">
+                <div class="mode mode-1" @click="clusterOn('QUIZ MODE')">
+                    <h1>Quiz</h1>
+                    <img src="../pic/undraw_quiz_zvhe.svg" alt="">
+                </div>
+                <div class="mode mode-2">
+                    <h1>Window Card</h1>
+                    <img src="../pic/undraw_math_ldpv.svg" alt="">
+                </div>
+            </div>
+            <div class="leson-con">
+                <div class="title">
+                    <h1>Lessons</h1>
+                </div>
+                <h3>Grade 5</h3>
+                <div class="lesson-list">
+                    
+                    <div class="lesson" v-for="(value,index) in sortgrade5()" :key="index" @click="alertnof()">
+                         <h4>{{value.topic}}</h4>
+                    </div>
+                </div>
+                <h3>Grade 6</h3>
+                <div class="lesson-list">
+                    
+                    <div class="lesson" v-for="(value,index) in sortgrade6()" :key="index" @click="alertnof()">
+                         <h4>{{value.topic}}</h4>
+                    </div>
+                </div>
+                <br><br>
+            </div>
+            <!-- <div class="con-m">
+                <div class="header" style="grid-area: header;">
+                    <div class="image-contaner" @click="picCharacter()"> -->
+                        <!-- <img :src="user.profile" alt=""> -->
+                         <!-- <img :src="user?.profile" alt="profile">
                     </div>
                     
                     <div class="text-area">
@@ -216,16 +288,16 @@ export default {
                         <div id="mode" class="windowcard" style="grid-area: windowcard;" @click="clusterOn('Window Card')">
                             <h1>Window Card</h1>
                             <img class="teach" src="/images/teach.png" alt="">
-                        </div>
+                        </div> -->
                         <!-- <div id="mode" class="challenge" style="grid-area: challenge;">
                             <h1>Challenge Mode</h1>
                         </div> -->
-                        <div id="mode" class="lesson" style="grid-area: lesson;" @click="clusterOn('Lessons')">
+                        <!-- <div id="mode" class="lesson" style="grid-area: lesson;" @click="clusterOn('Lessons')">
                             <h1>Lessons</h1>
                         </div>
                     </div>
                     
-                </div>
+                </div> -->
                 <!-- <div class="list" style="grid-area: list;">
                     <h1>Students</h1>
                     <div class="table-scroll">
@@ -259,13 +331,89 @@ export default {
                 </div> -->
                     
                 <!-- </div> -->
-        </div>
+        <!-- </div> -->
         </main>
         
     </body>
     <loading v-else></loading>
 </template>
 <style scoped>
+.navbar{
+    position: fixed;
+    left: 0;
+}
+.lesson:hover{
+    background-color: #f17751;
+    transform: scale(1.02);
+}
+.mode-1 img,.mode-2 img{
+    height: 180px;
+    margin-left: auto;
+    display: block;
+}
+.mode-2{
+    background-color: #64b7f6;
+}
+.mode-1{
+    background-color: #96c470;
+}
+.mode:hover{
+    transform: scale(1.02);
+}
+.mode{
+    color: white;
+    padding: 10px;
+    height: 100%;
+    width: 100%;
+    border-radius: 17px;
+    display: flex;
+    /* background-color: #2a713d; */
+}
+.mode-con{
+    margin: 10px;
+    height: 190px;
+    width: 90%;
+    display: flex;
+    gap: 10px;
+}
+.lesson-list{
+    width: 100%;
+    height: fit-content;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+.leson-con{
+    width: 90%;
+    height: fit-content;
+}
+.text-area{
+    display: flex;
+    flex-direction: column;
+    align-items: baseline;
+    justify-content: center;
+    /* background-color: #a8f5ff; */
+}
+.text-area .user-id{
+    color: white;
+    margin: 0;
+    font-weight: 500;
+}
+.user-name{
+    color: white;
+    margin: 0;
+    font-weight: 700;
+}
+header{
+    margin-top: 10px;
+    border-radius: 17px;
+    height: fit-content;
+    padding: 10px;
+    width: 90%;
+    background-color: #fbaaa6;
+    display: flex;
+    gap: 10px;
+}
 .class-con .con-class .class-s h1{
     color: white;
 }
@@ -494,7 +642,7 @@ export default {
 }
 .image-contaner img{
     border-radius: 50%;
-    height: 100px;
+    height: 80px;
 }
 .header{
     display: flex;
@@ -578,13 +726,18 @@ body{
     height: 100vh;
     width: 100vw;
     display: flex;
+    /* align-items: end; */
+    justify-content: end;
+    overflow-x: hidden;
 }
 main{
-    height: 100%;
-    width: 100%;
+    /* max-width: 250px; */
+    height: fit-content;
+    width: calc(100% - 250px);
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
+    /* justify-content: center; */
 }
 
 </style>
