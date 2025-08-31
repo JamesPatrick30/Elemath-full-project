@@ -40,6 +40,7 @@ export default{
                 });
                 this.players = res.data.players.sort((a, b) => b.score - a.score);
                 this.stillPlaying = res.data.playing;
+                console.log(this.players);
                 if(this.stillPlaying.length == 0){
                     try{
                         const res = await api.post('/mode/done',{id:this.roomId});
@@ -50,6 +51,18 @@ export default{
                         console.log(err);
                     }
                 }
+            }catch(err){
+                this.$router.push('/');
+                console.log(err);
+            }
+        },
+        async finishbtn(){
+            try{
+                const res = await api.post('/mode/finish',{
+                    id:this.roomId
+                });
+                this.$router.push('/');
+                alert(res.data.message);
             }catch(err){
                 console.log(err);
             }
@@ -97,7 +110,7 @@ export default{
                     <h1>{{ failed }}</h1>
                 </div>
             </div>
-            <button>Finish</button>
+            <button @click="finishbtn">Finish</button>
         </div>
     </div>
     <main>
@@ -105,25 +118,27 @@ export default{
         <div class="top-player">
             <div id="top">
                 
-                <div class="top2">
-                    <img src="/characters/fly.png" alt="">
-                    <p>Sanchez James Patrick L</p>
+                <div class="top2" v-if="players[1]">
+                    <img :src="players[1]?.profile" alt="">
+                    <p>{{ players[1]?.player }}</p>
+                    
                     <div class="medal" id="medal2"><h1>2</h1></div>
                 </div>
             </div>
             <div id="top">
                 
-                <div class="top1">
-                    <img src="/characters/fly.png" alt="">
-                    <p>Sanchez James Patrick L</p>
+                <div class="top1" v-if="players[0]">
+                    <img :src="players[0]?.profile" alt="">
+                    <p>{{ players[0]?.player }}</p>
                     <div class="medal" id="medal1"><h1>1</h1></div>
                 </div>
             </div>
             <div id="top">
 
-                <div class="top3">
-                    <img src="/characters/fly.png" alt="">
-                    <p>Sanchez James Patrick L</p>
+                <div class="top3" v-if="players[2]">
+                    <img :src="players[2]?.profile" alt="">
+                    <p>{{ players[2]?.player }}</p>
+
                     <div class="medal" id="medal3"><h1>3</h1></div>
                 </div>
             </div>

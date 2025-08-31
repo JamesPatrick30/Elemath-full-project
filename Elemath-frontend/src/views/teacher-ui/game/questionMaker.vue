@@ -319,7 +319,7 @@ export default{
     },
     methods:{
         startGame(){
-            if(this.time == 0 ){
+            if(!this.time){
                 alert('⚠️ Time limit not set. Please configure a timer before starting.');
                 return;
             }
