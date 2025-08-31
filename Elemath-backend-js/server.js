@@ -552,10 +552,30 @@ app.post('/get/classData',auth,classCache,async(req,res)=>{
     console.log(err);
   }
 });
-app.get('/chart', auth, async (req, res) => {
+async function cashChart(req,res,next){
+    const classId  = req.query.classId; // or req.body depending on your client
+
+    const datain = await redisClient.get(`chart:${classId}`);
+    if(!datain){
+      next();
+      return;
+    }
+    console.log('hit chart cache');
+    const modeData = JSON.parse(datain);
+    const LineChart = modeData.LineChart;
+    const BarChart = modeData.BarChart;
+    const PieChart = modeData.PieChart;
+    const ImprovementChart = modeData.ImprovementChart;
+    const LowTopicBarChart = modeData.LowTopicBarChart;
+    res.json({ LineChart, BarChart, PieChart, ImprovementChart, LowTopicBarChart });
+
+}
+app.get('/chart', auth,cashChart ,async (req, res) => {
   try {
     const classId  = req.query.classId; // or req.body depending on your client
-    const gradebook = await Gradebook.findOne({ classId: classId });
+    const gradebook = await Gradebook.findOne({ classId: classId })
+      .sort({ dateCreated: -1 })   // sort descending by dateCreated
+      .limit(1);
     if (!gradebook) return res.status(404).json({ message: 'No data found' });
 
     // console.log(JSON.stringify(gradebook));
@@ -702,7 +722,7 @@ app.get('/chart', auth, async (req, res) => {
         yaxis: { max: 100, min: 0, title: { text: "Percentage (%)" } }
       }
     };
-
+    await redisClient.set(`chart:${classId}`, JSON.stringify({LineChart, BarChart, PieChart, ImprovementChart, LowTopicBarChart}), { EX: 3600 });
     res.json({ LineChart, BarChart, PieChart, ImprovementChart, LowTopicBarChart });
 
   } catch (err) {
