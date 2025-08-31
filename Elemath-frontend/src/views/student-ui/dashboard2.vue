@@ -84,10 +84,10 @@ export default{
                         id: this.id
                     }
                 });
-                if(res.data.started == true){
+                if(res.data.started === true){
                     this.started = true;
                 }
-                if(res.data.quiz == true){
+                if(res.data.quiz === true){
                     this.ongiong = true;
                 }
             }catch(err){
