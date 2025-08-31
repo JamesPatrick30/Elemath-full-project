@@ -212,17 +212,42 @@ app.get('/get/student/data', auth, async (req, res) => {
 });
 const Gradebook = require('./models/grade.js');
 
-app.post('/get/quarter',auth,async (req,res)=>{
-  const {quaterId} = req.body;
+app.post('/get/quarter', auth, async (req, res) => {
+  const { quaterId } = req.body;
 
-  const quarter = await Gradebook.findOne({_id:quaterId},{_id:0,quizzes:1});
+  const quarter = await Gradebook.findOne(
+    { _id: quaterId },
+    { _id: 0, quizzes: 1, classId: 1 }
+  );
 
-  if (!quarter) return res.status(404).json({message:'no quarter fund'});
+  if (!quarter) return res.status(404).json({ message: 'no quarter found' });
 
-  res.json({quizzes:quarter.quizzes});
-  console.log('quater : '+ quarter);
+  // Flatten into student-based structure
+  const studentMap = {};
 
+  quarter.quizzes.forEach(quiz => {
+    quiz.students.forEach(student => {
+      if (!studentMap[student.lrn]) {
+        studentMap[student.lrn] = {
+          lrn: student.lrn,
+          name: student.name,
+          quiz: []
+        };
+      }
+      studentMap[student.lrn].quiz.push({
+        quizId: quiz.quizId,
+        quizname: quiz.quizname,
+        score: student.score,
+        total: quiz.total
+      });
+    });
+  });
+
+  const arranged = Object.values(studentMap);
+
+  res.json({ students: arranged });
 });
+
 
 app.post('/get/classrecord/Id',auth,async(req,res)=>{
   const {classId}= req.body;
@@ -957,7 +982,7 @@ app.post('/mode/done', auth, async (req, res) => {
           }
         : {
             lrn: stud.lrn,
-            name: `${stud.firstname} ${stud.lastname}`,
+            name: `${stud.name}`,
             score: 0,
             done: false
           };

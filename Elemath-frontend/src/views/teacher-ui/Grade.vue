@@ -69,9 +69,9 @@
                         <div class="tr" :id="index%2? 'line-2' : ''" v-for="(student,index) in students" :key="student.name">
                             <div class="td-name"><h5 class="student-name" >{{ student.name }}</h5></div>
                             <div class="td-con">
-                                <div class="td" v-for="grades in student.quizs" :key="grades.lrn" :class="grades.pass? 'notpass':'pass'"><p>{{ grades.score }}ss</p> </div>
+                                <div class="td" v-for="grades in student?.quiz" :key="grades.lrn" :class="passornot(grades.score,grades.total)? 'pass':'notpass'"><p>{{ grades.score }}/{{ grades.total }}</p> </div>
                             </div>
-                            <div class="td-total" :class="average(student.quiz).pass ? 'pass' : 'notpass'"><p>{{ average(student.quiz).average }}</p></div>
+                            <div class="td-total" :class="average(student?.quiz).pass ? 'pass' : 'notpass'"><p>{{ average(student?.quiz).average }}</p></div>
                         </div>
                     </div>
                  </div>
@@ -110,6 +110,11 @@ export default{
         }
     },
     methods:{
+        passornot(grade,total){
+            const ave = grade / total * 100;
+            if(ave >= 75) return true;
+            return false;
+        },
         async refreshtoken(){
             try {
                 const res = await api.post('/refresh-token');
@@ -181,65 +186,77 @@ export default{
             }
         },
 
-        async getQuarter(quaterId){
-            try{
-                const res = await api.post('/get/quarter',{
-                    quaterId:quaterId
+        async getQuarter(quaterId) {
+            try {
+                const res = await api.post('/get/quarter', {
+                    quaterId: quaterId
                 });
-                
-                this.quizs = res.data.quizzes;
-                console.log(res.data);
-            }catch(err){
-                console.log(err);
+
+                if (res.data && Array.isArray(res.data.students) ) {
+                    // Sort students alphabetically by name
+                    this.students = res.data.students.sort((a, b) => 
+                        a.name.localeCompare(b.name)
+                    );
+                    
+                    console.log('sasdas'+JSON.stringify( this.students));
+                } else {
+                    console.warn("No students found in response:", res.data);
+                    
+                }
+
+                console.log("Sorted students:", this.students);
+            } catch (err) {
+                console.error("Error fetching quarter:", err);
             }
         },
+
         async getClassData(classIn) {
-    try {
-      console.log('class id : ' + classIn);
-      const res = await api.post('/get/classData', { classId: classIn });
+            try {
+            console.log('class id : ' + classIn);
+            const res = await api.post('/get/classData', { classId: classIn });
 
-      if (res.data.length <= 0) {
-        alert('No student in this class yet!');
-        this.$router.push({ name: 'createClass', query: { i: classIn } });
-        return;
-      }
+            if (res.data.length <= 0) {
+                alert('No student in this class yet!');
+                this.$router.push({ name: 'createClass', query: { i: classIn } });
+                return;
+            }
 
-      // Sort students by name
-      this.students = res.data.sort((a, b) => a.name.localeCompare(b.name));
-      this.reload = false;
+            // Sort students by name
+            this.students = res.data.sort((a, b) => a.name.localeCompare(b.name));
+            this.reload = false;
 
-      // After fetching students, get their quiz data
-      await this.getAllQuarter(classIn);
+            // After fetching students, get their quiz data
+            await this.getAllQuarter(classIn);
 
-      // Build dataset
-      this.dataset = this.students.map(student => {
-        // Find all quiz scores for this student
-        const quizScores = this.quizs.flatMap(quiz => {
-          const matched = quiz.students.find(s => s.lrn === student.lrn);
-          if (matched) {
-            return [{
-              quizId: quiz.quizId,
-              quizName: quiz.quizname,
-              score: matched.score
-            }];
-          }
-          return [];
-        });
+            // // Build dataset
+            // this.dataset = this.students.map(student => {
+            //     // Find all quiz scores for this student
+            //     const quizScores = this.quizs.flatMap(quiz => {
+            //     const matched = quiz.students.find(s => s.lrn === student.lrn);
+            //     if (matched) {
+            //         return [{
+            //         quizId: quiz.quizId,
+            //         quizName: quiz.quizname,
+            //         score: matched.score
+            //         }];
+            //     }
+            //     return [];
+            //     });
 
-        return {
-          lrn: student.lrn,
-          name: student.name,
-          quizs: quizScores
-        };
-      });
+            //     return {
+            //     lrn: student.lrn,
+            //     name: student.name,
+            //     quizs: quizScores
+            //     };
+            // });
 
-      console.log('Structured dataset:', this.dataset);
+            console.log('Structured dataset:', this.dataset);
 
-    } catch (err) {
-      console.error('Error fetching class data:', err);
-      alert('Failed to load class data. Please try again later.');
-    }
-  },
+            } catch (err) {
+            console.error('Error fetching class data:', err);
+            alert('Failed to load class data. Please try again later.');
+            }
+        },
         async getData() {
             try {
                 const res = await api.get('/get/grade/class');
@@ -306,20 +323,24 @@ export default{
         },
         average(grades){
             let pass = false;
-            let average = 100;//(Total / grades.length).toFixed(2);
-            if(this.quizs){
-                average='Na';
-            }
-            // let Total = 0;
-            // for(let i in grades){
-            //     Total += grades[i] / this.quizstotal[i] *100;
+            // let average = 100;//(Total / grades.length).toFixed(2);
+            // if(this.quizs){
+            //     average='Na';
             // }
+            let Total = 0;
+            for(let i in grades){
+                Total += (grades[i].score / grades[i].total) ;
+                console.log(`score : ${grades[i].score} , total : ${grades[i].total} , average : ${grades[i].score/grades[i].total}` );
+            }
              
             
-            // if((Total / grades.length)>75){
-            //     pass = true
-            // }
+            if((Total / grades.length)>75){
+                pass = true
+            }
+            const average = (Total/grades.length)*100;
+             console.log('grade : '+JSON.stringify(grades));
             return {average,pass};
+           
         }
     },
     mounted(){
