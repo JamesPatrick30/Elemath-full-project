@@ -24,7 +24,10 @@ export default{
             ],
             players: [],
             roomId:this.$route.query.i,
-            stillPlaying:0
+            stillPlaying:0,
+            pass:0,
+            failed:0,
+            playerdone:false
         }
     },
     methods:{
@@ -40,7 +43,9 @@ export default{
                 if(this.stillPlaying.length == 0){
                     try{
                         const res = await api.post('/mode/done',{id:this.roomId});
-                        alert(res.data.message);
+                        this.pass = res.data.pass;
+                        this.failed = res.data.failed;
+                        this.playerdone = true;
                     }catch(err){
                         console.log(err);
                     }
@@ -77,6 +82,22 @@ export default{
             <div></div>
             <div></div>
             <div></div>
+        </div>
+    </div>
+    <div class="cluster-con" v-if="playerdone === true">
+        <div class="cluster">
+            <h2>Result</h2>
+            <div class="result-con">
+                <div class="result">
+                    <h3>Pass</h3>
+                    <h1>{{ pass }}</h1>
+                </div>
+                <div class="result2">
+                    <h3>Failed</h3>
+                    <h1>{{ failed }}</h1>
+                </div>
+            </div>
+            <button>Finish</button>
         </div>
     </div>
     <main>
@@ -144,6 +165,60 @@ export default{
 </template>
 
 <style scoped>
+.cluster button{
+    margin: 10px;
+    border-radius: 10px;
+    color: #83a8f3;
+    background-color: white;
+    border: none;
+    height: 50px;
+    width: 100px;
+    font-weight: 700;
+    font-size: large;
+}
+.result2{
+    background-color: #ec9773;
+}
+.result{
+    background-color: #80ec83;
+}
+.result,.result2{
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    width: 200px;
+    border-radius: 10px;
+}
+.result-con{
+    display: flex;
+    gap:1em;
+}
+*{
+    font-family: 'BubbleBody Neue', 'Poppins', sans-serif;
+}
+.cluster h2{
+    color: #80ec83;
+}
+.cluster{
+    text-align: center;
+    background-color: rgb(245, 245, 245);
+    padding: 10px;
+    border-radius: 10px;
+}
+.cluster-con{
+    position: fixed;
+    z-index: 10000;
+    background-color: rgb(0, 0, 0,0.20);
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
 #playersep{
     /* background: #73a533; */
 

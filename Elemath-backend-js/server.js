@@ -1173,6 +1173,16 @@ app.post('/mode/done', auth, async (req, res) => {
     const players = modeData.players;  // present
     const allStudents = await StudentClass.find({ classId: id }); // enrolled
 
+    let pass = 0;
+    let failed = 0;
+    for(studs in players){
+      const ave = studs.score / studs.total * 100;
+      if(ave >=75){
+        pass+=1;
+      }else{
+        failed+=1;
+      }
+    }
     // 2. Build quiz students list
     const quizStudents = allStudents.map(stud => {
       const player = players.find(p => p.lrn === stud.lrn);
@@ -1224,8 +1234,8 @@ app.post('/mode/done', auth, async (req, res) => {
 
     res.json({
       message: "Quiz saved successfully",
-      quiz: newQuiz,
-      analysisPoint: chartPoint
+      pass:pass,
+      failed:failed
     });
   } catch (err) {
     console.error("Error in /mode/done:", err);
