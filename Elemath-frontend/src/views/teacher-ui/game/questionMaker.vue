@@ -26,7 +26,13 @@
                     <textarea  class="q-input" id="" placeholder="Question.." v-model="questions[editindex].question"></textarea>
                     
                     <br>
-                    <div class="multi" v-if="questions[editindex]?.type ==='multiple-choice'">
+                    <select class="t-o-q" v-if="questions[editindex]?.type == 'true-false'" v-model="questions[editindex].answer"  >
+                        <option disabled value="">-- Select a type --</option>
+                        <option value="true">true</option>
+                        <option value="false">false</option>
+                        
+                    </select>
+                    <div class="multi" v-else-if="questions[editindex]?.type ==='multiple-choice'">
                         <input class="input-c" type="text" v-model="questions[editindex].options[0]" placeholder="choices...">
                         <input class="input-c" type="text" v-model="questions[editindex].options[1]" placeholder="choices...">
                         <input class="input-c" type="text" v-model="questions[editindex].options[2]" placeholder="choices...">
@@ -186,8 +192,15 @@
                         <option disabled value="">-- Select a type --</option>
                         <option value="multiple-choice">Multiple Choice</option>
                         <option value="input answer">input answer</option>
+                        <option value="true-false">true-false</option>
                     </select>
                     <br>
+                    <select class="t-o-q" v-if="CostumeQuestion.type == 'true-false'" v-model="CostumeQuestion.answer"  >
+                        <option disabled value="">-- Select a type --</option>
+                        <option value="true">true</option>
+                        <option value="false">false</option>
+                        
+                    </select>
                     <div class="multi" v-if="CostumeQuestion.type === 'multiple-choice'">
                         <input class="input-c" type="text" v-model="CostumeQuestion.options[0]" placeholder="choices...">
                         <input class="input-c" type="text" v-model="CostumeQuestion.options[1]" placeholder="choices...">
