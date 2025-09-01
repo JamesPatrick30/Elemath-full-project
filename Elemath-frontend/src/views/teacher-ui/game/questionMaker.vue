@@ -41,48 +41,43 @@
                 
 
 
-                <div class="con-generate" v-if="questionOption === 'Generate'">
-                    <header class="top-bar">
-                    
-                    <h1 class="title">⚡ Powered by GPT-5</h1>
-                    <p class="text-xs text-gray-500 mt-2 italic">
-                        ⚠️ This AI is specialized in <span class="font-semibold">Mathematics</span>.
-                    </p>
-                </header>
-              
-                    <div
-                        v-if="isDragging && !generatingLoading"
-                        class="drop-area"
-                        @dragover.prevent
-                        @dragleave.prevent="isDragging = false"
-                        @drop.prevent="handleDrop"
-                    >
-                        <p>Drop your PDF here</p>
-                    </div>
+                
+                    <div class="upload" v-if="!uploading">
+                        <div class="con-generate" v-if="questionOption === 'Generate'">
+                            <header class="top-bar">
+                            
+                                <h1 class="title">⚡ Powered by GPT-5</h1>
+                                <p class="text-xs text-gray-500 mt-2 italic">
+                                    ⚠️ This AI is specialized in <span class="font-semibold">Mathematics</span>.
+                                </p>
+                            </header>
+                            <div
+                                v-if="isDragging && !generatingLoading"
+                                class="drop-area"
+                                @dragover.prevent
+                                @dragleave.prevent="isDragging = false"
+                                @drop.prevent="handleDrop"
+                            >
+                                <p>Drop your PDF here</p>
+                            </div>
+                            
+                            <div class="file" v-if="!isDragging && !generatingLoading">
+                                <input
+                                v-if="!isDragging"
+                                id="fileInput"
+                                type="file"
+                                @change="onFileChange"
+                                accept="application/pdf"
+                                class="file-input"
+                                />
 
-                    <!-- Hidden input to allow click selection if needed -->
-                    <!-- <input
-                        type="file"
-                        accept="application/pdf"
-                        ref="fileInput"
-                        @change="onFileChangeDrag"
-                        class="file-input"
-                    /> -->
-                    
-                    <div class="file" v-if="!isDragging && !generatingLoading">
-                        <input
-                        v-if="!isDragging"
-                        id="fileInput"
-                        type="file"
-                        @change="onFileChange"
-                        accept="application/pdf"
-                        class="file-input"
-                        />
-
-    <!-- Styled label as the "Choose File" button -->
-                    <label  for="fileInput" class="file-label"><font-awesome-icon icon="fa-solid fa-upload" /> Upload New</label>
-                    <button class="file-c" @click="openClusterFile()"><font-awesome-icon icon="fa-solid fa-file" />Select Existing</button>
+            <!-- Styled label as the "Choose File" button -->
+                                <label  for="fileInput" class="file-label"><font-awesome-icon icon="fa-solid fa-upload" /> Upload New</label>
+                                <button class="file-c" @click="openClusterFile()"><font-awesome-icon icon="fa-solid fa-file" />Select Existing</button>
+                            </div>
                     </div>
+                    
+                    
                     
                     <!-- Upload button -->
                     <!-- <button 
@@ -136,6 +131,11 @@
                         <p class="typing">Generating questions...</p>
                     </div>
                 </div>
+                <div class="loading-generate" v-if="uploading">
+                    
+                        <div class="loading-r"></div>
+                        <p class="typing">Analyzing document…</p>
+                    </div>
                 <div v-if="questionOption === 'Costumize'" class="Costumize">
                     <textarea  class="q-input" id="" placeholder="Story (Option)" v-model="CostumeQuestion.story"></textarea>
 
@@ -268,8 +268,9 @@
                 
                 <textarea class="question-t" name="" id="" v-model="question.question" :readonly="editindex == index"></textarea>
                 <div class="multi" v-if="question?.options.length !=0">
-                    <div class="choices" v-for="Choice in question.options" :key="Choice" :class="(Choice===question.answer)? 'r-answer':'w-answer'" >
+                    <div class="choices" v-for="(Choice,index) in question.options" :key="Choice" :class="(Choice===question.answer)? 'r-answer':'w-answer'" >
                         {{ Choice }}
+                        
                     </div>
                 </div>
                 <div class="con-input-a" v-else>
@@ -322,7 +323,8 @@ export default{
             generatingLoading: false, // <- add this
             fileloading: false,
             filetitle:'',
-            time:null
+            time:null,
+            uploading:false
         }
     },
     methods:{
@@ -359,7 +361,7 @@ export default{
                 const res = await api.get('/lesson/list');
                 this.filelist = res.data.files;
                 this.fileloading = false;
-                console.log("✅ File list fetched:", this.filelist);
+              
                 // alert(res.data.message);
             } catch (err) {
                 console.error("❌ Error fetching file list:", err);
@@ -442,6 +444,7 @@ export default{
     },
 
     async uploadLesson() {
+        this.uploading = true;
         if (!this.file) {
             alert("Please select a file first.");
             return;
@@ -465,15 +468,15 @@ export default{
 
             // Set progress to 100% when done
             this.progress = 100;
-            console.log("✅ File uploaded:", res.data);
+            
             this.fileId = res.data.id;
             this.filetitle = res.data.title;
             
-
             } catch (err) {
             console.error("❌ Upload failed:", err);
             alert(err.response?.data?.message || "Something went wrong during upload.");
             }
+            this.uploading = false;
 
         },
 
@@ -566,7 +569,7 @@ export default{
                     const el = document.getElementById(index.toString());
                     if (el) el.scrollIntoView({ behavior: 'smooth' });
                 });
-                console.log(res.data);
+                
                
             }catch(err){
                 alert('Something went wrong, try again');
@@ -581,7 +584,7 @@ export default{
             try {
                 const res = await api.get(`/get/mode/data`,{params: { id: this.id } });
             
-                console.log('Mode data:', res.data);
+                
                 this.players = res.data.modeData || [];
             } catch (err) {
                 console.error('Error fetching mode data:', err);
@@ -597,7 +600,7 @@ export default{
 
         socket.emit('create-room', { roomId: this.id });
         socket.on('room-created', (data) => {
-            console.log('Room created:', data);
+            // console.log('Room created:', data);
             // alert('Room created successfully! '+data.message);
             // Handle room creation confirmation here
         });
@@ -605,7 +608,7 @@ export default{
             console.log('Player joined:', data);
             this.players.push({ player: data.player, lrn: data.lrn, profile: data.profile });
         });
-        console.log(socket.listeners('room-created').length);
+        // console.log(socket.listeners('room-created').length);
 
         window.addEventListener("dragover", this.onDragOver);
         window.addEventListener("dragleave", this.onDragLeave);
@@ -620,6 +623,9 @@ export default{
 }
 </script>
 <style scoped>
+.upload{
+    width: 80%;
+}
 .question-t-a {
     color: white;
     background-color: #54de63;
@@ -767,7 +773,7 @@ export default{
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 400px;
   border: 4px dashed #2563eb;
   border-radius: 12px;
   background: rgba(224, 231, 255, 0.9);
@@ -1177,6 +1183,7 @@ export default{
 .con-generate{
     display: flex;
     flex-direction: column;
+    align-items: center;
     padding: 20px;
 
     width: 100%;
@@ -1209,6 +1216,7 @@ option{
     display: flex;
     flex-direction: column;
     align-items: center;
+    /* justify-content: center; */
 
 }
 .nav-btn{
