@@ -137,6 +137,8 @@
                     </div>
                 </div>
                 <div v-if="questionOption === 'Costumize'" class="Costumize">
+                    <textarea  class="q-input" id="" placeholder="Story (Option)" v-model="CostumeQuestion.story"></textarea>
+
                     <textarea  class="q-input" id="" placeholder="Question.." v-model="CostumeQuestion.Q"></textarea>
                     <select class="t-o-q" v-model="CostumeQuestion.type"  >
                         <option disabled value="">-- Select a type --</option>
@@ -145,23 +147,23 @@
                     </select>
                     <br>
                     <div class="multi" v-if="CostumeQuestion.type === 'multiple choices'">
-                        <input class="input-c" type="text" v-model="CostumeQuestion.choices[0]" placeholder="choices...">
-                        <input class="input-c" type="text" v-model="CostumeQuestion.choices[1]" placeholder="choices...">
-                        <input class="input-c" type="text" v-model="CostumeQuestion.choices[2]" placeholder="choices...">
-                        <input class="input-c" type="text" v-model="CostumeQuestion.choices[3]" placeholder="choices...">
+                        <input class="input-c" type="text" v-model="CostumeQuestion.options[0]" placeholder="choices...">
+                        <input class="input-c" type="text" v-model="CostumeQuestion.options[1]" placeholder="choices...">
+                        <input class="input-c" type="text" v-model="CostumeQuestion.options[2]" placeholder="choices...">
+                        <input class="input-c" type="text" v-model="CostumeQuestion.options[3]" placeholder="choices...">
                         <select class="t-o-q" v-model="CostumeQuestion.answer"  >
 
                         <option disabled value="">-- Select a Answer --</option>
-                            <option v-for="Choice in CostumeQuestion?.choices.filter(choice => choice.trim() !== '')" :key="Choice" :value="Choice" @click="" >{{ Choice }}</option>
+                            <option v-for="Choice in CostumeQuestion?.options.filter(choice => choice.trim() !== '')" :key="Choice" :value="Choice" @click="" >{{ Choice }}</option>
                             
                         </select>
                     </div>
                     <div class="con-input-a" v-else-if="CostumeQuestion.type==='input answer'">
                         <input type="text" class="input-a" placeholder="Answer.." v-model="CostumeQuestion.answer">
                     </div>
-                    
+                    <button class="btn-add" @click="addQuestion()">Add..</button>
                 </div>
-                <!-- <button class="btn-add" @click="addQuestion()">Add..</button> -->
+                
             </div>
             <div class="con-file" v-if="btnActive.file">
                 
@@ -192,6 +194,7 @@
                 <!-- TODO: fix the data -->
                 <p class="type">{{ question?.topic }}</p>
                 <p class="type">{{ question?.type }}</p>
+                
                 <!-- <p class="type">{{ question.language }}</p> -->
                 <!-- Render ASCII table safely -->
 
@@ -260,16 +263,20 @@
                     </table>
                  </div>
                 
-                <p v-if="question?.story">Story : {{ question?.story }}</p>
-                <p>{{ question.question }}</p>
-                <div class="multi" v-if="question?.options">
+                <!-- <p v-if="question?.story">Story : {{ question?.story }}</p> -->
+                <textarea class="question-t" name="" id="" v-model="question.story" :readonly="editindex == index"></textarea>
+                
+                <textarea class="question-t" name="" id="" v-model="question.question" :readonly="editindex == index"></textarea>
+                <div class="multi" v-if="question?.options.length !=0">
                     <div class="choices" v-for="Choice in question.options" :key="Choice" :class="(Choice===question.answer)? 'r-answer':'w-answer'" >
                         {{ Choice }}
                     </div>
                 </div>
                 <div class="con-input-a" v-else>
                     <div class="input-answer" >
-                      Answer:{{ question.answer }}
+                      Answer:
+                <textarea class="question-t-a" name="" id="" v-model="question.answer" :readonly="editindex == index"></textarea>
+                      
                     </div>
                 </div>
                 <p> Explanation : {{ question.explanation }}</p>
@@ -291,6 +298,7 @@ export default{
     },
     data(){
         return{
+            editindex:null,
             isDragging: false,
             generateBtnSwitch: false,
             generateBtn:'Generate',
@@ -307,7 +315,7 @@ export default{
 
             questions:[],
             fileId: '',
-            CostumeQuestion:{Q:'',type:'',answer:'',answerType:'',choices:[]},
+            CostumeQuestion:{Q:'',type:'',answer:'',answerType:'',options:[],story:''},
             id: this.$route.query.i,
             filelist: [],
             fileCluster:false,
@@ -318,6 +326,10 @@ export default{
         }
     },
     methods:{
+        editbtnq(index){
+            alert(index);
+            this.editindex = index +1;
+        },
         startGame(){
             if(!this.time){
                 alert('⚠️ Time limit not set. Please configure a timer before starting.');
@@ -503,12 +515,16 @@ export default{
             }
 
             // Push the new question
+            if(this.CostumeQuestion.type === 'input answer'){
+                this.CostumeQuestion.options=[];
+            }
             this.questions.push({
                 question: this.CostumeQuestion.Q,
                 type: this.CostumeQuestion.type,
                 answerType: '',
+                story:this.CostumeQuestion.story,
                 answer: this.CostumeQuestion.answer,
-                options: this.CostumeQuestion.choices.filter(choice => choice.trim() !== '')
+                options: this.CostumeQuestion.options.filter(choice => choice.trim() !== '')
             });
 
             // Scroll to the new question after DOM updates
@@ -523,7 +539,7 @@ export default{
                 Q: '',
                 type: 'multiple choices', // or whatever default
                 answer: '',
-                choices: []
+                options: []
             };
         },
         async generateQuestion(){
@@ -604,6 +620,31 @@ export default{
 }
 </script>
 <style scoped>
+.question-t-a {
+    color: white;
+    background-color: #54de63;
+    outline: none;
+    resize: none;
+    border: none;
+    width: 100%;
+    height: 60px;
+    font-size: 20px;
+    border-radius: 0 10px 10px 0;
+    padding-top: 18px;        /* manual vertical centering */
+    box-sizing: border-box;   /* ensures padding doesn’t overflow */
+    line-height: 1.2;         /* tweak line height for better balance */
+}
+
+.question-t{
+    color: #41b8d5;
+
+    outline: none;
+    resize: none;
+    border: none;
+    width: 100%;
+    height: fit-content;
+    font-size: 20px;
+}
 .close-btn{
     justify-self: end;
     align-self: flex-end;

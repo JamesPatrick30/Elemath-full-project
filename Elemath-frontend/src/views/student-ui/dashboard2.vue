@@ -84,11 +84,16 @@ export default{
                         id: this.id
                     }
                 });
+
                 if(res.data.started === true){
                     this.started = true;
+                }else{
+                    this.started = false;
                 }
                 if(res.data.quiz === true){
                     this.ongiong = true;
+                }else{
+                    this.ongiong = false;
                 }
             }catch(err){
                 console.error('Error fetching quiz data:', err);
