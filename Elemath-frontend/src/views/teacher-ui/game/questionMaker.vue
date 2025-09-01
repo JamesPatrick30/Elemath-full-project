@@ -263,10 +263,10 @@
                     </table>
                  </div>
                 
-                <!-- <p v-if="question?.story">Story : {{ question?.story }}</p> -->
-                <textarea class="question-t" name="" id="" v-model="question.story" :readonly="editindex == index"></textarea>
-                
-                <textarea class="question-t" name="" id="" v-model="question.question" :readonly="editindex == index"></textarea>
+                <p v-if="question?.story">Story : {{ question?.story }}</p>
+                <!-- <textarea class="question-t" name="" id="" v-model="question.story" :readonly="editindex == index"></textarea> -->
+                <p>{{ question.question }}</p>
+                <!-- <textarea class="question-t" name="" id="" v-model="question.question" :readonly="editindex == index"></textarea> -->
                 <div class="multi" v-if="question?.options.length !=0">
                     <div class="choices" v-for="(Choice,index) in question.options" :key="Choice" :class="(Choice===question.answer)? 'r-answer':'w-answer'" >
                         {{ Choice }}
@@ -840,8 +840,14 @@ export default{
     max-height: max-content;
     overflow: visible;
 } */
+ .file-l:hover{
+    transition: 0.3s;
+    background-color: #69b1ff;
+ }
 .file-l{
     /* width: 100%; */
+    transition: 0.3s;
+
     height: 150px;
     color: white;
     /* overflow: hidden; */
