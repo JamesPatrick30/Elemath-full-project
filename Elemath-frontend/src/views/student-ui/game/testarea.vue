@@ -40,13 +40,14 @@ export default {
             inputanswer:'',
             mute: false,
             setting:false,
-            audiosrc:'/musics/ingame.mp3',
-            volume:0.5,
+            audiosrc: "/musics/ingame.mp3",
+            volume: 0.5,
             resvolume:0
         }
     },
     methods: {
         startTimer() {
+            this.unlockAudio();
             this.timer = setInterval(() => {
                 if (this.timeLeft > 0) {
                     this.timeLeft--;
@@ -134,16 +135,20 @@ export default {
         updateVolume() {
             this.$refs.player.volume = this.volume;
         },
+        
+        unlockAudio() {
+            const player = this.$refs.player;
+            player.muted = false;
+            player.volume = this.volume;
+            player.play().catch(err => console.warn("Still blocked:", err));
+        }
     },
     mounted() {
         // this.getIDres();
         this.get1st();
         this.startTimer();
-        const player = this.$refs.player;
-        player.volume = this.volume;
-
-        player.play();
-        player.muted = false;
+        document.body.addEventListener("click", this.unlockAudio, { once: true });
+        // document.body.addEventListener("click", this.unlockAudio, { once: true });
     },
     beforeMount(){
         // localStorage.setItem('timeLeft',this.timeLeft);
@@ -151,9 +156,18 @@ export default {
 }
 </script>
 <template>
-    <audio ref="player" :src="audiosrc" loop autoplay muted></audio>
+
     <greenbg></greenbg>
     <body>
+    <audio
+        ref="player"
+        :src="audiosrc"
+        autoplay
+        loop
+        muted
+        ></audio>
+
+
         <header>
                     
             <p> {{ topic }}</p>
