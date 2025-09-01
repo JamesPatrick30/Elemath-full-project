@@ -46,6 +46,18 @@
          
         </div>
     </div>
+    <div class="file-cluster" v-if="deletecluster">
+        <div class="edit-b">
+            <h1>Delete</h1>
+            <h3>Are you sure you want to delete Question {{ deleteIndex+1 }} ?</h3>
+            <div class="btn-con">
+                <button class="cancel-btn" @click="deletecluster = false;">Cancel</button>
+                <button class="delete-btn" @click="removeItem(deleteIndex)">Delete</button>
+            </div>
+            
+        </div>
+    </div>
+
     <main>
         <button class="btn-back" v-on:click="backBtn()">Back</button>
         <div class="con-q">
@@ -226,7 +238,7 @@
                 <p class="type">{{ question?.type }}</p>
                 <div class="action-con">
                     <button class="action" @click="editbtnq(index)"><font-awesome-icon icon="fa-solid fa-pen" size="xl" style="color: #ffd43b;" /></button>
-                    <button class="action"><font-awesome-icon icon="fa-solid fa-trash" size="xl" style="color: #cc0000;" /></button>
+                    <button class="action" @click="deleteON(index)"><font-awesome-icon icon="fa-solid fa-trash" size="xl" style="color: #cc0000;" /></button>
                 </div>
                 
                 <!-- <p class="type">{{ question.language }}</p> -->
@@ -338,6 +350,7 @@ export default{
     },
     data(){
         return{
+            deletecluster:false,
             editindex:null,
             isDragging: false,
             generateBtnSwitch: false,
@@ -365,10 +378,20 @@ export default{
             time:null,
             uploading:false,
             edit:{option:[],question:'',story:'',answer:''},
-            editcluster:false
+            editcluster:false,
+            deleteIndex:null
         }
     },
     methods:{
+        deleteON(index){
+            this.deleteIndex = index;
+            this.deletecluster = true;
+        },
+        removeItem(index) {
+            this.questions.splice(this.deleteIndex, 1); 
+            this.deletecluster = false;
+
+        },
         saveEdit(){
             this.editcluster = false;
 
@@ -669,6 +692,28 @@ export default{
 }
 </script>
 <style scoped>
+.btn-con{
+    display: flex;
+    gap: 1em;
+}
+.btn-con .cancel-btn{
+    font-weight: 700;
+    height: 40px;
+    width: 70px;
+    color: white;
+    background-color: #f5dd05;
+    border: none;
+    border-radius: 6px;
+}
+.btn-con .delete-btn{
+    font-weight: 700;
+    height: 40px;
+    width: 70px;
+    background-color: #f58282;
+    color: white;
+    border: none;
+    border-radius: 6px;
+}
 .action{
     background-color: #a7ddea;
     border: none;
@@ -684,6 +729,9 @@ export default{
 .action-con{
     display: flex;
     gap: 1em;
+}
+.edit-b h3{
+    color: white;
 }
 .true-false{
     width: 100%;
