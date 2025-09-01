@@ -92,7 +92,6 @@ export default {
         async get1st(){
             try{
                 const res =await api.get('/get/mode/question/1st');
-                console.log('Id : '+JSON.stringify(res.data));
                 const data = res.data.question;
                 // this.id = res.data.id;
                 if(data.done){

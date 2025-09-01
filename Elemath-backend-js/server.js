@@ -705,7 +705,7 @@ app.get('/chart', auth,cashChart ,async (req, res) => {
     // compute percentage per topic
     const topicPerformance = Object.entries(topicStats).map(([topic, stats]) => ({
       topic,
-      percentage: stats.total > 0 ? (stats.correct / stats.total) * 100 : 0
+      percentage: stats.total > 0 ? Math.floor((stats.correct / stats.total) * 100) : 0
     }));
 
     // sort by weakest topics (ascending)
