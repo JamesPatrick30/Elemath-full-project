@@ -18,6 +18,34 @@
             
         </div>
     </div>
+    <div class="file-cluster" v-if="editcluster">
+        <div class="edit-b">
+            <h1>Edit</h1>
+            <textarea  class="q-input" id="" placeholder="Story (Option)" v-model="questions[editindex].story"></textarea>
+
+                    <textarea  class="q-input" id="" placeholder="Question.." v-model="questions[editindex].question"></textarea>
+                    
+                    <br>
+                    <div class="multi" v-if="questions[editindex]?.type ==='multiple-choice'">
+                        <input class="input-c" type="text" v-model="questions[editindex].options[0]" placeholder="choices...">
+                        <input class="input-c" type="text" v-model="questions[editindex].options[1]" placeholder="choices...">
+                        <input class="input-c" type="text" v-model="questions[editindex].options[2]" placeholder="choices...">
+                        <input class="input-c" type="text" v-model="questions[editindex].options[3]" placeholder="choices...">
+
+                        <select class="t-o-q" v-model="questions[editindex].answer"  >
+
+                            <option disabled value="">-- Select a Answer --</option>
+                            <option v-for="Choice in questions[editindex].options.filter(choice => choice.trim() !== '')" :key="Choice" :value="Choice" @click="" >{{ Choice }}</option>
+                        </select>
+                    </div>
+                    <div class="con-input-a" v-else>
+                        <input type="text" class="input-a" placeholder="Answer.." v-model="questions[editindex].answer">
+                    </div>
+                    <button class="btn-add" @click="saveEdit()">Save</button>
+              
+         
+        </div>
+    </div>
     <main>
         <button class="btn-back" v-on:click="backBtn()">Back</button>
         <div class="con-q">
@@ -75,6 +103,36 @@
                                 <label  for="fileInput" class="file-label"><font-awesome-icon icon="fa-solid fa-upload" /> Upload New</label>
                                 <button class="file-c" @click="openClusterFile()"><font-awesome-icon icon="fa-solid fa-file" />Select Existing</button>
                             </div>
+                            <p v-if="progress > 0 && progress !== 100" class="progress-text">
+                        Progress: {{ progress }}%
+                    </p>
+                            <div class="Question-options" v-if="fileId && !isDragging && !generatingLoading">
+                                <h4>File Selected: {{ filetitle }}</h4>
+                                <input class="num-in" type="number" placeholder="Number" v-model="uploadGenerate.num_questions">
+                                    <select class="t-o-q" v-model="uploadGenerate.type"  >
+                                        <option disabled value="">-- Select a type --</option>
+                                        <option value="multiple-choice">Multiple Choice</option>
+                                        <option value="short-answer">short-answer</option>
+                                        <option value="true-false">true-false</option>
+                                        <option value="fill-in-the-blank">fill-in-the-blank</option>
+                                    </select>
+                                    
+                                    <select class="t-o-q" v-model="uploadGenerate.lang"  >
+                                        <option disabled value="">-- Language --</option>
+                                        <option value="English">English</option>
+                                        <option value="Tagalog">Tagalog</option>
+                                    </select>
+
+                                    <select class="t-o-q" v-model="uploadGenerate.difficulty"  >
+                                        <option disabled value="">-- Select Difficulty --</option>
+                                        <option value="easy">Easy</option>
+                                        <option value="medium">Medium</option>
+                                        <option value="hard">Hard</option>
+                                        <option value="very-hard">Very Hard</option>
+                                    </select>
+                                    <button class="generate-btn" :disabled="generateBtnSwitch" @click="generateQuestion()">{{ generateBtn}}</button>
+
+                            </div>
                     </div>
                     
                     
@@ -89,9 +147,7 @@
                     </button> -->
 
                     <!-- Progress -->
-                    <p v-if="progress > 0 && progress !== 100" class="progress-text">
-                        Progress: {{ progress }}%
-                    </p>
+                    
 
 
 
@@ -99,33 +155,7 @@
                     <button @click="uploadLesson">Upload</button>
                     <p v-if="progress">Progress: {{ progress }}%</p> -->
                     
-                    <div class="Question-options" v-if="fileId && !isDragging && !generatingLoading">
-                        <h4>File Selected: {{ filetitle }}</h4>
-                        <input class="num-in" type="number" placeholder="Number" v-model="uploadGenerate.num_questions">
-                            <select class="t-o-q" v-model="uploadGenerate.type"  >
-                                <option disabled value="">-- Select a type --</option>
-                                <option value="multiple-choice">Multiple Choice</option>
-                                <option value="short-answer">short-answer</option>
-                                <option value="true-false">true-false</option>
-                                <option value="fill-in-the-blank">fill-in-the-blank</option>
-                            </select>
-                            
-                            <select class="t-o-q" v-model="uploadGenerate.lang"  >
-                                <option disabled value="">-- Language --</option>
-                                <option value="English">English</option>
-                                <option value="Tagalog">Tagalog</option>
-                            </select>
-
-                            <select class="t-o-q" v-model="uploadGenerate.difficulty"  >
-                                <option disabled value="">-- Select Difficulty --</option>
-                                <option value="easy">Easy</option>
-                                <option value="medium">Medium</option>
-                                <option value="hard">Hard</option>
-                                <option value="very-hard">Very Hard</option>
-                            </select>
-                            <button class="generate-btn" :disabled="generateBtnSwitch" @click="generateQuestion()">{{ generateBtn}}</button>
-
-                    </div>
+                    
                     <div class="loading-generate" v-if="generatingLoading">
                         <div class="loading-r"></div>
                         <p class="typing">Generating questions...</p>
@@ -142,11 +172,11 @@
                     <textarea  class="q-input" id="" placeholder="Question.." v-model="CostumeQuestion.Q"></textarea>
                     <select class="t-o-q" v-model="CostumeQuestion.type"  >
                         <option disabled value="">-- Select a type --</option>
-                        <option value="multiple choices">Multiple Choice</option>
+                        <option value="multiple-choice">Multiple Choice</option>
                         <option value="input answer">input answer</option>
                     </select>
                     <br>
-                    <div class="multi" v-if="CostumeQuestion.type === 'multiple choices'">
+                    <div class="multi" v-if="CostumeQuestion.type === 'multiple-choice'">
                         <input class="input-c" type="text" v-model="CostumeQuestion.options[0]" placeholder="choices...">
                         <input class="input-c" type="text" v-model="CostumeQuestion.options[1]" placeholder="choices...">
                         <input class="input-c" type="text" v-model="CostumeQuestion.options[2]" placeholder="choices...">
@@ -189,11 +219,15 @@
         </div>
         <div v-if="btnLobby.Question" class="con-qs">
             <h3>Questions : {{ questions.length }}</h3>
-            <div class="question" v-for="(question,index) in questions" :key="question" :id="index">
+            <div class="question" v-for="(question,index) in questions" :key="index" :id="index">
                 <h4>No.{{ index + 1 }}</h4>
                 <!-- TODO: fix the data -->
                 <p class="type">{{ question?.topic }}</p>
                 <p class="type">{{ question?.type }}</p>
+                <div class="action-con">
+                    <button class="action" @click="editbtnq(index)"><font-awesome-icon icon="fa-solid fa-pen" size="xl" style="color: #ffd43b;" /></button>
+                    <button class="action"><font-awesome-icon icon="fa-solid fa-trash" size="xl" style="color: #cc0000;" /></button>
+                </div>
                 
                 <!-- <p class="type">{{ question.language }}</p> -->
                 <!-- Render ASCII table safely -->
@@ -267,19 +301,24 @@
                 <!-- <textarea class="question-t" name="" id="" v-model="question.story" :readonly="editindex == index"></textarea> -->
                 <p>{{ question.question }}</p>
                 <!-- <textarea class="question-t" name="" id="" v-model="question.question" :readonly="editindex == index"></textarea> -->
-                <div class="multi" v-if="question?.options.length !=0">
-                    <div class="choices" v-for="(Choice,index) in question.options" :key="Choice" :class="(Choice===question.answer)? 'r-answer':'w-answer'" >
+                <div class="multi" v-if="question?.type.trim() =='multiple-choice'">
+                    <div class="choices" v-for="(Choice,index) in question.options" :key="index" :class="(Choice===question.answer)? 'r-answer':'w-answer'" >
                         {{ Choice }}
                         
                     </div>
                 </div>
+                <div class="true-false" v-else-if="question.type==='true-false'">
+                    <div class="choices" :class="('true'===question.answer)? 'r-answer':'w-answer'" >True</div>
+                    <div class="choices" :class="('false'===question.answer)? 'r-answer':'w-answer'" >False</div>
+                </div>
                 <div class="con-input-a" v-else>
                     <div class="input-answer" >
-                      Answer:
-                <textarea class="question-t-a" name="" id="" v-model="question.answer" :readonly="editindex == index"></textarea>
+                      Answer: {{ question.answer }}
+                <!-- <textarea class="question-t-a" name="" id="" v-model="question.answer" :readonly="editindex == index"></textarea> -->
                       
                     </div>
                 </div>
+                
                 <p> Explanation : {{ question.explanation }}</p>
                 
             </div>
@@ -324,13 +363,19 @@ export default{
             fileloading: false,
             filetitle:'',
             time:null,
-            uploading:false
+            uploading:false,
+            edit:{option:[],question:'',story:'',answer:''},
+            editcluster:false
         }
     },
     methods:{
+        saveEdit(){
+            this.editcluster = false;
+
+        },
         editbtnq(index){
-            alert(index);
-            this.editindex = index +1;
+            this.editcluster = true;
+            this.editindex = index ;
         },
         startGame(){
             if(!this.time){
@@ -561,6 +606,7 @@ export default{
                     difficulty:this.uploadGenerate.difficulty,
                     question_type:this.uploadGenerate.type
                 });
+                console.log(res.data.quiz);
                 res.data.quiz.forEach(q => {
                     this.questions.push(q);
                 });
@@ -623,6 +669,48 @@ export default{
 }
 </script>
 <style scoped>
+.action{
+    background-color: #a7ddea;
+    border: none;
+    transition: 0.3s;
+    border-radius: 5px;
+    padding: 3px;
+}
+.action:hover{
+    transform: scale(1.03);
+    transition: 0.3s;
+    background-color: #81e4fd;
+}
+.action-con{
+    display: flex;
+    gap: 1em;
+}
+.true-false{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+.edit-b button{
+    margin-top: 10px;
+}
+.edit-b textarea{
+    margin-bottom: 10px;
+}
+.edit-b h1{
+    color: white;
+}
+.edit-b{
+    background-color: #a7ddea;
+    width: 500px;
+    height: fit-content;
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
 .upload{
     width: 80%;
 }
