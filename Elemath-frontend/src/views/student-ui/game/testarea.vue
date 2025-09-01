@@ -37,7 +37,12 @@ export default {
             id:'',
             table:null,
             tabletype:'',
-            inputanswer:''
+            inputanswer:'',
+            mute: false,
+            setting:false,
+            audiosrc:'/musics/ingame.mp3',
+            volume:0.5,
+            resvolume:0
         }
     },
     methods: {
@@ -111,13 +116,34 @@ export default {
             }catch(err){
                 console.log(err);
             }
-        }
+        },
+        mutevol(){
+            this.mute = !this.mute;
+            if(this.mute){
+                this.resvolume = this.volume;
+                this.volume = 0;
+                this.$refs.player.volume = 0;
+            }else{
+                this.volume = this.resvolume;
+                this.$refs.player.volume = this.volume;
+            }
+        },
+        settingf(){
+            this.setting = !this.setting;
+        },
+        updateVolume() {
+            this.$refs.player.volume = this.volume;
+        },
     },
     mounted() {
         // this.getIDres();
         this.get1st();
         this.startTimer();
-        
+        const player = this.$refs.player;
+        player.volume = this.volume;
+
+        player.play();
+        player.muted = false;
     },
     beforeMount(){
         // localStorage.setItem('timeLeft',this.timeLeft);
@@ -125,6 +151,7 @@ export default {
 }
 </script>
 <template>
+    <audio ref="player" :src="audiosrc" loop autoplay muted></audio>
     <greenbg></greenbg>
     <body>
         <header>
@@ -133,6 +160,7 @@ export default {
             
         </header> 
         <div class="timer" :style="{width: persent+ '%',backgroundColor: color } "></div>
+        <button class="setting" @click="settingf()"><font-awesome-icon icon="fa-solid fa-gear" size="2xl" /></button>
         <main>
             
             <!-- <div class="bar-chart" > -->
@@ -221,9 +249,78 @@ export default {
             </div>
         </main>
     </body>
+    <div class="cluster-con" v-if="setting">
+        <div class="cluster">
+            <div class="header">
+                <button @click="settingf()"><font-awesome-icon :icon="['fas', 'xmark']" size="lg" color="red"/></button>
+            </div>
+            <div class="body">
+                <h3>MUSIC </h3>
+            <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.01"
+                v-model="volume"
+                @input="updateVolume"
+                />
+                <button @click="mutevol()"><font-awesome-icon icon="fa-solid fa-volume-high" size="xl" v-if="!mute"/> <font-awesome-icon icon="fa-solid fa-volume-xmark" size="xl" v-if="mute"/></button>
+        </div>
+            </div>
+            
+    </div>
 </template>
 <style scoped>
+.setting{
+    background-color: rgb(112, 112, 255);
+    align-self: flex-end;
+    color: white;
+    padding: 5px;
+    border: none;
+    border-radius: 10px;
+}
+.body button{
+    background-color: transparent;
+    border: none;
+}
+.cluster .header {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+.cluster .header button {
+    background-color: transparent;
+    border: none;
+    margin: 0;
+    align-self: flex-end;
+}
+.body{
+    display: flex;
 
+    justify-content: center;
+    align-items: center;
+}
+.cluster{
+    display: flex;
+        flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 300px;
+    height: 100px;
+    padding: 5px;
+    background-color: white;
+    border-radius: 10px;
+}
+.cluster-con{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgb(0, 0, 0,0.1);
+}
 .custom-table {
   width: 100%;
   border-collapse: collapse;
