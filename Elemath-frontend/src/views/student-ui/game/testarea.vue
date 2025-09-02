@@ -42,7 +42,8 @@ export default {
             setting:false,
             audiosrc: "/musics/ingame.mp3",
             volume: 0.5,
-            resvolume:0
+            resvolume:0,
+            typeOfTest:'',
         }
     },
     methods: {
@@ -105,6 +106,9 @@ export default {
                 this.totaltime = res.data.time * 60;
                 this.table = data?.table;
                 this.tabletype = data?.tabletype;
+                this.typeOfTest = data?.type;
+                console.log(this.typeOfTest);
+
                 const time2 = localStorage.getItem('timeLeft');
                 console.log(this.table);
                 if(time2 == 0){
@@ -251,8 +255,12 @@ export default {
                 <p>{{ question }}</p>
             </div>
             <div class="answer-con">
-                <div class="option" v-if="options">
+                <div class="option" v-if="typeOfTest === 'multiple-choice'">
                     <button class="option-c" v-for="(choice,index) in options" :key="index" @click="getIDres(choice)">{{ choice }}</button>
+                </div>
+                <div class="true-false" v-else-if="typeOfTest==='true-false'">
+                    <div class="true-false-c" @click="getIDres('true')" >True</div>
+                    <div class="true-false-c" @click="getIDres('false')" >False</div>
                 </div>
                 <div v-else class="input-text">
                     <input  type="text" v-model="inputanswer">
@@ -284,6 +292,11 @@ export default {
     </div>
 </template>
 <style scoped>
+.true-false{
+    display: flex;
+    flex-direction: column;
+    gap:1em;
+}
 .setting{
     background-color: rgb(112, 112, 255);
     align-self: flex-end;
@@ -481,7 +494,20 @@ header{
     align-items: center;     /* optional, center vertically if row height is taller */
     width: 100%;             /* full container width */
 }
+.true-false-c{
+    color: white;
+    display: flex;
+    align-items: center;
+    background-color: rgb(112, 112, 255);
+    justify-content: center;
+    height: 50px;
+    border-radius: 5px;
 
+}
+.true-false-c:hover{
+    transform: scale(1.02);
+    transition: 0.2s linear;
+}
 .option-c {
     color: white;
     background-color: rgb(112, 112, 255);
@@ -524,6 +550,12 @@ header{
     }
     .question{
         font-size: 25px;
+    }
+    .true-false{
+        align-items: center;
+    }
+    .true-false-c{
+        width: 500px;
     }
 }
 </style>
