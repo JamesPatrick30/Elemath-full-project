@@ -83,6 +83,7 @@ export default {
                     this.$router.push('/rev');
                     return;
                 }
+                this.inputanswer = '';
                 this.get1st();
                 // console.log('Id : '+res.data.id);
                 // this.id = res.data.id;
@@ -249,8 +250,8 @@ export default {
                 :series="table.LineChart.series"
                 :options="table.LineChart.options"
                 class="charts"
-            /> -->
-            <div class="question">
+            /> class="question"-->
+            <div  :class="tabletype? 'question':'question-notable'">
                 <p v-if="story" >{{ story }}</p>
                 <p>{{ question }}</p>
             </div>
@@ -423,12 +424,17 @@ header p {
     font-weight: 800;
     color: white;
 }
+.question-notable p{
+    font-weight: 700;
+    font-size: 20px;
+    color:rgb(62, 51, 218) ;
+}
 .question p{
     font-weight: 600;
     font-size: 13px;
     color:rgb(62, 51, 218) ;
 }
-.question{
+.question,.question-notable{
     background-color: white;
     padding: 10px;
     border-radius: 10px;
