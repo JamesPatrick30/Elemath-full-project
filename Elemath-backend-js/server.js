@@ -581,10 +581,13 @@ app.get('/chart', auth,cashChart ,async (req, res) => {
     // console.log(JSON.stringify(gradebook));
     // --- LineChart: quiz averages ---
     // --- LineChart: quiz averages as percentage ---
-    const quizNames = gradebook.quizzes.map(q => q.quizname);
+    // take last 7 quizzes
+    const latestQuizzes = gradebook.quizzes.slice(-7);
 
-    // compute percentage = (totalAverage / quiz.total) * 100
-    const quizAverages = gradebook.quizzes.map(q =>
+    const quizNames = latestQuizzes.map(q => q.quizname);
+
+    // compute percentage = (totalAverage / total) * 100
+    const quizAverages = latestQuizzes.map(q =>
       Math.floor((q.totalAverage / q.total) * 100)
     );
 
