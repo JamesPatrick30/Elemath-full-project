@@ -1248,7 +1248,7 @@ app.post('/mode/done', auth, async (req, res) => {
     let pass = 0;
     let failed = 0;
     for(studs in players){
-      const ave = studs.score / studs.total * 100;
+      const ave = Math.floor(studs.score / studs.total * 100);
       if(ave >=75){
         pass+=1;
       }else{
