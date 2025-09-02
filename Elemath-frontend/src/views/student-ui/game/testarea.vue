@@ -380,6 +380,7 @@ export default {
     
 }
 .answer-con .input-text input{
+    text-align: center;
     font-weight: 700;
     background-color:#8385eb;
     color: white;

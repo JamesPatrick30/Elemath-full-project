@@ -63,7 +63,7 @@
             
         </div>
     </div>
-
+    <greenbg></greenbg>
     <main>
         <button class="btn-back" v-on:click="backBtn()">Back</button>
         <div class="con-q">
@@ -354,12 +354,14 @@
     
 </template>
 <script>
+import greenbg from '@/views/student-ui/components/greenbg.vue';
 import socket from '@/socket';
 import api from '@/axios';
 import ApexChart from "vue3-apexcharts"
 export default{
     components: {
-        ApexChart
+        ApexChart,
+        greenbg
     },
     data(){
         return{
@@ -1390,19 +1392,19 @@ li button{
     border: none;
     background: none;
 }
-main::before {
+/* main::before {
   content: "";
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('/images/bg.png'); /* Use public/ folder path */
+  background-image: url('/images/bg.png'); 
   background-size: cover;
   background-position: center;
   opacity: 0.8;
   z-index: -1;
-}
+} */
 main{
     height: 100vh;
     width: 100%;

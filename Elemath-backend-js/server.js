@@ -998,7 +998,7 @@ app.get('/lesson/list',auth, async (req, res) => {
 });
 app.get('/get/mode/data',auth, async (req, res) => {
   const id = req.query.id; // comes in as a string
-  console.log('get mode data query:', req.query); // better logging
+  console.log('get mode data query: pong', req.query); // better logging
   console.log('id:', id);
 
   const quiz = await redisClient.get(`mode:${id}`);
@@ -1311,7 +1311,20 @@ app.post('/mode/done', auth, async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 });
+const { buildQuiz } = require('./helper/windowcard.js');
+// ...existing code...
 
+// Minimal quiz endpoint
+app.get('/quiz', auth, (req, res) => {
+  const { difficulty = 'medium', operation = 'mixed', count = 10 } = req.query;
+  console.log(`Generating quiz: difficulty=${difficulty}, operation=${operation}, count=${count}`);
+  const n = Math.max(1, Math.min(500, parseInt(count, 10) || 10));
+  const  questions  = buildQuiz(difficulty, operation, n);
+  // const quiz = buildQuiz("medium", "subtraction", 12);
+  console.log("Generated", questions.length, "questions");
+  console.log(questions);
+  res.json({ data:questions.questions });
+});
 async function setgameData(id,payload) {
   await redisClient.set(id, JSON.stringify(payload), { EX: 3600 });
 }
@@ -1375,7 +1388,7 @@ socket.on('game-start', async (data) => {
 
   modeData.gametime = data.time;
   modeData.start = true;
-
+  console.log('mode data : '+data.questions);
   // add studentCorrect:0 to each question
   modeData.questions = data.questions.map(q => ({
     ...q,

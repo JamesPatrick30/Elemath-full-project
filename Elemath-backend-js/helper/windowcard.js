@@ -133,10 +133,12 @@ function generateQuestions(difficulty, operation, count = 10) {
     while (out.length < n) {
         const chosenOp = pickRandom(opsPool);
         const problem = makeOne(chosenOp, diff);
+
         const key =
             chosenOp === OP.ADD || chosenOp === OP.MUL
                 ? `${chosenOp}:${diff}:${[...problem.operands].sort((a, b) => a - b).join(',')}`
                 : `${chosenOp}:${diff}:${problem.operands.join(',')}`;
+
         if (seen.has(key)) continue;
         seen.add(key);
         out.push(problem);
@@ -149,17 +151,22 @@ function generateQuestions(difficulty, operation, count = 10) {
  */
 function buildQuiz(difficulty, operation, count = 10) {
     const problems = generateQuestions(difficulty, operation, count);
-    const questions = problems.map(p => ({
-        question: p.question,
-        type: 'input answer',
-        answerType: '',
-        story: '',
-        answer: String(p.answer),
-        options: [],
-        studentCorrect: 0,
-    }));
-    return { questions };
+
+    if (!problems || !Array.isArray(problems)) {
+        throw new Error("generateQuestions did not return a valid array");
+    }
+
+    return {
+        questions: problems.map(p => ({
+            question: p.question,
+            type: 'input answer',
+            answerType: '',
+            story: '',
+            answer: String(p.answer),
+        }))
+    };
 }
+
 
 module.exports = {
     OPERATIONS: OP,

@@ -1,4 +1,6 @@
 <script>
+import socket from '@/socket';
+import api from '@/axios';
 import greenbg from '@/views/student-ui/components/greenbg.vue';
 export default {
     name: "WindowCard",
@@ -7,8 +9,98 @@ export default {
     },
     data() {
         return {
-            source: [1, 2, 3, 4, 5,6,7,8,9,10,8,1,2,3,7,6,7]
+            players: [],
+            id: null,
+            count: null,
+            time: null,
+            // questions: [],
+            difficulty: 'easy',
+            operation: 'addition'
         }
+    },
+    methods: {
+        async getmodedata(){
+                // Removed debug alert
+
+            try {
+                const res = await api.get(`/get/mode/data`,{params: { id: this.id } });
+        
+                // console.log('Mode data fetched:', res.data);
+                this.players = res.data.modeData;
+            } catch (err) {
+                console.error('Error fetching mode data:', err);
+            }
+        },
+        async startGame() {
+            // if(!this.time){
+            //     alert('⚠️ Time limit not set. Please configure a timer before starting.');
+            //     return;
+            // }
+            // if(!this.count || !this.time ){
+            //     alert('⚠️ Number of questions not set. Please configure the number of questions before starting.');
+            //     return;
+            // }
+            // if(this.players.length == 0){
+            //     alert('⚠️ No players joined yet. Waiting for players...');
+            //     return;
+            // }
+            try {
+                const res = await api.get('/quiz', {
+                    params: {
+                        difficulty: this.difficulty,
+                        operation: this.operation,
+                        count: this.count
+                    }
+                });
+
+                // ✅ Use res.data (the payload), not the whole response
+                console.log(res.data.data);
+
+                socket.emit('game-start', {
+                    roomId: this.id,
+                    questions: res.data.data,   // <- fixed
+                    time: this.time
+                });
+
+                this.$router.push({ name:'leaderboard', query: { i: this.id } });
+            } catch (err) {
+                console.log(err);
+                alert('Error fetching questions. Please try again.');
+                return;
+            }
+        },
+
+        
+        async backBtn(){
+            try{
+                const res = await api.post('/delete/mode',{id:this.id});
+
+                // alert(res.data.message);
+                this.$router.push('/th');
+            }catch(err){
+                console.log(err);
+            }
+            
+        }
+    },
+    created() {
+        this.id = this.$route.query.i;
+    },
+    mounted() {
+        this.getmodedata();
+        socket.connect();
+        socket.removeAllListeners();
+
+        socket.emit('create-room', { roomId: this.id });
+        socket.on('room-created', (data) => {
+            // console.log('Room created:', data);
+            // alert('Room created successfully! '+data.message);
+            // Handle room creation confirmation here
+        });
+        socket.on('player-joined', (data) => {
+            console.log('Player joined:', data);
+            this.players.push({ player: data.player, lrn: data.lrn, profile: data.profile });
+        });
     }
 }
 </script>
@@ -16,6 +108,7 @@ export default {
     <greenbg/>
     <body>
         <main>
+            <button class="btn-back" v-on:click="backBtn()">Back</button>
             <div class="con">
                 <div class="setting-con">
                     <h1>Window Card</h1>
@@ -23,7 +116,7 @@ export default {
                         <label for="time">Time:</label>
                         <input class="input-s" type="number" id="time" v-model="time" placeholder="Minutes"/>
                         <label for="questionNumber">Questions</label>
-                        <input class="input-s" type="number" id="questionNumber" v-model="questionNumber" placeholder="Number of Questions"/>
+                        <input class="input-s" type="number" id="questionNumber" v-model="count" placeholder="Number of Questions"/>
                         <label for="difficulty">Difficulty:</label>
                         <select class="input-s" id="difficulty" v-model="difficulty">
                             <option value="easy">Easy</option>
@@ -40,13 +133,29 @@ export default {
                     </div>
                 </div>
                 <div class="players-con">
-                    <div class="player" v-for="value in source" :key="value">{{ value }}</div>
+                    <div class="player" v-for="(value, index) in players" :key="index">{{ value.player }}</div>
                 </div>
             </div>
         </main>
+        <div class="btn-start" @click="startGame">start</div>
     </body>
 </template>
 <style scoped>
+.btn-start{
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background-color: #41b8d5;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 800;
+    font-size: 16px;
+
+    transition: 0.2s;
+}
 *{
     font-family: 'BubbleBody Neue', 'Poppins', sans-serif;
 }
@@ -125,6 +234,38 @@ main{
     flex-direction: column;
     align-items: center;
     /* justify-content: center; */
+}
+.btn-back:hover,
+.btn-start:hover{
+    transform: scale(1.1);
+    transition: 0.2s;
+}
+.btn-back{
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background-color: #41b8d5;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+.btn-add{
+    width: 120px;
+    height: 40px;
+    background-color:#96faa2 ;
+    border: none;
+    color:white;
+    font-weight: 800;
+    border-radius: 20px;
+
+    position:relative;
+    justify-self: end;
+    align-self: flex-end;
+    cursor: pointer;
 }
 @media screen and (max-width: 768px) {
     .con {

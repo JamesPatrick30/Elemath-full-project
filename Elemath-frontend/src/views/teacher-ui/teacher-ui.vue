@@ -88,7 +88,13 @@ export default {
                     mode:mode
                 });
                 alert(res.data.message);
-                this.$router.push({name:'question-ui',query: { i: id }});
+                if(mode === 'WINDOWCARD MODE'){
+                    this.$router.push({name:'window-card',query: { i: id }});
+                    return;
+                }else{
+                    this.$router.push({name:'question-ui',query: { i: id }});
+                }
+                
             }catch(err){
                 console.log(err);
                 alert(err.response.data.message);
@@ -242,7 +248,7 @@ export default {
                     <h1>Quiz</h1>
                     <img src="../pic/undraw_quiz_zvhe.svg" alt="">
                 </div>
-                <div class="mode mode-2">
+                <div class="mode mode-2" @click="clusterOn('WINDOWCARD MODE')">
                     <h1>Window Card</h1>
                     <img src="../pic/undraw_math_ldpv.svg" alt="">
                 </div>
