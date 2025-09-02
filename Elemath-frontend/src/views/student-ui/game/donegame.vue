@@ -59,7 +59,7 @@ export default{
                         <p>{{ value }}</p>
                     </div>
                 </div>
-                <p v-if="c.q.options.length ==0">{{ c.playerAnswer }}</p>
+                <p v-if="c.q.options.length ==0 || !c.q.options">{{ c.playerAnswer }}</p>
                 <p>Explanation: {{ c.q.explanation }}</p>
             </div>
             <br>

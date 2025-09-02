@@ -1145,7 +1145,7 @@ app.get('/get/mode/player/rev',auth,async(req,res)=>{
   
   const modeData = JSON.parse(data);
   const player = modeData.players.find(p => p.lrn === req.user.username);
-  // console.log(player);
+  console.log(player);
   const rev = player.rev;
   res.json({rev:rev,score:player.score});
 });

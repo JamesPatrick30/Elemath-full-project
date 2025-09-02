@@ -162,6 +162,7 @@ function buildQuiz(difficulty, operation, count = 10) {
             type: 'input answer',
             answerType: '',
             story: '',
+            options: [],
             answer: String(p.answer),
         }))
     };
