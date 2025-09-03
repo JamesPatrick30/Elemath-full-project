@@ -11,6 +11,8 @@ const studentSchema = new mongoose.Schema({
 const questionSchema = new mongoose.Schema({
   number: String,
   question:String,
+  studentCorrect:Number,
+  topic:String,
   answer:{type: mongoose.Schema.Types.Mixed},
   choices: {
     type: [mongoose.Schema.Types.Mixed],
@@ -42,14 +44,6 @@ const gradebookSchema = new mongoose.Schema({
       type: [mongoose.Schema.Types.Mixed],
       default: []
     },
-    topStudent:{
-      type: [mongoose.Schema.Types.Mixed],
-      default: []
-    },
-    passvsfail:{
-      pass: { type: Number, default: 0 },
-      failed: { type: Number, default: 0 }
-    }
   }
 });
 

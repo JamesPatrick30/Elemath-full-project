@@ -255,6 +255,7 @@ export default {
                 <div class="lesson-list">
                     
                     <div class="lesson" v-for="(value,index) in sortgrade5()" :key="index" @click="alertnof()">
+                        <img src="/images/BOOK.png" alt="">
                          <h4>{{value.topic}}</h4>
                     </div>
                 </div>
@@ -262,6 +263,7 @@ export default {
                 <div class="lesson-list">
                     
                     <div class="lesson" v-for="(value,index) in sortgrade6()" :key="index" @click="alertnof()">
+                        <img src="/images/BOOK.png" alt="">
                          <h4>{{value.topic}}</h4>
                     </div>
                 </div>
@@ -342,6 +344,9 @@ export default {
     position: fixed;
     left: 0;
 }
+.lesson img{
+    height: 100px;
+}
 .lesson:hover{
     background-color: #f17751;
     transform: scale(1.02);
@@ -361,6 +366,8 @@ export default {
     transform: scale(1.02);
 }
 .mode{
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+
     color: white;
     padding: 10px;
     height: 100%;
@@ -662,7 +669,11 @@ header{
     padding: 10px;
     border-radius: 20px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* box-shadow: 0 4px 12px rgba(0,0,0,0.2); */
+    text-align: center;
     transition: 0.1s linear;
 }
 .challenge{

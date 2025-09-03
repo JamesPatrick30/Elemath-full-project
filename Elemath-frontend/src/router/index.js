@@ -7,8 +7,11 @@ import waitingLobby from '@/views/student-ui/game/waitingLobby.vue'
 import studentSetting from '@/views/student-ui/setting.vue'
 import testarea from '@/views/student-ui/game/testarea.vue'
 import donegame from '@/views/student-ui/game/donegame.vue'
+import dashboard2 from '@/views/student-ui/dashboard2.vue'
+import setting from '@/views/student-ui/settings.vue'
+import report from '@/views/student-ui/report.vue'
 
-import setting from '@/views/teacher-ui/setting.vue'
+import settingst from '@/views/teacher-ui/setting.vue'
 import teacberDashboard from '@/views/teacher-ui/teacber-dashboard.vue'
 import teacherCreateClass from '@/views/teacher-ui/teacher-createClass.vue'
 import teacherUi from '@/views/teacher-ui/teacher-ui.vue'
@@ -23,6 +26,21 @@ import leaderboard from '@/views/teacher-ui/game/leaderboard.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path:'/stt',
+      name:'tsetting',
+      component:settingst
+    },
+    {
+      path:'/r',
+      name:'reports',
+      component:report
+    },
+    {
+      path:'/ds',
+      name:'dash2',
+      component:dashboard2
+    },
     {
       path:'/rev',
       name:'rev',

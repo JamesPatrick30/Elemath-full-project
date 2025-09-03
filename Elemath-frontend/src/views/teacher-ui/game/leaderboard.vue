@@ -39,7 +39,7 @@ export default{
                 this.stillPlaying = res.data.playing;
                 if(this.stillPlaying.length == 0){
                     try{
-                        const res = await api.post('/mode/done');
+                        const res = await api.post('/mode/done',{id:this.roomId});
                         alert(res.data.message);
                     }catch(err){
                         console.log(err);

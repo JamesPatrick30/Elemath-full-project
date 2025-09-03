@@ -7,6 +7,8 @@ const http = require('http');
 const mongoose = require('mongoose');
 const filesave = require('./models/lessonfile.js');
 const axios = require("axios");
+const nodemailer = require('nodemailer'); // ✅ use require instead of import
+const multer = require('multer');
 dotenv.config();
 
 //redis client
@@ -14,7 +16,7 @@ const redisClient = require('./redis/redisClient.js');
 const {init,pubClient,subClient} = require('./redis/redispubsub.js');
 
 //websocket
-const WebSocket = require("ws");
+// const WebSocket = require("ws");
 const students = require('./models/students.js');
 const teacher_accoount = require('./models/teacher.js');
 const classes = require('./models/class.js');
@@ -27,6 +29,10 @@ const  {createToken} = require('./security/createToken.js');
 const verifyRefreshToken = require('./security/refreshtoken.js');
 const auth = require('./security/auth.js');
 const cookie = require("cookie");
+
+//email
+
+
 // Middleware
 app.use(cors({
   origin: 'http://localhost:5173', // or whatever port your frontend uses
@@ -206,17 +212,42 @@ app.get('/get/student/data', auth, async (req, res) => {
 });
 const Gradebook = require('./models/grade.js');
 
-app.post('/get/quarter',auth,async (req,res)=>{
-  const {quaterId} = req.body;
+app.post('/get/quarter', auth, async (req, res) => {
+  const { quaterId } = req.body;
 
-  const quarter = await Gradebook.findOne({_id:quaterId},{_id:0,quizzes:1});
+  const quarter = await Gradebook.findOne(
+    { _id: quaterId },
+    { _id: 0, quizzes: 1, classId: 1 }
+  );
 
-  if (!quarter) return res.status(404).json({message:'no quarter fund'});
+  if (!quarter) return res.status(404).json({ message: 'no quarter found' });
 
-  res.json({quizzes:quarter.quizzes});
-  console.log('quater : '+ quarter);
+  // Flatten into student-based structure
+  const studentMap = {};
 
+  quarter.quizzes.forEach(quiz => {
+    quiz.students.forEach(student => {
+      if (!studentMap[student.lrn]) {
+        studentMap[student.lrn] = {
+          lrn: student.lrn,
+          name: student.name,
+          quiz: []
+        };
+      }
+      studentMap[student.lrn].quiz.push({
+        quizId: quiz.quizId,
+        quizname: quiz.quizname,
+        score: student.score,
+        total: quiz.total
+      });
+    });
+  });
+
+  const arranged = Object.values(studentMap);
+
+  res.json({ students: arranged });
 });
+
 
 app.post('/get/classrecord/Id',auth,async(req,res)=>{
   const {classId}= req.body;
@@ -521,6 +552,184 @@ app.post('/get/classData',auth,classCache,async(req,res)=>{
     console.log(err);
   }
 });
+async function cashChart(req,res,next){
+    const classId  = req.query.classId; // or req.body depending on your client
+
+    const datain = await redisClient.get(`chart:${classId}`);
+    if(!datain){
+      next();
+      return;
+    }
+    console.log('hit chart cache');
+    const modeData = JSON.parse(datain);
+    const LineChart = modeData.LineChart;
+    const BarChart = modeData.BarChart;
+    const PieChart = modeData.PieChart;
+    const ImprovementChart = modeData.ImprovementChart;
+    const LowTopicBarChart = modeData.LowTopicBarChart;
+    res.json({ LineChart, BarChart, PieChart, ImprovementChart, LowTopicBarChart });
+
+}
+app.get('/chart', auth,cashChart ,async (req, res) => {
+  try {
+    const classId  = req.query.classId; // or req.body depending on your client
+    const gradebook = await Gradebook.findOne({ classId: classId })
+      .sort({ dateCreated: -1 })   // sort descending by dateCreated
+      .limit(1);
+    if (!gradebook) return res.status(404).json({ message: 'No data found' });
+
+    // console.log(JSON.stringify(gradebook));
+    // --- LineChart: quiz averages ---
+    // --- LineChart: quiz averages as percentage ---
+    const quizNames = gradebook.quizzes.map(q => q.quizname);
+
+    // compute percentage = (totalAverage / quiz.total) * 100
+    const quizAverages = gradebook.quizzes.map(q =>
+      (q.totalAverage / q.total) * 100
+    );
+
+    const LineChart = {
+      series: [{ name: "Quiz Average (%)", data: quizAverages }],
+      options: {
+        chart: { background: "#fff" },
+        colors: ["#4fc4f7"],
+        stroke: { curve: "smooth", width: 3 },
+        xaxis: { categories: quizNames },
+        grid: { borderColor: "#e0e0e0" },
+        yaxis: { max: 100, min: 0, title: { text: "Percentage (%)" } }
+      }
+    };
+
+
+    // --- BarChart: sort top scores of last quiz ---
+    // --- BarChart: top 10 scores of last quiz ---
+    const lastQuiz = gradebook.quizzes.at(-1);
+    // --- BarChart: top 10 students by average grade across all quizzes ---
+    const studentTotals = {}; // { lrn: { name, totalScore, quizzes } }
+
+    // accumulate scores across quizzes
+    for (const quiz of gradebook.quizzes) {
+      for (const s of quiz.students) {
+        if (!studentTotals[s.lrn]) {
+          studentTotals[s.lrn] = { name: s.name, totalScore: 0, quizzes: 0 };
+        }
+        studentTotals[s.lrn].totalScore += s.score;
+        studentTotals[s.lrn].quizzes += 1;
+      }
+    }
+
+    // compute averages
+    const studentAverages = Object.values(studentTotals).map(s => ({
+      name: s.name,
+      average: s.totalScore / s.quizzes * 10
+    }));
+
+    // sort and take top 10
+    const topStudents = studentAverages
+      .sort((a, b) => b.average - a.average)
+      .slice(0, 10);
+
+    const BarChart = {
+      series: [{ name: "Average Score", data: topStudents.map(s => s.average) }],
+      options: {
+        chart: { background: "#fff" },
+        colors: ["#FF9800"],
+        plotOptions: { bar: { horizontal: true, borderRadius: 5 } },
+        xaxis: { categories: topStudents.map(s => s.name) }
+      }
+    };
+
+    // console.log(sortedStudents.map(s => s.name));
+    // --- PieChart: pass vs fail (last quiz) ---
+    const passMark = Math.ceil(lastQuiz.total / 2); // pass if >=50%
+    let pass = 0, fail = 0;
+    lastQuiz.students.forEach(s => s.score >= passMark ? pass++ : fail++);
+
+    const PieChart = {
+      series: [fail, pass],
+      options: {
+        labels: ["Failed", "Pass"],
+        colors: ["#FF5252", "#4CAF50"],
+        legend: { position: "right" }
+      }
+    };
+
+    // --- Improvement Chart: compare averages across quizzes ---
+    const transitions = quizAverages.length - 1; // total number of comparisons
+    const improvements = [];
+
+    for (let i = 1; i < quizAverages.length; i++) {
+      if (quizAverages[i] > quizAverages[i - 1]) improvements.push("Improved");
+      else if (quizAverages[i] < quizAverages[i - 1]) improvements.push("Declined");
+      else improvements.push("No Change");
+    }
+
+    const improvementCounts = {
+      Improved: improvements.filter(v => v === "Improved").length,
+      "No Change": improvements.filter(v => v === "No Change").length,
+      Declined: improvements.filter(v => v === "Declined").length
+    };
+
+    // Convert counts to percentage
+    const improvementPercentages = {};
+    for (const key in improvementCounts) {
+      improvementPercentages[key] = transitions > 0 
+        ? (improvementCounts[key] / transitions) * 100 
+        : 0;
+    }
+
+    const ImprovementChart = {
+      series: Object.values(improvementPercentages),
+      options: {
+        labels: Object.keys(improvementPercentages),
+        colors: ["#28a745", "#ffc107", "#dc3545"], // green, yellow, red
+        legend: { position: "right" }
+      }
+    };
+
+
+    // --- Topic Mastery BarChart: lowest performing topics ---
+    const topicStats = {}; // { topic: { correct, total } }
+
+    // aggregate per topic
+    for (const quiz of gradebook.quizzes) {
+      for (const q of quiz.questions) {
+        if (!topicStats[q.topic]) {
+          topicStats[q.topic] = { correct: 0, total: 0 };
+        }
+        topicStats[q.topic].correct += q.studentCorrect;
+        topicStats[q.topic].total += quiz.students.length; // each student attempted
+      }
+    }
+
+    // compute percentage per topic
+    const topicPerformance = Object.entries(topicStats).map(([topic, stats]) => ({
+      topic,
+      percentage: stats.total > 0 ? (stats.correct / stats.total) * 100 : 0
+    }));
+
+    // sort by weakest topics (ascending)
+    const weakestTopics = topicPerformance.sort((a, b) => a.percentage - b.percentage);
+
+    // Take bottom 5 topics to highlight weaknesses
+    const LowTopicBarChart = {
+      series: [{ name: "Mastery (%)", data: weakestTopics.slice(0, 5).map(t => t.percentage) }],
+      options: {
+        chart: { background: "#fff" },
+        colors: ["#e53935"], // red to emphasize weak
+        plotOptions: { bar: { horizontal: true, borderRadius: 5 } },
+        xaxis: { categories: weakestTopics.slice(0, 5).map(t => t.topic) },
+        yaxis: { max: 100, min: 0, title: { text: "Percentage (%)" } }
+      }
+    };
+    await redisClient.set(`chart:${classId}`, JSON.stringify({LineChart, BarChart, PieChart, ImprovementChart, LowTopicBarChart}), { EX: 3600 });
+    res.json({ LineChart, BarChart, PieChart, ImprovementChart, LowTopicBarChart });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 app.post('/data/teacher/classname',auth,async (req,res)=>{
   const { classid } = req.body;
@@ -747,20 +956,26 @@ app.get('/get/mode', auth,async (req, res) => {
 
   // If list contains numbers, convert
   // const index = list.findIndex(item => String(item.id) === String(id));
-  const quiz = await redisClient.exists(`mode:${id}`);
+  const quiz = await redisClient.get(`mode:${id}`);
+  const data = JSON.parse(quiz);
   console.log(quiz);
-  if (quiz== 0) {
-    return res.json({ quiz: false });
+  if (!quiz) {
+    return res.json({ quiz: false,started:false });
   }
-  console.log('ping')
-  res.json({ quiz: true});
+  if(data.start){
+    res.json({ quiz: true,started:true});
+    return
+  }
+  
+  // console.log('ping')
+  res.json({ quiz: true,started:false});
 });
 
 app.get('/get/mode/list', auth, async (req, res) => {
   try {
     const id = req.query.id; // comes in as a string
     const quiz = await redisClient.get(`mode:${id}`);
-    console.log('get mode list query:', quiz); // better logging
+
     if (!quiz) {
       return res.status(404).json({ message: 'No modes found' });
     }
@@ -803,42 +1018,120 @@ app.get('/get/mode/question/1st',auth,async(req,res)=>{
   // modeData.players.find(p => p.lrn === req.user.username).qIn+=1;
   res.json({question:modeData.questions[qin],done:false,time:modeData.gametime});
 });
-app.post('/get/mode/question',auth,async (req,res)=>{
-  const {answer} = req.body;
-  const mode =await redisClient.get(`mode:${req.user.classId}`);
-  // console.log('mode in get : '+mode);
+app.post('/get/mode/question', auth, async (req, res) => {
+  const { answer } = req.body;
+  const mode = await redisClient.get(`mode:${req.user.classId}`);
+  console.log('mode in get : ' + mode);
+
   let modeData = JSON.parse(mode);
   let player = modeData.players.find(p => p.lrn === req.user.username);
   let scoreP = player.score;
   const qin = player.qIn;
   const question = modeData.questions[qin];
-  console.log('answer input : '+answer + ' real answer : '+question.answer);
-  if(question.answer === answer){
-    scoreP+=1;
-    modeData.players.find(p => p.lrn === req.user.username).score+=1;
-    modeData.players.find(p => p.lrn === req.user.username).rev.push({q:question,playerAnswer:answer,correct:true});
-  }else{
-    modeData.players.find(p => p.lrn === req.user.username).rev.push({q:question,playerAnswer:answer,correct:false});
+
+  console.log('answer input : ' + answer + ' real answer : ' + question.answer);
+
+  // normalize answers (ignore case + spaces)
+  const normalizedAnswer = answer.trim().toLowerCase();
+  const normalizedCorrect = question.answer.trim().toLowerCase();
+
+  if (normalizedAnswer === normalizedCorrect) {
+    scoreP += 1;
+
+    // update player score
+    player.score += 1;
+
+    // increment question's studentCorrect counter
+    modeData.questions[qin].studentCorrect += 1;
+
+    // save review with correct=true
+    player.rev.push({ q: question, playerAnswer: answer, correct: true });
+  } else {
+    player.rev.push({ q: question, playerAnswer: answer, correct: false });
   }
-  
-  if((qin + 1) === (modeData.questions.length)){
-    modeData.players.find(p => p.lrn === req.user.username).done=true;
-    setgameData(`mode:${req.user.classId}`,modeData);
-    await pubClient.publish('action',JSON.stringify({id:req.user.classId,action:'player-done',payload:{player:player.player,score:scoreP}}));
-    res.json({question:{},done:true});
+
+  // check if this was the last question
+  if ((qin + 1) === modeData.questions.length) {
+    player.done = true;
+
+    setgameData(`mode:${req.user.classId}`, modeData);
+
+    await pubClient.publish(
+      'action',
+      JSON.stringify({
+        id: req.user.classId,
+        action: 'player-done',
+        payload: { player: player.player, score: scoreP }
+      })
+    );
+
+    res.json({ question: {}, done: true });
     return;
   }
-  if(qin != (modeData.questions.length - 1)){
-    // const question = modeData.questions[qin];
-    // if(question.answer === answer){
-    //   modeData.players.find(p => p.lrn === req.user.username).score+=1;
-    // }
-    modeData.players.find(p => p.lrn === req.user.username).qIn+=1;
-    res.json({question:modeData.questions[qin + 1],done:false});
-    setgameData(`mode:${req.user.classId}`,modeData);
+
+  // otherwise, go to next question
+  if (qin !== (modeData.questions.length - 1)) {
+    player.qIn += 1;
+
+    res.json({ question: modeData.questions[qin + 1], done: false });
+    setgameData(`mode:${req.user.classId}`, modeData);
     return;
   }
 });
+
+const storage = multer.memoryStorage();
+const upload = multer({ 
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // max 5MB per file
+  fileFilter: (req, file, cb) => {
+    const allowed = /jpeg|jpg|png|gif/;
+    const ext = file.originalname.toLowerCase();
+    if (allowed.test(ext)) cb(null, true);
+    else cb(new Error('Only images are allowed'));
+  }
+});
+
+// Nodemailer transporter
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  }
+});
+
+// Route
+app.post('/report/student', auth, upload.array('screenshots', 5), async (req, res) => {
+  try {
+    const nameuser = await StudentClass.findById(req.user.id).populate('classId');;
+    const { name, email, module, description,suggestion } = req.body;
+    const files = req.files || [];
+
+    const attachments = files.map(file => ({
+      filename: file.originalname,
+      content: file.buffer
+    }));
+
+    const info = await transporter.sendMail({
+      from: `"ELEMATH" <${process.env.EMAIL_USER}>`,
+      to: process.env.EMAIL_PROGRAMMER,
+      subject: "🐞 Bug Report",
+      text: `Bug Report
+        From: ${nameuser.name || 'Anonymous'} <${req.user.username || 'N/A'}>
+        Module: ${module || 'N/A'}
+        Description: ${description || 'No description provided'}
+        Suggestions: ${suggestion || 'No suggestions provided' }`,
+      attachments
+    });
+
+    console.log("✅ Email sent:", info.messageId);
+    res.json({ success: true, message: "Bug report sent!" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Error sending bug report." });
+  }
+});
+
 app.get('/get/mode/player/done',auth,async(req,res)=>{
   const {id} = req.query;
   const data = await redisClient.get(`mode:${id}`);
@@ -856,10 +1149,90 @@ app.get('/get/mode/player/rev',auth,async(req,res)=>{
   const rev = player.rev;
   res.json({rev:rev,score:player.score});
 });
-app.post('/mode/done',auth,(req,res)=>{
-  console.log('ping /mode/done');
-  res.json({message:'all players are done.'});
+async function addQuizAndAnalysis(classId, quiz, chartPoint) {
+  return await Gradebook.findOneAndUpdate(
+    { classId },
+    {
+      $push: {
+        quizzes: quiz,
+        "analysis.lineChart": chartPoint
+      }
+    },
+    { new: true, sort: { dateCreated: -1 } } // return updated doc
+  ).exec();
+}
+app.post('/mode/done', auth, async (req, res) => {
+  try {
+    const { id } = req.body;
+
+    // 1. Pull modeData from Redis
+    const data = await redisClient.get(`mode:${id}`);
+    if (!data) return res.status(404).json({ error: "Mode not found" });
+    const modeData = JSON.parse(data);
+
+    const players = modeData.players;  // present
+    const allStudents = await StudentClass.find({ classId: id }); // enrolled
+
+    // 2. Build quiz students list
+    const quizStudents = allStudents.map(stud => {
+      const player = players.find(p => p.lrn === stud.lrn);
+      return player
+        ? {
+            lrn: stud.lrn,
+            name: player.player,
+            score: player.score ?? 0,
+            done: player.done ?? true
+          }
+        : {
+            lrn: stud.lrn,
+            name: `${stud.name}`,
+            score: 0,
+            done: false
+          };
+    });
+
+    // 3. Compute average
+    const totalAverage =
+      players.reduce((sum, s) => sum + s.score, 0) / players.length;
+
+    // 4. Create new quiz entry from modeData
+    const newQuiz = {
+      quizId: modeData.quizId,
+      quizname: modeData.quizName || new Date().toISOString().split('T')[0] ,
+      total: modeData.questions.length,
+      students: quizStudents,
+      totalAverage,
+      lowAnalysis: [], // could be derived: hardest Qs
+      questions: modeData.questions.map((q, idx) => ({
+        number: (idx + 1).toString(),
+        topic:q.topic,
+        question: q.question,
+        answer: q.answer,
+        choices: q.options,
+        studentCorrect: q.studentCorrect
+      }))
+    };
+
+    // 5. ApexChart data point
+    const chartPoint = { x: newQuiz.quizname, y: totalAverage };
+
+    // 6. Save into Gradebook
+    const updated = await addQuizAndAnalysis(id, newQuiz, chartPoint);
+    console.log(updated);
+    await redisClient.del(`chart:${id}`);
+    await redisClient.del(`mode:${id}`);
+
+    res.json({
+      message: "Quiz saved successfully",
+      quiz: newQuiz,
+      analysisPoint: chartPoint
+    });
+  } catch (err) {
+    console.error("Error in /mode/done:", err);
+    res.status(500).json({ error: "Server error" });
+  }
 });
+
 async function setgameData(id,payload) {
   await redisClient.set(id, JSON.stringify(payload), { EX: 3600 });
 }
@@ -917,18 +1290,32 @@ io.on("connection", (socket) => {
       io.to(data.roomId).emit('room-created', { message: 'join please' });
       // socket.emit('room-created', { roomId: data.roomId });
   });
-  socket.on('game-start',async (data)=>{
-    const mode =await redisClient.get(`mode:${data.roomId}`);
-    let modeData = JSON.parse(mode);
-    modeData.gametime = data.time;
-    modeData.start = true;
-    modeData.questions = data.questions;
-    console.log('mode data : '+JSON.stringify(modeData));
-    // await redisClient.set(`mode:${data.roomId}`, JSON.stringify(modeData), { EX: 3600 });
-    setgameData(`mode:${data.roomId}`,modeData);
+socket.on('game-start', async (data) => {
+  const mode = await redisClient.get(`mode:${data.roomId}`);
+  let modeData = JSON.parse(mode);
 
-    await pubClient.publish('action',JSON.stringify({id:data.roomId,action:'game-start',payload:{started:true}}));
-  })
+  modeData.gametime = data.time;
+  modeData.start = true;
+
+  // add studentCorrect:0 to each question
+  modeData.questions = data.questions.map(q => ({
+    ...q,
+    studentCorrect: 0
+  }));
+
+  console.log('questions : ' + JSON.stringify(modeData.questions));
+  console.log('mode data : ' + JSON.stringify(modeData));
+
+  // store back in redis
+  setgameData(`mode:${data.roomId}`, modeData);
+
+  await pubClient.publish('action', JSON.stringify({
+    id: data.roomId,
+    action: 'game-start',
+    payload: { started: true }
+  }));
+});
+
   socket.on('join-room',async (data) => {
       console.log(`User ${socket.id} joined room: ${data.roomId}`);
       socket.join(data.roomId);

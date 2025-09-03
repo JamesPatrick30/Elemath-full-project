@@ -35,7 +35,8 @@
           <h4 class="analysis-title">Top Students</h4>
           <apexChart
             type="bar"
-            height="230"
+            width="100%"
+            height="387"
             :series="barChart.series"
             :options="barChart.options"
           />
@@ -50,14 +51,14 @@
         </div> -->
         <div class="item4">
           <h4 class="analysis-title">
-            Question Difficulty Breakdown
+            Lowest Scoring Topics
           </h4>
           <apexChart
             type="bar"
-            height="230"
-            width="280"
-            :series="barChart.series"
-            :options="barChart.options"
+            width="100%"
+            height="387"
+            :series="LowTopicBarChart?.series"
+            :options="LowTopicBarChart?.options"
           />
         </div>
         <div class="item5">
@@ -65,12 +66,24 @@
             Improvement
           </h4>
           <div class="pie-con">
-            <apexChart
+            <!-- <apexChart
               type="pie"
-              height="210"
-              :series="improvementChart.series"
-              :options="improvementChart.options"
-            />
+              height="200"
+              width="100%"
+              :series="improvementChart?.series"
+              :options="improvementChart?.options"
+            /> -->
+            <div v-if="improvementChart.series.some(v => v > 0)">
+              <apexChart
+                type="pie"
+                height="210"
+                :series="improvementChart.series"
+                :options="improvementChart.options"
+              />
+            </div>
+            <div v-else>
+              <p>No improvement data yet.</p>
+            </div>
           </div>
         </div>
       </div>
@@ -81,7 +94,7 @@
 <script>
 import navbar from './components/navbar.vue'
 import ApexChart from "vue3-apexcharts"
-
+import api from '@/axios'
 export default {
   components: { navbar, ApexChart },
   data() {
@@ -99,15 +112,15 @@ export default {
         }
       },
       barChart: {
-        series: [
-          { name: "Quiz", data: [80, 70, 90, 77, 85, 92].sort((a,b ) => b -a) }
-        ],
-        options: {
-          chart: { background: "#fff" },
-          colors: ["#FF9800"],
-          plotOptions: { bar: { horizontal: true, borderRadius: 5 } },
-          xaxis: { categories: ["Patrick","Clariza","Rodel","Kurt","Ivan","Nicole"] }
-        }
+        // series: [
+        //   { name: "Quiz", data: [80, 70, 90, 77, 85, 92].sort((a,b ) => b -a) }
+        // ],
+        // options: {
+        //   chart: { background: "#fff" },
+        //   colors: ["#FF9800"],
+        //   plotOptions: { bar: { horizontal: true, borderRadius: 5 } },
+        //   xaxis: { categories: ["Patrick","Clariza","Rodel","Kurt","Ivan","Nicole"] }
+        // }
       },
       PieChart: {
         series: [10, 27],
@@ -124,13 +137,123 @@ export default {
            colors: ["#28a745", "#ffc107", "#dc3545"],
           legend: { position: "right" }
         }
-      }
+      },
+      classInput:null,
+      selectedClassId:null,
+      class:null,
+      LowTopicBarChart:null
     }
+  },
+  methods:{
+    async chart(){
+
+    },
+    async getAllQuarter(classId){
+            try{
+              if(!classId){
+                return alert('nodata')
+              }
+              console.log(classId);
+                const res = await api.get('/chart',{
+                    params:{classId:classId}
+                });
+                this.LineChart = res.data.LineChart;
+                this.barChart = res.data.BarChart;
+                this.improvementChart = res.data.ImprovementChart;
+                this.PieChart = res.data.PieChart;
+                this.LowTopicBarChart = res.data.LowTopicBarChart;
+                
+                console.log('res get all record id '+ JSON.stringify(this.improvementChart));
+            }catch(err){
+                console.log(err);
+            }
+        },
+    async getData() {
+        try {
+            const res = await api.get('/get/grade/class');
+            this.class = res.data.data;
+            // console.log('classes ? '+JSON.stringify( this.class));
+            // Automatically select the first class if available
+            if (this.class && this.class.length > 0) {
+                const firstClass = this.class[0];
+                this.selectedClassId = firstClass.Class_id;
+                this.classInput = firstClass;
+                this.getAllQuarter(this.selectedClassId);
+            }else{
+                alert('No class yet!');
+                this.$router.push('/tc');
+            }
+
+
+            console.log('Data fetched successfully:', res.data);
+        } catch (err) {
+            console.error('Error fetching data:', err);
+            
+            if (err.response?.status === 401) {
+                this.$router.push('/');
+            } else {
+                const msg = err.response?.data?.message || 'Failed to fetch data. Please try again later.';
+                alert(msg);
+            }
+        }
+    },
+    async getClassData(classIn) {
+            try {
+            console.log('class id : ' + classIn);
+            const res = await api.post('/get/classData', { classId: classIn });
+
+            if (res.data.length <= 0) {
+                alert('No student in this class yet!');
+                this.$router.push({ name: 'createClass', query: { i: classIn } });
+                return;
+            }
+
+            // Sort students by name
+            this.students = res.data.sort((a, b) => a.name.localeCompare(b.name));
+            this.reload = false;
+
+            // After fetching students, get their quiz data
+            await this.getAllQuarter(classIn);
+
+            // // Build dataset
+            // this.dataset = this.students.map(student => {
+            //     // Find all quiz scores for this student
+            //     const quizScores = this.quizs.flatMap(quiz => {
+            //     const matched = quiz.students.find(s => s.lrn === student.lrn);
+            //     if (matched) {
+            //         return [{
+            //         quizId: quiz.quizId,
+            //         quizName: quiz.quizname,
+            //         score: matched.score
+            //         }];
+            //     }
+            //     return [];
+            //     });
+
+            //     return {
+            //     lrn: student.lrn,
+            //     name: student.name,
+            //     quizs: quizScores
+            //     };
+            // });
+
+            console.log('Structured dataset:', this.dataset);
+
+            } catch (err) {
+            console.error('Error fetching class data:', err);
+            alert('Failed to load class data. Please try again later.');
+            }
+        },
+  },
+  mounted(){
+    this.getData();
   }
 }
 </script>
 
 <style scoped>
+
+
 .classes{
   position: fixed;
   border-radius: 5px;
@@ -182,7 +305,6 @@ header{
   padding: 20px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
-
 .item3 ul {
   list-style: none;
   padding: 0;
@@ -202,6 +324,8 @@ header{
 }
 main {
   flex: 1;
+  overflow: auto;
+  scrollbar-width: none;
   /* padding: 20px; */
 }
 header {

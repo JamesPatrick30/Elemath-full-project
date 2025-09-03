@@ -257,7 +257,7 @@ export default {
           }
           return;
         }else if(res.data.role === 'student'){
-          this.$router.push('/sd');
+          this.$router.push('/ds');
           return;
         }else{
           this.getIn = false;

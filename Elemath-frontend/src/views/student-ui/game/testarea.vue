@@ -1,10 +1,10 @@
 <script>
 import ApexChart from "vue3-apexcharts"
 import api from '@/axios';
-
+import greenbg from "../components/greenbg.vue";
 export default {
     name: "TestArea",
-    components: { ApexChart },
+    components: { ApexChart,greenbg },
     data() {
         return {
             persent: 100,
@@ -36,7 +36,8 @@ export default {
             topic:'Understanding Bar and Line Graphs',
             id:'',
             table:null,
-            tabletype:''
+            tabletype:'',
+            inputanswer:''
         }
     },
     methods: {
@@ -92,6 +93,7 @@ export default {
                     this.$router.push('/rev');
 
                 }
+                this.topic = data.topic;
                 this.question=data.question;
                 this.options = data?.options;
                 this.story = data?.story;
@@ -99,7 +101,7 @@ export default {
                 this.table = data?.table;
                 this.tabletype = data?.tabletype;
                 const time2 = localStorage.getItem('timeLeft');
-                console.log(time2);
+                console.log(this.table);
                 if(time2 == 0){
                     console.log(time2);
                     this.timeLeft = time2;
@@ -123,6 +125,7 @@ export default {
 }
 </script>
 <template>
+    <greenbg></greenbg>
     <body>
         <header>
                     
@@ -153,32 +156,33 @@ export default {
                     />
                     
                   <!-- </div> -->
-                  <div v-if="question?.tabletype == 'Pie'">
+                  <!-- <div > -->
                     <apexChart
                         type="pie"
-                        height="200"
+                        v-if="tabletype == 'Pie'"
+                        class="charts"
                         :series="table?.PieChart.series"
                         :options="table?.PieChart.options"
                         />
-                  </div>
+                  <!-- </div> -->
                  <div v-if="tabletype == 'Table'">
-                    <table v-if="question?.table" class="custom-table">
+                    <table  class="custom-table">
                         <thead>
                         <tr>
-                            <th v-for="(header, hIndex) in table.head" :key="hIndex">
+                            <th v-for="(header, hIndex) in table?.head" :key="hIndex">
                             {{ header }}
                             </th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="(row, rIndex) in table.body" :key="rIndex">
+                        <tr v-for="(row, rIndex) in table?.body" :key="rIndex">
                             <td v-for="(cell, cIndex) in row" :key="cIndex">
                             {{ cell }}
                             </td>
                         </tr>
                         </tbody>
                     </table>
-                    <table v-if="question?.table.Table" class="custom-table">
+                    <!-- <table v-if="table" class="custom-table">
                         <thead>
                         <tr>
                             <th v-for="(header, hIndex) in table.Table.head" :key="hIndex">
@@ -193,7 +197,7 @@ export default {
                             </td>
                         </tr>
                         </tbody>
-                    </table>
+                    </table> -->
                  </div>
             <!-- <ApexChart v-if="tabletype === 'Line'"
                 type="line"
@@ -210,8 +214,8 @@ export default {
                     <button class="option-c" v-for="(choice,index) in options" :key="index" @click="getIDres(choice)">{{ choice }}</button>
                 </div>
                 <div v-else class="input-text">
-                    <input  type="text">
-                    <button>Submit</button>
+                    <input  type="text" v-model="inputanswer">
+                    <button @click="getIDres(inputanswer)">Submit</button>
                 </div>
                 
             </div>
@@ -219,6 +223,34 @@ export default {
     </body>
 </template>
 <style scoped>
+
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.95rem;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.custom-table th {
+  background: #3f51b5;
+  color: white;
+  padding: 10px;
+  text-align: left;
+}
+
+.custom-table td {
+  padding: 10px;
+  border-top: 1px solid #ddd;
+}
+
+.custom-table tr:nth-child(even) {
+  background: #f9f9f9;
+}
+
 .answer-con .input-text input:focus{
     outline: white;
     
@@ -273,8 +305,14 @@ header p {
     font-size: 13px;
     color:rgb(62, 51, 218) ;
 }
+.question{
+    background-color: white;
+    padding: 10px;
+    border-radius: 10px;
+}
 body{
-    background-image: url('/images/bg.png');
+    /* background-image: url('/images/bg.png'); */
+    position: absolute;
     width: 100%;
     height: 100vh;
     display: flex;
@@ -359,5 +397,23 @@ header{
 }
 *{
     font-family: 'BubbleBody Neue', 'Poppins', sans-serif;
+}
+@media screen and (min-width: 600px) and (max-width: 1023px){
+    .option-c{
+        height: 100px;
+    }
+}
+@media screen and (min-width: 1024px){
+    .option-c{
+        height: 70px;
+        font-size: 15px;
+    }
+    .charts{
+        height: 250px;
+        width: 400px;
+    }
+    .question{
+        font-size: 25px;
+    }
 }
 </style>

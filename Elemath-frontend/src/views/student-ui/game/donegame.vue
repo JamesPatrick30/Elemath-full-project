@@ -23,6 +23,9 @@ export default{
             if(player == value) return '#ff7b00';
             if(realans == value) return '#8ee71a';
             return '#ff4444';
+        },
+        gotohome(){
+            this.$router.push('/ds');
         }
     },
     mounted(){
@@ -56,12 +59,33 @@ export default{
                         <p>{{ value }}</p>
                     </div>
                 </div>
+                <p v-if="c.q.options.length ==0">{{ c.playerAnswer }}</p>
                 <p>Explanation: {{ c.q.explanation }}</p>
             </div>
+            <br>
+            <button class="leave" @click="gotohome">Leave</button>
+            <br>
         </div>
+        
+        <br>
+        <br>
     </main>
 </template>
 <style scoped>
+.leave:hover{
+    transform: scale(1.02);
+}
+.leave{
+    font-weight: 700;
+    font-size: 20px;
+    border-radius: 10px;
+    width: 120px;
+    height: 50px;
+    border: none;
+    color: white;
+    background-color: #37c6e2;
+
+}
 .score{
     color: white;
 }
@@ -214,6 +238,19 @@ main{
     to{
         transform: scale(1.5) rotate(360deg)  translateY(-90px);
         opacity: 0;
+    }
+}
+@media screen and (min-width: 600px) and (max-width: 1023px){
+    .leave{
+        height: 100px;
+        width: 200px;
+    }
+}
+@media screen and (min-width: 1024px){
+    .leave{
+
+        height: 80px;
+        width: 180px;
     }
 }
 </style>
