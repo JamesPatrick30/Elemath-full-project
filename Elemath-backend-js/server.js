@@ -581,11 +581,14 @@ app.get('/chart', auth,cashChart ,async (req, res) => {
     // console.log(JSON.stringify(gradebook));
     // --- LineChart: quiz averages ---
     // --- LineChart: quiz averages as percentage ---
-    const quizNames = gradebook.quizzes.map(q => q.quizname);
+    // take last 7 quizzes
+    const latestQuizzes = gradebook.quizzes.slice(-7);
 
-    // compute percentage = (totalAverage / quiz.total) * 100
-    const quizAverages = gradebook.quizzes.map(q =>
-      (q.totalAverage / q.total) * 100
+    const quizNames = latestQuizzes.map(q => q.quizname);
+
+    // compute percentage = (totalAverage / total) * 100
+    const quizAverages = latestQuizzes.map(q =>
+      Math.floor((q.totalAverage / q.total) * 100)
     );
 
     const LineChart = {
@@ -705,7 +708,7 @@ app.get('/chart', auth,cashChart ,async (req, res) => {
     // compute percentage per topic
     const topicPerformance = Object.entries(topicStats).map(([topic, stats]) => ({
       topic,
-      percentage: stats.total > 0 ? (stats.correct / stats.total) * 100 : 0
+      percentage: stats.total > 0 ? Math.floor((stats.correct / stats.total) * 100) : 0
     }));
 
     // sort by weakest topics (ascending)
@@ -998,7 +1001,7 @@ app.get('/lesson/list',auth, async (req, res) => {
 });
 app.get('/get/mode/data',auth, async (req, res) => {
   const id = req.query.id; // comes in as a string
-  console.log('get mode data query:', req.query); // better logging
+  console.log('get mode data query: pong', req.query); // better logging
   console.log('id:', id);
 
   const quiz = await redisClient.get(`mode:${id}`);
@@ -1145,7 +1148,7 @@ app.get('/get/mode/player/rev',auth,async(req,res)=>{
   
   const modeData = JSON.parse(data);
   const player = modeData.players.find(p => p.lrn === req.user.username);
-  // console.log(player);
+  console.log(player);
   const rev = player.rev;
   res.json({rev:rev,score:player.score});
 });
@@ -1161,7 +1164,7 @@ async function addQuizAndAnalysis(classId, quiz, chartPoint) {
     { new: true, sort: { dateCreated: -1 } } // return updated doc
   ).exec();
 }
-app.post('/mode/done', auth, async (req, res) => {
+app.post('/mode/finish',auth,async (req,res)=>{
   try {
     const { id } = req.body;
 
@@ -1224,15 +1227,107 @@ app.post('/mode/done', auth, async (req, res) => {
 
     res.json({
       message: "Quiz saved successfully",
-      quiz: newQuiz,
-      analysisPoint: chartPoint
+    });
+  } catch (err) {
+    console.error("Error in /mode/done:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+})
+app.post('/mode/done', auth, async (req, res) => {
+  try {
+    const { id } = req.body;
+
+    // 1. Pull modeData from Redis
+    const data = await redisClient.get(`mode:${id}`);
+    if (!data) return res.status(404).json({ error: "Mode not found" });
+    const modeData = JSON.parse(data);
+
+    const players = modeData.players;  // present
+    // const allStudents = await StudentClass.find({ classId: id }); // enrolled
+
+    let pass = 0;
+    let failed = 0;
+    for(studs in players){
+      const ave = Math.floor(studs.score / studs.total * 100);
+      if(ave >=75){
+        pass+=1;
+      }else{
+        failed+=1;
+      }
+    }
+    // 2. Build quiz students list
+    // const quizStudents = allStudents.map(stud => {
+    //   const player = players.find(p => p.lrn === stud.lrn);
+    //   return player
+    //     ? {
+    //         lrn: stud.lrn,
+    //         name: player.player,
+    //         score: player.score ?? 0,
+    //         done: player.done ?? true
+    //       }
+    //     : {
+    //         lrn: stud.lrn,
+    //         name: `${stud.name}`,
+    //         score: 0,
+    //         done: false
+    //       };
+    // });
+
+    // // 3. Compute average
+    // const totalAverage =
+    //   players.reduce((sum, s) => sum + s.score, 0) / players.length;
+
+    // // 4. Create new quiz entry from modeData
+    // const newQuiz = {
+    //   quizId: modeData.quizId,
+    //   quizname: modeData.quizName || new Date().toISOString().split('T')[0] ,
+    //   total: modeData.questions.length,
+    //   students: quizStudents,
+    //   totalAverage,
+    //   lowAnalysis: [], // could be derived: hardest Qs
+    //   questions: modeData.questions.map((q, idx) => ({
+    //     number: (idx + 1).toString(),
+    //     topic:q.topic,
+    //     question: q.question,
+    //     answer: q.answer,
+    //     choices: q.options,
+    //     studentCorrect: q.studentCorrect
+    //   }))
+    // };
+
+    // // 5. ApexChart data point
+    // const chartPoint = { x: newQuiz.quizname, y: totalAverage };
+
+    // // 6. Save into Gradebook
+    // const updated = await addQuizAndAnalysis(id, newQuiz, chartPoint);
+    // console.log(updated);
+    // await redisClient.del(`chart:${id}`);
+    // await redisClient.del(`mode:${id}`);
+
+    res.json({
+      message: "Quiz saved successfully",
+      pass:pass,
+      failed:failed
     });
   } catch (err) {
     console.error("Error in /mode/done:", err);
     res.status(500).json({ error: "Server error" });
   }
 });
+const { buildQuiz } = require('./helper/windowcard.js');
+// ...existing code...
 
+// Minimal quiz endpoint
+app.get('/quiz', auth, (req, res) => {
+  const { difficulty = 'medium', operation = 'mixed', count = 10 } = req.query;
+  console.log(`Generating quiz: difficulty=${difficulty}, operation=${operation}, count=${count}`);
+  const n = Math.max(1, Math.min(500, parseInt(count, 10) || 10));
+  const  questions  = buildQuiz(difficulty, operation, n);
+  // const quiz = buildQuiz("medium", "subtraction", 12);
+  console.log("Generated", questions.length, "questions");
+  console.log(questions);
+  res.json({ data:questions.questions });
+});
 async function setgameData(id,payload) {
   await redisClient.set(id, JSON.stringify(payload), { EX: 3600 });
 }
@@ -1296,7 +1391,7 @@ socket.on('game-start', async (data) => {
 
   modeData.gametime = data.time;
   modeData.start = true;
-
+  console.log('mode data : '+data.questions);
   // add studentCorrect:0 to each question
   modeData.questions = data.questions.map(q => ({
     ...q,

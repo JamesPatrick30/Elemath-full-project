@@ -37,11 +37,18 @@ export default {
             id:'',
             table:null,
             tabletype:'',
-            inputanswer:''
+            inputanswer:'',
+            mute: false,
+            setting:false,
+            audiosrc: "/musics/ingame.mp3",
+            volume: 0.5,
+            resvolume:0,
+            typeOfTest:'',
         }
     },
     methods: {
         startTimer() {
+            this.unlockAudio();
             this.timer = setInterval(() => {
                 if (this.timeLeft > 0) {
                     this.timeLeft--;
@@ -76,6 +83,7 @@ export default {
                     this.$router.push('/rev');
                     return;
                 }
+                this.inputanswer = '';
                 this.get1st();
                 // console.log('Id : '+res.data.id);
                 // this.id = res.data.id;
@@ -86,7 +94,6 @@ export default {
         async get1st(){
             try{
                 const res =await api.get('/get/mode/question/1st');
-                console.log('Id : '+JSON.stringify(res.data));
                 const data = res.data.question;
                 // this.id = res.data.id;
                 if(data.done){
@@ -100,6 +107,9 @@ export default {
                 this.totaltime = res.data.time * 60;
                 this.table = data?.table;
                 this.tabletype = data?.tabletype;
+                this.typeOfTest = data?.type;
+                console.log(this.typeOfTest);
+
                 const time2 = localStorage.getItem('timeLeft');
                 console.log(this.table);
                 if(time2 == 0){
@@ -111,13 +121,38 @@ export default {
             }catch(err){
                 console.log(err);
             }
+        },
+        mutevol(){
+            this.mute = !this.mute;
+            if(this.mute){
+                this.resvolume = this.volume;
+                this.volume = 0;
+                this.$refs.player.volume = 0;
+            }else{
+                this.volume = this.resvolume;
+                this.$refs.player.volume = this.volume;
+            }
+        },
+        settingf(){
+            this.setting = !this.setting;
+        },
+        updateVolume() {
+            this.$refs.player.volume = this.volume;
+        },
+        
+        unlockAudio() {
+            const player = this.$refs.player;
+            player.muted = false;
+            player.volume = this.volume;
+            player.play().catch(err => console.warn("Still blocked:", err));
         }
     },
     mounted() {
         // this.getIDres();
         this.get1st();
         this.startTimer();
-        
+        document.body.addEventListener("click", this.unlockAudio, { once: true });
+        // document.body.addEventListener("click", this.unlockAudio, { once: true });
     },
     beforeMount(){
         // localStorage.setItem('timeLeft',this.timeLeft);
@@ -125,14 +160,25 @@ export default {
 }
 </script>
 <template>
+
     <greenbg></greenbg>
     <body>
+    <audio
+        ref="player"
+        :src="audiosrc"
+        autoplay
+        loop
+        muted
+        ></audio>
+
+
         <header>
                     
             <p> {{ topic }}</p>
             
         </header> 
         <div class="timer" :style="{width: persent+ '%',backgroundColor: color } "></div>
+        <button class="setting" @click="settingf()"><font-awesome-icon icon="fa-solid fa-gear" size="2xl" /></button>
         <main>
             
             <!-- <div class="bar-chart" > -->
@@ -204,14 +250,18 @@ export default {
                 :series="table.LineChart.series"
                 :options="table.LineChart.options"
                 class="charts"
-            /> -->
-            <div class="question">
+            /> class="question"-->
+            <div  :class="tabletype? 'question':'question-notable'">
                 <p v-if="story" >{{ story }}</p>
                 <p>{{ question }}</p>
             </div>
             <div class="answer-con">
-                <div class="option" v-if="options">
+                <div class="option" v-if="typeOfTest === 'multiple-choice'">
                     <button class="option-c" v-for="(choice,index) in options" :key="index" @click="getIDres(choice)">{{ choice }}</button>
+                </div>
+                <div class="true-false" v-else-if="typeOfTest==='true-false'">
+                    <div class="true-false-c" @click="getIDres('true')" >True</div>
+                    <div class="true-false-c" @click="getIDres('false')" >False</div>
                 </div>
                 <div v-else class="input-text">
                     <input  type="text" v-model="inputanswer">
@@ -221,9 +271,83 @@ export default {
             </div>
         </main>
     </body>
+    <div class="cluster-con" v-if="setting">
+        <div class="cluster">
+            <div class="header">
+                <button @click="settingf()"><font-awesome-icon :icon="['fas', 'xmark']" size="lg" color="red"/></button>
+            </div>
+            <div class="body">
+                <h3>MUSIC </h3>
+            <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.01"
+                v-model="volume"
+                @input="updateVolume"
+                />
+                <button @click="mutevol()"><font-awesome-icon icon="fa-solid fa-volume-high" size="xl" v-if="!mute"/> <font-awesome-icon icon="fa-solid fa-volume-xmark" size="xl" v-if="mute"/></button>
+        </div>
+            </div>
+            
+    </div>
 </template>
 <style scoped>
+.true-false{
+    display: flex;
+    flex-direction: column;
+    gap:1em;
+}
+.setting{
+    background-color: rgb(112, 112, 255);
+    align-self: flex-end;
+    color: white;
+    padding: 5px;
+    border: none;
+    border-radius: 10px;
+}
+.body button{
+    background-color: transparent;
+    border: none;
+}
+.cluster .header {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+.cluster .header button {
+    background-color: transparent;
+    border: none;
+    margin: 0;
+    align-self: flex-end;
+}
+.body{
+    display: flex;
 
+    justify-content: center;
+    align-items: center;
+}
+.cluster{
+    display: flex;
+        flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 300px;
+    height: 100px;
+    padding: 5px;
+    background-color: white;
+    border-radius: 10px;
+}
+.cluster-con{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgb(0, 0, 0,0.1);
+}
 .custom-table {
   width: 100%;
   border-collapse: collapse;
@@ -256,6 +380,7 @@ export default {
     
 }
 .answer-con .input-text input{
+    text-align: center;
     font-weight: 700;
     background-color:#8385eb;
     color: white;
@@ -300,12 +425,17 @@ header p {
     font-weight: 800;
     color: white;
 }
+.question-notable p{
+    font-weight: 700;
+    font-size: 20px;
+    color:rgb(62, 51, 218) ;
+}
 .question p{
     font-weight: 600;
     font-size: 13px;
     color:rgb(62, 51, 218) ;
 }
-.question{
+.question,.question-notable{
     background-color: white;
     padding: 10px;
     border-radius: 10px;
@@ -371,7 +501,20 @@ header{
     align-items: center;     /* optional, center vertically if row height is taller */
     width: 100%;             /* full container width */
 }
+.true-false-c{
+    color: white;
+    display: flex;
+    align-items: center;
+    background-color: rgb(112, 112, 255);
+    justify-content: center;
+    height: 50px;
+    border-radius: 5px;
 
+}
+.true-false-c:hover{
+    transform: scale(1.02);
+    transition: 0.2s linear;
+}
 .option-c {
     color: white;
     background-color: rgb(112, 112, 255);
@@ -414,6 +557,12 @@ header{
     }
     .question{
         font-size: 25px;
+    }
+    .true-false{
+        align-items: center;
+    }
+    .true-false-c{
+        width: 500px;
     }
 }
 </style>

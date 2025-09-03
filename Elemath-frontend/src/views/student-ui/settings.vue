@@ -11,7 +11,9 @@ export default{
         return{
             navshow:false,
             profile:'',
-            username:''
+            username:'',
+            audiosrc:'/musics/gamewholebackgroundmusic.mp3',
+            volume:0.5
         }
     },
     methods:{
@@ -35,14 +37,23 @@ export default{
                 console.error('Error fetching student data:', error);
             }
             return;
-        }
+        },
+        updateVolume() {
+            this.$refs.player.volume = this.volume;
+        },
     },
     mounted(){
         this.getdata();
+        const player = this.$refs.player;
+        player.volume = this.volume;
+
+        player.play();
+        player.muted = false;
     }
 }
 </script>
 <template>
+    <audio ref="player" :src="audiosrc" loop autoplay muted></audio>
     <greenbg></greenbg>
     <body>
         <header>
@@ -71,6 +82,14 @@ export default{
             <div class="box">
                 <div class="text">
                     <h3>Music</h3>
+                    <input
+                        type="range"
+                        min="0"
+                        max="1"
+                        step="0.01"
+                        v-model="volume"
+                        @input="updateVolume"
+                        />
                 </div>
                 
 

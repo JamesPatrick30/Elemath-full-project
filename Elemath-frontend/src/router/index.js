@@ -12,6 +12,7 @@ import setting from '@/views/student-ui/settings.vue'
 import report from '@/views/student-ui/report.vue'
 
 import settingst from '@/views/teacher-ui/setting.vue'
+import windowCard from '@/views/teacher-ui/game/windowCard.vue'
 import teacberDashboard from '@/views/teacher-ui/teacber-dashboard.vue'
 import teacherCreateClass from '@/views/teacher-ui/teacher-createClass.vue'
 import teacherUi from '@/views/teacher-ui/teacher-ui.vue'
@@ -26,6 +27,11 @@ import leaderboard from '@/views/teacher-ui/game/leaderboard.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path:'/wc',
+      name:'window-card',
+      component:windowCard
+    },
     {
       path:'/stt',
       name:'tsetting',

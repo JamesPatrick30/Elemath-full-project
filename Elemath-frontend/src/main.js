@@ -14,7 +14,8 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { 
   faUserPen, faList, faUpload, faFile, 
   faTrash, faXmark, faSort, faUserPlus,
-  faGear,faHouse, faUser
+  faGear,faHouse, faUser, faVolumeHigh,
+  faVolumeXmark, faPen
 } from '@fortawesome/free-solid-svg-icons';
 import { faFloppyDisk } from '@fortawesome/free-regular-svg-icons';
 
@@ -23,7 +24,8 @@ library.add(
   faUserPen, faList, faUpload, faFile,
   faTrash, faXmark, faSort, faUserPlus,
   faFloppyDisk, faArrowRightFromBracket,
-  faGear, faHouse, faUser
+  faGear, faHouse, faUser, faVolumeHigh,
+  faVolumeXmark, faPen
 );
 
 const app = createApp(App);

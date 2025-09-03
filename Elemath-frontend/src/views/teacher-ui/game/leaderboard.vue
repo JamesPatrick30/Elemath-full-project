@@ -24,7 +24,10 @@ export default{
             ],
             players: [],
             roomId:this.$route.query.i,
-            stillPlaying:0
+            stillPlaying:0,
+            pass:0,
+            failed:0,
+            playerdone:false
         }
     },
     methods:{
@@ -37,14 +40,29 @@ export default{
                 });
                 this.players = res.data.players.sort((a, b) => b.score - a.score);
                 this.stillPlaying = res.data.playing;
+                console.log(this.players);
                 if(this.stillPlaying.length == 0){
                     try{
                         const res = await api.post('/mode/done',{id:this.roomId});
-                        alert(res.data.message);
+                        this.pass = res.data.pass;
+                        this.failed = res.data.failed;
+                        this.playerdone = true;
                     }catch(err){
                         console.log(err);
                     }
                 }
+            }catch(err){
+                this.$router.push('/');
+                console.log(err);
+            }
+        },
+        async finishbtn(){
+            try{
+                const res = await api.post('/mode/finish',{
+                    id:this.roomId
+                });
+                this.$router.push('/');
+                alert(res.data.message);
             }catch(err){
                 console.log(err);
             }
@@ -79,30 +97,48 @@ export default{
             <div></div>
         </div>
     </div>
+    <div class="cluster-con" v-if="playerdone === true">
+        <div class="cluster">
+            <h2>Result</h2>
+            <div class="result-con">
+                <div class="result">
+                    <h3>Pass</h3>
+                    <h1>{{ pass }}</h1>
+                </div>
+                <div class="result2">
+                    <h3>Failed</h3>
+                    <h1>{{ failed }}</h1>
+                </div>
+            </div>
+            <button @click="finishbtn">Finish</button>
+        </div>
+    </div>
     <main>
         <h1 class="title">Leader Board</h1>
         <div class="top-player">
             <div id="top">
                 
-                <div class="top2">
-                    <img src="/characters/fly.png" alt="">
-                    <p>Sanchez James Patrick L</p>
+                <div class="top2" v-if="players[1]">
+                    <img :src="players[1]?.profile" alt="">
+                    <p>{{ players[1]?.player }}</p>
+                    
                     <div class="medal" id="medal2"><h1>2</h1></div>
                 </div>
             </div>
             <div id="top">
                 
-                <div class="top1">
-                    <img src="/characters/fly.png" alt="">
-                    <p>Sanchez James Patrick L</p>
+                <div class="top1" v-if="players[0]">
+                    <img :src="players[0]?.profile" alt="">
+                    <p>{{ players[0]?.player }}</p>
                     <div class="medal" id="medal1"><h1>1</h1></div>
                 </div>
             </div>
             <div id="top">
 
-                <div class="top3">
-                    <img src="/characters/fly.png" alt="">
-                    <p>Sanchez James Patrick L</p>
+                <div class="top3" v-if="players[2]">
+                    <img :src="players[2]?.profile" alt="">
+                    <p>{{ players[2]?.player }}</p>
+
                     <div class="medal" id="medal3"><h1>3</h1></div>
                 </div>
             </div>
@@ -144,6 +180,60 @@ export default{
 </template>
 
 <style scoped>
+.cluster button{
+    margin: 10px;
+    border-radius: 10px;
+    color: #83a8f3;
+    background-color: white;
+    border: none;
+    height: 50px;
+    width: 100px;
+    font-weight: 700;
+    font-size: large;
+}
+.result2{
+    background-color: #ec9773;
+}
+.result{
+    background-color: #80ec83;
+}
+.result,.result2{
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    width: 200px;
+    border-radius: 10px;
+}
+.result-con{
+    display: flex;
+    gap:1em;
+}
+*{
+    font-family: 'BubbleBody Neue', 'Poppins', sans-serif;
+}
+.cluster h2{
+    color: #80ec83;
+}
+.cluster{
+    text-align: center;
+    background-color: rgb(245, 245, 245);
+    padding: 10px;
+    border-radius: 10px;
+}
+.cluster-con{
+    position: fixed;
+    z-index: 10000;
+    background-color: rgb(0, 0, 0,0.20);
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
 #playersep{
     /* background: #73a533; */
 
