@@ -53,8 +53,8 @@
 </template>
 
 <script>
-import newnav from './components/newnav.vue';
-import greenbg from './components/greenbg.vue';
+import newnav from '../components/newnav.vue';
+import greenbg from '../components/greenbg.vue';
 import api from '@/axios';
 export default {
     components:{

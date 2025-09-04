@@ -64,7 +64,7 @@ export default{
             </div>
         </header>
         <div class="con">
-            <div class="box" @click="gotorouter()">
+            <div class="box" @click="gotorouter('basicInfo')">
                 <div class="text">
                     <h3>Basic Info</h3>
                     <p>It’s the profile card of the system — the simple facts that identify you or the app.</p>
@@ -96,7 +96,7 @@ export default{
             </div>
             <div class="box" @click="gotorouter('reports')">
                 <div class="text">
-                    <h3>Report a Bug</h3>
+                    <h3>Report a Problem</h3>
                     <p>Found a problem? Let us know so we can fix it!</p>
                 </div>
                 <img src="/images/Profile icon.png" alt="">

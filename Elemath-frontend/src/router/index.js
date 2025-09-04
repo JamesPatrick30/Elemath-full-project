@@ -8,10 +8,10 @@ import studentSetting from '@/views/student-ui/setting.vue'
 import testarea from '@/views/student-ui/game/testarea.vue'
 import donegame from '@/views/student-ui/game/donegame.vue'
 import dashboard2 from '@/views/student-ui/dashboard2.vue'
-import setting from '@/views/student-ui/settings.vue'
-import report from '@/views/student-ui/report.vue'
+import settings from '@/views/student-ui/settings.vue'
+import report from '@/views/student-ui/settingsfolder/report.vue'
 
-import settingst from '@/views/teacher-ui/setting.vue'
+import teacherSetting from '@/views/teacher-ui/setting.vue'
 import windowCard from '@/views/teacher-ui/game/windowCard.vue'
 import teacberDashboard from '@/views/teacher-ui/teacber-dashboard.vue'
 import teacherCreateClass from '@/views/teacher-ui/teacher-createClass.vue'
@@ -24,9 +24,15 @@ import Analytics from '@/views/teacher-ui/Analytics.vue'
 import addlist from '@/views/admin-ui/addlist.vue'
 import Grade from '@/views/teacher-ui/Grade.vue'
 import leaderboard from '@/views/teacher-ui/game/leaderboard.vue'
+import basicInfo from '@/views/student-ui/settingsfolder/basicInfo.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path:'/bs',
+      name:'basicInfo',
+      component :basicInfo
+    },
     {
       path:'/wc',
       name:'window-card',
@@ -35,7 +41,7 @@ const router = createRouter({
     {
       path:'/stt',
       name:'tsetting',
-      component:settingst
+      component:teacherSetting
     },
     {
       path:'/r',
@@ -130,10 +136,10 @@ const router = createRouter({
     },
     {
       path: '/ts',
-      name: 'setting',
-      component: setting
+      name: 'settings',
+      component: settings
     },
-    ,{
+    {
       path: '/sign-google',
       name: 'signGoogle',
       component: signGoogle

@@ -156,7 +156,24 @@ app.post('/api/login',async (req, res) => {
     res.status(200).json({ message: 'Login successful', classCount: classCount });
     console.log('Login successful:', username);
 });
+app.post('/update/student/info',auth,async(req,res)=>{
+  const { username, password } = req.body;
+  // if(password !== confirmPassword) return res.status(404).json({message:'Password did not match'});
+  const student =await StudentClass.findOne({email:req.user.username});
+  if(!student) return res.status(404).json({message:'Student not yet enrolled'});
 
+  try{
+    const result = await StudentClass.updateOne(
+      { email: req.user.username },
+      { $set: { name: username, password: password } }
+    );
+    console.log('the update data : ', result);
+    res.status(200).json({message:'updated'});
+  }catch(err){
+    console.error(err);
+    return res.status(500).json({message:'Server error'});
+  }
+});
 app.post('/student-login', async (req, res) => {
   const {email,password} = req.body;
 
@@ -522,6 +539,7 @@ app.post('/enroll-student',auth,async(req,res)=>{
 
 
 });
+//TODO : FIX THIS TOMORROW MORNING
 async function classCache(req,res,next){
   const {classId} = req.body;
   const cacheKey = `classData:${classId}`;
