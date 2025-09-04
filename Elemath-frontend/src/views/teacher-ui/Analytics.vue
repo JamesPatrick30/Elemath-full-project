@@ -4,9 +4,9 @@
     <main>
       <header>
         <h3 class="header-text">Analytics Dashboard</h3>
-        <select name="" id="" class="classes">
-          <option value="2">2</option>
-          <option value="2">2</option>
+        <select name="" id="" class="classes" @change="getClassData(selectedClassId)" v-model="selectedClassId">
+          <option v-for="value in class" :key="value.Class_id" :value="value.Class_id">{{ value.Class_name }}</option>
+
         </select>
       </header>
       <div class="con">
@@ -99,6 +99,7 @@ export default {
   components: { navbar, ApexChart },
   data() {
     return {
+      selectedClassId: null,
       LineChart: {
         series: [
           { name: "Quiz", data: [80, 70, 90, 77, 85, 92] }
@@ -172,7 +173,7 @@ export default {
         try {
             const res = await api.get('/get/grade/class');
             this.class = res.data.data;
-            // console.log('classes ? '+JSON.stringify( this.class));
+            console.log('classes ? '+JSON.stringify( this.class));
             // Automatically select the first class if available
             if (this.class && this.class.length > 0) {
                 const firstClass = this.class[0];
