@@ -1018,8 +1018,9 @@ app.get('/get/mode/question/1st',auth,async(req,res)=>{
   const modeData = JSON.parse(mode);
   let player = modeData.players.find(p => p.lrn === req.user.username);
   const qin = player.qIn;
+  console.log('quizMode in get : ' + modeData.quizMode);
   // modeData.players.find(p => p.lrn === req.user.username).qIn+=1;
-  res.json({question:modeData.questions[qin],done:false,time:modeData.gametime});
+  res.json({question:modeData.questions[qin],done:false,time:modeData.gametime,quizMode:modeData.quizMode});
 });
 app.post('/get/mode/question', auth, async (req, res) => {
   const { answer } = req.body;
@@ -1209,7 +1210,7 @@ app.post('/mode/finish',auth,async (req,res)=>{
       questions: modeData.questions.map((q, idx) => ({
         number: (idx + 1).toString(),
         topic:q.topic,
-        question: q.question,
+        question: JSON.stringify(q.question),
         answer: q.answer,
         choices: q.options,
         studentCorrect: q.studentCorrect
@@ -1244,12 +1245,13 @@ app.post('/mode/done', auth, async (req, res) => {
 
     const players = modeData.players;  // present
     // const allStudents = await StudentClass.find({ classId: id }); // enrolled
-
+    console.log(modeData.questions.length);
     let pass = 0;
     let failed = 0;
-    for(studs in players){
-      const ave = Math.floor(studs.score / studs.total * 100);
-      if(ave >=75){
+    for(const studs of players){
+      const ave = studs.score / modeData.questions.length * 100;
+      console.log(ave);
+      if(ave >=50){
         pass+=1;
       }else{
         failed+=1;

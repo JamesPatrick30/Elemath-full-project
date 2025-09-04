@@ -52,15 +52,17 @@ export default{
         <h1 class="score">Score : {{ score }}</h1>
         <div class="con">
             <div class="rev" v-for="(c,index) in rev" :key="index" :class="c.correct? 'correct' : 'wrong'">
-                <p>{{ c.q.question }}</p>
+                <p v-if="c.q.question?.question" class="question">{{ c.q.question?.question }}</p>
+                <p v-else class="question">{{ c.q.question }} </p>
 
                 <div class="con-option">
                     <div class="option" v-for="(value,index) in c.q.options" :key="index" :style="{backgroundColor:colorpic(c.q.answer,value,c.playerAnswer)}">
                         <p>{{ value }}</p>
                     </div>
                 </div>
-                <p v-if="c.q.options.length ==0 || !c.q.options">{{ c.playerAnswer }}</p>
-                <p>Explanation: {{ c.q.explanation }}</p>
+                <p v-if=" !c.q.options" :class="c.correct ? 'correct-answer' : 'wrong-answer'">{{ c.playerAnswer }}</p>
+                <p class="correct-answer" v-if="!c.correct && !c.q?.options">Answer: {{ c.q.answer }}</p>
+                <p v-if="c.q.explanation">Explanation: {{ c.q.explanation }}</p>
             </div>
             <br>
             <button class="leave" @click="gotohome">Leave</button>
@@ -72,6 +74,25 @@ export default{
     </main>
 </template>
 <style scoped>
+.correct-answer{
+    background-color: #8ee71a;
+
+}
+.wrong-answer{
+    background-color: #ff4444;
+}
+.correct-answer,.wrong-answer{
+    width: 200px;
+    padding: 10px;
+    text-align: center;
+    font-weight: 700;
+    border-radius: 10px;
+}
+.question{
+    font-weight: 700;
+    font-size: 20px;
+    text-align: center;
+}
 .leave:hover{
     transform: scale(1.02);
 }

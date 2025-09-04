@@ -32,18 +32,18 @@ export default {
             }
         },
         async startGame() {
-            // if(!this.time){
-            //     alert('⚠️ Time limit not set. Please configure a timer before starting.');
-            //     return;
-            // }
-            // if(!this.count || !this.time ){
-            //     alert('⚠️ Number of questions not set. Please configure the number of questions before starting.');
-            //     return;
-            // }
-            // if(this.players.length == 0){
-            //     alert('⚠️ No players joined yet. Waiting for players...');
-            //     return;
-            // }
+            if(!this.time){
+                alert('⚠️ Time limit not set. Please configure a timer before starting.');
+                return;
+            }
+            if(!this.count || !this.time ){
+                alert('⚠️ Number of questions not set. Please configure the number of questions before starting.');
+                return;
+            }
+            if(this.players.length == 0){
+                alert('⚠️ No players joined yet. Waiting for players...');
+                return;
+            }
             try {
                 const res = await api.get('/quiz', {
                     params: {
@@ -133,6 +133,7 @@ export default {
                     </div>
                 </div>
                 <div class="players-con">
+                    <div class="player"><h2>Players</h2></div>
                     <div class="player" v-for="(value, index) in players" :key="index">{{ value.player }}</div>
                 </div>
             </div>

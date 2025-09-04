@@ -54,13 +54,13 @@ function rangesFor(op, difficulty) {
             if (difficulty === 'medium') return { a: [1000, 9999], b: [1000, 9999] };
             return { a: [5000, 99999], b: [1000, 99999] };
         case OP.MUL:
-            if (difficulty === 'easy') return { a: [10, 99], b: [2, 12] };
-            if (difficulty === 'medium') return { a: [20, 99], b: [10, 99] };
-            return { a: [100, 999], b: [10, 99] };
+            if (difficulty === 'easy') return { a: [2, 9], b: [2, 9] };
+            if (difficulty === 'medium') return { a: [10, 50], b: [2, 12] };
+            return { a: [50, 99], b: [10, 20] };
         case OP.DIV:
-            if (difficulty === 'easy') return { divisor: [2, 12], quotient: [2, 99] };
-            if (difficulty === 'medium') return { divisor: [6, 25], quotient: [10, 199] };
-            return { divisor: [10, 50], quotient: [50, 999] };
+            if (difficulty === 'easy') return { divisor: [2, 9], quotient: [2, 20] };
+            if (difficulty === 'medium') return { divisor: [2, 12], quotient: [10, 50] };
+            return { divisor: [5, 20], quotient: [20, 99] };
         default:
             return { a: [10, 99], b: [10, 99] };
     }
@@ -141,7 +141,15 @@ function generateQuestions(difficulty, operation, count = 10) {
 
         if (seen.has(key)) continue;
         seen.add(key);
-        out.push(problem);
+        
+        const problemObject = {
+            q1: problem.operands[0].toString(),
+            q2: problem.operands[1].toString(),
+            operation: OP_SYMBOL[chosenOp],
+            question: problem.question
+        };
+        
+        out.push({ ...problem, problem: problemObject });
     }
     return out;
 }
@@ -155,10 +163,10 @@ function buildQuiz(difficulty, operation, count = 10) {
     if (!problems || !Array.isArray(problems)) {
         throw new Error("generateQuestions did not return a valid array");
     }
-
+    console.log(problems);
     return {
         questions: problems.map(p => ({
-            question: p.question,
+            question: p.problem,
             type: 'input answer',
             answerType: '',
             story: '',

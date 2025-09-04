@@ -7,6 +7,7 @@ export default {
     components: { ApexChart,greenbg },
     data() {
         return {
+            quizMode:'',
             persent: 100,
             story:'A business tracks monthly sales; May is lower than April.',
             question:'Which month shows a dip in sales compared to the previous month in the line graph?',
@@ -44,13 +45,14 @@ export default {
             volume: 0.5,
             resvolume:0,
             typeOfTest:'',
+            btnsubmit:false
         }
     },
     methods: {
         startTimer() {
             this.unlockAudio();
             this.timer = setInterval(() => {
-                if (this.timeLeft > 0) {
+                if (this.timeLeft > -1) {
                     this.timeLeft--;
                     this.persent = (this.timeLeft / this.totaltime) * 100;
                     if(this.persent > 83){
@@ -67,9 +69,13 @@ export default {
                         this.color = this.colors[5];
                     }
                     // ⏱ Save progress on every tick
-                    localStorage.setItem("timeLeft", this.timeLeft);
+                    if(this.timeLeft == 0){
+                        this.getIDres('');
+                    }
+                    
                 } else {
-                localStorage.removeItem("timeLeft");
+                    
+
                 clearInterval(this.timer);
                 }
             }, 1000);
@@ -84,6 +90,8 @@ export default {
                     return;
                 }
                 this.inputanswer = '';
+                this.btnsubmit = true;
+
                 this.get1st();
                 // console.log('Id : '+res.data.id);
                 // this.id = res.data.id;
@@ -100,6 +108,8 @@ export default {
                     this.$router.push('/rev');
 
                 }
+                this.quizMode = res.data.quizMode;
+                console.log('Quiz mode: '+this.quizMode);
                 this.topic = data.topic;
                 this.question=data.question;
                 this.options = data?.options;
@@ -108,7 +118,8 @@ export default {
                 this.table = data?.table;
                 this.tabletype = data?.tabletype;
                 this.typeOfTest = data?.type;
-                console.log(this.typeOfTest);
+                this.btnsubmit = false;
+                console.log(data);
 
                 const time2 = localStorage.getItem('timeLeft');
                 console.log(this.table);
@@ -182,6 +193,7 @@ export default {
         <main>
             
             <!-- <div class="bar-chart" > -->
+                <div class="test-area" v-if="quizMode !== 'WINDOWCARD MODE'">
                     <apexChart
                         type="line"
                         v-if="tabletype == 'Line'"
@@ -211,64 +223,82 @@ export default {
                         :options="table?.PieChart.options"
                         />
                   <!-- </div> -->
-                 <div v-if="tabletype == 'Table'">
-                    <table  class="custom-table">
-                        <thead>
-                        <tr>
-                            <th v-for="(header, hIndex) in table?.head" :key="hIndex">
-                            {{ header }}
-                            </th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr v-for="(row, rIndex) in table?.body" :key="rIndex">
-                            <td v-for="(cell, cIndex) in row" :key="cIndex">
-                            {{ cell }}
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                    <!-- <table v-if="table" class="custom-table">
-                        <thead>
-                        <tr>
-                            <th v-for="(header, hIndex) in table.Table.head" :key="hIndex">
-                            {{ header }}
-                            </th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr v-for="(row, rIndex) in table.Table.body" :key="rIndex">
-                            <td v-for="(cell, cIndex) in row" :key="cIndex">
-                            {{ cell }}
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table> -->
-                 </div>
-            <!-- <ApexChart v-if="tabletype === 'Line'"
-                type="line"
-                :series="table.LineChart.series"
-                :options="table.LineChart.options"
-                class="charts"
-            /> class="question"-->
-            <div  :class="tabletype? 'question':'question-notable'">
-                <p v-if="story" >{{ story }}</p>
-                <p>{{ question }}</p>
-            </div>
-            <div class="answer-con">
-                <div class="option" v-if="typeOfTest === 'multiple-choice'">
-                    <button class="option-c" v-for="(choice,index) in options" :key="index" @click="getIDres(choice)">{{ choice }}</button>
+                        <div v-if="tabletype == 'Table'">
+                            <table  class="custom-table">
+                                <thead>
+                                <tr>
+                                    <th v-for="(header, hIndex) in table?.head" :key="hIndex">
+                                    {{ header }}
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr v-for="(row, rIndex) in table?.body" :key="rIndex">
+                                    <td v-for="(cell, cIndex) in row" :key="cIndex">
+                                    {{ cell }}
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <!-- <table v-if="table" class="custom-table">
+                                <thead>
+                                <tr>
+                                    <th v-for="(header, hIndex) in table.Table.head" :key="hIndex">
+                                    {{ header }}
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr v-for="(row, rIndex) in table.Table.body" :key="rIndex">
+                                    <td v-for="(cell, cIndex) in row" :key="cIndex">
+                                    {{ cell }}
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table> -->
+                        </div>
+                    <!-- <ApexChart v-if="tabletype === 'Line'"
+                        type="line"
+                        :series="table.LineChart.series"
+                        :options="table.LineChart.options"
+                        class="charts"
+                    /> class="question"-->
+                    <div  :class="tabletype? 'question':'question-notable'">
+                        <p v-if="story" >{{ story }}</p>
+                        <p>{{ question }}</p>
+                    </div>
+                    <div class="answer-con">
+                        <div class="option" v-if="typeOfTest === 'multiple-choice'">
+                            <button class="option-c" v-for="(choice,index) in options" :key="index" @click="getIDres(choice)">{{ choice }}</button>
+                        </div>
+                        <div class="true-false" v-else-if="typeOfTest==='true-false'">
+                            <div class="true-false-c" @click="getIDres('true')" >True</div>
+                            <div class="true-false-c" @click="getIDres('false')" >False</div>
+                        </div>
+                        <div v-else class="input-text">
+                            <input  type="text" v-model="inputanswer">
+                            <button @click="getIDres(inputanswer)" :disabled="btnsubmit">Submit</button>
+                        </div>
+                        
+                    </div>
                 </div>
-                <div class="true-false" v-else-if="typeOfTest==='true-false'">
-                    <div class="true-false-c" @click="getIDres('true')" >True</div>
-                    <div class="true-false-c" @click="getIDres('false')" >False</div>
+                <div class="test-area" v-else>
+                    <div class="card">
+                        <h2>Window Card Mode</h2>
+                        <div class="q">
+                            <p>{{ question.q1 }}</p>
+                            <p>{{ question.operation }} {{ question.q2 }}</p>
+                            <p></p>
+                        </div>
+                        <div  class="input-text">
+                            <input  type="text" v-model="inputanswer">
+                            <button @click="getIDres(inputanswer)" :disabled="btnsubmit">Submit</button>
+                        </div>
+                        
+                    
+                    </div>
                 </div>
-                <div v-else class="input-text">
-                    <input  type="text" v-model="inputanswer">
-                    <button @click="getIDres(inputanswer)">Submit</button>
-                </div>
-                
-            </div>
+                    
         </main>
     </body>
     <div class="cluster-con" v-if="setting">
@@ -293,6 +323,41 @@ export default {
     </div>
 </template>
 <style scoped>
+.q p{
+    margin: 0;
+}
+.q{
+    text-align: end;
+    font-size: 40px;
+    font-weight: 800;
+    margin-top: auto;
+    justify-self: center;
+}
+.card .input-text{
+    justify-self: flex-end;
+    margin-top: auto;
+}
+.test-area{
+    /* background-color: #3f51b5; */
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.card{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+    width: 90%;
+    height: 500px;
+    background-color: white;
+    border: #7577ff 5px solid;
+    padding: 10px;
+}
 .true-false{
     display: flex;
     flex-direction: column;
@@ -375,39 +440,40 @@ export default {
   background: #f9f9f9;
 }
 
-.answer-con .input-text input:focus{
+.answer-con .input-text input:focus,.card .input-text input:focus{
     outline: white;
     
 }
-.answer-con .input-text input{
+.answer-con .input-text input ,.card .input-text input{
     text-align: center;
     font-weight: 700;
     background-color:#8385eb;
     color: white;
     border: white 2px solid;
 }
-.answer-con .input-text input, .answer-con .input-text button{
+.answer-con .input-text input, .answer-con .input-text button,
+.card .input-text input, .card .input-text button{
     height: 40px;
     border-radius: 10px;
 }
-.answer-con .input-text button{
+.answer-con .input-text button,.card .input-text button{
     background-color:#8385eb;
     font-weight: 600;
     color: white;
     border: none;
     transition: 0.3s linear;
 }
-.answer-con .input-text button:hover{
+.answer-con .input-text button:hover,.card .input-text button:hover{
     transform: scale(1.03);
     transition: 0.3s linear;
     background-color:#7577ff;
 }
-.answer-con .input-text button:active{
+.answer-con .input-text button:active,.card .input-text button:active{
     transform: scale(1);
     transition: 0.3s linear;
     background-color: rgb(62, 51, 218);
 }
-.answer-con .input-text{
+.answer-con .input-text, .card .input-text{
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -563,6 +629,9 @@ header{
     }
     .true-false-c{
         width: 500px;
+    }
+    .card{
+        width: 400px;
     }
 }
 </style>
