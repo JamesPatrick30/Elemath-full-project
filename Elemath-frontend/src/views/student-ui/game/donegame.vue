@@ -14,7 +14,7 @@ export default{
                 const res = await api.get('/get/mode/player/rev');
                 this.rev = res.data.rev;
                 this.score = res.data.score;
-                console.log(res.data);
+                console.log(res.data.rev);
             }catch(err){
                 console.log(err);
             }
@@ -55,13 +55,16 @@ export default{
                 <p v-if="c.q.question?.question" class="question">{{ c.q.question?.question }}</p>
                 <p v-else class="question">{{ c.q.question }} </p>
 
-                <div class="con-option">
+                <div class="con-option" v-if="c.q.options.length > 0">
                     <div class="option" v-for="(value,index) in c.q.options" :key="index" :style="{backgroundColor:colorpic(c.q.answer,value,c.playerAnswer)}">
                         <p>{{ value }}</p>
                     </div>
                 </div>
-                <p v-if=" !c.q.options" :class="c.correct ? 'correct-answer' : 'wrong-answer'">{{ c.playerAnswer }}</p>
-                <p class="correct-answer" v-if="!c.correct && !c.q?.options">Answer: {{ c.q.answer }}</p>
+                <div v-else>
+                    <p :class="c.correct ? 'correct-answer' : 'wrong-answer'">{{ c.playerAnswer }}</p>
+                    <p class="correct-answer" v-if="!c.correct ">Answer: {{ c.q.answer }}</p>
+                </div>
+                
                 <p v-if="c.q.explanation">Explanation: {{ c.q.explanation }}</p>
             </div>
             <br>

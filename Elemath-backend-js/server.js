@@ -224,17 +224,19 @@ app.post('/get/quarter', auth, async (req, res) => {
 
   // Flatten into student-based structure
   const studentMap = {};
-
+  console.log('quarter : '+quarter.quizzes);
   quarter.quizzes.forEach(quiz => {
     quiz.students.forEach(student => {
       if (!studentMap[student.lrn]) {
         studentMap[student.lrn] = {
+          
           lrn: student.lrn,
           name: student.name,
           quiz: []
         };
       }
       studentMap[student.lrn].quiz.push({
+        mode: quiz.quizMode,
         quizId: quiz.quizId,
         quizname: quiz.quizname,
         score: student.score,
@@ -1202,6 +1204,7 @@ app.post('/mode/finish',auth,async (req,res)=>{
     // 4. Create new quiz entry from modeData
     const newQuiz = {
       quizId: modeData.quizId,
+      quizMode: modeData.quizMode,
       quizname: modeData.quizName || new Date().toISOString().split('T')[0] ,
       total: modeData.questions.length,
       students: quizStudents,

@@ -23,6 +23,7 @@ const quizSchema = new mongoose.Schema({
   quizId:String,
   quizname: String,
   total:Number,
+  quizMode:String,
   students: [studentSchema],
   totalAverage:Number,
   lowAnalysis:[{ type: mongoose.Schema.Types.Mixed }],
