@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 const lessonFile = new Schema({
     title: String,
     summary: String,
+    htmlLesson: String,
     file:String,
     dateCreated: { type: Date, default: Date.now }
 })
