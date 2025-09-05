@@ -95,7 +95,16 @@ async function Cache(key, data) {
   console.log('cached : ' + key);
   return data;
 }
-
+const dlessons = require('./models/dlesson.js');
+app.get('/dlesson/list', auth, async (req, res) => {
+  try {
+    const lessons = await dlessons.find({}).sort({ dateCreated: -1 }); // latest first
+    res.json(lessons);
+  } catch (error) {
+    console.error("❌ Error fetching lessons:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 
 
 app.use(express.static('public')); // Serve static files from 'public' directory

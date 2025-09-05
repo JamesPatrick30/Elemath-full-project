@@ -4,16 +4,23 @@
     <button @click="submitFile">Upload Lesson</button>
     <p v-if="uploadResult">Uploaded: {{ uploadResult.title }}</p>
   </div>
+
+  <div v-for="value in lessons" :key="value.id">
+    <h3>{{ value.title }}</h3>
+    <div v-html="formattedContent(value.htmlLesson)"></div>
+  </div>
 </template>
 
 <script>
-import { ref } from "vue";
-import api from "@/axios"; // your existing Axios instance
+import { ref, onMounted } from "vue";
+import api from "@/axios";
 
 export default {
+  name: "UploadLesson",
   setup() {
     const file = ref(null);
     const uploadResult = ref(null);
+    const lessons = ref([]);
 
     const handleFileUpload = (e) => {
       file.value = e.target.files[0];
@@ -33,15 +40,43 @@ export default {
           headers: { "Content-Type": "multipart/form-data" },
         });
 
-        uploadResult.value = response.data; // ✅ Access the actual server response
+        uploadResult.value = response.data;
         console.log("✅ Lesson uploaded:", uploadResult.value);
+
+        // Optionally refresh lessons list
+        fetchLessons();
       } catch (err) {
         console.error("❌ Upload error:", err);
         alert("Upload failed: " + (err.response?.data?.message || err.message));
       }
     };
 
-    return { file, uploadResult, handleFileUpload, submitFile };
+    const fetchLessons = async () => {
+      try {
+        const response = await api.get("/dlesson/list");
+        lessons.value = response.data || [];
+        console.log("Fetched lessons:", lessons.value);
+      } catch (err) {
+        console.error("Error fetching lessons:", err);
+      }
+    };
+
+    const formattedContent = (lesson) => {
+      return lesson ? lesson.replace(/\n/g, "<br>") : "";
+    };
+
+    onMounted(() => {
+      fetchLessons();
+    });
+
+    return {
+      file,
+      uploadResult,
+      lessons,
+      handleFileUpload,
+      submitFile,
+      formattedContent,
+    };
   },
 };
 </script>

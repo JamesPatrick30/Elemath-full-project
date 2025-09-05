@@ -93,7 +93,7 @@ router.post("/upload/default",auth, upload.single("lessonFile"), async (req, res
 
         const file = new filesave({
             file: rawText,
-            htmlLesson: d.htmlLesson || "<p>No content available</p>",
+            htmlLesson: d.htmlLesson.replace(/\n/g, "<br>") || "<p>No content available</p>",
             title: d.title || "Untitled Lesson",
             summary: d.summary || "No summary available",
         });
