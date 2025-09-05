@@ -105,7 +105,9 @@ app.use('/', uploadRouter); // Mount upload route
 
 const uploadlist = require('./routes/uploadlist.js');
 const Student = require('./models/students.js');
+const uploadD = require('./routes/dlesson.js');
 
+app.use('/',uploadD);
 app.use('/',uploadlist);
 
 app.use('/', require('./routes/google'));

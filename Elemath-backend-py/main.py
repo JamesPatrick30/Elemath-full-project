@@ -4,6 +4,7 @@ from fastapi import FastAPI, HTTPException, Request, Body
 from pydantic import BaseModel
 from openai import OpenAI
 from dotenv import load_dotenv
+import re
 import logging
 from fastapi.responses import JSONResponse
 # Load environment variables
@@ -196,7 +197,7 @@ async def generate_quiz(data: LessonText):
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
     
 @app.post("/lesson")
-async def get_lesson(payload: dict = Body(...)):
+async def get_Dlesson(payload: dict = Body(...)):
     """
     Return the title and summary of a lesson.
     """
@@ -242,3 +243,71 @@ async def get_lesson(payload: dict = Body(...)):
     except Exception as e:
         import traceback
         traceback.print_exc()
+
+def safe_load_json(s: str):
+    """Safely parse JSON even if there is extra text."""
+    try:
+        return json.loads(s)
+    except json.JSONDecodeError:
+        match = re.search(r'\{.*\}', s, re.DOTALL)
+        if match:
+            return json.loads(match.group())
+        raise
+
+def escape_html_for_json(html: str) -> str:
+    """Escape HTML to be JSON-safe."""
+    return html.replace('\\', '\\\\').replace('"', '\\"').replace('\n', '\\n')
+
+@app.post("/dlesson")
+async def get_lesson(payload: dict = Body(...)):
+    """
+    Return the title, summary, HTML version, and content flag of a lesson.
+    """
+    lesson = payload.get("lesson", "")
+    if not lesson.strip():
+        raise HTTPException(status_code=400, detail="No lesson text provided.")
+
+    prompt = f"""
+    You are an educational AI. Analyze the following lesson text and return a JSON object with:
+
+    - "title": concise title (max 15 words)
+    - "summary": clear summary (3–5 sentences)
+    - "htmlLesson": the lesson converted into HTML, preserving paragraphs (<p>), headings (<h2>/<h3>), lists (<ul>/<li>), and formatting.
+    - "content": boolean, false if lesson is empty or has no useful content, true otherwise
+
+    Return valid JSON only. Escape quotes and backslashes for JSON safety.
+
+    === LESSON TEXT ===
+    {lesson}
+    """
+
+    try:
+        response = client.chat.completions.create(
+            model="openai/gpt-5-nano",
+            messages=[
+                {"role": "system", "content": "You are an educational AI that summarizes lessons."},
+                {"role": "user", "content": prompt},
+            ],
+            temperature=0.7,
+        )
+
+        if not response.choices or not response.choices[0].message.content:
+            raise HTTPException(status_code=500, detail="AI returned no content")
+
+        raw_json = response.choices[0].message.content.strip()
+
+        # Remove control characters
+        raw_json = re.sub(r'[\x00-\x1f]', '', raw_json)
+
+        parsed = safe_load_json(raw_json)
+
+        # Ensure HTML is JSON-safe
+        if "htmlLesson" in parsed:
+            parsed["htmlLesson"] = escape_html_for_json(parsed["htmlLesson"])
+
+        return parsed
+
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e))
