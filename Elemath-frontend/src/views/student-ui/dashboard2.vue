@@ -30,20 +30,38 @@ export default{
             started:false,
             navshow:false,
             id:'',
+            cluster:false,
             ongiong: false, // This should be set based on your logic
             profilepic:'',
+            title:'Cluster Mode',
+            summarize:'Cluster Mode is On',
             name: 'John Doe', // Replace with actual data
             lrn: '1234567890', // Replace with actual data
             isNavVisible: window.matchMedia('(min-width: 623px)').matches // Responsive nav visibility
         }
     },
     methods:{
+        async lessonData(id){
+            try{
+                const res = await api.get('/dlesson/get',{
+                    params:{
+                        lessonId:id
+                    }
+                });
+                this.title = res.data.title;
+                this.cluster = true;
+                this.summarize = res.data.summary;
+                console.log(res.data);
+            }catch(err){
+                console.log(err);
+            }
+        },
         sortgrade5(){
-            const Array = this.lessons.filter(lesson => lesson.grade === 5);
+            const Array = this.lessons.filter(lesson => lesson.gradeLevel === 'Grade 5');
             return Array;
         },
         sortgrade6(){
-            const Array = this.lessons.filter(lesson => lesson.grade === 6);
+            const Array = this.lessons.filter(lesson => lesson.gradeLevel === 'Grade 6');
             return Array;
         },
         switchNav(){
@@ -65,6 +83,7 @@ export default{
             try {
                 const response = await api.get('/get/student/data'); // Adjust the endpoint as needed
                 // console.log(response.data);
+                this.getLessonList();
                 this.name = response.data.name || 'John Doe';
                 this.lrn = response.data.lrn || '1234567890';
                 this.profilepic = response.data.profile; // Default profile picture
@@ -104,7 +123,16 @@ export default{
         },
         handleResize() {
             this.isNavVisible = window.matchMedia('(min-width: 623px)').matches;
-        }
+        },
+        async getLessonList(){
+            try{
+                const res = await api.get('/dlesson/list');
+                this.lessons = res.data;
+                console.log(res.data);
+            }catch(err){
+                console.log(err);
+            }
+        },
     },
     mounted() {
         window.addEventListener('resize', this.handleResize);
@@ -144,7 +172,7 @@ export default{
             <div></div>
         </div>
     </div>
-
+    
     <body>
         <header>
             <img class="profile" :src="profilepic" alt="" @click="switchNav">
@@ -168,27 +196,81 @@ export default{
             <p class="title">Lessons</p>
             <p class="small-title">Grade 5</p>
             <div class="lesson-con">
-                <div class="lesson" v-for="(value,index) in sortgrade5()" :key="index" @click="alertnof()">
+                <div class="lesson" v-for="(value,index) in sortgrade5()" :key="index" @click="lessonData(value._id)">
                     <img src="/images/BOOK.png" alt="">
-                        <p>{{value.topic}}</p>
+                        <p>{{value.title}}</p>
                 </div>
             </div>
             <p class="small-title">Grade 6</p>
 
             <div class="lesson-con">
-                <div class="lesson" v-for="(value,index) in sortgrade6()" :key="index" @click="alertnof()">
+                <div class="lesson" v-for="(value,index) in sortgrade6()" :key="index" @click="lessonData(value._id)">
                     <img src="/images/BOOK.png" alt="">
-                        <p>{{value.topic}}</p>
+                        <p>{{value.title}}</p>
                 </div>
             </div>
         </main>
         <br>
         <br>
     </body>
+    <div class="cluster-con" v-if="cluster">
+        <div class="cluster" >
+            <header>
+                <button @click="cluster = false"><font-awesome-icon :icon="['fas', 'xmark']" size="lg" color="red"/></button>
+                <p>{{ title }}</p>
+            </header>
+            <p>{{ summarize }}</p>
+        </div>
+    </div>
     <newnav :info="{name:name,profile:profilepic}" v-show="navshow"></newnav>
 
 </template>
 <style scoped>
+.cluster header p{
+    font-size: 15px;
+    font-weight: 800;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    color: black;}
+.cluster header button{
+    background-color: transparent;
+    border: none;
+    left: auto;
+    align-self: flex-end;
+}
+.cluster header{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    padding: 10px;
+    width: 90%;
+    color: black;
+    border-radius: 10px;
+}
+.cluster{
+    background-color: rgb(241, 241, 241);
+    width: 300px;
+    padding: 10px;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+}
+.cluster-con{
+    position: fixed;
+    z-index: 10000;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(90, 90, 90, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 newnav{
     width: 200px;
 }
@@ -222,6 +304,13 @@ newnav{
 .lesson img{
     height: 100px;
 }
+.lesson:hover{
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    /* transform: scale(1.05); */
+      background-color: rgb(240, 240, 240);
+
+    transition: all 0.3s ease;
+}
 .lesson p{
     color: black;
     height: 100px;
@@ -251,6 +340,7 @@ newnav{
 }
 
 .lesson {
+    cursor: pointer;
   flex: 0 0 150px; /* fixed width slide */
   height: 200px;
   background-color: white;
@@ -458,6 +548,29 @@ header{
     }
     .small-title{
         font-size: 30px;
+    }
+    .lesson{
+        flex: 0 0 250px; /* fixed width slide */
+        height: 300px;
+        font-size: 23px;
+    }
+    .lesson img{
+        height: 150px;
+    }
+    .lesson-con{
+        height: 314px;
+    }
+    .cluster header p{
+        font-size: 20px;
+        font-weight: 800;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+        color: black;
+    }
+    .cluster{
+        width: 400px;
+        padding: 20px;
     }
 }
 </style>

@@ -110,7 +110,7 @@ app.get('/dlesson/get',auth, async (req, res) => {
       return res.json(JSON.parse(cachedData));
     }
 
-    const lesson = await dlessons.findById(lessonId, { htmlLesson: 1, title: 1, _id: 0 });
+    const lesson = await dlessons.findById(lessonId, { htmlLesson: 1, title: 1, _id: 0, summary: 1});
     if (!lesson) {
       return res.status(404).json({ message: "Lesson not found" });
     }
@@ -125,7 +125,7 @@ app.get('/dlesson/get',auth, async (req, res) => {
 
 app.get('/dlesson/list', auth, async (req, res) => {
   try {
-    const lessons = await dlessons.find({}, { title: 1, gradeLevel: 1, _id: 1 }).sort({ dateCreated: -1 }); // latest first
+    const lessons = await dlessons.find({}, { title: 1, gradeLevel: 1, _id: 1}).sort({ dateCreated: -1 }); // latest first
 
     res.json(lessons);
   } catch (error) {
