@@ -342,17 +342,23 @@ export default {
     <loading v-else></loading>
 </template>
 <style scoped>
+.lesson-content{
+    padding: 10px;
+
+}
 .lesson-con{
+    border-radius: 13px;
+    scrollbar-width: thin;
     padding: 10px;
     background-color: rgb(235, 235, 235);
     overflow: auto;
-    height: 100%;
+    height: 80%;
     width: 80%;
 }
 .lesson-nav button{
     margin-left: 10px;
     cursor: pointer;
-    width: 100px;
+    width: 150px;
     height: 40px;
     background-color: #f17751;
     color: white;
