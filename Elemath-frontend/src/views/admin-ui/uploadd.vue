@@ -1,11 +1,13 @@
 <template>
   <div>
-    <input type="file" @change="handleFileUpload" />
+    <input type="file" @change="handleFileUpload" :disabled="uploadb"/>
     <button @click="submitFile">Upload Lesson</button>
     <p v-if="uploadResult">Uploaded: {{ uploadResult.title }}</p>
   </div>
-
-  <div v-for="value in lessons" :key="value.id">
+  {{ lessons.length }} lessons found.
+  <div v-for="value in lessons" :key="value.id" style=" display: flex; flex-direction: column; align-items: center; margin-top: 20px; border: 1px solid #ccc; padding: 10px; border-radius: 5px;">
+    <!-- <h1>==============================================================================================================================================================</h1> -->
+    <!-- <blockquote>{{ value.summary }}</blockquote> -->
     <h3>{{ value.title }}</h3>
     <div v-html="formattedContent(value.htmlLesson)"></div>
   </div>
@@ -18,12 +20,15 @@ import api from "@/axios";
 export default {
   name: "UploadLesson",
   setup() {
+    const uploadb = ref(false);
     const file = ref(null);
     const uploadResult = ref(null);
     const lessons = ref([]);
 
     const handleFileUpload = (e) => {
       file.value = e.target.files[0];
+
+      submitFile();
     };
 
     const submitFile = async () => {
@@ -31,7 +36,7 @@ export default {
         alert("Select a file first!");
         return;
       }
-
+      uploadb.value = true;
       try {
         const formData = new FormData();
         formData.append("lessonFile", file.value);
@@ -44,11 +49,13 @@ export default {
         console.log("✅ Lesson uploaded:", uploadResult.value);
 
         // Optionally refresh lessons list
+        alert("Upload successful: " + uploadResult.value.title);
         fetchLessons();
       } catch (err) {
         console.error("❌ Upload error:", err);
         alert("Upload failed: " + (err.response?.data?.message || err.message));
       }
+      uploadb.value = false;
     };
 
     const fetchLessons = async () => {

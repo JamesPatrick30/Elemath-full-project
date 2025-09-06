@@ -271,11 +271,12 @@ async def get_lesson(payload: dict = Body(...)):
     You are an educational AI. Analyze the following lesson text and return a JSON object with:
 
     - "title": concise title (max 15 words)
+    - "gradeLevel": appropriate grade level (e.g., "Grade 5", "Grade 6")
     - "summary": clear summary (3–5 sentences)
-    - "htmlLesson": the lesson converted into HTML, preserving paragraphs (<p>), headings (<h2>/<h3>), lists (<ul>/<li>), and formatting.
+    - "htmlLesson": the lesson converted into HTML, preserving paragraphs (<p>), headings (<h2>/<h3>), lists (<ul>/<li>), breaks line (<br>), and formatting. Use <br> tags instead of \\n for line breaks.
     - "content": boolean, false if lesson is empty or has no useful content, true otherwise
 
-    Return valid JSON only. Escape quotes and backslashes for JSON safety.
+    Return valid JSON only. Escape quotes and backslashes for JSON safety. Do not use \\n characters, use <br> tags for line breaks instead.
 
     === LESSON TEXT ===
     {lesson}

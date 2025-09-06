@@ -68,7 +68,11 @@ router.post("/upload/default",auth, upload.single("lessonFile"), async (req, res
     }
 
     fs.unlinkSync(filePath); // cleanup uploaded file
-    console.log("✅ OCR rawText:\n" + JSON.stringify(rawText));
+    // console.log("✅ OCR rawText:\n" + JSON.stringify(rawText));
+    const fileex = await filesave.findOne({file:rawText});
+    if(fileex){
+      return res.status(400).json({ message: "Lesson already exists in the database." });
+    }
     const oldfile = await filesave.findOne({file:rawText,ownerId:req.user.id});
     let id = '';
     if(!oldfile){
@@ -93,6 +97,7 @@ router.post("/upload/default",auth, upload.single("lessonFile"), async (req, res
 
         const file = new filesave({
             file: rawText,
+            gradeLevel: d.gradeLevel || "Not specified",
             htmlLesson: d.htmlLesson.replace(/\n/g, "<br>") || "<p>No content available</p>",
             title: d.title || "Untitled Lesson",
             summary: d.summary || "No summary available",
@@ -117,27 +122,7 @@ router.post("/upload/default",auth, upload.single("lessonFile"), async (req, res
     
 
     
-    // let quiz=null;
-    // try {
-    //   const fastapiResponse = await axios.post(
-    //     "http://127.0.0.1:8000/generate-quiz", // FastAPI endpoint
-    //     { rawText }, // Send as JSON object
-    //     { headers: { "Content-Type": "application/json" } }
-    //   );
-
-    //   console.log("📨 FastAPI replied:",fastapiResponse.data);
-    //   let rawString = fastapiResponse.data.quiz;
-    //   rawString = rawString.replace(/```json|```/g, '').trim();
-
-      
-    //   try {
-    //     quiz = JSON.parse(rawString);
-    //     console.dir(quiz, { depth: null });
-    //   } catch (err) {
-    //     console.error('❌ Invalid JSON:', err.message);
-    //   }
-    // } catch (fastapiErr) {
-    //   console.error("❌ Error sending to FastAPI:", fastapiErr.message);
+  
     // }
     res.json({ id:id,title:title });
 

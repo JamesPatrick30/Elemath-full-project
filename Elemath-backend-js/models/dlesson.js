@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 
 const lessonFile = new Schema({
     title: String,
+    gradeLevel: String,
     summary: String,
     htmlLesson: String,
     file:String,
