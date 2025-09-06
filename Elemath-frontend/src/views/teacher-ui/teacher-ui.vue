@@ -74,11 +74,34 @@ export default {
                titleQ:'',
                cluster:false,
                loadingB:true,
-               lessonSwitch:true,
+               lessonSwitch:false,
                lesson:''
         };
     },
     methods: {
+        downloadPDF(){
+            const element = document.querySelector('.lesson-content');
+            if (!element) {
+            alert('No lesson content to download');
+            return;
+            }
+            
+            // You'll need to install html2pdf library: npm install html2pdf.js
+            import('html2pdf.js').then(html2pdf => {
+            const options = {
+                margin: 10,
+                filename: `lesson-${Date.now()}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            
+            html2pdf.default().from(element).set(options).save();
+            }).catch(err => {
+            console.error('Error loading html2pdf:', err);
+            alert('PDF download feature is not available');
+            });
+        },
         clusterOn(title){
             this.titleQ = title;
             this.cluster = true; 
@@ -221,9 +244,11 @@ export default {
         <div class="lesson-con">
             <nav class="lesson-nav">
                 <button @click="lessonSwitch = false">Back</button>
-                <button @click="createMode()">Create Lesson</button>
+                <button @click="downloadPDF" class="btn-download">Download as PDF</button>
+
+                <!-- <button @click="createMode()">Create Lesson</button> -->
             </nav>
-            <div v-html="formattedContent(lesson)"></div>
+            <div class="lesson-content" v-html="formattedContent(lesson)"></div>
             
         </div>
         
@@ -325,6 +350,7 @@ export default {
     width: 80%;
 }
 .lesson-nav button{
+    margin-left: 10px;
     cursor: pointer;
     width: 100px;
     height: 40px;
