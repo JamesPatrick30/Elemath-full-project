@@ -96,9 +96,37 @@ async function Cache(key, data) {
   return data;
 }
 const dlessons = require('./models/dlesson.js');
+app.get('/dlesson/get',auth, async (req, res) => {
+  const lessonId = req.query.lessonId;
+  if (!lessonId) {
+    return res.status(400).json({ message: "lessonId query parameter is required" });
+  }
+  try {
+    const cacheKey = `lesson:${lessonId}`;
+
+    const cachedData = await redisClient.get(cacheKey);
+    if (cachedData) {
+      console.log('Cache hit for key:', cacheKey);
+      return res.json(JSON.parse(cachedData));
+    }
+
+    const lesson = await dlessons.findById(lessonId, { htmlLesson: 1, title: 1, _id: 0 });
+    if (!lesson) {
+      return res.status(404).json({ message: "Lesson not found" });
+    }
+
+    await redisClient.set(cacheKey, JSON.stringify(lesson), { EX: 3600 });
+    res.json(lesson);
+  } catch (error) {
+    console.error("❌ Error fetching lesson:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 app.get('/dlesson/list', auth, async (req, res) => {
   try {
-    const lessons = await dlessons.find({}).sort({ dateCreated: -1 }); // latest first
+    const lessons = await dlessons.find({}, { title: 1, gradeLevel: 1, _id: 1 }).sort({ dateCreated: -1 }); // latest first
+
     res.json(lessons);
   } catch (error) {
     console.error("❌ Error fetching lessons:", error);
