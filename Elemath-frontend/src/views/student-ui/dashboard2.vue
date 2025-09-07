@@ -220,12 +220,34 @@ export default{
                 <p>{{ title }}</p>
             </header>
             <p>{{ summarize }}</p>
+            <button class="play-quiz-btn">Play Quiz Game</button>
         </div>
     </div>
     <newnav :info="{name:name,profile:profilepic}" v-show="navshow"></newnav>
 
 </template>
 <style scoped>
+.play-quiz-btn:hover{
+    color: #4CAF50;
+    border: #4CAF50 1px solid;
+    background-color: white;
+    transition: all 0.3s ease;
+
+}
+.play-quiz-btn{
+    border: #4CAF50 1px solid;
+    background-color: #4CAF50;
+    color: white;
+    /* border: none; */
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 12px;
+}
 .cluster header p{
     font-size: 15px;
     font-weight: 800;
