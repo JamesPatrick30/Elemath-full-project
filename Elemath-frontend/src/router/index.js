@@ -10,6 +10,7 @@ import donegame from '@/views/student-ui/game/donegame.vue'
 import dashboard2 from '@/views/student-ui/dashboard2.vue'
 import settings from '@/views/student-ui/settings.vue'
 import report from '@/views/student-ui/settingsfolder/report.vue'
+import practicemode from '@/views/student-ui/game/practicemode.vue'
 
 import teacherSetting from '@/views/teacher-ui/setting.vue'
 import windowCard from '@/views/teacher-ui/game/windowCard.vue'
@@ -30,6 +31,11 @@ import uploadd from '@/views/admin-ui/uploadd.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path:'/pm',
+      name:'practicemode',
+      component:practicemode
+    },
     {
       path:'/uploadd',
       name:'uploadd',
