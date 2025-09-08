@@ -210,8 +210,8 @@
             <div></div>
             <div></div>
             <div>
-              <p><b>Privacy Policy | Terms of Service</b></p>
-              <hr style="margin: 10px 0; border: 1px solid #464c84;">
+              <p class="terms" @click="this.$router.push('/terms')"><b>Privacy Policy | Terms of Service</b></p>
+              <!-- <hr style="margin: 10px 0; border: 1px solid #464c84;"> -->
 
             </div>
           </footer>
@@ -324,6 +324,15 @@ export default {
 </script>
 
 <style scoped>
+.terms{
+  cursor: pointer;
+  text-decoration: underline;
+
+}
+.terms:hover{
+  color: #30387c;
+  text-decoration: underline;
+}
 footer div{
   text-align: left;
 }

@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import landingpage from '@/views/landingpage.vue'
+import terms from '@/views/terms.vue'
 import signin from '@/views/SignIn.vue'
 import SignUp from '@/views/SignUp.vue'
 import studentDashboard from '@/views/student-ui/studentDashboard.vue'
@@ -32,6 +33,11 @@ import uploadd from '@/views/admin-ui/uploadd.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path: '/terms',
+      name: 'terms',
+      component: terms
+    },
     {
       path:'/dp',
       name:'donePractice',
