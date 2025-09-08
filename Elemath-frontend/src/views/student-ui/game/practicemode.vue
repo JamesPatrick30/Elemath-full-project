@@ -54,14 +54,44 @@ export default {
         btnsubmit:false,
         questions: [],
         score: 0,
-        rev:[]
+        rev:[],
+        audiosrc: "/musics/ingame.mp3",
+        setting:false,
+        mute: false,
+
         // options: [],
     };
   },
   mounted() {
     this.getQuestion();
+    document.body.addEventListener("click", this.unlockAudio, { once: true });
+
   },
   methods: {
+    settingf(){
+            this.setting = !this.setting;
+            // alert(this.setting);
+        },
+    updateVolume() {
+            this.$refs.player.volume = this.volume;
+        },
+    mutevol(){
+            this.mute = !this.mute;
+            if(this.mute){
+                this.resvolume = this.volume;
+                this.volume = 0;
+                this.$refs.player.volume = 0;
+            }else{
+                this.volume = this.resvolume;
+                this.$refs.player.volume = this.volume;
+            }
+        },
+    unlockAudio() {
+            const player = this.$refs.player;
+            player.muted = false;
+            player.volume = this.volume;
+            player.play().catch(err => console.warn("Still blocked:", err));
+        },
     async getQuestion(){
         try{
             const res = await api.get('/get/mode/practice/question');
@@ -117,7 +147,16 @@ export default {
 </script>
 <template>
     <greenbg />
+        <button class="setting" @click="settingf()"><font-awesome-icon icon="fa-solid fa-gear" size="2xl" /></button>
+
     <main>
+        <audio
+        ref="player"
+        :src="audiosrc"
+        autoplay
+        loop
+        muted
+        ></audio>
         <h1>Practice Mode</h1>
         <div class="test-area" v-if="quizMode !== 'WINDOWCARD MODE'">
                     <apexChart
@@ -189,7 +228,7 @@ export default {
                     </div>
                     
                         <div class="multi-choice" >
-                            <p>Choose the correct answer:</p>
+                            <!-- <p>Choose the correct answer:</p> -->
                             <ul>
                                 <li v-for="(option, index) in options" :key="index">
                                     <button @click="check(option, questions[num].answer)">{{ option }}</button>
@@ -199,6 +238,26 @@ export default {
                     
         </div>
     </main>
+    <div class="cluster-con" v-if="setting">
+        <div class="cluster">
+            <div class="header">
+                <button @click="settingf()"><font-awesome-icon :icon="['fas', 'xmark']" size="lg" color="red"/></button>
+            </div>
+            <div class="body">
+                <h3>MUSIC </h3>
+            <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.01"
+                v-model="volume"
+                @input="updateVolume"
+                />
+                <button @click="mutevol()"><font-awesome-icon icon="fa-solid fa-volume-high" size="xl" v-if="!mute"/> <font-awesome-icon icon="fa-solid fa-volume-xmark" size="xl" v-if="mute"/></button>
+        </div>
+            </div>
+            
+    </div>
 </template>
 <style scoped>
 .multi-choice ul li button{
@@ -267,10 +326,14 @@ export default {
 }
 .setting{
     background-color: rgb(112, 112, 255);
-    align-self: flex-end;
+    /* align-self: flex-end; */
     color: white;
     padding: 5px;
     border: none;
+    position: fixed;
+    z-index: 1000;
+    right: 0;
+    margin: 5px;
     border-radius: 10px;
 }
 .body button{
@@ -308,6 +371,7 @@ export default {
 }
 .cluster-con{
     display: flex;
+    z-index: 1000;
     justify-content: center;
     align-items: center;
     position: fixed;
