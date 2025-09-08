@@ -257,7 +257,7 @@ export default{
                 <!-- <div class="awards"></div> -->
             </div>
             <p class="title">Lessons</p>
-            <p class="small-title">Uploaded</p>
+            <p class="small-title">Uploaded Files</p>
             <div class="lesson-con">
                 <div class="no-lessons" v-if="uploadedLessons.length === 0">
                     <p>No uploaded lessons available.</p>
