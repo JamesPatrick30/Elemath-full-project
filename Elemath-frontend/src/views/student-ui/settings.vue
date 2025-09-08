@@ -13,7 +13,7 @@ export default{
             profile:'',
             username:'',
             audiosrc:'/musics/lobbym.mp3',
-            volume:0.5
+            volume:0
         }
     },
     methods:{
@@ -75,14 +75,14 @@ export default{
                 </div>
                 <img src="/images/Profile icon.png" alt="">
             </div>
-            <div class="box">
+            <!-- <div class="box">
                 <div class="text">
                     <h3>Profile</h3>
                     <p>It’s basically your identity card inside the app</p>
                 </div>
                 <img src="/images/Profile icon.png" alt="">
 
-            </div>
+            </div> -->
             <div class="box">
                 <div class="text">
                     <h3>Music</h3>

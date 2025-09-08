@@ -200,7 +200,7 @@ export default {
                 const res = await api.post('/teacher/changeProfile',{
                     profile:this.currentProfile
                 })
-                alert('save!');
+                // alert('save!');
                 await this.getData();
                 console.log(res.data.message);
                 this.picCharacterb = false;

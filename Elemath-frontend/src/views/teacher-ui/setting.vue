@@ -5,7 +5,7 @@
             <header class="main-header">
                 <h4>Settings</h4>
             </header>
-            <section class="basic-info-section" >
+            <!-- <section class="basic-info-section" >
                 <header class="section-header">Basic Info</header>
                 <div class="basic-info">
                     <div class="input-container">
@@ -25,11 +25,11 @@
                         <input class="input-basic" type="text" id="Name" placeholder="Name" v-model="infoName" readonly>
                     </div>
                     
-                </div>
-                <div class="update-container">
+                </div> -->
+                <!-- <div class="update-container">
                     <button class="update-btn" @click="btnBasicInfo()">Update</button>
-                </div>
-            </section>
+                </div> -->
+            <!-- </section> -->
             <section class="basic-info-section">
                 <header class="section-header" >Basic Info</header>
             </section>
