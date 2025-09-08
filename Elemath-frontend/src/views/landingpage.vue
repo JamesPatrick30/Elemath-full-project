@@ -169,6 +169,52 @@
               </p>
             </div>
           </section>
+          <footer>
+            <div>
+              <p>This project is aligned with the MATATAG Curriculum of the Department of Education (DepEd), Philippines, which strengthens foundational skills and enhances digital learning for elementary students.</p>
+            </div>
+            <div>
+              <h4>For Students</h4>
+              <br>
+              <p>
+
+                Flashcard WindowCard <br>
+                Quiz/Test <br>
+                Learn <br>
+                Solutions
+              </p>
+            </div>
+            <div>
+              <h4>For Teachers</h4>
+              <br>
+              <p>
+
+                Class Management <br>
+                Progress Tracking <br>
+                Assessment Tools <br>
+                Resource Sharing
+              </p>
+            </div>
+            <div>
+              <h4>Contact Us</h4>
+              <br>
+              <p>
+
+                Email: support@elemath.com <br>
+                Phone: +63 992 585 0244 <br>
+              </p>
+            </div>
+            <div>
+              <p>© 2025 ELEMATH. All Rights Reserved. | CREDITS with ELEMATH Team</p>
+            </div>
+            <div></div>
+            <div></div>
+            <div>
+              <p><b>Privacy Policy | Terms of Service</b></p>
+              <hr style="margin: 10px 0; border: 1px solid #464c84;">
+
+            </div>
+          </footer>
     </div>
     
   </main>
@@ -193,6 +239,7 @@
           <!-- <button @click="goToSignUp('student')">Student</button> -->
           <button @click="goToSignUp('teacher')">Teacher</button>
         </div>
+        
       </div>
     </div>
 </template>
@@ -277,6 +324,20 @@ export default {
 </script>
 
 <style scoped>
+footer div{
+  text-align: left;
+}
+footer{
+  width: 100%;
+  height: 10%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  padding: 20px;
+  /* background-color: #464c84; */
+  color: black;
+  text-align: center;
+}
 .signin{
   position: fixed;
   top: 0;
@@ -991,6 +1052,17 @@ header h1 {
   font-size: 22px;
   margin: 10px;
 } 
+footer{
+  width: 100%;
+  height: 10%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  padding: 20px;
+  /* background-color: #464c84; */
+  color: black;
+  text-align: center;
+}
 
 
 }
