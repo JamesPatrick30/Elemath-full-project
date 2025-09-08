@@ -8,6 +8,7 @@ export default {
   },
   data() {
     return {
+        num:0,
         name: '',
         profilepic: '',
         navshow: true,
@@ -50,11 +51,68 @@ export default {
         volume: 0.5,
         resvolume:0,
         typeOfTest:'',
-        btnsubmit:false
+        btnsubmit:false,
+        questions: [],
+        score: 0,
+        rev:[]
+        // options: [],
     };
   },
   mounted() {
+    this.getQuestion();
   },
+  methods: {
+    async getQuestion(){
+        try{
+            const res = await api.get('/get/mode/practice/question');
+            this.questions = res.data.questions;
+            
+            console.log(res.data.questions);
+            this.nextQuestion();
+        }catch(err){
+            console.log(err);
+        }
+    },
+    async check(answer,studentans){
+        let review = { question: this.questions[this.num].question, answer:this.questions[this.num].answer, options: this.questions[this.num].options,explanation: this.questions[this.num].explanation, studentAnswer: answer, correct: answer === studentans };
+        this.rev.push(review);
+        if(answer == studentans) {
+            this.score += 1;
+            // alert('Correct Answer! 🎉');
+        }
+        // alert('The correct answer is: ' + answer);
+        this.num += 1;
+        this.rev.push(review);
+        if(this.num >= this.questions.length){
+            try{
+                const res = await api.post('/update/mode/practice', {
+                    rev: this.rev,
+                    score: this.score
+                });
+                console.log(res.data);
+            }catch(err){
+                console.log(err);
+            }
+            this.$router.push({ name: 'donePractice' });
+            return;
+        }
+        this.nextQuestion();
+    },
+    nextQuestion(){
+        if(this.questions.length == 0){
+            alert('No more questions available.');
+            return;
+        }
+        const nextQ = this.questions[this.num];
+        this.story = nextQ.story;
+        this.question = nextQ.question;
+        this.table = nextQ.table;
+        this.options = nextQ.options;
+        this.tabletype = nextQ.tabletype;
+        this.inputanswer = '';
+        this.btnsubmit = false;
+    }
+    },
 };
 </script>
 <template>
@@ -129,10 +187,44 @@ export default {
                         <p v-if="story" >{{ story }}</p>
                         <p>{{ question }}</p>
                     </div>
+                    
+                        <div class="multi-choice" >
+                            <p>Choose the correct answer:</p>
+                            <ul>
+                                <li v-for="(option, index) in options" :key="index">
+                                    <button @click="check(option, questions[num].answer)">{{ option }}</button>
+                                </li>
+                            </ul>
+                        </div>
+                    
         </div>
     </main>
 </template>
 <style scoped>
+.multi-choice ul li button{
+    width: 100%;
+    height: 50px;
+    border: none;
+    border-radius: 10px;
+    background-color: #8385eb;
+    color: white;
+    font-weight: 600;
+    transition: 0.3s linear;
+}
+.multi-choice ul{
+    list-style-type: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+.multi-choice{
+    position: fixed;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+}
 .q p{
     margin: 0;
 }

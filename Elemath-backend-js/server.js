@@ -1026,12 +1026,43 @@ app.post('/create/mode/practice',auth,async (req,res)=>{
     questions: quiz,
     rev: [],
     score: 0,
-    qIn: 0,
   };
   console.log(createMode);
 
-  await redisClient.set(`practice:${req.user.classId}`, JSON.stringify(createMode), { EX: 3600 });
+  await redisClient.set(`practice:${req.user.username}`, JSON.stringify(createMode), { EX: 3600 });
   res.json({message:'done',createMode:createMode})
+});
+app.get('/get/mode/practice/question',auth,async (req,res)=>{
+  const practice = await redisClient.get(`practice:${req.user.username}`);
+  const practiceData = JSON.parse(practice);
+  if (!practice) {
+    return res.status(404).json({ message: 'No practice mode found' });
+  }
+  res.status(200).json({ questions: practiceData.questions });
+});
+app.post('/update/mode/practice',auth,async (req,res)=>{
+  const { rev , score } = req.body;
+  const practice = await redisClient.get(`practice:${req.user.username}`);
+  const practiceData = JSON.parse(practice);
+  if (!practice) {
+    return res.status(404).json({ message: 'No practice mode found' });
+  }
+  practiceData.rev = rev;
+  practiceData.score = score;
+  await redisClient.set(`practice:${req.user.username}`, JSON.stringify(practiceData), { EX: 3600 });
+  res.status(200).json({ message: 'Practice mode updated' });
+});
+app.get('/get/mode/practice/review',auth,async (req,res)=>{
+  const practice = await redisClient.get(`practice:${req.user.username}`);
+  const practiceData = JSON.parse(practice);
+  if (!practice) {
+    return res.status(404).json({ message: 'No practice mode found' });
+  }
+  res.status(200).json({ review: practiceData.rev,score:practiceData.score });
+});
+app.delete('/clear/mode/practice/review',auth,async (req,res)=>{
+  await redisClient.del(`practice:${req.user.username}`);
+  res.status(200).json({ message: 'Practice mode cleared' });
 });
 app.post('/delete/mode', auth,async (req, res) => {
   const { id } = req.body;

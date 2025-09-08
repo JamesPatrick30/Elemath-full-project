@@ -168,6 +168,7 @@ export default{
                 const res = await api.post('/create/mode/practice', {
                     quiz: res12.data.quiz
                 });
+                this.$router.push({ name: 'practicemode' });
                 // alert(res.data.message);
                 // this.cluster = false;
                 // this.ongiong = true;
