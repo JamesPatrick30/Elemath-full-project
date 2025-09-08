@@ -1019,7 +1019,19 @@ app.post('/create/mode',auth,async (req,res)=>{
   res.json({message:'done'})
 });
 app.post('/create/mode/practice',auth,async (req,res)=>{
+  const { quiz }= req.body;
 
+  const createMode = { 
+    quizId: req.user.username,
+    questions: quiz,
+    rev: [],
+    score: 0,
+    qIn: 0,
+  };
+  console.log(createMode);
+
+  await redisClient.set(`practice:${req.user.classId}`, JSON.stringify(createMode), { EX: 3600 });
+  res.json({message:'done',createMode:createMode})
 });
 app.post('/delete/mode', auth,async (req, res) => {
   const { id } = req.body;

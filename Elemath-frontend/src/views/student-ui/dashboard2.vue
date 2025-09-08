@@ -38,6 +38,7 @@ export default{
             name: 'John Doe', // Replace with actual data
             lrn: '1234567890', // Replace with actual data
             uploadedLessons: [],
+            cancelPractice:false,
             lessonfile:'',
             fileId:'',
             loadquiz:false,
@@ -89,7 +90,7 @@ export default{
             try{
                 const res = await api.get('/dlesson/uploadedlessons');
                 this.uploadedLessons = res.data;
-                console.log('uploaded lessons : '+res.data);
+                // console.log('uploaded lessons : '+res.data);
             }catch(err){
                 console.log(err);
             }
@@ -144,7 +145,7 @@ export default{
             try{
                 const res = await api.get('/dlesson/list');
                 this.lessons = res.data;
-                console.log(res.data);
+                // console.log(res.data);
             }catch(err){
                 console.log(err);
             }
@@ -159,10 +160,14 @@ export default{
                     difficulty:'easy',
                     question_type:'multiple-choice'
                 });
-                console.log(res12.data);
-                // const res = await api.post('/create/mode/practice', {
-                //     lesson: this.lessonfile
-                // });
+                // console.log(res12.data);
+                if(this.cancelPractice){
+                    this.loadquiz = false;
+                    return;
+                }
+                const res = await api.post('/create/mode/practice', {
+                    quiz: res12.data.quiz
+                });
                 // alert(res.data.message);
                 // this.cluster = false;
                 // this.ongiong = true;
@@ -279,7 +284,7 @@ export default{
                 <img src="/gif/loadingbox.gif" alt="Loading..." />
                 <p>Loading Quiz...</p>
             </div>
-            <button>Cancel</button>
+            <button @click="cancelPractice = true; loadquiz = false">Cancel</button>
         </div>
     </div>
     <newnav :info="{name:name,profile:profilepic}" v-show="navshow"></newnav>
