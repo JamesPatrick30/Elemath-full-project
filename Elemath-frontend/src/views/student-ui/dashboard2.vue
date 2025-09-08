@@ -37,6 +37,7 @@ export default{
             summarize:'Cluster Mode is On',
             name: 'John Doe', // Replace with actual data
             lrn: '1234567890', // Replace with actual data
+            uploadedLessons: [],
             isNavVisible: window.matchMedia('(min-width: 623px)').matches // Responsive nav visibility
         }
     },
@@ -79,6 +80,15 @@ export default{
                 alert('No ongoing quiz available.');
             }
         },
+        async uploadedLessonsList(){
+            try{
+                const res = await api.get('/dlesson/uploadedlessons');
+                this.uploadedLessons = res.data;
+                console.log('uploaded lessons : '+res.data);
+            }catch(err){
+                console.log(err);
+            }
+        },
         async getdata(){
             try {
                 const response = await api.get('/get/student/data'); // Adjust the endpoint as needed
@@ -90,6 +100,7 @@ export default{
                 this.id = response.data.classId._id; // Assuming the student ID is returned
                 // console.log('Student ID:', this.id);
                 await this.lookforQuiz();
+                await this.uploadedLessonsList();
                 socket.connect();
             } catch (error) {
                 console.error('Error fetching student data:', error);
@@ -194,6 +205,16 @@ export default{
                 <!-- <div class="awards"></div> -->
             </div>
             <p class="title">Lessons</p>
+            <p class="small-title">Uploaded</p>
+            <div class="lesson-con">
+                <div class="no-lessons" v-if="uploadedLessons.length === 0">
+                    <p>No uploaded lessons available.</p>
+                </div>
+                <div v-else class="lesson" v-for="(value,index) in uploadedLessons" :key="index" @click="lessonData(value._id)">
+                    <img src="/images/BOOK.png" alt="">
+                        <p>{{value.title}}</p>
+                </div>
+            </div>
             <p class="small-title">Grade 5</p>
             <div class="lesson-con">
                 <div class="lesson" v-for="(value,index) in sortgrade5()" :key="index" @click="lessonData(value._id)">
@@ -227,6 +248,16 @@ export default{
 
 </template>
 <style scoped>
+.no-lessons{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    color: gray;
+    font-weight: 600;
+}
 .play-quiz-btn:hover{
     color: #4CAF50;
     border: #4CAF50 1px solid;

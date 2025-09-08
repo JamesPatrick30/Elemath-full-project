@@ -374,7 +374,7 @@ export default{
             uploadGenerate:{num_questions:0,type:'',topic:'',lang:'',difficulty:''},
             progress : 0,
             file : null,
-            btnActive:{setting:true,Question:false,file:false},
+            btnActive:{setting:false,Question:true,file:false},
             btnLobby:{playes:false,Question:true},
             questionOption:'Costumize',
 

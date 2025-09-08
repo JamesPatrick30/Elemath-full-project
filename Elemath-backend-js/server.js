@@ -17,6 +17,7 @@ const {init,pubClient,subClient} = require('./redis/redispubsub.js');
 
 //websocket
 // const WebSocket = require("ws");
+const lessonUpload = require('./models/lessonfile.js');
 const students = require('./models/students.js');
 const teacher_accoount = require('./models/teacher.js');
 const classes = require('./models/class.js');
@@ -109,20 +110,41 @@ app.get('/dlesson/get',auth, async (req, res) => {
       console.log('Cache hit for key:', cacheKey);
       return res.json(JSON.parse(cachedData));
     }
-
+    let output = null;
     const lesson = await dlessons.findById(lessonId, { htmlLesson: 1, title: 1, _id: 0, summary: 1});
-    if (!lesson) {
-      return res.status(404).json({ message: "Lesson not found" });
+    if (lesson) {
+      output = lesson;
+    }else{
+      const uplesson = await lessonUpload.findById(lessonId, { htmlLesson: 1, title: 1, _id: 0, summary: 1});
+      if (uplesson) {
+        output = uplesson;
+      }
     }
-
-    await redisClient.set(cacheKey, JSON.stringify(lesson), { EX: 3600 });
-    res.json(lesson);
+    console.log('the lesson : '+ output);
+    await redisClient.set(cacheKey, JSON.stringify(output), { EX: 3600 });
+    res.json(output);
   } catch (error) {
     console.error("❌ Error fetching lesson:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
-
+app.get('/dlesson/uploadedlessons', auth, async (req, res) => {
+  try {
+    const studentClass = await StudentClass.findOne({ email: req.user.username });
+    if (!studentClass) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+    const classId = studentClass.classId;
+    const ownerId = await classes.findOne({ _id: classId }, { teacherId: 1 });
+    // console.log('the owner id : '+ ownerId.teacherId);
+    const lessons = await lessonUpload.find({ ownerId: ownerId.teacherId }, { htmlLesson: 1, title: 1, summary: 1 }).sort({ dateCreated: -1 });
+    // console.log('the lessons : '+ lessons);
+    res.json(lessons);
+  } catch (error) {
+    console.error("❌ Error fetching uploaded lessons:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 app.get('/dlesson/list', auth, async (req, res) => {
   try {
     const lessons = await dlessons.find({}, { title: 1, gradeLevel: 1, _id: 1}).sort({ dateCreated: -1 }); // latest first
