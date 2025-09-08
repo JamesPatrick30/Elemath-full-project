@@ -55,7 +55,7 @@ export default{
                 <p v-if="c.q.question?.question" class="question">{{ c.q.question?.question }}</p>
                 <p v-else class="question">{{ c.q.question }} </p>
 
-                <div class="con-option" v-if="c.q.options.length > 0">
+                <div class="con-option" v-if="c.q?.options?.length > 0">
                     <div class="option" v-for="(value,index) in c.q.options" :key="index" :style="{backgroundColor:colorpic(c.q.answer,value,c.playerAnswer)}">
                         <p>{{ value }}</p>
                     </div>

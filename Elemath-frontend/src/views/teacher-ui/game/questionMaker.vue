@@ -371,7 +371,7 @@ export default{
             isDragging: false,
             generateBtnSwitch: false,
             generateBtn:'Generate',
-            uploadGenerate:{num_questions:0,type:'',topic:'',lang:'',difficulty:''},
+            uploadGenerate:{num_questions:null,type:'',topic:'',lang:'',difficulty:''},
             progress : 0,
             file : null,
             btnActive:{setting:false,Question:true,file:false},
