@@ -40,6 +40,7 @@ export default{
         },
         updateVolume() {
             this.$refs.player.volume = this.volume;
+            localStorage.setItem('volume', this.volume);
         },
     },
     mounted(){
@@ -49,6 +50,9 @@ export default{
 
         player.play();
         player.muted = false;
+        if(localStorage.getItem('volume')){
+            this.volume = parseFloat( localStorage.getItem('volume') );
+        }
     }
 }
 </script>

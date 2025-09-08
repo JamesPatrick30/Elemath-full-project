@@ -208,6 +208,9 @@ export default{
             this.ongiong = false; // Reset ongoing status when mode is deleted
             console.log('Mode deleted:', data);
         });
+        if(localStorage.getItem('volume')){
+            this.volume = parseFloat( localStorage.getItem('volume') );
+        }
     },
     beforeDestroy() {
         window.removeEventListener('resize', this.handleResize);
