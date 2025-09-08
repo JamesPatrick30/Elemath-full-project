@@ -42,6 +42,10 @@ export default{
             lessonfile:'',
             fileId:'',
             loadquiz:false,
+            audiosrc: "/musics/lobbym.mp3",
+            muted: false,
+            volume: 0.5,
+            // setting:false,
             isNavVisible: window.matchMedia('(min-width: 623px)').matches // Responsive nav visibility
         }
     },
@@ -178,7 +182,13 @@ export default{
             }
             this.loadquiz = false;
             
-        }
+        },
+        unlockAudio() {
+            const player = this.$refs.player;
+            player.muted = false;
+            player.volume = this.volume;
+            player.play().catch(err => console.warn("Still blocked:", err));
+        },
     },
     mounted() {
         window.addEventListener('resize', this.handleResize);
@@ -187,6 +197,7 @@ export default{
         this.lookforQuiz();
         console.log(socket.listeners('room-created').length);
         socket.removeAllListeners();
+        document.body.addEventListener("click", this.unlockAudio, { once: true });
 
         socket.on('room-created', (data) => {
             this.ongiong = true; // Set ongoing status based on room creation
@@ -204,6 +215,9 @@ export default{
 }
 </script>
 <template>
+        <audio ref="player" :src="audiosrc" loop autoplay muted></audio>
+
+    
     <div class="background">
         <div class="box">
             <div></div>

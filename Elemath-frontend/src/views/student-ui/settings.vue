@@ -12,7 +12,7 @@ export default{
             navshow:false,
             profile:'',
             username:'',
-            audiosrc:'/musics/gamewholebackgroundmusic.mp3',
+            audiosrc:'/musics/lobbym.mp3',
             volume:0.5
         }
     },

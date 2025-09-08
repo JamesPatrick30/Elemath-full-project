@@ -55,7 +55,7 @@ export default {
         questions: [],
         score: 0,
         rev:[],
-        audiosrc: "/musics/ingame.mp3",
+        // audiosrc: "/musics/ingame.mp3",
         setting:false,
         mute: false,
 
