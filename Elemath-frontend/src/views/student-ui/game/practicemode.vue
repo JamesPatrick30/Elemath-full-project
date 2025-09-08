@@ -67,7 +67,7 @@ export default {
             const res = await api.get('/get/mode/practice/question');
             this.questions = res.data.questions;
             
-            console.log(res.data.questions);
+            // console.log(res.data.questions);
             this.nextQuestion();
         }catch(err){
             console.log(err);

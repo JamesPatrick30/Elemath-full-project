@@ -14,7 +14,7 @@ export default{
                 const res = await api.get('/get/mode/practice/review');
                 this.rev = res.data.review;
                 this.score = res.data.score;
-                console.log(res.data.review);
+                // console.log(res.data.review);
             }catch(err){
                 console.log(err);
             }
