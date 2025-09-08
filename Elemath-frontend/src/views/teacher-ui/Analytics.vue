@@ -13,6 +13,7 @@
         <div class="item0">
           <h4 class="analysis-title">Recent Quiz Performance</h4>
           <apexChart
+            v-if="LineChart"
             type="line"
             height="230"
             :series="LineChart.series"
@@ -23,6 +24,7 @@
           <h4 class="analysis-title">Pass vs. Fail Pie Chart</h4>
           <div class="pie-con">
             <apexChart
+              v-if="PieChart"
               type="pie"
               height="200"
               :series="PieChart.series"
@@ -35,6 +37,7 @@
           <h4 class="analysis-title">Top Students</h4>
           <apexChart
             type="bar"
+            v-if="barChart"
             width="100%"
             height="387"
             :series="barChart.series"
@@ -54,6 +57,7 @@
             Lowest Scoring Topics
           </h4>
           <apexChart
+            v-if="LowTopicBarChart"
             type="bar"
             width="100%"
             height="387"
@@ -73,8 +77,9 @@
               :series="improvementChart?.series"
               :options="improvementChart?.options"
             /> -->
-            <div v-if="improvementChart.series.some(v => v > 0)">
+            <div v-if="improvementChart?.series.some(v => v > 0)">
               <apexChart
+                v-if="improvementChart"
                 type="pie"
                 height="210"
                 :series="improvementChart.series"
@@ -166,6 +171,12 @@ export default {
                 
                 console.log('res get all record id '+ JSON.stringify(this.improvementChart));
             }catch(err){
+              this.LineChart = null;
+                this.barChart = null;
+                this.improvementChart = null;
+                this.PieChart = null;
+                this.LowTopicBarChart = null;
+                alert('No quiz record yet!');
                 console.log(err);
             }
         },
