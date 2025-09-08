@@ -293,7 +293,7 @@ export default{
                 <p>{{ title }}</p>
             </header>
             <p>{{ summarize }}</p>
-            <button class="play-quiz-btn" @click="playQuiz()">Play Quiz Game</button>
+            <button class="play-quiz-btn" @click="playQuiz()">Practice Test</button>
         </div>
     </div>
     <div class="cluster-con" v-if="loadquiz">
