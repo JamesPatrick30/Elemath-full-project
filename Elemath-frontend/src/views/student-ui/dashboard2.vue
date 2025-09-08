@@ -38,21 +38,26 @@ export default{
             name: 'John Doe', // Replace with actual data
             lrn: '1234567890', // Replace with actual data
             uploadedLessons: [],
+            lessonfile:'',
+            fileId:'',
+            loadquiz:false,
             isNavVisible: window.matchMedia('(min-width: 623px)').matches // Responsive nav visibility
         }
     },
     methods:{
         async lessonData(id){
             try{
+                this.fileId = id;
                 const res = await api.get('/dlesson/get',{
                     params:{
                         lessonId:id
                     }
                 });
                 this.title = res.data.title;
+                this.lessonfile = res.data.file;
                 this.cluster = true;
                 this.summarize = res.data.summary;
-                console.log(res.data);
+                // console.log(res.data);
             }catch(err){
                 console.log(err);
             }
@@ -144,6 +149,30 @@ export default{
                 console.log(err);
             }
         },
+        async playQuiz(){
+            this.loadquiz = true;
+            try{
+                const res12 = await api.post('/create-question',{
+                    fileId:this.fileId,
+                    num_questions:10,
+                    language:'English',
+                    difficulty:'easy',
+                    question_type:'multiple-choice'
+                });
+                console.log(res12.data);
+                // const res = await api.post('/create/mode/practice', {
+                //     lesson: this.lessonfile
+                // });
+                // alert(res.data.message);
+                // this.cluster = false;
+                // this.ongiong = true;
+                // this.$router.push({ name: 'waiting-lobby',query: { i: this.id } });
+            }catch(err){
+                console.log(err);
+            }
+            this.loadquiz = false;
+            
+        }
     },
     mounted() {
         window.addEventListener('resize', this.handleResize);
@@ -241,13 +270,71 @@ export default{
                 <p>{{ title }}</p>
             </header>
             <p>{{ summarize }}</p>
-            <button class="play-quiz-btn">Play Quiz Game</button>
+            <button class="play-quiz-btn" @click="playQuiz()">Play Quiz Game</button>
+        </div>
+    </div>
+    <div class="cluster-con" v-if="loadquiz">
+        <div class="load-con">
+            <div>
+                <img src="/gif/loadingbox.gif" alt="Loading..." />
+                <p>Loading Quiz...</p>
+            </div>
+            <button>Cancel</button>
         </div>
     </div>
     <newnav :info="{name:name,profile:profilepic}" v-show="navshow"></newnav>
 
 </template>
 <style scoped>
+.load-con img{
+    height: 100px;
+    width: 100px;
+}
+.load-con button{
+    border: #ff4444 1px solid;
+    background-color: #ff4444;
+    color: white;
+    height: 40px;
+    width: 100px;
+    /* border: none; */
+    font-weight: 800;
+    padding: 5px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 12px;
+}
+.load-con div p{
+    color: #4CAF50;
+
+    font-weight: 700;
+    font-size: 20px;
+    text-align: center;
+    animation: alternate 4s infinite;
+}
+@keyframes alternate {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+.load-con div{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.load-con{
+    padding: 10px;
+    background-color: white;
+    border-radius: 10px;
+     display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
 .no-lessons{
     display: flex;
     justify-content: center;

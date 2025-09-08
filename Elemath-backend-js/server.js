@@ -111,16 +111,16 @@ app.get('/dlesson/get',auth, async (req, res) => {
       return res.json(JSON.parse(cachedData));
     }
     let output = null;
-    const lesson = await dlessons.findById(lessonId, { htmlLesson: 1, title: 1, _id: 0, summary: 1});
+    const lesson = await dlessons.findById(lessonId, { htmlLesson: 1, title: 1, _id: 0, summary: 1,file:1 });
     if (lesson) {
       output = lesson;
     }else{
-      const uplesson = await lessonUpload.findById(lessonId, { htmlLesson: 1, title: 1, _id: 0, summary: 1});
+      const uplesson = await lessonUpload.findById(lessonId, { htmlLesson: 1, title: 1, _id: 0, summary: 1,file:1 });
       if (uplesson) {
         output = uplesson;
       }
     }
-    console.log('the lesson : '+ output);
+    // console.log('the lesson : '+ output);
     await redisClient.set(cacheKey, JSON.stringify(output), { EX: 3600 });
     res.json(output);
   } catch (error) {
@@ -137,7 +137,7 @@ app.get('/dlesson/uploadedlessons', auth, async (req, res) => {
     const classId = studentClass.classId;
     const ownerId = await classes.findOne({ _id: classId }, { teacherId: 1 });
     // console.log('the owner id : '+ ownerId.teacherId);
-    const lessons = await lessonUpload.find({ ownerId: ownerId.teacherId }, { htmlLesson: 1, title: 1, summary: 1 }).sort({ dateCreated: -1 });
+    const lessons = await lessonUpload.find({ ownerId: ownerId.teacherId }, { file: 1, title: 1, summary: 1 }).sort({ dateCreated: -1 });
     // console.log('the lessons : '+ lessons);
     res.json(lessons);
   } catch (error) {
@@ -954,9 +954,14 @@ app.get('/get/grade/class',auth,async(req,res)=>{
 });
 app.post('/create-question',auth ,async(req,res)=>{
   const {fileId,num_questions,language,difficulty,question_type} = req.body;
-
+  let fileLesson = '';
   const file = await filesave.findById(fileId);
-  const rawText = file.file;
+  if (file){
+    fileLesson = file;
+  }else{
+    fileLesson = await dlessons.findById(fileId);
+  }
+  const rawText = fileLesson.file;
   if(!rawText){
     console.log('no file');
     return res.status(404).json({message:'sada'});
@@ -1013,7 +1018,9 @@ app.post('/create/mode',auth,async (req,res)=>{
 
   res.json({message:'done'})
 });
+app.post('/create/mode/practice',auth,async (req,res)=>{
 
+});
 app.post('/delete/mode', auth,async (req, res) => {
   const { id } = req.body;
   console.log('delete mode id:', id);
