@@ -251,7 +251,12 @@ export default{
             }
 
             // Sort students by name
-            this.students = res.data.sort((a, b) => a.name.localeCompare(b.name));
+            // this.students = res.data.sort((a, b) => a.name.localeCompare(b.name));
+            this.students = this.students.sort((a, b) => {
+                        const nameA = a.name || '';
+                        const nameB = b.name || '';
+                        return nameA.localeCompare(nameB);
+                    });
             this.reload = false;
 
             // After fetching students, get their quiz data
