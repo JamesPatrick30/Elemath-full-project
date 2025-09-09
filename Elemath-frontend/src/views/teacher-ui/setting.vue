@@ -1,6 +1,6 @@
 <template>
     <body  v-if="user">
-        <!-- <navbar :classlength="classlength"></navbar> -->
+        <navbar :classlength="classlength"></navbar>
         <main>
             <header class="main-header">
                 <h4>Settings</h4>
