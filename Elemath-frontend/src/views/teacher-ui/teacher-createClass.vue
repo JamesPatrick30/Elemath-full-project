@@ -1,9 +1,9 @@
 <template>
     <div class="create-con" v-if="createClassCluster">
         <div class="create">
-            <button @click="createClassClusterToggle()">X</button>
+            <button class="close" @click="createClassClusterToggle()">X</button>
             <input type="text" placeholder="Class Name" v-model="className">
-            <button @click="createClass()">Create Class</button>
+            <button class="createClass" @click="createClass()">Create Class</button>
         </div>
     </div>
     <div class="body" v-if="user">
@@ -100,6 +100,37 @@ export default {
 };
 </script>
 <style scoped>
+.close{
+    align-self: end;
+    left: auto;
+    margin-bottom: 10px;
+    border: none;
+    background-color: transparent;
+    color: red;
+    font-weight: 800;
+}
+.create input{
+    font-weight: 800;
+    border-radius: 10px;
+    padding: 5px;
+    font-size: large;
+}
+.create .createClass:hover{
+    color: rgb(151, 244, 58);
+    background-color: white;
+    border: rgb(151, 244, 58) 1px solid;
+
+}
+.create .createClass{
+    margin: 10px;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: rgb(151, 244, 58);
+    border: rgb(151, 244, 58) 1px solid;
+    font-weight: 800;
+    /* border: none; */
+    color: white;
+}
 .create-con {
     position: fixed;
     display: flex;
@@ -116,7 +147,7 @@ export default {
     align-items: center;
     justify-content: center;
     background-color: white;
-    padding: 20px;
+    padding: 10px;
     border-radius: 10px;
 }
 *{
