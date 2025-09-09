@@ -1,6 +1,6 @@
 <template>
     <body  v-if="user">
-        <navbar :classlength = classlength></navbar>
+        <!-- <navbar :classlength="classlength"></navbar> -->
         <main>
             <header class="main-header">
                 <h4>Settings</h4>
@@ -32,6 +32,46 @@
             <!-- </section> -->
             <section class="basic-info-section">
                 <header class="section-header" >Basic Info</header>
+                <div class="basic-info-container">
+                    <div class="image-con">
+                        <img class="profile-picture" :src="user?.profile" alt="Profile Picture">
+                    </div>
+                    <div class="basic-info">
+                        
+                        <div class="input-container">
+                            <label for="Name">Full Name</label>
+                            <p>{{ user?.username }}</p>
+                            <!-- <input class="input-basic" type="text" id="Name" placeholder="Name" v-model="user?.username" readonly> -->
+                        </div>
+                        <div class="input-container">
+                            <label for="Name">Email</label>
+                            <p>{{ user?.Email }}</p>
+                            <!-- <input class="input-basic" type="text" id="Name" placeholder="Name" v-model="user?.email" readonly> -->
+                        </div>
+                        <div class="input-container">
+                            <label for="Name">First Name</label>
+                            <p>{{ user?.firstName }}</p>
+                            <!-- <input class="input-basic" type="text" id="Name" placeholder="Name" v-model="user?.firstName" readonly> -->
+                        </div>
+                        <div class="input-container">
+                            <label for="Name"> Middle Name</label>
+                            <p>{{ user?.middleName }}</p>
+                            <!-- <input class="input-basic" type="text" id="Name" placeholder="Name" v-model="user?.middleName" readonly> -->
+                        </div>
+                        <div class="input-container">
+                            <label for="Name"> Last Name</label>
+                            <p>{{ user?.lastName }}</p>
+                            <!-- <input class="input-basic" type="text" id="Name" placeholder="Name" v-model="user?.lastName" readonly> -->
+                        </div>
+                        <div class="input-container">
+                            <label for="Name">Class Count</label>
+                            <p>{{ user?.class.length }}</p>
+                            <!-- <input class="input-basic" type="text" id="Name" placeholder="Name" v-model="user?.lrn" readonly> -->
+                        </div>
+                        
+
+                    </div>
+                </div>
             </section>
             <section class="basic-info-section">
                 <header class="section-header">Basic Info</header>
@@ -80,11 +120,6 @@ export default{
                 }
             });
         },
-        // showInfofunction(student) {
-        //     this.showInfo = true;
-        //     this.infoName = student.name;
-        //     this.infoLrn = student.lrn;
-        // },
         async logout() {
             try {
                 const response = await api.post('/api/logout');
@@ -104,12 +139,12 @@ export default{
                 const res = await api.get('/data/teacher');
                 this.user = res.data;
                 
-                this.infoName = this.user.firstName;
-                this.infoMiddleName = this.user.middleName;
-                this.infoLastName = this.user.lastName;
-                this.classlength = this.user.class.length;
+                // this.infoName = this.user.firstName;
+                // this.infoMiddleName = this.user.middleName;
+                // this.infoLastName = this.user.lastName;
+                // this.classlength = this.user.class.length;
                 
-                console.log('Data fetched successfully:', this.classlength);
+                console.log('Data fetched successfully:', res.data);
             } catch (err) {
                 console.error('Error fetching data:', err);
                 if(err.response && err.response.status === 401) {
@@ -141,7 +176,40 @@ export default{
     }
 }</script>
 <style scoped>
-
+.image-con{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden; */
+}
+.basic-info-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2em;
+    /* padding: 10px; */
+    height: 100%;
+    width: 100%;
+}
+.profile-picture{
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #4fc4f7;
+    margin-top: 20px;
+}
+.input-container p{
+    margin: 0;
+    padding: 10px 0;
+    font-size: 16px;
+    font-weight: bold;
+    color: #4fc4f7;
+}
 .input-container {
     display: flex;
     flex-direction: column;
@@ -228,7 +296,7 @@ main .main-header {
 .basic-info-section {
     background-color: white;
     width: 80%;
-    height: 400px;
+    /* height: 400px; */
     border-radius: 10px;
     overflow: hidden;
     margin-top: 10px;
