@@ -170,7 +170,11 @@ export default {
 
                 console.log('Student list:', res.data);
                 this.students = res.data;
-                this.students = this.students.sort((a, b) => a.name.localeCompare(b.name));
+                this.students = this.students.sort((a, b) => {
+                    const nameA = a.name || '';
+                    const nameB = b.name || '';
+                    return nameA.localeCompare(nameB);
+                });
             } catch (err) {
                 console.error('Error fetching class data:', err);
                 alert('Failed to load class data. Please try again later.');
