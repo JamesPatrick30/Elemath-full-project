@@ -571,6 +571,7 @@ app.post('/enroll-student',auth,async(req,res)=>{
   if (student) return res.status(409).json({message: 'Student already enrolled!'});
   try{
     const studentenrolled = await StudentClass({
+        name: fname + ', ' + mname + ', ' + lname,
         profile:profile,
         firstname:fname,
         middlename:mname,
@@ -591,6 +592,13 @@ app.post('/enroll-student',auth,async(req,res)=>{
         }
       }
     );
+    try{
+      const cacheKey = `classData:${classId}`;
+      await redisClient.del(cacheKey);
+    }catch(err){
+      console.log('Error deleting cache:', err);
+    }
+
     console.log('Class created and teacher updated.');
     res.json({ message: 'created' });
   }catch(err){
