@@ -14,6 +14,19 @@
                     <h4>{{ file.title }}</h4>
                     <!-- <p>{{ file.summary }}</p> -->
                 </div>
+                <div v-if="!fileloading && filelist.length === 0" class="no-file">
+                    <p>No files available. Please upload a file first.</p>
+                </div>
+                <h3 style="margin-top: 20px;">Grade 5</h3>
+                <div class="fileD" v-for="(file, index) in sortgrade5()" :key="index" @click="selectFile(file._id,file.title)">
+                    <h4>{{ file.title }}</h4>
+                    <!-- <p>{{ file.summary }}</p> -->
+                </div>
+                <h3 style="margin-top: 20px;">Grade 6</h3>
+                <div class="fileD" v-for="(file, index) in sortgrade6()" :key="index" @click="selectFile(file._id,file.title)">
+                    <h4>{{ file.title }}</h4>
+                    <!-- <p>{{ file.summary }}</p> -->
+                </div>
             </div>
             
         </div>
@@ -405,10 +418,19 @@ export default{
             uploading:false,
             edit:{option:[],question:'',story:'',answer:''},
             editcluster:false,
-            deleteIndex:null
+            deleteIndex:null,
+            uploadedLessons:[],
         }
     },
     methods:{
+        sortgrade5(){
+            const Array = this.uploadedLessons.filter(lesson => lesson.gradeLevel === 'Grade 5');
+            return Array;
+        },
+        sortgrade6(){
+            const Array = this.uploadedLessons.filter(lesson => lesson.gradeLevel === 'Grade 6');
+            return Array;
+        },
         deleteON(index){
             this.deleteIndex = index;
             this.deletecluster = true;
@@ -454,6 +476,7 @@ export default{
             try {
                 const res = await api.get('/lesson/list');
                 this.filelist = res.data.files;
+                this.uploadedLessonsList();
                 this.fileloading = false;
               
                 // alert(res.data.message);
@@ -684,7 +707,16 @@ export default{
             } catch (err) {
                 console.error('Error fetching mode data:', err);
             }
-        }
+        },
+        async uploadedLessonsList(){
+            try{
+                const res = await api.get('/dlesson/list');
+                this.uploadedLessons = res.data;
+                console.log(res.data);
+            }catch(err){
+                console.log(err);
+            }
+        },
 
     },
     mounted(){
@@ -1015,6 +1047,25 @@ select{
     max-height: max-content;
     overflow: visible;
 } */
+ .fileD{
+    background-color: #f58282;
+    transition: 0.3s;
+
+    height: 150px;
+    color: white;
+    /* overflow: hidden; */
+    padding: 10px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+ }
+  .fileD:hover{
+    transition: 0.3s;
+    background-color: #d16e6e;
+
+    /* background-color: #69b1ff; */
+ }
  .file-l:hover{
     transition: 0.3s;
     background-color: #69b1ff;
