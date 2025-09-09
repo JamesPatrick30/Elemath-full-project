@@ -57,11 +57,15 @@
             </header>
             <div class="table-con">
                 <!-- TODO: create better table -->
+                 <div class="btn-table">
+                    <button @click="moveless()"><font-awesome-icon icon="fa-solid fa-arrow-left" size="lg" /></button><button @click="movemore()"><font-awesome-icon icon="fa-solid fa-arrow-right" size="lg" /></button>
+                 </div>
                  <div class="table">
                     <div class="thead">
                         <div class="th-name" @click="add()"><h3>Name</h3></div>
                         <div class="th-con">
-                            <div class="th" v-for="quiz in  quizslist(this.quizs,quizstotal)" :key="quiz.name">{{ quiz.name }} <br> {{ quiz.score }}</div>
+                            <!-- sadadads -->
+                            <div class="th" v-for="(quiz,index) in  mazLength(students[0]?.quiz)" :key="index"><p>{{ quiz.mode }}</p></div>
                         </div>
                         <div class="th-total"><p>Ave</p></div>
                     </div>
@@ -69,9 +73,9 @@
                         <div class="tr" :id="index%2? 'line-2' : ''" v-for="(student,index) in students" :key="student.name">
                             <div class="td-name"><h5 class="student-name" >{{ student.name }}</h5></div>
                             <div class="td-con">
-                                <div class="td" v-for="grades in student?.quiz" :key="grades.lrn" :class="passornot(grades.score,grades.total)? 'pass':'notpass'"><p>{{ grades.score }}/{{ grades.total }}</p> </div>
+                                <div class="td" v-for="grades in mazLength(student?.quiz)" :key="grades.lrn" :class="passornot(grades.score,grades.total)? 'pass':'notpass'"><p>{{ grades.score }}/{{ grades.total }}</p> </div>
                             </div>
-                            <div class="td-total" :class="average(student?.quiz).pass ? 'pass' : 'notpass'"><p>{{ average(student?.quiz).average }}</p></div>
+                            <div class="td-total" :class="average(student?.quiz).pass ? 'pass' : 'notpass'"><p>{{ average(student?.quiz).average % 1 === 0 ? average(student?.quiz).average.toFixed(0) : average(student?.quiz)?.average?.toFixed(2) }}</p></div>
                         </div>
                     </div>
                  </div>
@@ -110,6 +114,31 @@ export default{
         }
     },
     methods:{
+        movemore(){
+            if(this.line < (this.students[0].quiz.length - 7)){
+                 
+                this.line++;
+            }
+            console.log('line : '+this.line +' quiz : '+(this.students[0].quiz.length - 7));
+        },
+        moveless(){
+            if(this.line > 0){
+                 
+                this.line--;
+            }
+            console.log('line : '+this.line +' quiz : '+(this.students[0].quiz.length - 7));
+        },
+        mazLength(quiz){
+            let list = [];
+            for (let i = this.line; i < this.line + 7 && i < quiz?.length; i++){
+
+                    list.push(quiz[i]);
+                    // console.log('lpp[]');
+                
+            }
+            // console.log('length : '+list.length +' quiz : '+quiz.length);
+            return list;
+        },
         passornot(grade,total){
             const ave = grade / total * 100;
             if(ave >= 75) return true;
@@ -119,7 +148,7 @@ export default{
             try {
                 const res = await api.post('/refresh-token');
                 this.user = res.data;
-                console.log('Token refreshed successfully:', res.data);
+                // console.log('Token refreshed successfully:', res.data);
                 await this.getData();
             } catch (err) {
                 console.error('Error refreshing token:', err);
@@ -197,7 +226,7 @@ export default{
                     this.students = res.data.students.sort((a, b) => 
                         a.name.localeCompare(b.name)
                     );
-                    
+                    this.line = this.students[0].quiz.length > 7 ? 0 : this.line;
                     console.log('sasdas'+JSON.stringify( this.students));
                 } else {
                     console.warn("No students found in response:", res.data);
@@ -261,8 +290,7 @@ export default{
             try {
                 const res = await api.get('/get/grade/class');
                 this.class = res.data.data;
-                // console.log('classes ? '+JSON.stringify( this.class));
-                // Automatically select the first class if available
+
                 if (this.class && this.class.length > 0) {
                     const firstClass = this.class[0];
                     this.selectedClassId = firstClass.Class_id;
@@ -301,7 +329,7 @@ export default{
                 }
                 list.push({grade:grades[i],pass:pass});
             }
-            console.log('line : '+list);
+
             return list;
         },
         add(){
@@ -332,7 +360,7 @@ export default{
             let Total = 0;
             for(let i in grades){
                 Total += (grades[i].score / grades[i].total) ;
-                console.log(`score : ${grades[i].score} , total : ${grades[i].total} , average : ${grades[i].score/grades[i].total}` );
+                // console.log(`score : ${grades[i].score} , total : ${grades[i].total} , average : ${grades[i].score/grades[i].total}` );
             }
              
             
@@ -340,7 +368,7 @@ export default{
                 pass = true
             }
             average = (Total/grades.length)*100;
-             console.log('grade : '+JSON.stringify(grades));
+            //  console.log('grade : '+JSON.stringify(grades));
             return {average,pass};
            
         }
@@ -482,10 +510,13 @@ body{
     border: 1px solid rgb(117, 165, 255);
 }
 .td-total{
+    font-weight: 800;
+    align-self: end;
+    left: auto;
     text-align: center;
     text-justify:auto;
     height: 25px;
-    width: 60px;
+    min-width: 60px;
     border: 1px solid rgb(117, 165, 255);
 }
 .td p,.td-total p{
@@ -521,7 +552,7 @@ body{
 .td-con{
     display: flex;
     height: 25px;
-    width:calc(100% - 350px);
+    width:100%;
     border: 1px solid rgb(117, 165, 255);
 }
 .th-name h3{
@@ -530,7 +561,7 @@ body{
 }
 .th-name{
     height: 50px;
-    width: 300px;
+    min-width: 300px;
     font-weight: 800;
     text-align: center;
     border: 1px solid black;
@@ -538,13 +569,19 @@ body{
 .td-name{
     overflow: hidden;
     height: 25px;
-    width: 300px;
+    min-width: 300px;
     font-weight: 800;
     text-align: start;
     border: 1px solid rgb(117, 165, 255);
 }
 th,td{
     outline: auto;
+}
+.btn-table{
+    width: 94%;
+    height: 40px;
+    display: flex;
+    justify-content: end;
 }
 .table{
     

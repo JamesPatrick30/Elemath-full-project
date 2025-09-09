@@ -11,10 +11,10 @@ export default{
     methods:{
         async getdata(){
             try{
-                const res = await api.get('/get/mode/player/rev');
-                this.rev = res.data.rev;
+                const res = await api.get('/get/mode/practice/review');
+                this.rev = res.data.review;
                 this.score = res.data.score;
-                console.log(res.data.rev);
+                // console.log(res.data.review);
             }catch(err){
                 console.log(err);
             }
@@ -24,8 +24,15 @@ export default{
             if(realans == value) return '#8ee71a';
             return '#ff4444';
         },
-        gotohome(){
-            this.$router.push('/ds');
+        async gotohome(){
+        
+            try{
+                await api.delete('/clear/mode/practice/review');
+                this.$router.push('/ds');
+            }catch(err){
+                console.log(err);
+            }
+            
         }
     },
     mounted(){
@@ -52,20 +59,20 @@ export default{
         <h1 class="score">Score : {{ score }}</h1>
         <div class="con">
             <div class="rev" v-for="(c,index) in rev" :key="index" :class="c.correct? 'correct' : 'wrong'">
-                <p v-if="c.q.question?.question" class="question">{{ c.q.question?.question }}</p>
+                <p v-if="c.question" class="question">{{ c.question }}</p>
                 <p v-else class="question">{{ c.q.question }} </p>
 
-                <div class="con-option" v-if="c.q?.options?.length > 0">
-                    <div class="option" v-for="(value,index) in c.q.options" :key="index" :style="{backgroundColor:colorpic(c.q.answer,value,c.playerAnswer)}">
+                <div class="con-option" v-if="c.options.length > 0">
+                    <div class="option" v-for="(value,index) in c.options" :key="index" :style="{backgroundColor:colorpic(c.answer,value,c.studentAnswer)}">
                         <p>{{ value }}</p>
                     </div>
                 </div>
                 <div v-else>
                     <p :class="c.correct ? 'correct-answer' : 'wrong-answer'">{{ c.playerAnswer }}</p>
-                    <p class="correct-answer" v-if="!c.correct ">Answer: {{ c.q.answer }}</p>
+                    <p class="correct-answer" v-if="!c.correct ">Answer: {{ c.answer }}</p>
                 </div>
                 
-                <p v-if="c.q.explanation">Explanation: {{ c.q.explanation }}</p>
+                <p v-if="c.explanation">Explanation: {{ c.explanation }}</p>
             </div>
             <br>
             <button class="leave" @click="gotohome">Leave</button>

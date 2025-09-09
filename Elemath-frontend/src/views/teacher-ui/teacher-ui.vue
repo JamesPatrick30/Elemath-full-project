@@ -74,9 +74,34 @@ export default {
                titleQ:'',
                cluster:false,
                loadingB:true,
+               lessonSwitch:false,
+               lesson:''
         };
     },
     methods: {
+        downloadPDF(){
+            const element = document.querySelector('.lesson-content');
+            if (!element) {
+            alert('No lesson content to download');
+            return;
+            }
+            
+            // You'll need to install html2pdf library: npm install html2pdf.js
+            import('html2pdf.js').then(html2pdf => {
+            const options = {
+                margin: 10,
+                filename: `lesson-${Date.now()}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            
+            html2pdf.default().from(element).set(options).save();
+            }).catch(err => {
+            console.error('Error loading html2pdf:', err);
+            alert('PDF download feature is not available');
+            });
+        },
         clusterOn(title){
             this.titleQ = title;
             this.cluster = true; 
@@ -100,9 +125,32 @@ export default {
                 alert(err.response.data.message);
             }
         },
+        async lessonData(id){
+            try{
+                const res = await api.get('/dlesson/get',{
+                    params:{
+                        lessonId:id
+                    }
+                });
+                this.lesson = res.data.htmlLesson;
+                console.log(res.data);
+            }catch(err){
+                console.log(err);
+            }
+        },
+        async getLessonList(){
+            try{
+                const res = await api.get('/dlesson/list');
+                this.lessons = res.data;
+                console.log(res.data);
+            }catch(err){
+                console.log(err);
+            }
+        },
         async getData() {
             try {
                 const res = await api.get('/data/teacher');
+                this.getLessonList();
                 this.user = res.data;
                 this.loadingB = false;
                 if( this.user.class.length == 0 ){
@@ -152,7 +200,7 @@ export default {
                 const res = await api.post('/teacher/changeProfile',{
                     profile:this.currentProfile
                 })
-                alert('save!');
+                // alert('save!');
                 await this.getData();
                 console.log(res.data.message);
                 this.picCharacterb = false;
@@ -164,16 +212,16 @@ export default {
             }
         },
         sortgrade5(){
-            const Array = this.lessons.filter(lesson => lesson.grade === 5);
+            const Array = this.lessons.filter(lesson => lesson.gradeLevel === 'Grade 5' || lesson.grade === 5);
             return Array;
         },
         sortgrade6(){
-            const Array = this.lessons.filter(lesson => lesson.grade === 6);
+            const Array = this.lessons.filter(lesson => lesson.gradeLevel === 'Grade 6' || lesson.grade === 6);
             return Array;
         },
-        alertnof(){
-            alert('No features available yet');
-        }
+        formattedContent(content) {
+            return content || '';
+        },
     },
     mounted() {
         this.getData();
@@ -192,6 +240,19 @@ export default {
 
 </script>
 <template>
+    <div class="profile-outer" v-if="lessonSwitch" >
+        <div class="lesson-con">
+            <nav class="lesson-nav">
+                <button @click="lessonSwitch = false">Back</button>
+                <button @click="downloadPDF" class="btn-download">Download as PDF</button>
+
+                <!-- <button @click="createMode()">Create Lesson</button> -->
+            </nav>
+            <div class="lesson-content" v-html="formattedContent(lesson)"></div>
+            
+        </div>
+        
+    </div>
     <div class="profile-outer" v-if="cluster" >
         <div class="class-con">
             <button @click="cluster = false"><font-awesome-icon :icon="['fas', 'xmark']" size="lg"/></button>
@@ -260,92 +321,61 @@ export default {
                 <h3>Grade 5</h3>
                 <div class="lesson-list">
                     
-                    <div class="lesson" v-for="(value,index) in sortgrade5()" :key="index" @click="alertnof()">
+                    <div class="lesson" v-for="(value,index) in sortgrade5()" :key="index" @click="lessonData(value._id); lessonSwitch = true;">
                         <img src="/images/BOOK.png" alt="">
-                         <h4>{{value.topic}}</h4>
+                         <h4>{{value.title}}</h4>
                     </div>
                 </div>
                 <h3>Grade 6</h3>
                 <div class="lesson-list">
                     
-                    <div class="lesson" v-for="(value,index) in sortgrade6()" :key="index" @click="alertnof()">
+                    <div class="lesson" v-for="(value,index) in sortgrade6()" :key="index" @click="lessonData(value._id); lessonSwitch = true;">
                         <img src="/images/BOOK.png" alt="">
-                         <h4>{{value.topic}}</h4>
+                         <h4>{{value.title}}</h4>
                     </div>
                 </div>
                 <br><br>
             </div>
-            <!-- <div class="con-m">
-                <div class="header" style="grid-area: header;">
-                    <div class="image-contaner" @click="picCharacter()"> -->
-                        <!-- <img :src="user.profile" alt=""> -->
-                         <!-- <img :src="user?.profile" alt="profile">
-                    </div>
-                    
-                    <div class="text-area">
-                        <h3>welcome back. {{ user?.username }}</h3>
-                        <h5>ID : {{ user?._id }}</h5>
-                    </div>
-                    
-                </div>
-                <div class="body"  style="grid-area: body;">
-                    <div class="con-b">
-                        <div id="mode" class="quiz" style="grid-area: quizmode;" v-on:click="clusterOn('QUIZ MODE')">
-                            <h1>QUIZ MODE</h1>
-                        </div>
-                        <div id="mode" class="windowcard" style="grid-area: windowcard;" @click="clusterOn('Window Card')">
-                            <h1>Window Card</h1>
-                            <img class="teach" src="/images/teach.png" alt="">
-                        </div> -->
-                        <!-- <div id="mode" class="challenge" style="grid-area: challenge;">
-                            <h1>Challenge Mode</h1>
-                        </div> -->
-                        <!-- <div id="mode" class="lesson" style="grid-area: lesson;" @click="clusterOn('Lessons')">
-                            <h1>Lessons</h1>
-                        </div>
-                    </div>
-                    
-                </div> -->
-                <!-- <div class="list" style="grid-area: list;">
-                    <h1>Students</h1>
-                    <div class="table-scroll">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>LRN</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="student in students" :key="student.lrn">
-                                    <td>{{ student.name }}</td>
-                                    <td>{{ student.lrn }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div> -->
-                <!-- <div class="statistic" style="grid-area: statistic;">
-                <h3>Class Chart</h3>
-                <div class="con-ch">
-                    <apexChart
-                        class="pie"
-                        type="pie"
-                        :series="pieseries"
-                        :options="pieoption"
-                        width="300"
-                        height="300"
-                    />
-                </div> -->
-                    
-                <!-- </div> -->
-        <!-- </div> -->
         </main>
         
     </body>
     <loading v-else></loading>
 </template>
 <style scoped>
+.lesson-content{
+    padding: 10px;
+
+}
+.lesson-con{
+    border-radius: 13px;
+    scrollbar-width: thin;
+    padding: 10px;
+    background-color: rgb(235, 235, 235);
+    overflow: auto;
+    height: 80%;
+    width: 80%;
+}
+.lesson-nav button{
+    margin-left: 10px;
+    cursor: pointer;
+    width: 150px;
+    height: 40px;
+    background-color: #f17751;
+    color: white;
+    font-weight: 800;
+    border-radius: 10px;
+    border: none;
+    font-size: 15px;
+}
+.lesson-nav{
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    padding: 10px;
+    background-color: white;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
 .navbar{
     position: fixed;
     left: 0;

@@ -67,23 +67,24 @@
     <main>
         <button class="btn-back" v-on:click="backBtn()">Back</button>
         <div class="con-q">
-            <nav>
+            <!-- <nav>
                 <ul>
                     <li><button class="nav-btn" @click="navClick('Settings')" :class="btnActive.setting? 'activeBtn' : 'not-active'">Settings</button></li>
                     <li><button class="nav-btn" @click="navClick('Question')" :class="btnActive.Question? 'activeBtn' : 'not-active'" >Question</button></li>
-                    <!-- <li><button class="nav-btn" @click="navClick('file')" :class="btnActive.file? 'activeBtn' : 'not-active'">Upload file</button></li> -->
+                    <li><button class="nav-btn" @click="navClick('file')" :class="btnActive.file? 'activeBtn' : 'not-active'">Upload file</button></li>
                 </ul>
-            </nav>
+            </nav> -->
             <div class="con-settings" v-if="btnActive.setting">
-                <label for="">Time</label>
-                <input type="text" placeholder="Time" class="input-a" v-model="time">
-                <input type="text" placeholder="Passing Score" class="input-a">
+                <!-- <label for="">Time</label> -->
+                <!-- <input type="text" placeholder="Passing Score" class="input-a"> -->
             </div>
             <div class="con-Questions" v-if="btnActive.Question">
+
                 <select name="" id="" v-model="questionOption" >
                     <option value="Generate">Generate</option>
                     <option value="Costumize">Customize</option>
                 </select>
+                <input type="number" placeholder="Time per question (minutes)" class="input-a" style="margin: 10px; text-align: center;" v-model="time">
                 
 
 
@@ -130,7 +131,7 @@
                                     <select class="t-o-q" v-model="uploadGenerate.type"  >
                                         <option disabled value="">-- Select a type --</option>
                                         <option value="multiple-choice">Multiple Choice</option>
-                                        <option value="short-answer">short-answer</option>
+                                        <option value="short-answer">Identification</option>
                                         <option value="true-false">true-false</option>
                                         <option value="fill-in-the-blank">fill-in-the-blank</option>
                                     </select>
@@ -370,10 +371,10 @@ export default{
             isDragging: false,
             generateBtnSwitch: false,
             generateBtn:'Generate',
-            uploadGenerate:{num_questions:0,type:'',topic:'',lang:'',difficulty:''},
+            uploadGenerate:{num_questions:null,type:'',topic:'',lang:'',difficulty:''},
             progress : 0,
             file : null,
-            btnActive:{setting:true,Question:false,file:false},
+            btnActive:{setting:false,Question:true,file:false},
             btnLobby:{playes:false,Question:true},
             questionOption:'Costumize',
 

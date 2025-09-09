@@ -17,6 +17,7 @@ const {init,pubClient,subClient} = require('./redis/redispubsub.js');
 
 //websocket
 // const WebSocket = require("ws");
+const lessonUpload = require('./models/lessonfile.js');
 const students = require('./models/students.js');
 const teacher_accoount = require('./models/teacher.js');
 const classes = require('./models/class.js');
@@ -95,7 +96,65 @@ async function Cache(key, data) {
   console.log('cached : ' + key);
   return data;
 }
+const dlessons = require('./models/dlesson.js');
+app.get('/dlesson/get',auth, async (req, res) => {
+  const lessonId = req.query.lessonId;
+  if (!lessonId) {
+    return res.status(400).json({ message: "lessonId query parameter is required" });
+  }
+  try {
+    const cacheKey = `lesson:${lessonId}`;
 
+    const cachedData = await redisClient.get(cacheKey);
+    if (cachedData) {
+      console.log('Cache hit for key:', cacheKey);
+      return res.json(JSON.parse(cachedData));
+    }
+    let output = null;
+    const lesson = await dlessons.findById(lessonId, { htmlLesson: 1, title: 1, _id: 0, summary: 1,file:1 });
+    if (lesson) {
+      output = lesson;
+    }else{
+      const uplesson = await lessonUpload.findById(lessonId, { htmlLesson: 1, title: 1, _id: 0, summary: 1,file:1 });
+      if (uplesson) {
+        output = uplesson;
+      }
+    }
+    // console.log('the lesson : '+ output);
+    await redisClient.set(cacheKey, JSON.stringify(output), { EX: 3600 });
+    res.json(output);
+  } catch (error) {
+    console.error("❌ Error fetching lesson:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+app.get('/dlesson/uploadedlessons', auth, async (req, res) => {
+  try {
+    const studentClass = await StudentClass.findOne({ email: req.user.username });
+    if (!studentClass) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+    const classId = studentClass.classId;
+    const ownerId = await classes.findOne({ _id: classId }, { teacherId: 1 });
+    // console.log('the owner id : '+ ownerId.teacherId);
+    const lessons = await lessonUpload.find({ ownerId: ownerId.teacherId }, { file: 1, title: 1, summary: 1 }).sort({ dateCreated: -1 });
+    // console.log('the lessons : '+ lessons);
+    res.json(lessons);
+  } catch (error) {
+    console.error("❌ Error fetching uploaded lessons:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+app.get('/dlesson/list', auth, async (req, res) => {
+  try {
+    const lessons = await dlessons.find({}, { title: 1, gradeLevel: 1, _id: 1}).sort({ dateCreated: -1 }); // latest first
+
+    res.json(lessons);
+  } catch (error) {
+    console.error("❌ Error fetching lessons:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 
 
 app.use(express.static('public')); // Serve static files from 'public' directory
@@ -105,7 +164,9 @@ app.use('/', uploadRouter); // Mount upload route
 
 const uploadlist = require('./routes/uploadlist.js');
 const Student = require('./models/students.js');
+const uploadD = require('./routes/dlesson.js');
 
+app.use('/',uploadD);
 app.use('/',uploadlist);
 
 app.use('/', require('./routes/google'));
@@ -156,7 +217,24 @@ app.post('/api/login',async (req, res) => {
     res.status(200).json({ message: 'Login successful', classCount: classCount });
     console.log('Login successful:', username);
 });
+app.post('/update/student/info',auth,async(req,res)=>{
+  const { username, password } = req.body;
+  // if(password !== confirmPassword) return res.status(404).json({message:'Password did not match'});
+  const student =await StudentClass.findOne({email:req.user.username});
+  if(!student) return res.status(404).json({message:'Student not yet enrolled'});
 
+  try{
+    const result = await StudentClass.updateOne(
+      { email: req.user.username },
+      { $set: { name: username, password: password } }
+    );
+    console.log('the update data : ', result);
+    res.status(200).json({message:'updated'});
+  }catch(err){
+    console.error(err);
+    return res.status(500).json({message:'Server error'});
+  }
+});
 app.post('/student-login', async (req, res) => {
   const {email,password} = req.body;
 
@@ -224,17 +302,19 @@ app.post('/get/quarter', auth, async (req, res) => {
 
   // Flatten into student-based structure
   const studentMap = {};
-
+  console.log('quarter : '+quarter.quizzes);
   quarter.quizzes.forEach(quiz => {
     quiz.students.forEach(student => {
       if (!studentMap[student.lrn]) {
         studentMap[student.lrn] = {
+          
           lrn: student.lrn,
           name: student.name,
           quiz: []
         };
       }
       studentMap[student.lrn].quiz.push({
+        mode: quiz.quizMode,
         quizId: quiz.quizId,
         quizname: quiz.quizname,
         score: student.score,
@@ -520,6 +600,7 @@ app.post('/enroll-student',auth,async(req,res)=>{
 
 
 });
+//TODO : FIX THIS TOMORROW MORNING
 async function classCache(req,res,next){
   const {classId} = req.body;
   const cacheKey = `classData:${classId}`;
@@ -536,6 +617,7 @@ async function classCache(req,res,next){
     res.status(500).json({ message: 'Internal server error' });
   }
 }
+// TODO : FIX THIS TOMORROW MORNING
 app.post('/get/classData',auth,classCache,async(req,res)=>{
   const {classId } = req.body;
 
@@ -872,9 +954,14 @@ app.get('/get/grade/class',auth,async(req,res)=>{
 });
 app.post('/create-question',auth ,async(req,res)=>{
   const {fileId,num_questions,language,difficulty,question_type} = req.body;
-
+  let fileLesson = '';
   const file = await filesave.findById(fileId);
-  const rawText = file.file;
+  if (file){
+    fileLesson = file;
+  }else{
+    fileLesson = await dlessons.findById(fileId);
+  }
+  const rawText = fileLesson.file;
   if(!rawText){
     console.log('no file');
     return res.status(404).json({message:'sada'});
@@ -931,7 +1018,52 @@ app.post('/create/mode',auth,async (req,res)=>{
 
   res.json({message:'done'})
 });
+app.post('/create/mode/practice',auth,async (req,res)=>{
+  const { quiz }= req.body;
 
+  const createMode = { 
+    quizId: req.user.username,
+    questions: quiz,
+    rev: [],
+    score: 0,
+  };
+  console.log(createMode);
+
+  await redisClient.set(`practice:${req.user.username}`, JSON.stringify(createMode), { EX: 3600 });
+  res.json({message:'done',createMode:createMode})
+});
+app.get('/get/mode/practice/question',auth,async (req,res)=>{
+  const practice = await redisClient.get(`practice:${req.user.username}`);
+  const practiceData = JSON.parse(practice);
+  if (!practice) {
+    return res.status(404).json({ message: 'No practice mode found' });
+  }
+  res.status(200).json({ questions: practiceData.questions });
+});
+app.post('/update/mode/practice',auth,async (req,res)=>{
+  const { rev , score } = req.body;
+  const practice = await redisClient.get(`practice:${req.user.username}`);
+  const practiceData = JSON.parse(practice);
+  if (!practice) {
+    return res.status(404).json({ message: 'No practice mode found' });
+  }
+  practiceData.rev = rev;
+  practiceData.score = score;
+  await redisClient.set(`practice:${req.user.username}`, JSON.stringify(practiceData), { EX: 3600 });
+  res.status(200).json({ message: 'Practice mode updated' });
+});
+app.get('/get/mode/practice/review',auth,async (req,res)=>{
+  const practice = await redisClient.get(`practice:${req.user.username}`);
+  const practiceData = JSON.parse(practice);
+  if (!practice) {
+    return res.status(404).json({ message: 'No practice mode found' });
+  }
+  res.status(200).json({ review: practiceData.rev,score:practiceData.score });
+});
+app.delete('/clear/mode/practice/review',auth,async (req,res)=>{
+  await redisClient.del(`practice:${req.user.username}`);
+  res.status(200).json({ message: 'Practice mode cleared' });
+});
 app.post('/delete/mode', auth,async (req, res) => {
   const { id } = req.body;
   console.log('delete mode id:', id);
@@ -1018,8 +1150,9 @@ app.get('/get/mode/question/1st',auth,async(req,res)=>{
   const modeData = JSON.parse(mode);
   let player = modeData.players.find(p => p.lrn === req.user.username);
   const qin = player.qIn;
+  console.log('quizMode in get : ' + modeData.quizMode);
   // modeData.players.find(p => p.lrn === req.user.username).qIn+=1;
-  res.json({question:modeData.questions[qin],done:false,time:modeData.gametime});
+  res.json({question:modeData.questions[qin],done:false,time:modeData.gametime,quizMode:modeData.quizMode});
 });
 app.post('/get/mode/question', auth, async (req, res) => {
   const { answer } = req.body;
@@ -1201,6 +1334,7 @@ app.post('/mode/finish',auth,async (req,res)=>{
     // 4. Create new quiz entry from modeData
     const newQuiz = {
       quizId: modeData.quizId,
+      quizMode: modeData.quizMode,
       quizname: modeData.quizName || new Date().toISOString().split('T')[0] ,
       total: modeData.questions.length,
       students: quizStudents,
@@ -1209,7 +1343,7 @@ app.post('/mode/finish',auth,async (req,res)=>{
       questions: modeData.questions.map((q, idx) => ({
         number: (idx + 1).toString(),
         topic:q.topic,
-        question: q.question,
+        question: JSON.stringify(q.question),
         answer: q.answer,
         choices: q.options,
         studentCorrect: q.studentCorrect
@@ -1244,12 +1378,13 @@ app.post('/mode/done', auth, async (req, res) => {
 
     const players = modeData.players;  // present
     // const allStudents = await StudentClass.find({ classId: id }); // enrolled
-
+    console.log(modeData.questions.length);
     let pass = 0;
     let failed = 0;
-    for(studs in players){
-      const ave = Math.floor(studs.score / studs.total * 100);
-      if(ave >=75){
+    for(const studs of players){
+      const ave = studs.score / modeData.questions.length * 100;
+      console.log(ave);
+      if(ave >=50){
         pass+=1;
       }else{
         failed+=1;

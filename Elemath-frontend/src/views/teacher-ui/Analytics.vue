@@ -4,15 +4,16 @@
     <main>
       <header>
         <h3 class="header-text">Analytics Dashboard</h3>
-        <select name="" id="" class="classes">
-          <option value="2">2</option>
-          <option value="2">2</option>
+        <select name="" id="" class="classes" @change="getClassData(selectedClassId)" v-model="selectedClassId">
+          <option v-for="value in class" :key="value.Class_id" :value="value.Class_id">{{ value.Class_name }}</option>
+
         </select>
       </header>
       <div class="con">
         <div class="item0">
           <h4 class="analysis-title">Recent Quiz Performance</h4>
           <apexChart
+            v-if="LineChart"
             type="line"
             height="230"
             :series="LineChart.series"
@@ -23,6 +24,7 @@
           <h4 class="analysis-title">Pass vs. Fail Pie Chart</h4>
           <div class="pie-con">
             <apexChart
+              v-if="PieChart"
               type="pie"
               height="200"
               :series="PieChart.series"
@@ -35,6 +37,7 @@
           <h4 class="analysis-title">Top Students</h4>
           <apexChart
             type="bar"
+            v-if="barChart"
             width="100%"
             height="387"
             :series="barChart.series"
@@ -54,6 +57,7 @@
             Lowest Scoring Topics
           </h4>
           <apexChart
+            v-if="LowTopicBarChart"
             type="bar"
             width="100%"
             height="387"
@@ -73,8 +77,9 @@
               :series="improvementChart?.series"
               :options="improvementChart?.options"
             /> -->
-            <div v-if="improvementChart.series.some(v => v > 0)">
+            <div v-if="improvementChart?.series.some(v => v > 0)">
               <apexChart
+                v-if="improvementChart"
                 type="pie"
                 height="210"
                 :series="improvementChart.series"
@@ -99,6 +104,7 @@ export default {
   components: { navbar, ApexChart },
   data() {
     return {
+      selectedClassId: null,
       LineChart: {
         series: [
           { name: "Quiz", data: [80, 70, 90, 77, 85, 92] }
@@ -165,6 +171,12 @@ export default {
                 
                 console.log('res get all record id '+ JSON.stringify(this.improvementChart));
             }catch(err){
+              this.LineChart = null;
+                this.barChart = null;
+                this.improvementChart = null;
+                this.PieChart = null;
+                this.LowTopicBarChart = null;
+                alert('No quiz record yet!');
                 console.log(err);
             }
         },
@@ -172,7 +184,7 @@ export default {
         try {
             const res = await api.get('/get/grade/class');
             this.class = res.data.data;
-            // console.log('classes ? '+JSON.stringify( this.class));
+            console.log('classes ? '+JSON.stringify( this.class));
             // Automatically select the first class if available
             if (this.class && this.class.length > 0) {
                 const firstClass = this.class[0];

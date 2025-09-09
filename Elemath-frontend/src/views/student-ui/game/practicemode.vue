@@ -1,139 +1,81 @@
 <script>
-import ApexChart from "vue3-apexcharts"
 import api from '@/axios';
-import greenbg from "../components/greenbg.vue";
+import greenbg from '../components/greenbg.vue';
 export default {
-    name: "TestArea",
-    components: { ApexChart,greenbg },
-    data() {
-        return {
-            quizMode:'',
-            persent: 100,
-            story:'A business tracks monthly sales; May is lower than April.',
-            question:'Which month shows a dip in sales compared to the previous month in the line graph?',
-            colors: ['#5bb450','#3b8132','#e8e337','#e69b00','#e70000','#820000'],
-            color:'',
-            timer: null,
-            timeLeft: 10, // Example: 60 seconds
-            totaltime: 10,
-            LineChart: {
-                series: [
-                    { name: "Quiz", data: [80, 70, 90, 77, 85, 92] }
-                ],
-                options: {
-                    chart: { background: "#fff" },
-                    colors: ["#4fc4f7"],
-                    stroke: { curve: "smooth", width: 3 },
-                    xaxis: { categories: ["Mon","Tue","Wed","Thu","Fri","Sat"] },
-                    grid: { borderColor: "#e0e0e0" }
-                }
-            },
-            options: [
-                "A. The line shows an overall increase from January to June.",
-                "B. The line shows no change across months.",
-                "C. The line decreases from January to June.",
-                "D. The line peaks in February."
+  name: 'practicemode',
+  components: {
+    greenbg,
+  },
+  data() {
+    return {
+        num:0,
+        name: '',
+        profilepic: '',
+        navshow: true,
+        title: '',
+        summarize: '',
+        id: '',
+        story:'A business tracks monthly sales; May is lower than April.',
+        question:'Which month shows a dip in sales compared to the previous month in the line graph?',
+        colors: ['#5bb450','#3b8132','#e8e337','#e69b00','#e70000','#820000'],
+        color:'',
+        timer: null,
+        timeLeft: 10, // Example: 60 seconds
+        totaltime: 10,
+        LineChart: {
+            series: [
+                { name: "Quiz", data: [80, 70, 90, 77, 85, 92] }
             ],
-            topic:'Understanding Bar and Line Graphs',
-            id:'',
-            table:null,
-            tabletype:'',
-            inputanswer:'',
-            mute: false,
-            setting:false,
-            audiosrc: "/musics/ingame.mp3",
-            volume: 0.5,
-            resvolume:0,
-            typeOfTest:'',
-            btnsubmit:false
-        }
-    },
-    methods: {
-        startTimer() {
-            this.unlockAudio();
-            this.timer = setInterval(() => {
-                if (this.timeLeft > -1) {
-                    this.timeLeft--;
-                    this.persent = (this.timeLeft / this.totaltime) * 100;
-                    if(this.persent > 83){
-                        this.color = this.colors[0];
-                    }else if (this.persent > 67){
-                        this.color = this.colors[1];
-                    }else if (this.persent > 51){
-                        this.color = this.colors[2];
-                    }else if (this.persent > 35){
-                        this.color = this.colors[3];
-                    }else if (this.persent > 19){
-                        this.color = this.colors[4];
-                    }else{
-                        this.color = this.colors[5];
-                    }
-                    // ⏱ Save progress on every tick
-                    if(this.timeLeft == 0){
-                        this.getIDres('');
-                    }
-                    
-                } else {
-                    
-
-                clearInterval(this.timer);
-                }
-            }, 1000);
-        },
-        async getIDres(answer){
-            try{
-                const res =await api.post('/get/mode/question',
-                    {answer:answer}
-                );
-                if(res.data.done){
-                    this.$router.push('/rev');
-                    return;
-                }
-                this.inputanswer = '';
-                this.btnsubmit = true;
-
-                this.get1st();
-                // console.log('Id : '+res.data.id);
-                // this.id = res.data.id;
-            }catch(err){
-                console.log(err);
+            options: {
+                chart: { background: "#fff" },
+                colors: ["#4fc4f7"],
+                stroke: { curve: "smooth", width: 3 },
+                xaxis: { categories: ["Mon","Tue","Wed","Thu","Fri","Sat"] },
+                grid: { borderColor: "#e0e0e0" }
             }
         },
-        async get1st(){
-            try{
-                const res =await api.get('/get/mode/question/1st');
-                const data = res.data.question;
-                // this.id = res.data.id;
-                if(data.done){
-                    this.$router.push('/rev');
+        options: [
+            "A. The line shows an overall increase from January to June.",
+            "B. The line shows no change across months.",
+            "C. The line decreases from January to June.",
+            "D. The line peaks in February."
+        ],
+        topic:'Understanding Bar and Line Graphs',
+        id:'',
+        table:null,
+        tabletype:'',
+        inputanswer:'',
+        mute: false,
+        setting:false,
+        audiosrc: "/musics/ingame.mp3",
+        volume: 0.5,
+        resvolume:0,
+        typeOfTest:'',
+        btnsubmit:false,
+        questions: [],
+        score: 0,
+        rev:[],
+        // audiosrc: "/musics/ingame.mp3",
+        setting:false,
+        mute: false,
 
-                }
-                this.quizMode = res.data.quizMode;
-                console.log('Quiz mode: '+this.quizMode);
-                this.topic = data.topic;
-                this.question=data.question;
-                this.options = data?.options;
-                this.story = data?.story;
-                this.totaltime = res.data.time * 60;
-                this.table = data?.table;
-                this.tabletype = data?.tabletype;
-                this.typeOfTest = data?.type;
-                this.btnsubmit = false;
-                console.log(data);
+        // options: [],
+    };
+  },
+  mounted() {
+    this.getQuestion();
+    document.body.addEventListener("click", this.unlockAudio, { once: true });
 
-                const time2 = localStorage.getItem('timeLeft');
-                console.log(this.table);
-                if(time2 == 0){
-                    console.log(time2);
-                    this.timeLeft = time2;
-                    return;
-                }
-                this.timeLeft = res.data.time * 60;
-            }catch(err){
-                console.log(err);
-            }
+  },
+  methods: {
+    settingf(){
+            this.setting = !this.setting;
+            // alert(this.setting);
         },
-        mutevol(){
+    updateVolume() {
+            this.$refs.player.volume = this.volume;
+        },
+    mutevol(){
             this.mute = !this.mute;
             if(this.mute){
                 this.resvolume = this.volume;
@@ -144,56 +86,79 @@ export default {
                 this.$refs.player.volume = this.volume;
             }
         },
-        settingf(){
-            this.setting = !this.setting;
-        },
-        updateVolume() {
-            this.$refs.player.volume = this.volume;
-        },
-        
-        unlockAudio() {
+    unlockAudio() {
             const player = this.$refs.player;
             player.muted = false;
             player.volume = this.volume;
             player.play().catch(err => console.warn("Still blocked:", err));
+        },
+    async getQuestion(){
+        try{
+            const res = await api.get('/get/mode/practice/question');
+            this.questions = res.data.questions;
+            
+            // console.log(res.data.questions);
+            this.nextQuestion();
+        }catch(err){
+            console.log(err);
         }
     },
-    mounted() {
-        // this.getIDres();
-        this.get1st();
-        this.startTimer();
-        document.body.addEventListener("click", this.unlockAudio, { once: true });
-        // document.body.addEventListener("click", this.unlockAudio, { once: true });
+    async check(answer,studentans){
+        let review = { question: this.questions[this.num].question, answer:this.questions[this.num].answer, options: this.questions[this.num].options,explanation: this.questions[this.num].explanation, studentAnswer: answer, correct: answer === studentans };
+        this.rev.push(review);
+        if(answer == studentans) {
+            this.score += 1;
+            // alert('Correct Answer! 🎉');
+        }
+        // alert('The correct answer is: ' + answer);
+        this.num += 1;
+        this.rev.push(review);
+        if(this.num >= this.questions.length){
+            try{
+                const res = await api.post('/update/mode/practice', {
+                    rev: this.rev,
+                    score: this.score
+                });
+                console.log(res.data);
+            }catch(err){
+                console.log(err);
+            }
+            this.$router.push({ name: 'donePractice' });
+            return;
+        }
+        this.nextQuestion();
     },
-    beforeMount(){
-        // localStorage.setItem('timeLeft',this.timeLeft);
+    nextQuestion(){
+        if(this.questions.length == 0){
+            alert('No more questions available.');
+            return;
+        }
+        const nextQ = this.questions[this.num];
+        this.story = nextQ.story;
+        this.question = nextQ.question;
+        this.table = nextQ.table;
+        this.options = nextQ.options;
+        this.tabletype = nextQ.tabletype;
+        this.inputanswer = '';
+        this.btnsubmit = false;
     }
-}
+    },
+};
 </script>
 <template>
+    <greenbg />
+        <button class="setting" @click="settingf()"><font-awesome-icon icon="fa-solid fa-gear" size="2xl" /></button>
 
-    <greenbg></greenbg>
-    <body>
-    <audio
+    <main>
+        <audio
         ref="player"
         :src="audiosrc"
         autoplay
         loop
         muted
         ></audio>
-
-
-        <header>
-                    
-            <p> {{ topic }}</p>
-            
-        </header> 
-        <div class="timer" :style="{width: persent+ '%',backgroundColor: color } "></div>
-        <button class="setting" @click="settingf()"><font-awesome-icon icon="fa-solid fa-gear" size="2xl" /></button>
-        <main>
-            
-            <!-- <div class="bar-chart" > -->
-                <div class="test-area" v-if="quizMode !== 'WINDOWCARD MODE'">
+        <h1>Practice Mode</h1>
+        <div class="test-area" v-if="quizMode !== 'WINDOWCARD MODE'">
                     <apexChart
                         type="line"
                         v-if="tabletype == 'Line'"
@@ -261,40 +226,18 @@ export default {
                         <p v-if="story" >{{ story }}</p>
                         <p>{{ question }}</p>
                     </div>
-                    <div class="answer-con">
-                        <div class="option" v-if="typeOfTest === 'multiple-choice'">
-                            <button class="option-c" v-for="(choice,index) in options" :key="index" @click="getIDres(choice)">{{ choice }}</button>
-                        </div>
-                        <div class="true-false" v-else-if="typeOfTest==='true-false'">
-                            <div class="true-false-c" @click="getIDres('true')" >True</div>
-                            <div class="true-false-c" @click="getIDres('false')" >False</div>
-                        </div>
-                        <div v-else class="input-text">
-                            <input  type="text" v-model="inputanswer">
-                            <button @click="getIDres(inputanswer)" :disabled="btnsubmit">Submit</button>
-                        </div>
-                        
-                    </div>
-                </div>
-                <div class="test-area" v-else>
-                    <div class="card">
-                        <h2>Window Card Mode</h2>
-                        <div class="q">
-                            <p>{{ question.q1 }}</p>
-                            <p>{{ question.operation }} {{ question.q2 }}</p>
-                            <p></p>
-                        </div>
-                        <div  class="input-text">
-                            <input  type="text" v-model="inputanswer">
-                            <button @click="getIDres(inputanswer)" :disabled="btnsubmit">Submit</button>
-                        </div>
-                        
                     
-                    </div>
-                </div>
+                        <div class="multi-choice" >
+                            <!-- <p>Choose the correct answer:</p> -->
+                            <ul>
+                                <li v-for="(option, index) in options" :key="index">
+                                    <button @click="check(option, questions[num].answer)">{{ option }}</button>
+                                </li>
+                            </ul>
+                        </div>
                     
-        </main>
-    </body>
+        </div>
+    </main>
     <div class="cluster-con" v-if="setting">
         <div class="cluster">
             <div class="header">
@@ -317,6 +260,30 @@ export default {
     </div>
 </template>
 <style scoped>
+.multi-choice ul li button{
+    width: 100%;
+    height: 50px;
+    border: none;
+    border-radius: 10px;
+    background-color: #8385eb;
+    color: white;
+    font-weight: 600;
+    transition: 0.3s linear;
+}
+.multi-choice ul{
+    list-style-type: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+.multi-choice{
+    position: fixed;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+}
 .q p{
     margin: 0;
 }
@@ -359,10 +326,14 @@ export default {
 }
 .setting{
     background-color: rgb(112, 112, 255);
-    align-self: flex-end;
+    /* align-self: flex-end; */
     color: white;
     padding: 5px;
     border: none;
+    position: fixed;
+    z-index: 1000;
+    right: 0;
+    margin: 5px;
     border-radius: 10px;
 }
 .body button{
@@ -400,6 +371,7 @@ export default {
 }
 .cluster-con{
     display: flex;
+    z-index: 1000;
     justify-content: center;
     align-items: center;
     position: fixed;
@@ -627,5 +599,20 @@ header{
     .card{
         width: 400px;
     }
+}
+*{
+    font-family: 'BubbleBody Neue', 'Poppins', sans-serif;
+}
+main{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 10;
+    display: flex;
+    /* justify-content: center; */
+    align-items: center;
+    flex-direction: column;
 }
 </style>
