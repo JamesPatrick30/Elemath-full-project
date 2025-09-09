@@ -189,30 +189,40 @@
                     <textarea  class="q-input" id="" placeholder="Story (Option)" v-model="CostumeQuestion.story"></textarea>
 
                     <textarea  class="q-input" id="" placeholder="Question.." v-model="CostumeQuestion.Q"></textarea>
-                    <select class="t-o-q" v-model="CostumeQuestion.type"  >
-                        <option disabled value="">-- Select a type --</option>
-                        <option value="multiple-choice">Multiple Choice</option>
-                        <option value="input answer">input answer</option>
-                        <option value="true-false">true-false</option>
-                    </select>
+                    <div class="con-type">
+                        <label class="labelQ" for="question-type">Question Type : </label>
+                        <select name="question-type" class="t-o-q" v-model="CostumeQuestion.type"  >
+                            <option disabled value="">-- Select a type --</option>
+                            <option value="multiple-choice">Multiple Choice</option>
+                            <option value="input answer">input answer</option>
+                            <option value="true-false">true-false</option>
+                        </select>
+                    </div>
+                    
                     <br>
-                    <select class="t-o-q" v-if="CostumeQuestion.type == 'true-false'" v-model="CostumeQuestion.answer"  >
-                        <option disabled value="">-- Select a type --</option>
-                        <option value="true">true</option>
-                        <option value="false">false</option>
-                        
-                    </select>
+                    <div class="con-type"v-if="CostumeQuestion.type == 'true-false'">
+                        <label class="labelQ" for="answer-type">Answer : </label>
+                        <select name="answer-type" class="t-o-q" v-if="CostumeQuestion.type == 'true-false'" v-model="CostumeQuestion.answer"  >
+                            <option disabled value="">-- Select a type --</option>
+                            <option value="true">true</option>
+                            <option value="false">false</option>
+                            
+                        </select>
+                    </div>
+                    
                     <div class="multi" v-if="CostumeQuestion.type === 'multiple-choice'">
                         <input class="input-c" type="text" v-model="CostumeQuestion.options[0]" placeholder="choices...">
                         <input class="input-c" type="text" v-model="CostumeQuestion.options[1]" placeholder="choices...">
                         <input class="input-c" type="text" v-model="CostumeQuestion.options[2]" placeholder="choices...">
                         <input class="input-c" type="text" v-model="CostumeQuestion.options[3]" placeholder="choices...">
-                        <select class="t-o-q" v-model="CostumeQuestion.answer"  >
 
-                        <option disabled value="">-- Select a Answer --</option>
-                            <option v-for="Choice in CostumeQuestion?.options.filter(choice => choice.trim() !== '')" :key="Choice" :value="Choice" @click="" >{{ Choice }}</option>
-                            
-                        </select>
+                        <div class="con-type">
+                            <label class="labelQ" for="answer-type">Answer : </label>
+                            <select name="answer-type" class="t-o-q" v-model="CostumeQuestion.answer"  >
+                                <option disabled value="">-- Select a Answer --</option>
+                                <option v-for="Choice in CostumeQuestion?.options.filter(choice => choice.trim() !== '')" :key="Choice" :value="Choice" @click="" >{{ Choice }}</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="con-input-a" v-else-if="CostumeQuestion.type==='input answer'">
                         <input type="text" class="input-a" placeholder="Answer.." v-model="CostumeQuestion.answer">
@@ -708,6 +718,19 @@ export default{
 }
 </script>
 <style scoped>
+select{
+    text-align: center;
+}
+.con-type{
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    margin-top: 10px;
+}
+.labelQ{
+    color: white;
+    font-weight: 600;
+}
 .btn-con{
     display: flex;
     gap: 1em;
