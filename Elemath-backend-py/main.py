@@ -19,10 +19,13 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 # Configure OpenRouter client
-client = OpenAI(
-    api_key=os.getenv("OPENROUTER_API_KEY"),
-    base_url="https://openrouter.ai/api/v1"
-)
+
+def get_openrouter_client():
+    return OpenAI(
+        api_key=os.getenv("OPENROUTER_API_KEY"),
+        base_url="https://openrouter.ai/api/v1"
+    )
+client = get_openrouter_client()
 
 app = FastAPI(
     title="Quiz Generator API",
