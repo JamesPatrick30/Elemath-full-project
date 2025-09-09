@@ -51,13 +51,17 @@
                         <input class="input-c" type="text" v-model="questions[editindex].options[2]" placeholder="choices...">
                         <input class="input-c" type="text" v-model="questions[editindex].options[3]" placeholder="choices...">
 
-                        <select class="t-o-q" v-model="questions[editindex].answer"  >
+                        <div class="con-type">
+                            <label class="labelQ" for="answer-type">Answer : </label>
+                            <select class="t-o-q" v-model="questions[editindex].answer"  >
 
-                            <option disabled value="">-- Select a Answer --</option>
-                            <option v-for="Choice in questions[editindex].options.filter(choice => choice.trim() !== '')" :key="Choice" :value="Choice" @click="" >{{ Choice }}</option>
-                        </select>
+                                <option disabled value="">-- Select a Answer --</option>
+                                <option v-for="Choice in questions[editindex].options.filter(choice => choice.trim() !== '')" :key="Choice" :value="Choice" @click="" >{{ Choice }}</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="con-input-a" v-else>
+                    <div class="con-type" v-else>
+                        <label class="labelQ" for="answer-type">Answer : </label>
                         <input type="text" class="input-a" placeholder="Answer.." v-model="questions[editindex].answer">
                     </div>
                     <button class="btn-add" @click="saveEdit()">Save</button>
@@ -140,7 +144,11 @@
                     </p>
                             <div class="Question-options" v-if="fileId && !isDragging && !generatingLoading">
                                 <h4>File Selected: {{ filetitle }}</h4>
-                                <input class="num-in" type="number" placeholder="Number" v-model="uploadGenerate.num_questions">
+                                <div>
+                                    <label for="numQuestions">Number of Questions</label>
+                                    <input class="num-in" type="number" id="numQuestions" placeholder="Number of Questions" v-model="uploadGenerate.num_questions">
+                                </div>
+                                
                                     <select class="t-o-q" v-model="uploadGenerate.type"  >
                                         <option disabled value="">-- Select a type --</option>
                                         <option value="multiple-choice">Multiple Choice</option>
