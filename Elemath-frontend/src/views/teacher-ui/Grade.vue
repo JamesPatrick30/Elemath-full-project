@@ -50,8 +50,8 @@
                     </select>
                     
                     
-                    <button @click="clusterCreateGrade = true">Create an Quarter</button>
-                    <button class="list-q"><font-awesome-icon icon="fa-solid fa-list" size="xl"/></button>
+                    <button class="btn" @click="clusterCreateGrade = true">Create an Quarter</button>
+                    <!-- <button class="list-q"><font-awesome-icon icon="fa-solid fa-list" size="xl"/></button> -->
                 </div>
                 
             </header>
@@ -385,6 +385,15 @@ export default{
     margin-left: 0;
     padding: 0;
     font-family: 'BubbleBody Neue','Poppins', sans-serif;
+}
+.btn{
+    border: none;
+    background-color: #4fc4f7;
+    color: white;
+    font-weight: 800;
+    height: 50px;
+    border-radius: 5px;
+    padding: 10px;
 }
 .selectClass{
     border-radius: 5px;
