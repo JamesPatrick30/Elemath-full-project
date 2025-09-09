@@ -1237,9 +1237,40 @@ const transporter = nodemailer.createTransport({
 });
 
 // Route
+app.post('/report/teacher', auth, upload.array('screenshots', 5), async (req, res) => {
+  try {
+    // const nameuser = await StudentClass.findById(req.user.id).populate('classId');;
+    const { name, email, module, description,suggestion } = req.body;
+    const files = req.files || [];
+
+    const attachments = files.map(file => ({
+      filename: file.originalname,
+      content: file.buffer
+    }));
+
+    const info = await transporter.sendMail({
+      from: `"ELEMATH" <${process.env.EMAIL_USER}>`,
+      to: process.env.EMAIL_PROGRAMMER,
+      subject: "🐞 Bug Report",
+      text: `Bug Report
+        From: ${name || 'Anonymous'} <${req.user.username || 'N/A'}>
+        Module: ${module || 'N/A'}
+        Description: ${description || 'No description provided'}
+        Suggestions: ${suggestion || 'No suggestions provided' }`,
+      attachments
+    });
+
+    console.log("✅ Email sent:", info.messageId);
+    res.json({ success: true, message: "Bug report sent!" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Error sending bug report." });
+  }
+});
+
 app.post('/report/student', auth, upload.array('screenshots', 5), async (req, res) => {
   try {
-    const nameuser = await StudentClass.findById(req.user.id).populate('classId');;
+    const nameuser = await StudentClass.findById(req.user.id).populate('classId');
     const { name, email, module, description,suggestion } = req.body;
     const files = req.files || [];
 
