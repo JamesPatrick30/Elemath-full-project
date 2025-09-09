@@ -106,13 +106,13 @@
                     <h4 class="classname">Class Name : {{ classname }}</h4>
                     <h3>📤 Upload Student List</h3>
 
-                    <form @submit.prevent="handleUpload" enctype="multipart/form-data">
+                    <form @submit.prevent="handleUpload" enctype="multipart/form-data" :class="{ 'disabled-form': uploading }">
                         <!-- <label for="moduleFile" clnhass="upload-label">
                         📄 Upload Module / Lesson File
                         <input type="file" @change="handleFileChange" accept=".pdf,.xlsx,.xls" required />
                         </label> -->
-                        <input type="file" @change="handleFileChange" class="upload-label" accept=".pdf,.xlsx,.xls" required />
-                        <button type="submit">Upload</button>
+                        <input type="file" @change="handleFileChange" class="upload-label" accept=".xlsx,.xls" required :disabled="uploading"/>
+                        <button type="submit" v-if="selectedFile" class="btn-upload" :disabled="uploading">Upload</button>
 
                         <div v-if="uploading">
                         Uploading: {{ progress }}%
@@ -525,6 +525,64 @@ export default{
 }
 </script>
 <style scoped>
+.btn-upload{
+    border: none;
+    background-color: #4fc4f7;
+    color: white;
+    border-radius: 5px;
+    font-weight: 800;
+    height: 35px;
+    width: 70px;
+    padding: 7px;
+    margin-left:10px;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.upload-label{
+    outline: none;
+    border: 2px dashed #4fc4f7;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    display: block;
+    margin: 20px auto;
+    border-radius: 10px;
+    width: 80%;
+    background-color: #f8f9fa;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    color: #666;
+}
+
+.upload-label:hover {
+    border-color: #2196F3;
+    background-color: #e3f2fd;
+    transform: translateY(-2px);
+}
+
+.upload-label:focus {
+    border-color: #2196F3;
+    box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+}
+
+.upload-label::file-selector-button {
+    display: none;
+    background-color: #4fc4f7;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 10px;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.upload-label::file-selector-button:hover {
+    background-color: #2196F3;
+}
 .edit-cluster-body label{
     font-size: 12px;
     margin: 0;
