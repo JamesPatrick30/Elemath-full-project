@@ -1008,7 +1008,7 @@ app.post('/create/mode',auth,async (req,res)=>{
   const classFile =await Gradebook.findOne({classId:id});
 
   if(!classFile){
-    return res.status(404).json({message: 'Need to create Grade Book'});
+    return res.status(404).json({message: 'Need to create Quarter Record first'});
   }
   
   const createMode = { 
