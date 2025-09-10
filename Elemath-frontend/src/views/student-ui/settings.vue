@@ -73,7 +73,7 @@ export default{
                     <h3>Basic Info</h3>
                     <p>It’s the profile card of the system — the simple facts that identify you or the app.</p>
                 </div>
-                <img src="/images/Profile icon.png" alt="">
+                <img src="/images/proIcon.png" alt="">
             </div>
             <!-- <div class="box">
                 <div class="text">
@@ -95,6 +95,7 @@ export default{
                         @input="updateVolume"
                         />
                 </div>
+                <img src="/images/music icon.png" alt="">
                 
 
             </div>
@@ -103,7 +104,7 @@ export default{
                     <h3>Report a Problem</h3>
                     <p>Found a problem? Let us know so we can fix it!</p>
                 </div>
-                <img src="/images/Profile icon.png" alt="">
+                <img src="/images/reportprob.png" alt="">
 
             </div>
         </div>
