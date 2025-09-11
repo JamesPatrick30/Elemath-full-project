@@ -1,9 +1,11 @@
 <template>
   <main v-if="!getIn">
+        <img src="/images/logonobg.png" alt="Elemath Logo" class="imglogo" @click="this.$router.push('/')">
+    
     <div class="horizontal-scroll">
       <section class="landing">
             <header>
-              <h1>Ele<span style="color: #7789fe;">math</span> </h1>
+              <!-- <h1>Ele<span style="color: #7789fe;">math</span> </h1> -->
             </header>
             <div class="sky">
               
@@ -119,9 +121,9 @@
             
             <div class="about-contaner">
               <div class="item1">
-                <img :src="gameimage" alt="">
-                <img :src="gameimage2" alt="">
-                <img :src="gameimage3" alt="">
+                <img :src="gameimage" alt="" class="aboutimg">
+                <img :src="gameimage2" alt="" class="aboutimg">
+                <img :src="gameimage3" alt="" class="aboutimg">
               </div>
               <div class="item2">
                 <h1>About Elemath </h1>
@@ -324,6 +326,14 @@ export default {
 </script>
 
 <style scoped>
+.imglogo{
+    cursor: pointer;
+    height: 70px;
+    width: auto;
+    margin-right: 20px;
+    position: absolute;
+    z-index: 100;
+}
 .terms{
   cursor: pointer;
   text-decoration: underline;
@@ -334,6 +344,7 @@ export default {
   text-decoration: underline;
 }
 footer div{
+  font-size: 10px;
   text-align: left;
   width: 100%;
 }
@@ -439,7 +450,7 @@ footer{
   justify-content: center; /* center items horizontally */
   gap:10px; /* space between images */
 }
-.about-contaner .item1 img{
+.about-contaner .item1 .aboutimg{
   width: 80px;
   height: auto;
   object-fit: cover;
@@ -513,7 +524,7 @@ footer{
   color: #464c84;
 }
 
-img{
+.aboutimg{
   height: 250px;
   width: auto;
   box-shadow: #464c84 0px 0px 10px;
@@ -802,7 +813,7 @@ header h1 {
   left: 10%;
   width: 70px;
   height: 200px;
-  z-index: 0;
+  z-index: 1;
 }
 .tree11{
   position: absolute;
@@ -1098,8 +1109,11 @@ footer{
 .about-contaner .item2 p{
   font-size: 20px;
 }
-.about-contaner .item1 img{
+.about-contaner .item1 .aboutimg{
   width: 120px;
+}
+footer div{
+  font-size: 12px;
 }
 }
 </style>
