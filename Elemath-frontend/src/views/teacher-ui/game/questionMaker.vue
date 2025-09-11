@@ -748,7 +748,7 @@ export default{
         window.addEventListener("dragover", this.onDragOver);
         window.addEventListener("dragleave", this.onDragLeave);
         window.addEventListener("drop", this.onDropAnywhere);
-                this.uploadedLessonsList();
+        this.uploadedLessonsList();
 
     },
     beforeUnmount() {
