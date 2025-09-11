@@ -97,8 +97,8 @@
          <div class="add-student-con">
             <div class="form-con">
                 <div class="form-header">
-                    <button @click="addorupload(false)" :style="{borderBottom: uploadFile ? '2px solid #4fc4f7' : 'none'}">add</button>
-                    <button @click="addorupload(true)" :style="{borderBottom: !uploadFile ? '2px solid #4fc4f7' : 'none'}">upload</button>
+                    <button @click="addorupload(false)" :style="{borderBottom: !uploadFile ? '2px solid #4fc4f7' : 'none'}">add</button>
+                    <button @click="addorupload(true)" :style="{borderBottom: uploadFile ? '2px solid #4fc4f7' : 'none'}">upload</button>
                 </div>
                 <div class="form" v-if="uploadFile">
             
