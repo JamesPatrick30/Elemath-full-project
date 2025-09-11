@@ -101,22 +101,22 @@ export default {
         this.files.forEach(file => formData.append('screenshots', file));
 
         try {
-            const response = await api.post('/report/student', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-            });
+            // const response = await api.post('/report/student', formData, {
+            // headers: {
+            //     'Content-Type': 'multipart/form-data'
+            // }
+            // });
 
-            if (response.data.success) {
+            // if (response.data.success) {
             alert('Bug report sent successfully!');
             this.name = '';
             this.email = '';
             this.module = '';
             this.description = '';
             this.files = [];
-            } else {
-            alert('Error sending bug report.');
-            }
+            // } else {
+            // alert('Error sending bug report.');
+            // }
         } catch (err) {
             console.error(err);
             alert('Server error.');
