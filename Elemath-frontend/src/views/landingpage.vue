@@ -202,8 +202,8 @@
               <br>
               <p>
 
-                Email: support@elemath.com <br>
-                Phone: +63 992 585 0244 <br>
+                <font-awesome-icon icon="fa-solid fa-envelope" />  elemathwebbased2025@gmail.com <br>
+                <font-awesome-icon icon="fa-solid fa-phone" /> +63 992 585 0244 <br>
               </p>
             </div>
             <div>
@@ -712,7 +712,8 @@ header{
   list-style: none;
 }
 .tagline-contaner nav ul li button{
-  background-color: #1ad0d0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background-color: #07acac;
   color: white;
   border: none;
   padding: 10px;
@@ -727,7 +728,7 @@ header{
   font-family: 'BubbleBody Neue','Poppins', sans-serif;
 }
 .tagline-contaner nav ul li button:hover{
-  background-color: #15aaaa;
+  background-color: #0d8d8d;
   transition: 500ms;
 }
 header h1 {
