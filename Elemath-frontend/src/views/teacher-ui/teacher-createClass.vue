@@ -250,7 +250,7 @@ nav ul li:hover{
     position:relative;
     margin-top: 0%;
 
-    color: #4fc4f7;
+    color: #3496c0;
 }
 .header h3{
     margin-left: 30px;
