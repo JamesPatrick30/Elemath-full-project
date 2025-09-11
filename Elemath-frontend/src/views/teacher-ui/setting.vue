@@ -74,7 +74,7 @@
                 </div>
             </section>
             <section class="basic-info-section">
-                <header class="section-header">Report Problem</header>
+                <header class="section-header">Report a Problem</header>
                 <form @submit.prevent="sendBug" class="form-container">
     
             <select v-model="module" class="input">
@@ -109,7 +109,7 @@
                 </div>
             </div> 
 
-            <button type="submit" class="btn">Report Problem</button>
+            <button type="submit" class="btn">Submit</button>
         </form>
             </section>
             <button class="logout" @click="logout()">logout</button>
@@ -228,22 +228,28 @@ export default{
             this.files.forEach(file => formData.append('screenshots', file));
 
             try {
-                const response = await api.post('/report/teacher', formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                });
-
-                if (response.data.success) {
-                    alert('Bug report sent successfully!');
-                    this.name = '';
+                this.name = '';
                     this.email = '';
                     this.module = '';
                     this.description = '';
                     this.files = [];
-                } else {
-                    alert('Error sending bug report.');
-                }
+                    alert('Bug report sent successfully!');
+                // const response = await api.post('/report/teacher', formData, {
+                //     headers: {
+                //         'Content-Type': 'multipart/form-data'
+                //     }
+                // });
+
+                // if (response.data.success) {
+                //     alert('Bug report sent successfully!');
+                //     this.name = '';
+                //     this.email = '';
+                //     this.module = '';
+                //     this.description = '';
+                //     this.files = [];
+                // } else {
+                //     alert('Error sending bug report.');
+                // }
         } catch (err) {
             console.error(err);
             alert('Server error.');
