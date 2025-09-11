@@ -47,7 +47,7 @@ export default{
 </script>
 <style scoped>
 .in{
-    background-color: #4fc4f7;
+    background-color: #3bbd2f;
     color: white;
 }
 .logo{
@@ -94,11 +94,12 @@ nav ul li{
 }
 .out{
     background-color: transparent;
-    color: #4fc4f7;
+    color: #3bbd2f;
 }
 nav ul li:hover{
     transition: 0.3s;
-    background-color: #4fc4f7;
+    background-color: #3bbd2f;
+
     color: white;
 }
 </style>
