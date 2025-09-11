@@ -112,7 +112,7 @@
             <button type="submit" class="btn">Submit</button>
         </form>
             </section>
-            <button class="logout" @click="logout()">logout</button>
+            <button class="logout" @click="logout()">Logout</button>
         </main>
     </body>
     <loading v-else />
@@ -436,10 +436,11 @@ export default{
     width: 100%;
 }
 .logout{
-    background-color: #4fc4f7;
+    background-color: #aa2e2e;
     color: white;
     width: 100px;
     height: 40px;
+    border:none;
     border-radius: 20px;
     font-weight: bold;
     font-size: 16px;
