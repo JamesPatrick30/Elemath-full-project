@@ -720,7 +720,7 @@ export default{
             try{
                 const res = await api.get('/dlesson/list');
                 this.uploadedLessons = res.data;
-                console.log(res.data);
+                console.log(this.uploadedLessons);
             }catch(err){
                 console.log(err);
             }
