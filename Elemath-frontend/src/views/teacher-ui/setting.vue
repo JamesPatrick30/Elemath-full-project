@@ -451,7 +451,7 @@ export default{
 main .main-header h4 {
     margin: 0;
     padding: 20px;
-    color: #4fc4f7;
+    color: #3eabda;
     font-size: 24px;
     font-weight: bold;
     font-family: 'BubbleBody Neue', 'Poppins', sans-serif;
