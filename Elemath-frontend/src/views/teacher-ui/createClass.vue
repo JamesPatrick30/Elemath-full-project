@@ -97,8 +97,8 @@
          <div class="add-student-con">
             <div class="form-con">
                 <div class="form-header">
-                    <button @click="addorupload(false)">add</button>
-                    <button @click="addorupload(true)">upload</button>
+                    <button @click="addorupload(false)" :style="{borderBottom: uploadFile ? '2px solid #4fc4f7' : 'none'}">add</button>
+                    <button @click="addorupload(true)" :style="{borderBottom: !uploadFile ? '2px solid #4fc4f7' : 'none'}">upload</button>
                 </div>
                 <div class="form" v-if="uploadFile">
             
@@ -666,6 +666,8 @@ export default{
 .form-header button{
     border: none;
     background-color: white;
+    color: #4fc4f7;
+    font-weight: 800;
 }
 .form-con{
     border-radius: 5px;
