@@ -119,6 +119,13 @@ export default {
 };
 </script>
 <style scoped>
+.form input{
+    font-family: 'BubbleBody Neue', 'Poppins', sans-serif;
+}
+
+.form input::placeholder {
+    color: white;
+}
 .logo{
     display: flex;
     align-items: center;

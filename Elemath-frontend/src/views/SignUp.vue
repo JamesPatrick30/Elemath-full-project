@@ -196,6 +196,9 @@ main {
 .form header h3 {
     color: #0041d1;
 }
+.form input:placeholder-shown {
+    color: white;
+}
 .form input,.form button {
     position: relative;
     padding: 10px;
