@@ -113,9 +113,9 @@
           <section class="about">
            <!-- <TreeComponent class="tree tree10"/> -->
             
-           <div class="sand-background">
+           <!-- <div class="sand-background">
                 <sandbackground />
-              </div>
+              </div> -->
             
             <div class="about-contaner">
               <div class="item1">
@@ -147,9 +147,9 @@
               </div>
             </div>
             
-              <div class="beach-background">
+              <!-- <div class="beach-background">
                 <beachbackground  />
-              </div>
+              </div> -->
           </section>
           <section class="key-features">
             <div class="content">
@@ -260,7 +260,7 @@ export default {
     TreeComponent,
     TreeComponent2,
     sandbackground,
-    beachbackground,
+    // beachbackground,
     cloud
   },
   data() {
@@ -335,9 +335,10 @@ export default {
 }
 footer div{
   text-align: left;
+  width: 100%;
 }
 footer{
-  width: 100%;
+  width: 90%;
   height: 10%;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -423,8 +424,11 @@ footer{
   position: relative;
   z-index: 10;
   width: 90%;
-  display: grid;
-  grid-template-columns: repeat(1, 1fr); /* 2 columns of equal width */
+  display: flex;
+  flex-direction: column;
+  /* grid-template-columns: repeat(1, 1fr); 2 columns of equal width */
+  align-items: center;
+  justify-items: center;
   
 }
 
@@ -436,17 +440,25 @@ footer{
   gap:10px; /* space between images */
 }
 .about-contaner .item1 img{
-  width: 100px;
+  width: 80px;
   height: auto;
   object-fit: cover;
   border-radius: 10px;
   box-shadow: #464c84 0px 0px 10px;
 }
+.about-contaner .item2{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* padding: 20px; */
+}
 .about-contaner .item2 p{
   z-index: 10;
   padding: 20px;
-  text-align: left;
+  text-align: center;
   color: #464c84;
+  font-size: 13px;
   font-weight: bold;
   font-family: 'BubbleBody Neue','Poppins', sans-serif;
 }
@@ -544,9 +556,13 @@ main {
   justify-items: center;
 }
 .key-features {
+  padding: 10px;
   background-color: #4fc4f7;
-  height: 100vh;
-  width: 100vh;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .key-features .content {
   display: flex;
@@ -557,6 +573,9 @@ main {
   height: 100%;
   width: 48%;
   color: white;
+  font-size: 15px;
+  z-index: 1000;
+  line-height: 1.5;
   font-family: 'BubbleBody Neue', 'Poppins', sans-serif;
 }
 header{
@@ -638,6 +657,10 @@ header{
     
   }
 .about {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
   overflow: hidden;
   background-color: #a8e15e;
   height: 100vh;
@@ -792,7 +815,7 @@ header h1 {
 .tree12{
   position: absolute;
   top: 170%;
-  left: 90%;
+  left: 70%;
   width: 70px;
   height: 200px;
   z-index: 0;
@@ -1072,7 +1095,11 @@ footer{
   color: black;
   text-align: center;
 }
-
-
+.about-contaner .item2 p{
+  font-size: 20px;
+}
+.about-contaner .item1 img{
+  width: 120px;
+}
 }
 </style>
