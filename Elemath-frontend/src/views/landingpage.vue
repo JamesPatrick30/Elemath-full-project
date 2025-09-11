@@ -1,12 +1,20 @@
 <template>
+  <header>
+    <img src="/images/logonobg.png" alt="Elemath Logo" class="imglogo" @click="this.$router.push('/')">
+    <ul>
+      <li><a href="#home">Home</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#features">Features</a></li>
+    </ul>
+  </header>
   <main v-if="!getIn">
-        <img src="/images/logonobg.png" alt="Elemath Logo" class="imglogo" @click="this.$router.push('/')">
+        <!-- <img src="/images/logonobg.png" alt="Elemath Logo" class="imglogo" @click="this.$router.push('/')"> -->
     
-    <div class="horizontal-scroll">
+    <div class="horizontal-scroll" id="home">
       <section class="landing">
-            <header>
+            <!-- <header> -->
               <!-- <h1>Ele<span style="color: #7789fe;">math</span> </h1> -->
-            </header>
+            <!-- </header> -->
             <div class="sky">
               
               <svg class="cloud1" width="200" height="120" viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
@@ -112,14 +120,14 @@
             <div class="background-blue"></div>
           </section>
 
-          <section class="about">
+          <section class="about" id="about">
            <!-- <TreeComponent class="tree tree10"/> -->
             
            <!-- <div class="sand-background">
                 <sandbackground />
               </div> -->
             
-            <div class="about-contaner">
+            <div class="about-contaner" >
               <div class="item1">
                 <img :src="gameimage" alt="" class="aboutimg">
                 <img :src="gameimage2" alt="" class="aboutimg">
@@ -153,13 +161,14 @@
                 <beachbackground  />
               </div> -->
           </section>
-          <section class="key-features">
+          
+          <section class="key-features" id="features">
             <div class="content">
               <p>Key Features
                 <br><br>
                 Curriculum-aligned quizzes (Grade 5–6 Math)<br><br>
 
-                Real-time multiplayer quiz battles<br><br>
+                Real-time multiplayer quiz<br><br>
 
                 Trackable student progress and performance<br><br>
 
@@ -170,6 +179,73 @@
                 Rewards, avatars, and level-up system to motivate learners<br><br>
               </p>
             </div>
+          </section>
+          <section class="developers">
+            <h1 class="section-title-d">Project Crew</h1>
+            <div class="team-con">
+              <div class="developer">
+                <img src="/images/leader.jpg" alt="">
+                <div class="info-d">
+                  <h3>Nicole A, Magsino</h3>
+                  <div class="link">
+                    <a href="https://www.facebook.com/nicole.magsino986dodo"><font-awesome-icon icon="fa-brands fa-facebook" /></a>
+                    <a href="https://www.instagram.com/mgsn_ncl/"><font-awesome-icon icon="fa-brands fa-instagram" /></a>
+                    <a href="https://github.com/nicsdada"><font-awesome-icon icon="fa-brands fa-github" /></a>
+                  </div>
+                  <p>Project Manager</p>
+                </div>
+                
+                
+              </div>
+              <div class="developer">
+                <img src="/images/developer.jpg" alt="">
+                <div class="info-d">
+                 
+                  <h3>James Patrick Sanchez</h3>
+                  <div class="link">
+                    <a href="https://www.facebook.com/james.patrick.sanchez.421984/"><font-awesome-icon icon="fa-brands fa-facebook" /></a>
+                    <a href="https://www.instagram.com/sanchezjamespatrick/"><font-awesome-icon icon="fa-brands fa-instagram" /></a>
+                    <a href="https://github.com/JamesPatrick30"><font-awesome-icon icon="fa-brands fa-github" /></a>
+                  </div>
+                  <p>Developer</p>
+                </div>
+                
+                
+              </div>
+              <div class="developer">
+                <img src="/images/research.jpg" alt="">
+                <div class="info-d">
+                  <h3>Kurt John N, Abalos</h3>
+                
+                  <div class="link">
+                    <a href="https://www.facebook.com/ivan.c.usop"><font-awesome-icon icon="fa-brands fa-facebook" /></a>
+                    <a href="https://www.instagram.com/_whoeveniskurt/"><font-awesome-icon icon="fa-brands fa-instagram" /></a>
+                  </div>
+                  <h3>Ivan C, Usop</h3>
+                  <div class="link">
+                    <a href="https://www.facebook.com/kurtezzx"><font-awesome-icon icon="fa-brands fa-facebook" /></a>
+                    <a href="https://www.instagram.com/your_van_carlos/"><font-awesome-icon icon="fa-brands fa-instagram" /></a>
+                  </div>
+                  <p>Documentation Specialist</p>
+                </div>
+                
+              </div>
+              <div class="developer">
+                <img src="/images/designer.jpg" alt="">
+                <div class="info-d">
+                  <h3>Rodel ,Lacsa</h3>
+                  <div class="link">
+                    <a href="https://www.facebook.com/rodel.rodel.1004"><font-awesome-icon icon="fa-brands fa-facebook" /></a>
+                    <a href="https://www.instagram.com/lcs.rdl/"><font-awesome-icon icon="fa-brands fa-instagram" /></a>
+                  </div>
+                  <p>UI/UX Designer</p>
+                </div>
+                
+              </div>
+            </div>
+            
+
+
           </section>
           <footer>
             <div>
@@ -200,9 +276,11 @@
             <div>
               <h4>Contact Us</h4>
               <br>
+              <a href="mailto:elemathwebbased2025@gmail.com" style="color: #464c84; text-decoration: none;">
+                  <font-awesome-icon icon="fa-solid fa-envelope" /> elemathwebbased2025@gmail.com
+                </a>
               <p>
-
-                <font-awesome-icon icon="fa-solid fa-envelope" />  elemathwebbased2025@gmail.com <br>
+                 
                 <font-awesome-icon icon="fa-solid fa-phone" /> +63 992 585 0244 <br>
               </p>
             </div>
@@ -326,13 +404,132 @@ export default {
 </script>
 
 <style scoped>
+.section-title-d{
+  text-align: center;
+  padding: 10px;
+  color: #464c84;
+  font-weight: bold;
+  font-family: 'BubbleBody Neue','Poppins', sans-serif;
+}
+*{
+    font-family: 'BubbleBody Neue','Poppins', sans-serif;
+}
+.info-d p{
+  /* margin: 10px 0; */
+  color: #30387c;
+  /* font-weight: bold; */
+  font-family: 'BubbleBody Neue','Poppins', sans-serif;
+}
+.info-d h3{
+  /* margin: 10px 0; */
+  color: #30387c;
+  font-weight: bold;
+  font-family: 'BubbleBody Neue','Poppins', sans-serif;
+}
+.info-d{
+  text-align: center;
+  /* padding: 10px; */
+  height: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.link{
+  display: flex;
+  gap: 1em;
+  align-items: center;
+  justify-content: center;
+}
+.developers .developer img{
+  width: 100%;
+  /* height: 80%; */
+  object-fit: cover;
+  height: 50%;
+  /* border-radius: 50%; */
+  /* box-shadow: #464c84 0px 0px 10px; */
+}
+.developers .developer:hover{
+  transform: scale(1.05);
+  transition: all 300ms;
+}
+.developers .developer{
+  transition: all 300ms;
+
+  overflow: hidden;
+  background-color: white;
+  width: 230px;
+  height: 280px;
+  margin: 10px;
+  /* padding: 10px; */
+  border-radius: 10px;
+  box-shadow: #464c84 0px 0px 10px;
+  text-align: center;
+}
+.developers .team-con{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+.developers{
+  background-color: #a8f5ff;
+  /* height: 100vh; */
+  padding: 10px;
+  border-bottom: 1px solid #464c84;
+  width: 100%;
+  justify-items: center;
+  
+}
+html {
+  scroll-behavior: smooth; /* <- This does the magic */
+}
+header ul li a:hover{
+  color: #32583e;
+  transition: all 300ms;
+
+  /* text-decoration: underline; */
+}
+header ul li a{
+  transition: all 300ms;
+
+  text-decoration: none;
+  /* color: #4a5e7c; */
+  color: #4a7c59;
+
+  font-size: 15px;
+  font-weight: bold;
+  padding: 10px;
+}
+header ul li{
+  list-style: none;
+  color: #4a7c59;
+  font-size: 20px;
+  font-weight: bold;
+}
+header ul{
+  margin-left: auto;
+  /* background-color: tomato; */
+
+  gap: 1em;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+header{
+
+  display: flex;
+  /* background-color: #07acac; */
+  background-color: white;
+  /* padding: 1px; */
+  width: 98vw;
+  /* height: fit-content; */
+}
 .imglogo{
     cursor: pointer;
     height: 70px;
     width: auto;
-    margin-right: 20px;
-    position: absolute;
-    z-index: 100;
+    /* margin-right: 20px; */
+    /* position: absolute; */
+    /* z-index: 100; */
 }
 .terms{
   cursor: pointer;
@@ -589,10 +786,10 @@ main {
   line-height: 1.5;
   font-family: 'BubbleBody Neue', 'Poppins', sans-serif;
 }
-header{
+/* header{
   width: 100%;
   height: 5%;
-}
+} */
 
 .landing {
   background-color: aqua;
@@ -731,14 +928,14 @@ header{
   background-color: #0d8d8d;
   transition: 500ms;
 }
-header h1 {
+/* header h1 {
   margin-left: 10px;
   font-weight: 800;
   text-transform: uppercase;
   font-size: 20px;
   color: #feec77;
   font-family: 'BubbleBody Neue', 'Poppins',sans-serif;
-}
+} */
 
 
 
@@ -882,10 +1079,10 @@ header h1 {
     left: 10%;
     font-size: 40px;
   }
-  header h1 {
+  /* header h1 {
     font-size: 30px;
     font-weight: bold;
-  }
+  } */
   .tagline-contaner nav ul li button {
     width: 200px;
     font-size: 26px;
@@ -1115,6 +1312,12 @@ footer{
 }
 footer div{
   font-size: 12px;
+}
+header ul li a{
+  font-size: 20px;
+}
+.developers .team-con{
+  grid-template-columns: repeat(4, 1fr);
 }
 }
 </style>

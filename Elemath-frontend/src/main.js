@@ -16,10 +16,12 @@ import {
   faTrash, faXmark, faSort, faUserPlus,
   faGear,faHouse, faUser, faVolumeHigh,
   faVolumeXmark, faPen,faArrowLeft,
-  faArrowRight, faPhone, faEnvelope
+  faArrowRight, faPhone, faEnvelope,
+ 
 } from '@fortawesome/free-solid-svg-icons';
 import { faFloppyDisk } from '@fortawesome/free-regular-svg-icons';
-
+import { 
+  faFacebook, faInstagram, faGithub } from '@fortawesome/free-brands-svg-icons';
 // Add icons to the library
 library.add(
   faUserPen, faList, faUpload, faFile,
@@ -27,7 +29,8 @@ library.add(
   faFloppyDisk, faArrowRightFromBracket,
   faGear, faHouse, faUser, faVolumeHigh,
   faVolumeXmark, faPen, faArrowLeft,
-  faArrowRight, faPhone, faEnvelope
+  faArrowRight, faPhone, faEnvelope,
+  faFacebook, faInstagram, faGithub
 );
 
 const app = createApp(App);
