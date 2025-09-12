@@ -75,8 +75,8 @@
               </p>
               <nav>
                 <ul>
-                  <li><button @click="oncluster()">Sign In</button></li>
-                  <li><button @click="openSignUpCluster()">Sign Up</button></li>
+                  <li><button @click="goToSignIn('student')">Student</button></li>
+                  <li><button @click="openSignUpCluster()">Teacher</button></li>
                 </ul>
               </nav>
             </div>
@@ -314,11 +314,11 @@
   <div class="signin" v-if="SignUpcluster" @click="closeSignUpCluster()">
       <div class="studentorteacher">
         <button class="btn-x" @click="closeSignUpCluster()">X</button>
-        <h1>Sign Up</h1>
-        <p>Are you a student or a teacher?</p>
+        <h1>Teacher</h1>
+        
         <div class="btn-contaner">
-          <!-- <button @click="goToSignUp('student')">Student</button> -->
-          <button @click="goToSignUp('teacher')">Teacher</button>
+          <!-- <button @click="goToSignIn('teacher')">Sign In</button> -->
+          <button @click="goToSignUp('teacher')">Sign Up</button>
         </div>
         
       </div>
