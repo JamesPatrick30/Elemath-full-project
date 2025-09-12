@@ -114,7 +114,7 @@ export default{
                 socket.connect();
             } catch (error) {
                 console.error('Error fetching student data:', error);
-                if(error.response && err.response.status === 401) {
+                if(error.response && error.response.status === 401) {
                     this.$router.push('/');
                 } else {
                     alert('Failed to fetch data. Please try again later.');
