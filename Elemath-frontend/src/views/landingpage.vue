@@ -317,7 +317,7 @@
         <h1>Teacher</h1>
         
         <div class="btn-contaner">
-          <!-- <button @click="goToSignIn('teacher')">Sign In</button> -->
+          <button @click="goToSignIn('teacher')">Sign In</button>
           <button @click="goToSignUp('teacher')">Sign Up</button>
         </div>
         
