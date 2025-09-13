@@ -10,7 +10,9 @@ const axios = require("axios");
 const nodemailer = require('nodemailer'); // ✅ use require instead of import
 const multer = require('multer');
 dotenv.config();
+const sgMail = require('@sendgrid/mail');
 
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 //redis client
 const redisClient = require('./redis/redisClient.js');
 const {init,pubClient,subClient} = require('./redis/redispubsub.js');
@@ -36,7 +38,7 @@ const cookie = require("cookie");
 
 // Middleware
 app.use(cors({
-  origin: 'http://localhost:5173', // or whatever port your frontend uses
+  origin: 'https://elemath-quiz.onrender.com', // or whatever port your frontend uses
   credentials: true
 }));
 app.use(cookieParser());
@@ -64,12 +66,16 @@ const { Server } = require("socket.io");
 // Create WebSocket server attached to the HTTP server
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173", // your Vue dev URL
+    origin: "https://elemath-quiz.onrender.com", // your Vue dev URL
+    methods: ["GET", "POST"],
     credentials: true
   }
 });
 
+//const sgMail = require('@sendgrid/mail');
+//require('dotenv').config();
 
+//sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 // const { createAdapter } = require('@socket.io/redis-adapter');
 
 // const pubClient = redis.createClient({ url: process.env.REDIS_URL });
@@ -119,6 +125,7 @@ app.get('/dlesson/get',auth, async (req, res) => {
       if (uplesson) {
         output = uplesson;
       }
+
     }
     // console.log('the lesson : '+ output);
     await redisClient.set(cacheKey, JSON.stringify(output), { EX: 3600 });
@@ -199,8 +206,8 @@ app.post('/api/login',async (req, res) => {
     // Access token cookie (90 minutes)
     res.cookie('access_token', createToken(payload).accessToken, {
         httpOnly: true,
-        secure: false,       // true in production
-        sameSite: 'lax',     // 'none' only if cross-site
+        secure: true,       // true in production
+        sameSite: 'none',     // 'none' only if cross-site
         maxAge: 90 * 60 * 1000, // 90 minutes
         path:'/'
     });
@@ -208,8 +215,8 @@ app.post('/api/login',async (req, res) => {
     // Refresh token cookie (90 days)
     res.cookie('refresh_token', createToken(payload).refreshToken, {
         httpOnly: true,
-        secure: false,       // true in production
-        sameSite: 'lax',
+        secure: true,       // true in production
+        sameSite: 'none',
         maxAge: 90 * 24 * 60 * 60 * 1000, // 90 days
         path:'/'
     });
@@ -251,8 +258,8 @@ app.post('/student-login', async (req, res) => {
 
   res.cookie('access_token', createToken(payload).accessToken, {
         httpOnly: true,
-        secure: false,       // true in production
-        sameSite: 'lax',     // 'none' only if cross-site
+        secure: true,       // true in production
+        sameSite: 'none',     // 'none' only if cross-site
         maxAge: 90 * 60 * 1000, // 90 minutes
         path:'/'
     });
@@ -260,8 +267,8 @@ app.post('/student-login', async (req, res) => {
     // Refresh token cookie (90 days)
     res.cookie('refresh_token', createToken(payload).refreshToken, {
         httpOnly: true,
-        secure: false,       // true in production
-        sameSite: 'lax',
+        secure: true,       // true in production
+        sameSite: 'none',
         maxAge: 90 * 24 * 60 * 60 * 1000, // 90 days
         path:'/'
     });
@@ -400,8 +407,8 @@ app.post('/refresh-token', verifyRefreshToken, (req, res) => {
         const payload = req.user ;
         res.cookie('access_token', createToken(payload).accessToken, {
             httpOnly: true,
-            secure: false,       // true in production
-            sameSite: 'lax',     // 'none' only if cross-site
+            secure: true,       // true in production
+            sameSite: 'none',     // 'none' only if cross-site
             maxAge: 90 * 60 * 1000, // 90 minutes
             path:'/'
         });
@@ -409,8 +416,8 @@ app.post('/refresh-token', verifyRefreshToken, (req, res) => {
         // Refresh token cookie (90 days)
         res.cookie('refresh_token', createToken(payload).refreshToken, {
             httpOnly: true,
-            secure: false,       // true in production
-            sameSite: 'lax',
+            secure: true,       // true in production
+            sameSite: 'none',
             maxAge: 90 * 24 * 60 * 60 * 1000, // 90 days
             path:'/'
         });
@@ -425,13 +432,13 @@ app.post('/refresh-token', verifyRefreshToken, (req, res) => {
 app.post('/api/logout', (req, res) => {
   res.clearCookie('access_token', {
     httpOnly: true,
-    sameSite: 'Strict',
-    secure: false // use true if HTTPS
+    sameSite: 'none',
+    secure: true // use true if HTTPS
   });
   res.clearCookie('refresh_token', {
     httpOnly: true,
-    sameSite: 'Strict',
-    secure: false
+    sameSite: 'none',
+    secure: true
   });
   console.log('User logged out');
 
@@ -1236,39 +1243,62 @@ const upload = multer({
 });
 
 // Nodemailer transporter
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  }
-});
+//const transporter = nodemailer.createTransport({
+//  host: 'smtp.sendgrid.net',
+//  port: 587,
+//  auth: {
+//    user: 'apikey', // this must literally be "apikey"
+//    pass: process.env.SENDGRID_API_KEY,
+  //},
+//});
 
 // Route
 app.post('/report/teacher', auth, upload.array('screenshots', 5), async (req, res) => {
   try {
-    // const nameuser = await StudentClass.findById(req.user.id).populate('classId');;
-    const { name, email, module, description,suggestion } = req.body;
-    const files = req.files || [];
+//    const { name, email, module, description, suggestion } = req.body;
+//    const files = req.files || [];
 
-    const attachments = files.map(file => ({
-      filename: file.originalname,
-      content: file.buffer
-    }));
+//    const attachments = files.map(file => ({
+//      content: file.buffer.toString('base64'),
+//      filename: file.originalname,
+//      type: file.mimetype,
+//      disposition: 'attachment',
+//    }));
 
-    const info = await transporter.sendMail({
-      from: `"ELEMATH" <${process.env.EMAIL_USER}>`,
-      to: process.env.EMAIL_PROGRAMMER,
-      subject: "🐞 Bug Report",
-      text: `Bug Report
-        From: ${name || 'Anonymous'} <${req.user.username || 'N/A'}>
-        Module: ${module || 'N/A'}
-        Description: ${description || 'No description provided'}
-        Suggestions: ${suggestion || 'No suggestions provided' }`,
-      attachments
-    });
+  //  const msg = {
+  //    to: process.env.EMAIL_PROGRAMMER,
+  //    from: {
+  //      email: 'elemathwebbased2025@gmail.com', // Must match verified sender in SendGrid
+  //      name: 'Elemath Support',
+   //   },
+   //   subject: '🐞 Bug Report',
+ //     text: `Bug Report
+//From: ${name || 'Anonymous'} <${req.user?.username || 'N/A'}>
+//Module: ${module || 'N/A'}
+//Description: ${description || 'No description provided'}
+//Suggestions: ${suggestion || 'No suggestions provided'}`,
+//      attachments,
+//    };
 
-    console.log("✅ Email sent:", info.messageId);
+//    await sgMail.send(msg);
+//    const attachments = files.map(file => ({
+//      filename: file.originalname,
+//      content: file.buffer
+//    }));
+
+ //   const info = await transporter.sendMail({
+ //     from: `"ELEMATH" <${process.env.EMAIL_USER}>`,
+ //     to: process.env.EMAIL_PROGRAMMER,
+ //     subject: "🐞 Bug Report",
+ //     text: `Bug Report
+ //       From: ${name || 'Anonymous'} <${req.user.username || 'N/A'}>
+ //       Module: ${module || 'N/A'}
+ //       Description: ${description || 'No description provided'}
+ //       Suggestions: ${suggestion || 'No suggestions provided' }`,
+ //     attachments
+ //   });
+
+    console.log("✅ Email sent:");
     res.json({ success: true, message: "Bug report sent!" });
   } catch (err) {
     console.error(err);
@@ -1282,22 +1312,22 @@ app.post('/report/student', auth, upload.array('screenshots', 5), async (req, re
     const { name, email, module, description,suggestion } = req.body;
     const files = req.files || [];
 
-    const attachments = files.map(file => ({
-      filename: file.originalname,
-      content: file.buffer
-    }));
+   // const attachments = files.map(file => ({
+   //   filename: file.originalname,
+   //   content: file.buffer
+   // }));
 
-    const info = await transporter.sendMail({
-      from: `"ELEMATH" <${process.env.EMAIL_USER}>`,
-      to: process.env.EMAIL_PROGRAMMER,
-      subject: "🐞 Bug Report",
-      text: `Bug Report
-        From: ${nameuser.name || 'Anonymous'} <${req.user.username || 'N/A'}>
-        Module: ${module || 'N/A'}
-        Description: ${description || 'No description provided'}
-        Suggestions: ${suggestion || 'No suggestions provided' }`,
-      attachments
-    });
+ //   const info = await transporter.sendMail({
+ //     from: `"ELEMATH" <${process.env.EMAIL_USER}>`,
+ //     to: process.env.EMAIL_PROGRAMMER,
+ //     subject: "🐞 Bug Report",
+ //     text: `Bug Report
+ //       From: ${nameuser.name || 'Anonymous'} <${req.user.username || 'N/A'}>
+ //       Module: ${module || 'N/A'}
+ //       Description: ${description || 'No description provided'}
+ //       Suggestions: ${suggestion || 'No suggestions provided' }`,
+    //  attachments
+   // });
 
     console.log("✅ Email sent:", info.messageId);
     res.json({ success: true, message: "Bug report sent!" });

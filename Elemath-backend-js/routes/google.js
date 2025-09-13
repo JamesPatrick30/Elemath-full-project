@@ -73,14 +73,14 @@ router.post('/google', async (req, res) => {
 
     res.cookie('access_token', createToken( userpayload ).accessToken, {
         httpOnly: true,
-        secure: false,
-        sameSite: 'lax',
+        secure: true,
+        sameSite: 'none',
         maxAge: 90 * 60 * 1000 // 15 mins
     });
     res.cookie('refresh_token', createToken( userpayload ).refreshToken, {
         httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
+      secure: true,
+      sameSite: 'none',
       maxAge: 90 * 24* 60 * 60 * 1000 // 15 mins
     });
     res.status(200).json({ email, name, picture,class: user.class.length });

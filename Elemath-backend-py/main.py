@@ -25,7 +25,7 @@ def get_openrouter_client():
         api_key=os.getenv("OPENROUTER_API_KEY"),
         base_url="https://openrouter.ai/api/v1"
     )
-client = get_openrouter_client()
+
 
 app = FastAPI(
     title="Quiz Generator API",
@@ -59,6 +59,7 @@ async def generate_quiz(data: LessonText):
     """
     Accepts raw lesson text and returns generated quiz in structured JSON.
     """
+    client = get_openrouter_client()
     if not data.rawText.strip():
         raise HTTPException(status_code=400, detail="No lesson text provided.")
 
@@ -157,24 +158,6 @@ async def generate_quiz(data: LessonText):
     )
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     try:
         response = client.chat.completions.create(
             model="openai/gpt-5-nano",
@@ -204,6 +187,7 @@ async def get_Dlesson(payload: dict = Body(...)):
     """
     Return the title and summary of a lesson.
     """
+    client = get_openrouter_client()
     lesson = payload.get("lesson", "")
     if not lesson.strip():
         raise HTTPException(status_code=400, detail="No lesson text provided.")
@@ -266,6 +250,7 @@ async def get_lesson(payload: dict = Body(...)):
     """
     Return the title, summary, HTML version, and content flag of a lesson.
     """
+    client = get_openrouter_client()
     lesson = payload.get("lesson", "")
     if not lesson.strip():
         raise HTTPException(status_code=400, detail="No lesson text provided.")
