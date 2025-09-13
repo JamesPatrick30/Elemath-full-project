@@ -447,17 +447,17 @@ app.post('/api/logout', (req, res) => {
 });
 
 app.post('/sign-up', async (req, res) => {
-  const { username, password } = req.body;
+  const { firstName, middleName, lastName, email, password } = req.body;
 
-  if (!username || !password) {
-    return res.status(400).json({ message: 'Username and password are required' });
+  if (!firstName || !lastName || !email || !password) {
+    return res.status(400).json({ message: 'All fields are required' });
   }
 
   try {
     // Check if user already exists by email
-    const existingUser = await teacher_accoount.findOne({ Email: username });
+    const existingUser = await teacher_accoount.findOne({ Email: email });
     if (existingUser) {
-      return res.status(409).json({ message: 'Username already exists' }); // 409 = Conflict
+      return res.status(409).json({ message: 'Email already exists' }); // 409 = Conflict
     }
 
     // Hash the password
@@ -465,7 +465,12 @@ app.post('/sign-up', async (req, res) => {
 
     // Save new user
     const newUser = new teacher_accoount({
-      Email: username,
+      username: firstName + ' ' + middleName + ' ' + lastName,
+      firstName: firstName,
+      middleName: middleName,
+      lastName: lastName,
+      profile: '/characters/robot.png',
+      Email: email,
       password: password,
     });
 
