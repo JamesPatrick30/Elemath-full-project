@@ -91,8 +91,9 @@ export default {
                 }
                 this.inputanswer = '';
                 this.btnsubmit = true;
-
+                window.location.reload();
                 this.get1st();
+
                 // console.log('Id : '+res.data.id);
                 // this.id = res.data.id;
             }catch(err){
