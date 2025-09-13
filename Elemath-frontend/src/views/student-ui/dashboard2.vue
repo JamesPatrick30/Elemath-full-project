@@ -175,6 +175,7 @@ export default{
             }
         },
         async playQuiz(){
+            this.cancelPractice = false;
             this.loadquiz = true;
             try{
                 // const res12 = await api.post('/create-question',{
