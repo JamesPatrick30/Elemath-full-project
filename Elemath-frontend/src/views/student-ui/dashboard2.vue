@@ -45,6 +45,7 @@ export default{
             audiosrc: "/musics/lobbym.mp3",
             muted: false,
             volume: 0.5,
+            controller:null,
             // setting:false,
             isNavVisible: window.matchMedia('(min-width: 623px)').matches // Responsive nav visibility
         }
@@ -167,7 +168,10 @@ export default{
                     language:'English',
                     difficulty:'easy',
                     question_type:'multiple-choice'
-                });
+                },
+            {
+            signal: this.controller.signal
+          });
                 return res12.data.quiz;
                 // console.log(res.data);
             }catch(err){
@@ -219,6 +223,14 @@ export default{
             player.volume = this.volume;
             player.play().catch(err => console.warn("Still blocked:", err));
         },
+        cancelRequest() {
+            if (this.controller) {
+                this.controller.abort();
+                this.controller = null;
+                this.cancelPractice = true;
+                this.loadquiz = false;
+            }
+        }
     },
     mounted() {
         window.addEventListener('resize', this.handleResize);
@@ -332,7 +344,7 @@ export default{
                 <img src="/gif/loadingbox.gif" alt="Loading..." />
                 <p>Loading Quiz...</p>
             </div>
-            <button @click="cancelPractice = true; loadquiz = false">Cancel</button>
+            <button @click="cancelRequest()">Cancel</button>
         </div>
     </div>
     <newnav :info="{name:name,profile:profilepic}" v-show="navshow"></newnav>
