@@ -13,7 +13,7 @@
                 <input class="text" type="text" placeholder="Middle name" v-model="middleName" required />
                 <input class="text" type="text" placeholder="Last name" v-model="lastName" required />
                 <input class="text" type="text" placeholder="Email" v-model="email" required />
-                <input class="text" type="text" placeholder="Teacher ID" v-model="teacherId" required />
+                <!-- <input class="text" type="text" placeholder="Teacher ID" v-model="teacherId" required /> -->
                 <div class="passwordcontaner">
                     <input id= "password"type="password" placeholder="Password" v-model="password" required />
                     <button class="btn" @click="see()">
