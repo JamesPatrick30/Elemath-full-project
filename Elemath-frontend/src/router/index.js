@@ -30,6 +30,7 @@ import leaderboard from '@/views/teacher-ui/game/leaderboard.vue'
 import basicInfo from '@/views/student-ui/settingsfolder/basicInfo.vue'
 
 import uploadd from '@/views/admin-ui/uploadd.vue'
+import notfound from '@/views/notfound.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -180,6 +181,16 @@ const router = createRouter({
       path:'/ss',
       name: 'student-setting',
       component:studentSetting
+    },
+    {
+      path: '/404',
+      name: 'NotFound',
+      component: notfound
+    },
+    // 👇 this will catch ANY unknown path and redirect to /404
+    {
+      path: '/:pathMatch(.*)*',
+      redirect: '/404'
     }
 
   ],
