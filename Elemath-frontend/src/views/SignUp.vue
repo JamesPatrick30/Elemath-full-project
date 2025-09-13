@@ -101,7 +101,8 @@ export default {
             try {
                 const response = await api.post('/sign-up', {
                     username: this.username,
-                    password: this.password
+                    password: this.password,
+                    fullName: 'Teacher' // You can modify this as needed
                 });
                 console.log("Sign-in successful:", response.data);
                 this.$router.push('/');

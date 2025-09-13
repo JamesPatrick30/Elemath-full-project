@@ -440,10 +440,10 @@ app.post('/api/logout', (req, res) => {
 });
 
 app.post('/sign-up', async (req, res) => {
-  const { username, password } = req.body;
+  const { username, password, fullName } = req.body;
 
-  if (!username || !password) {
-    return res.status(400).json({ message: 'Username and password are required' });
+  if (!username || !password || !fullName) {
+    return res.status(400).json({ message: 'Username, password, and full name are required' });
   }
 
   try {
@@ -452,7 +452,7 @@ app.post('/sign-up', async (req, res) => {
     if (existingUser) {
       return res.status(409).json({ message: 'Username already exists' }); // 409 = Conflict
     }
-
+    
     // Hash the password
     // const hashedPassword = await bcrypt.hash(password, 12);
 
