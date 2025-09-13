@@ -73,7 +73,7 @@ export default {
                 });
                 socket.connect();
                 this.$router.push({name : 'dash2'});
-                alert(res.data.message);
+                // alert(res.data.message);
             }catch(err){
                 console.log(err);
 

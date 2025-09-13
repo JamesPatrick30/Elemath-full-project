@@ -49,7 +49,7 @@ export default{
         </div>
     </div>
     <main>
-        <h1 class="score">Score : {{ score }}</h1>
+        <h1 class="score">Score : {{ score }}/{{ rev.length }}</h1>
         <div class="con">
             <div class="rev" v-for="(c,index) in rev" :key="index" :class="c.correct? 'correct' : 'wrong'">
                 <p v-if="c.q.question?.question" class="question">{{ c.q.question?.question }}</p>
