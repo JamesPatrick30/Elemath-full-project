@@ -35,8 +35,8 @@ export default{
             profilepic:'',
             title:'Cluster Mode',
             summarize:'Cluster Mode is On',
-            name: 'John Doe', // Replace with actual data
-            lrn: '1234567890', // Replace with actual data
+            name: '', // Replace with actual data
+            lrn: '', // Replace with actual data
             uploadedLessons: [],
             cancelPractice:false,
             lessonfile:'',
