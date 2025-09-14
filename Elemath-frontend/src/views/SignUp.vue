@@ -205,7 +205,7 @@ main {
 .form header h3 {
     color: #0041d1;
 }
-.form input:placeholder-shown {
+.form input::placeholder {
     color: white;
 }
 .form input,.form button {
