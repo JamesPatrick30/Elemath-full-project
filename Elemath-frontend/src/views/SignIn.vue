@@ -9,8 +9,8 @@
                     <h1>Sign In</h1>
                     <h3>{{ role }}</h3>
                 </header>
-                
-                <input class="text" type="text" placeholder="Email" v-model="email" required />
+                <input v-if="role == 'studend'" class="text" type="text" placeholder="LRN" v-model="email" required />
+                <input v-else class="text" type="text" placeholder="Email" v-model="email" required />
                 <div class="passwordcontaner">
                     <input id= "password"type="password" placeholder="Password" v-model="password"  required />
                     <button class="btn" @click="see()">
