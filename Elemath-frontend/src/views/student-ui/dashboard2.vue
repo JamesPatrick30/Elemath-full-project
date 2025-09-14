@@ -278,7 +278,7 @@ export default{
             <div class="con-main">
                 <div class="join" @click="JoinBtn()">
                     <div class="text-area-join" >
-                        <p class="jointxt">Join</p>
+                        <p class="jointxt">Assessment</p>
                         <p class="ongiong" v-if="ongiong">Join Now</p>
 
                     </div>
