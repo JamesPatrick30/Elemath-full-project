@@ -105,7 +105,7 @@ export default {
     },
     async check(answer,studentans){
         let review = { question: this.questions[this.num].question, answer:this.questions[this.num].answer, options: this.questions[this.num].options,explanation: this.questions[this.num].explanation, studentAnswer: answer, correct: answer === studentans };
-        this.rev.push(review);
+        // this.rev.push(review);
         if(answer == studentans) {
             this.score += 1;
             // alert('Correct Answer! 🎉');

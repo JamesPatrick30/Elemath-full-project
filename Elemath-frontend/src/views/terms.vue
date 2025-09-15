@@ -144,7 +144,9 @@ li button{
 }
 img{
     cursor: pointer;
-    height: 80px;
+    /* height: 80px; */
+    height: 70px;
+
     width: auto;
     margin-right: 20px;
     position: absolute;

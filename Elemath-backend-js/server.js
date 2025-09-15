@@ -459,7 +459,7 @@ app.post('/sign-up', async (req, res) => {
     if (existingUser) {
       return res.status(409).json({ message: 'Email already exists' }); // 409 = Conflict
     }
-
+    
     // Hash the password
     // const hashedPassword = await bcrypt.hash(password, 12);
 

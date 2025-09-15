@@ -16,7 +16,7 @@
         <navbar></navbar>
         <main>
             <header>
-                <h1>Grade</h1>
+                <h1>Grade Sheet</h1>
                 <div class="actions">
                     <p class="tittle-btn">Class :</p>
                     <select
@@ -460,6 +460,10 @@ export default{
     border: none;
     color: rgb(245, 101, 101);
     background-color: transparent;
+}
+header h1{
+    color: #41b8d5;
+    margin-left: 19px;
 }
 .header-cluster{
     color: #41b8d5;

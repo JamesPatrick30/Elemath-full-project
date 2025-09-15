@@ -112,6 +112,17 @@ export default{
             </div>
             <button @click="finishbtn">Finish</button>
         </div>
+        <div class="player" v-for="(player,index) in players" :key="index">
+                <div class="name">
+                    <p>{{ player.player }}</p>
+                </div>
+                <div class="score">
+                    <p>{{ player.score }}</p>
+                </div>
+                <div class="time">
+                    <p>{{ player.time }}</p>
+                </div>
+            </div>
     </div>
     <main>
         <h1 class="title">Leader Board</h1>
@@ -268,6 +279,9 @@ export default{
     display: flex;
     justify-content: center;
     align-items: center;
+}
+.time p{
+    opacity: 0;
 }
 .score ,.time{
     display: flex;

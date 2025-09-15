@@ -9,8 +9,11 @@
                     <h1>Sign Up</h1>
                     <h3>{{ role }}</h3>
                 </header>
-                
-                <input class="text" type="text" placeholder="Teacher ID" v-model="username" required />
+                <input class="text" type="text" placeholder="First name" v-model="firstName" required />
+                <input class="text" type="text" placeholder="Middle name" v-model="middleName" required />
+                <input class="text" type="text" placeholder="Last name" v-model="lastName" required />
+                <input class="text" type="text" placeholder="Email" v-model="email" required />
+                <!-- <input class="text" type="text" placeholder="Teacher ID" v-model="teacherId" required /> -->
                 <div class="passwordcontaner">
                     <input id= "password"type="password" placeholder="Password" v-model="password" required />
                     <button class="btn" @click="see()">
@@ -59,7 +62,10 @@ export default {
     },
     data() {
         return {
-            username: '',
+            firstName: '',
+            middleName: '',
+            lastName: '',
+            email: '',
             password: '',
             showPassword: false,
             showconfirmPassword: false,
@@ -100,8 +106,11 @@ export default {
 
             try {
                 const response = await api.post('/sign-up', {
-                    username: this.username,
-                    password: this.password
+                    firstName: this.firstName,
+                    middleName: this.middleName,
+                    lastName: this.lastName,
+                    email: this.email,
+                    password: this.password,
                 });
                 console.log("Sign-in successful:", response.data);
                 this.$router.push('/');
@@ -195,6 +204,9 @@ main {
 }
 .form header h3 {
     color: #0041d1;
+}
+.form input:placeholder-shown {
+    color: white;
 }
 .form input,.form button {
     position: relative;

@@ -9,8 +9,8 @@ export default {
         return {
             quizMode:'',
             persent: 100,
-            story:'A business tracks monthly sales; May is lower than April.',
-            question:'Which month shows a dip in sales compared to the previous month in the line graph?',
+            story:'',
+            question:'',
             colors: ['#5bb450','#3b8132','#e8e337','#e69b00','#e70000','#820000'],
             color:'',
             timer: null,
@@ -91,8 +91,9 @@ export default {
                 }
                 this.inputanswer = '';
                 this.btnsubmit = true;
-
+                window.location.reload();
                 this.get1st();
+
                 // console.log('Id : '+res.data.id);
                 // this.id = res.data.id;
             }catch(err){

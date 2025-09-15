@@ -1,10 +1,21 @@
 <template>
+  <header>
+    <img src="/images/logonobg.png" alt="Elemath Logo" class="imglogo" @click="this.$router.push('/')">
+    <ul>
+      
+      <li><a href="#about">About</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#team">Team</a></li>
+    </ul>
+  </header>
   <main v-if="!getIn">
-    <div class="horizontal-scroll">
+        <!-- <img src="/images/logonobg.png" alt="Elemath Logo" class="imglogo" @click="this.$router.push('/')"> -->
+    
+    <div class="horizontal-scroll" id="home">
       <section class="landing">
-            <header>
-              <h1>Ele<span style="color: #7789fe;">math</span> </h1>
-            </header>
+            <!-- <header> -->
+              <!-- <h1>Ele<span style="color: #7789fe;">math</span> </h1> -->
+            <!-- </header> -->
             <div class="sky">
               
               <svg class="cloud1" width="200" height="120" viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
@@ -64,8 +75,8 @@
               </p>
               <nav>
                 <ul>
-                  <li><button @click="oncluster()">Sign In</button></li>
-                  <li><button @click="openSignUpCluster()">Sign Up</button></li>
+                  <li><button @click="goToSignIn('student')">Student</button></li>
+                  <li><button @click="openSignUpCluster()">Teacher</button></li>
                 </ul>
               </nav>
             </div>
@@ -110,18 +121,18 @@
             <div class="background-blue"></div>
           </section>
 
-          <section class="about">
+          <section class="about" id="about">
            <!-- <TreeComponent class="tree tree10"/> -->
             
-           <div class="sand-background">
+           <!-- <div class="sand-background">
                 <sandbackground />
-              </div>
+              </div> -->
             
-            <div class="about-contaner">
+            <div class="about-contaner" >
               <div class="item1">
-                <img :src="gameimage" alt="">
-                <img :src="gameimage2" alt="">
-                <img :src="gameimage3" alt="">
+                <img :src="gameimage" alt="" class="aboutimg">
+                <img :src="gameimage2" alt="" class="aboutimg">
+                <img :src="gameimage3" alt="" class="aboutimg">
               </div>
               <div class="item2">
                 <h1>About Elemath </h1>
@@ -147,17 +158,18 @@
               </div>
             </div>
             
-              <div class="beach-background">
+              <!-- <div class="beach-background">
                 <beachbackground  />
-              </div>
+              </div> -->
           </section>
-          <section class="key-features">
+          
+          <section class="key-features" id="features">
             <div class="content">
               <p>Key Features
                 <br><br>
                 Curriculum-aligned quizzes (Grade 5–6 Math)<br><br>
 
-                Real-time multiplayer quiz battles<br><br>
+                Real-time multiplayer quiz<br><br>
 
                 Trackable student progress and performance<br><br>
 
@@ -168,6 +180,73 @@
                 Rewards, avatars, and level-up system to motivate learners<br><br>
               </p>
             </div>
+          </section>
+          <section class="developers">
+            <h1 class="section-title-d">The Team Behind Elemath</h1>
+            <div class="team-con">
+              <div class="developer">
+                <img src="/images/leader.jpg" alt="">
+                <div class="info-d">
+                  <h3>Nicole A, Magsino</h3>
+                  <div class="link">
+                    <a href="https://www.facebook.com/nicole.magsino986dodo"><font-awesome-icon icon="fa-brands fa-facebook" /></a>
+                    <a href="https://www.instagram.com/mgsn_ncl/"><font-awesome-icon icon="fa-brands fa-instagram" /></a>
+                    <a href="https://github.com/nicsdada"><font-awesome-icon icon="fa-brands fa-github" /></a>
+                  </div>
+                  <p>Project Manager</p>
+                </div>
+                
+                
+              </div>
+              <div class="developer">
+                <img src="/images/developer.jpg" alt="">
+                <div class="info-d">
+                 
+                  <h3>James Patrick Sanchez</h3>
+                  <div class="link">
+                    <a href="https://www.facebook.com/james.patrick.sanchez.421984/"><font-awesome-icon icon="fa-brands fa-facebook" /></a>
+                    <a href="https://www.instagram.com/sanchezjamespatrick/"><font-awesome-icon icon="fa-brands fa-instagram" /></a>
+                    <a href="https://github.com/JamesPatrick30"><font-awesome-icon icon="fa-brands fa-github" /></a>
+                  </div>
+                  <p>Developer</p>
+                </div>
+                
+                
+              </div>
+              <div class="developer">
+                <img src="/images/research.jpg" alt="">
+                <div class="info-d">
+                  <h3>Kurt John N, Abalos</h3>
+                
+                  <div class="link">
+                    <a href="https://www.facebook.com/ivan.c.usop"><font-awesome-icon icon="fa-brands fa-facebook" /></a>
+                    <a href="https://www.instagram.com/_whoeveniskurt/"><font-awesome-icon icon="fa-brands fa-instagram" /></a>
+                  </div>
+                  <h3>Ivan C, Usop</h3>
+                  <div class="link">
+                    <a href="https://www.facebook.com/kurtezzx"><font-awesome-icon icon="fa-brands fa-facebook" /></a>
+                    <a href="https://www.instagram.com/your_van_carlos/"><font-awesome-icon icon="fa-brands fa-instagram" /></a>
+                  </div>
+                  <p>Documentation Specialist</p>
+                </div>
+                
+              </div>
+              <div class="developer" id="team">
+                <img src="/images/designer.jpg" alt="">
+                <div class="info-d">
+                  <h3>Rodel ,Lacsa</h3>
+                  <div class="link">
+                    <a href="https://www.facebook.com/rodel.rodel.1004"><font-awesome-icon icon="fa-brands fa-facebook" /></a>
+                    <a href="https://www.instagram.com/lcs.rdl/"><font-awesome-icon icon="fa-brands fa-instagram" /></a>
+                  </div>
+                  <p>UI/UX Designer</p>
+                </div>
+                
+              </div>
+            </div>
+            
+
+
           </section>
           <footer>
             <div>
@@ -198,10 +277,12 @@
             <div>
               <h4>Contact Us</h4>
               <br>
+              <a href="mailto:elemathwebbased2025@gmail.com" style="color: #464c84; text-decoration: none;">
+                  <font-awesome-icon icon="fa-solid fa-envelope" /> elemathwebbased2025@gmail.com
+                </a>
               <p>
-
-                Email: support@elemath.com <br>
-                Phone: +63 992 585 0244 <br>
+                 
+                <font-awesome-icon icon="fa-solid fa-phone" /> +63 992 585 0244 <br>
               </p>
             </div>
             <div>
@@ -233,11 +314,11 @@
   <div class="signin" v-if="SignUpcluster" @click="closeSignUpCluster()">
       <div class="studentorteacher">
         <button class="btn-x" @click="closeSignUpCluster()">X</button>
-        <h1>Sign Up</h1>
-        <p>Are you a student or a teacher?</p>
+        <h1>Teacher</h1>
+        
         <div class="btn-contaner">
-          <!-- <button @click="goToSignUp('student')">Student</button> -->
-          <button @click="goToSignUp('teacher')">Teacher</button>
+          <button @click="goToSignIn('teacher')">Sign In</button>
+          <button @click="goToSignUp('teacher')">Sign Up</button>
         </div>
         
       </div>
@@ -260,7 +341,7 @@ export default {
     TreeComponent,
     TreeComponent2,
     sandbackground,
-    beachbackground,
+    // beachbackground,
     cloud
   },
   data() {
@@ -324,6 +405,133 @@ export default {
 </script>
 
 <style scoped>
+.section-title-d{
+  text-align: center;
+  padding: 10px;
+  color: #464c84;
+  font-weight: bold;
+  font-family: 'BubbleBody Neue','Poppins', sans-serif;
+}
+*{
+    font-family: 'BubbleBody Neue','Poppins', sans-serif;
+}
+.info-d p{
+  /* margin: 10px 0; */
+  color: #30387c;
+  /* font-weight: bold; */
+  font-family: 'BubbleBody Neue','Poppins', sans-serif;
+}
+.info-d h3{
+  /* margin: 10px 0; */
+  color: #30387c;
+  font-weight: bold;
+  font-family: 'BubbleBody Neue','Poppins', sans-serif;
+}
+.info-d{
+  text-align: center;
+  /* padding: 10px; */
+  height: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.link{
+  display: flex;
+  gap: 1em;
+  align-items: center;
+  justify-content: center;
+}
+.developers .developer img{
+  width: 100%;
+  /* height: 80%; */
+  object-fit: cover;
+  height: 50%;
+  /* border-radius: 50%; */
+  /* box-shadow: #464c84 0px 0px 10px; */
+}
+.developers .developer:hover{
+  transform: scale(1.05);
+  transition: all 300ms;
+}
+.developers .developer{
+  transition: all 300ms;
+
+  overflow: hidden;
+  background-color: white;
+  width: 230px;
+  height: 280px;
+  margin: 10px;
+  /* padding: 10px; */
+  border-radius: 10px;
+  box-shadow: #464c84 0px 0px 10px;
+  text-align: center;
+}
+.developers .team-con{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+.developers{
+  background-color: #a8f5ff;
+  /* height: 100vh; */
+  padding: 10px;
+  border-bottom: 1px solid #464c84;
+  width: 100%;
+  justify-items: center;
+  
+}
+html {
+  scroll-behavior: smooth; /* <- This does the magic */
+}
+header ul li a:hover{
+  color: #32583e;
+  transition: all 300ms;
+
+  /* text-decoration: underline; */
+}
+header ul li a{
+  transition: all 300ms;
+
+  text-decoration: none;
+  /* color: #4a5e7c; */
+  color: #4a7c59;
+
+  font-size: 15px;
+  font-weight: bold;
+  padding: 10px;
+}
+header ul li{
+  list-style: none;
+  color: #4a7c59;
+  font-size: 20px;
+  font-weight: bold;
+}
+header ul{
+  margin-left: auto;
+  /* background-color: tomato; */
+
+  gap: 1em;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+header{
+
+  display: flex;
+  /* background-color: #07acac; */
+  background-color: white;
+  /* padding: 1px; */
+  width: 98vw;
+  /* height: fit-content; */
+}
+.imglogo{
+    cursor: pointer;
+    height: 70px;
+    width: auto;
+    /* margin-right: 20px; */
+    /* position: absolute; */
+    /* z-index: 100; */
+}
 .terms{
   cursor: pointer;
   text-decoration: underline;
@@ -334,13 +542,15 @@ export default {
   text-decoration: underline;
 }
 footer div{
+  font-size: 10px;
   text-align: left;
+  width: 100%;
 }
 footer{
-  width: 100%;
+  width: 90%;
   height: 10%;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 20px;
   padding: 20px;
   /* background-color: #464c84; */
@@ -423,8 +633,11 @@ footer{
   position: relative;
   z-index: 10;
   width: 90%;
-  display: grid;
-  grid-template-columns: repeat(1, 1fr); /* 2 columns of equal width */
+  display: flex;
+  flex-direction: column;
+  /* grid-template-columns: repeat(1, 1fr); 2 columns of equal width */
+  align-items: center;
+  justify-items: center;
   
 }
 
@@ -435,18 +648,26 @@ footer{
   justify-content: center; /* center items horizontally */
   gap:10px; /* space between images */
 }
-.about-contaner .item1 img{
-  width: 100px;
+.about-contaner .item1 .aboutimg{
+  width: 80px;
   height: auto;
   object-fit: cover;
   border-radius: 10px;
   box-shadow: #464c84 0px 0px 10px;
 }
+.about-contaner .item2{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* padding: 20px; */
+}
 .about-contaner .item2 p{
   z-index: 10;
   padding: 20px;
-  text-align: left;
+  text-align: center;
   color: #464c84;
+  font-size: 13px;
   font-weight: bold;
   font-family: 'BubbleBody Neue','Poppins', sans-serif;
 }
@@ -501,7 +722,7 @@ footer{
   color: #464c84;
 }
 
-img{
+.aboutimg{
   height: 250px;
   width: auto;
   box-shadow: #464c84 0px 0px 10px;
@@ -544,9 +765,13 @@ main {
   justify-items: center;
 }
 .key-features {
+  padding: 10px;
   background-color: #4fc4f7;
-  height: 100vh;
-  width: 100vh;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .key-features .content {
   display: flex;
@@ -557,12 +782,15 @@ main {
   height: 100%;
   width: 48%;
   color: white;
+  font-size: 15px;
+  z-index: 1000;
+  line-height: 1.5;
   font-family: 'BubbleBody Neue', 'Poppins', sans-serif;
 }
-header{
+/* header{
   width: 100%;
   height: 5%;
-}
+} */
 
 .landing {
   background-color: aqua;
@@ -638,6 +866,10 @@ header{
     
   }
 .about {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
   overflow: hidden;
   background-color: #a8e15e;
   height: 100vh;
@@ -678,7 +910,8 @@ header{
   list-style: none;
 }
 .tagline-contaner nav ul li button{
-  background-color: #1ad0d0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background-color: #07acac;
   color: white;
   border: none;
   padding: 10px;
@@ -693,17 +926,17 @@ header{
   font-family: 'BubbleBody Neue','Poppins', sans-serif;
 }
 .tagline-contaner nav ul li button:hover{
-  background-color: #15aaaa;
+  background-color: #0d8d8d;
   transition: 500ms;
 }
-header h1 {
+/* header h1 {
   margin-left: 10px;
   font-weight: 800;
   text-transform: uppercase;
   font-size: 20px;
   color: #feec77;
   font-family: 'BubbleBody Neue', 'Poppins',sans-serif;
-}
+} */
 
 
 
@@ -779,7 +1012,7 @@ header h1 {
   left: 10%;
   width: 70px;
   height: 200px;
-  z-index: 0;
+  z-index: 1;
 }
 .tree11{
   position: absolute;
@@ -792,7 +1025,7 @@ header h1 {
 .tree12{
   position: absolute;
   top: 170%;
-  left: 90%;
+  left: 70%;
   width: 70px;
   height: 200px;
   z-index: 0;
@@ -847,10 +1080,10 @@ header h1 {
     left: 10%;
     font-size: 40px;
   }
-  header h1 {
+  /* header h1 {
     font-size: 30px;
     font-weight: bold;
-  }
+  } */
   .tagline-contaner nav ul li button {
     width: 200px;
     font-size: 26px;
@@ -1072,7 +1305,20 @@ footer{
   color: black;
   text-align: center;
 }
-
-
+.about-contaner .item2 p{
+  font-size: 20px;
+}
+.about-contaner .item1 .aboutimg{
+  width: 120px;
+}
+footer div{
+  font-size: 12px;
+}
+header ul li a{
+  font-size: 20px;
+}
+.developers .team-con{
+  grid-template-columns: repeat(4, 1fr);
+}
 }
 </style>

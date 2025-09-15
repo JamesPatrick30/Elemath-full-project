@@ -73,7 +73,7 @@ export default {
                 });
                 socket.connect();
                 this.$router.push({name : 'dash2'});
-                alert(res.data.message);
+                // alert(res.data.message);
             }catch(err){
                 console.log(err);
 
@@ -119,6 +119,13 @@ export default {
 };
 </script>
 <style scoped>
+.form input{
+    font-family: 'BubbleBody Neue', 'Poppins', sans-serif;
+}
+
+.form input::placeholder {
+    color: white;
+}
 .logo{
     display: flex;
     align-items: center;

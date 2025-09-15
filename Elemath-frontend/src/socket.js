@@ -1,6 +1,7 @@
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:3000", {
+const socket = io(import.meta.env.VITE_API_BASE, {
+  transports: ["websocket"], // skip polling
   withCredentials: true, // ✅ needed to send cookies
   autoConnect: false, // don’t connect immediately
 });

@@ -1,5 +1,5 @@
 import axios from 'axios'
-
+import router from '@/router'
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE, // example: 'https://your-backend.onrender.com/api'
   withCredentials: true,
@@ -14,5 +14,14 @@ api.interceptors.request.use(config => {
 }, error => {
   return Promise.reject(error)
 })
-
+api.interceptors.response.use(
+  response => response,
+  error => {
+    if (error.response && error.response.status === 401) {
+      // use Vue Router to redirect
+      router.push('/')
+    }
+    return Promise.reject(error)
+  }
+)
 export default api

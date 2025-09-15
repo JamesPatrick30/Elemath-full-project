@@ -484,7 +484,7 @@ export default{
             try {
                 const res = await api.get('/lesson/list');
                 this.filelist = res.data.files;
-                this.uploadedLessonsList();
+                // this.uploadedLessonsList();
                 this.fileloading = false;
               
                 // alert(res.data.message);
@@ -720,7 +720,7 @@ export default{
             try{
                 const res = await api.get('/dlesson/list');
                 this.uploadedLessons = res.data;
-                console.log(res.data);
+                console.log(this.uploadedLessons);
             }catch(err){
                 console.log(err);
             }
@@ -748,6 +748,7 @@ export default{
         window.addEventListener("dragover", this.onDragOver);
         window.addEventListener("dragleave", this.onDragLeave);
         window.addEventListener("drop", this.onDropAnywhere);
+        this.uploadedLessonsList();
 
     },
     beforeUnmount() {

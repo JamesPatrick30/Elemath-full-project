@@ -74,7 +74,7 @@
                 </div>
             </section>
             <section class="basic-info-section">
-                <header class="section-header">Report Problem</header>
+                <header class="section-header">Report a Problem</header>
                 <form @submit.prevent="sendBug" class="form-container">
     
             <select v-model="module" class="input">
@@ -109,10 +109,10 @@
                 </div>
             </div> 
 
-            <button type="submit" class="btn">Report Problem</button>
+            <button type="submit" class="btn">Submit</button>
         </form>
             </section>
-            <button class="logout" @click="logout()">logout</button>
+            <button class="logout" @click="logout()">Logout</button>
         </main>
     </body>
     <loading v-else />
@@ -228,22 +228,28 @@ export default{
             this.files.forEach(file => formData.append('screenshots', file));
 
             try {
-                const response = await api.post('/report/teacher', formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                });
-
-                if (response.data.success) {
-                    alert('Bug report sent successfully!');
-                    this.name = '';
+                this.name = '';
                     this.email = '';
                     this.module = '';
                     this.description = '';
                     this.files = [];
-                } else {
-                    alert('Error sending bug report.');
-                }
+                    alert('Bug report sent successfully!');
+                // const response = await api.post('/report/teacher', formData, {
+                //     headers: {
+                //         'Content-Type': 'multipart/form-data'
+                //     }
+                // });
+
+                // if (response.data.success) {
+                //     alert('Bug report sent successfully!');
+                //     this.name = '';
+                //     this.email = '';
+                //     this.module = '';
+                //     this.description = '';
+                //     this.files = [];
+                // } else {
+                //     alert('Error sending bug report.');
+                // }
         } catch (err) {
             console.error(err);
             alert('Server error.');
@@ -430,10 +436,11 @@ export default{
     width: 100%;
 }
 .logout{
-    background-color: #4fc4f7;
+    background-color: #aa2e2e;
     color: white;
     width: 100px;
     height: 40px;
+    border:none;
     border-radius: 20px;
     font-weight: bold;
     font-size: 16px;
@@ -445,7 +452,7 @@ export default{
 main .main-header h4 {
     margin: 0;
     padding: 20px;
-    color: #4fc4f7;
+    color: #3eabda;
     font-size: 24px;
     font-weight: bold;
     font-family: 'BubbleBody Neue', 'Poppins', sans-serif;

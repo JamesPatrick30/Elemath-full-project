@@ -35,8 +35,8 @@ export default{
             profilepic:'',
             title:'Cluster Mode',
             summarize:'Cluster Mode is On',
-            name: 'John Doe', // Replace with actual data
-            lrn: '1234567890', // Replace with actual data
+            name: '', // Replace with actual data
+            lrn: '', // Replace with actual data
             uploadedLessons: [],
             cancelPractice:false,
             lessonfile:'',
@@ -114,6 +114,11 @@ export default{
                 socket.connect();
             } catch (error) {
                 console.error('Error fetching student data:', error);
+                if(error.response && error.response.status === 401) {
+                    this.$router.push('/');
+                } else {
+                    alert('Failed to fetch data. Please try again later.');
+                }
             }
         },
         async lookforQuiz(){
@@ -154,8 +159,7 @@ export default{
                 console.log(err);
             }
         },
-        async playQuiz(){
-            this.loadquiz = true;
+        async getQuestions(){
             try{
                 const res12 = await api.post('/create-question',{
                     fileId:this.fileId,
@@ -164,13 +168,39 @@ export default{
                     difficulty:'easy',
                     question_type:'multiple-choice'
                 });
+                return res12.data.quiz;
+                // console.log(res.data);
+            }catch(err){
+                console.log(err);
+            }
+        },
+        async playQuiz(){
+            this.cancelPractice = false;
+            this.loadquiz = true;
+            try{
+                // const res12 = await api.post('/create-question',{
+                //     fileId:this.fileId,
+                //     num_questions:10,
+                //     language:'English',
+                //     difficulty:'easy',
+                //     question_type:'multiple-choice'
+                // });
+                let res12 = null;
+                do{
+                    res12 = await this.getQuestions();
+                    if(this.cancelPractice){
+                        this.loadquiz = false;
+                        return;
+                    }
+                    
+                }while(this.loadquiz && (!res12 || res12.length === 0|| res12.some(q => !q.question || !q.options || q.options.length < 2 || !q.answer)));
                 // console.log(res12.data);
                 if(this.cancelPractice){
                     this.loadquiz = false;
                     return;
                 }
                 const res = await api.post('/create/mode/practice', {
-                    quiz: res12.data.quiz
+                    quiz: res12
                 });
                 this.$router.push({ name: 'practicemode' });
                 // alert(res.data.message);
