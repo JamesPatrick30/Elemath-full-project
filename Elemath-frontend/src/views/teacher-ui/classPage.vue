@@ -29,7 +29,7 @@
                 </select>
 
 
-                <button class="add-student" @click="goToEditClass()"><font-awesome-icon icon="fa-solid fa-user-plus" /> Add Student</button>
+                <button class="add-student" @click="goToEditClass()"><font-awesome-icon icon="fa-solid fa-user-plus" /> Edit Student</button>
                 <button class="add-student" @click="createClassCluster = true"> Create class</button>
             </header>
             <div class="student-list">
