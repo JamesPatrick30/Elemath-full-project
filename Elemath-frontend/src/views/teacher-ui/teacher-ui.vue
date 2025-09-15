@@ -300,7 +300,7 @@ export default {
                     </div>
                     
                     <div class="text-area">
-                        <p class="user-name">welcome back. {{ user?.username }}</p>
+                        <p class="user-name">Welcome {{ user?.username }}</p>
                         <!-- <p class="user-id">ID : {{ user?._id }}</p> -->
                     </div>
             </header>

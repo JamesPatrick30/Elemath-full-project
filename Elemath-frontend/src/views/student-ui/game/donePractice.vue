@@ -75,6 +75,8 @@ export default{
                 <p v-if="c.explanation">Explanation: {{ c.explanation }}</p>
             </div>
             <br>
+            <h1 class="score">Score : {{ score }}/{{ rev.length }}</h1>
+
             <button class="leave" @click="gotohome">Leave</button>
             <br>
         </div>

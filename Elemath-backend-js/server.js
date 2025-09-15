@@ -38,7 +38,7 @@ const cookie = require("cookie");
 
 // Middleware
 app.use(cors({
-  origin: process.env.FRONTEND_PORT, // or whatever port your frontend uses
+  origin: process.env.FRONTEND_URL, // or whatever port your frontend uses
   credentials: true
 }));
 app.use(cookieParser());
@@ -66,7 +66,7 @@ const { Server } = require("socket.io");
 // Create WebSocket server attached to the HTTP server
 const io = new Server(server, {
   cors: {
-    origin: process.env.FRONTEND_PORT, // your Vue dev URL
+    origin: process.env.FRONTEND_URL, // your Vue dev URL
     methods: ["GET", "POST"],
     credentials: true
   }

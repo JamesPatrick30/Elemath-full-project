@@ -96,7 +96,7 @@
                 <!-- <input type="text" placeholder="Passing Score" class="input-a"> -->
             </div>
             <div class="con-Questions" v-if="btnActive.Question">
-
+                <p>Choice</p>
                 <select name="" id="" v-model="questionOption" >
                     <option value="Generate">Generate</option>
                     <option value="Costumize">Customize</option>
@@ -281,10 +281,7 @@
                 <!-- TODO: fix the data -->
                 <p class="type">{{ question?.topic }}</p>
                 <p class="type">{{ question?.type }}</p>
-                <div class="action-con">
-                    <button class="action" @click="editbtnq(index)"><font-awesome-icon icon="fa-solid fa-pen" size="xl" style="color: #ffd43b;" /></button>
-                    <button class="action" @click="deleteON(index)"><font-awesome-icon icon="fa-solid fa-trash" size="xl" style="color: #cc0000;" /></button>
-                </div>
+                
                 
                 <!-- <p class="type">{{ question.language }}</p> -->
                 <!-- Render ASCII table safely -->
@@ -377,7 +374,10 @@
                 </div>
                 
                 <p> Explanation : {{ question.explanation }}</p>
-                
+                <div class="action-con">
+                    <button class="action" @click="editbtnq(index)"><font-awesome-icon icon="fa-solid fa-pen" size="xl" style="color: #ffd43b;" /></button>
+                    <button class="action" @click="deleteON(index)"><font-awesome-icon icon="fa-solid fa-trash" size="xl" style="color: #cc0000;" /></button>
+                </div>
             </div>
         </div>
       </div>

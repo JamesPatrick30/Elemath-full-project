@@ -115,22 +115,22 @@ export default{
     },
     methods:{
         movemore(){
-            if(this.line < (this.students[0].quiz.length - 7)){
+            if(this.line < (this.students[0].quiz.length - 5)){
                  
                 this.line++;
             }
-            console.log('line : '+this.line +' quiz : '+(this.students[0].quiz.length - 7));
+            console.log('line : '+this.line +' quiz : '+(this.students[0].quiz.length - 5));
         },
         moveless(){
             if(this.line > 0){
                  
                 this.line--;
             }
-            console.log('line : '+this.line +' quiz : '+(this.students[0].quiz.length - 7));
+            console.log('line : '+this.line +' quiz : '+(this.students[0].quiz.length - 5));
         },
         mazLength(quiz){
             let list = [];
-            for (let i = this.line; i < this.line + 7 && i < quiz?.length; i++){
+            for (let i = this.line; i < this.line + 5 && i < quiz?.length; i++){
 
                     list.push(quiz[i]);
                     // console.log('lpp[]');
