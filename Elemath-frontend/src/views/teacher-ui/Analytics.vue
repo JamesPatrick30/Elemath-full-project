@@ -264,7 +264,9 @@ export default {
 </script>
 
 <style scoped>
-
+*{
+    font-family: 'BubbleBody Neue','Poppins', sans-serif;
+}
 
 .classes{
   position: fixed;
