@@ -105,7 +105,8 @@
                     <h2 class="title">Add Student</h2>
                     <h4 class="classname">Class Name : {{ classname }}</h4>
                     <h3>📤 Upload Student List</h3>
-
+                    <h5>Accepted format: .xlsx file with LRN and Name columns</h5>
+                    <!-- <small></small> -->
                     <form @submit.prevent="handleUpload" enctype="multipart/form-data" :class="{ 'disabled-form': uploading }">
                         <!-- <label for="moduleFile" clnhass="upload-label">
                         📄 Upload Module / Lesson File
