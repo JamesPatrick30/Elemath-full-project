@@ -19,8 +19,8 @@
 .background{
     position: fixed;
     z-index: -1;
-    height: 100vh;
-    width: 100vw;
+    height: 100%;
+    width: 100%;
     background: #a8e15e;
     display: flex;
     flex-direction: column;

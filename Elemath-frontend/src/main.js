@@ -17,6 +17,7 @@ import {
   faGear,faHouse, faUser, faVolumeHigh,
   faVolumeXmark, faPen,faArrowLeft,
   faArrowRight, faPhone, faEnvelope,
+  faBars
  
 } from '@fortawesome/free-solid-svg-icons';
 import { faFloppyDisk } from '@fortawesome/free-regular-svg-icons';
@@ -30,7 +31,8 @@ library.add(
   faGear, faHouse, faUser, faVolumeHigh,
   faVolumeXmark, faPen, faArrowLeft,
   faArrowRight, faPhone, faEnvelope,
-  faFacebook, faInstagram, faGithub
+  faFacebook, faInstagram, faGithub,
+  faBars
 );
 
 const app = createApp(App);

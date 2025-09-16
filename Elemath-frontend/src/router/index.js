@@ -13,6 +13,7 @@ import settings from '@/views/student-ui/settings.vue'
 import report from '@/views/student-ui/settingsfolder/report.vue'
 import practicemode from '@/views/student-ui/game/practicemode.vue'
 import donePractice from '@/views/student-ui/game/donePractice.vue'
+import dashboard3 from '@/views/student-ui/dashboard3.vue'
 
 import teacherSetting from '@/views/teacher-ui/setting.vue'
 import windowCard from '@/views/teacher-ui/game/windowCard.vue'
@@ -34,6 +35,11 @@ import notfound from '@/views/notfound.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path: '/dashboard3',
+      name: 'dashboard3',
+      component: dashboard3
+    },
     {
       path: '/terms',
       name: 'terms',
