@@ -87,6 +87,8 @@
                 <img class="numbers number2" src="/gif/number2.gif" alt="">
                 <img class="numbers number3" src="/gif/number7.gif" alt="">
                 <img class="numbers number4" src="/gif/number9.gif" alt="">
+                <img class="numbers number5" src="/gif/number1.gif" alt="">
+                <img class="numbers number6" src="/gif/number1.gif" alt="">
                   <TreeComponent class="tree tree1"/>
 
                   <TreeComponent2 class="tree tree2" />
@@ -428,7 +430,16 @@ export default {
   animation-delay: 3s;
   z-index: 1;
 }
-
+.number5{
+  top: 60%;
+  left: 30%;
+  animation-delay: 4s;
+}
+.number6{
+  top: 90%;
+  left: 50%;
+  animation-delay: 5s;
+}
 .numbers{
   position: absolute;
   /* z-index: 10; */
