@@ -83,7 +83,10 @@
             
             <div class="grass">
               <div class="tree-container">
-               
+                <img class="numbers number1" src="/gif/number6.gif" alt="">
+                <img class="numbers number2" src="/gif/number2.gif" alt="">
+                <img class="numbers number3" src="/gif/number7.gif" alt="">
+                <img class="numbers number4" src="/gif/number9.gif" alt="">
                   <TreeComponent class="tree tree1"/>
 
                   <TreeComponent2 class="tree tree2" />
@@ -405,6 +408,38 @@ export default {
 </script>
 
 <style scoped>
+.number1{
+  top: 10%;
+  left: 1%;
+}
+.number2{
+  top: 50%;
+  left: 80%;
+  animation-delay: 1s;
+}
+.number3{
+  top: 80%;
+  left: 40%;
+  animation-delay: 2s;
+}
+.number4{
+  top: 20%;
+  left: 70%;
+  animation-delay: 3s;
+  z-index: 1;
+}
+
+.numbers{
+  position: absolute;
+  /* z-index: 10; */
+  width: 100px;
+  height: auto;
+  object-fit: cover;
+  /* border-radius: 10px; */
+  /* box-shadow: #464c84 0px 0px 10px; */
+  margin: 0 5px;
+  animation: float 3s ease-in-out infinite;
+}
 .section-title-d{
   text-align: center;
   padding: 10px;
@@ -1319,6 +1354,28 @@ header ul li a{
 }
 .developers .team-con{
   grid-template-columns: repeat(4, 1fr);
+}
+.numbers{
+  width: 150px;
+}
+.number1{
+  top: 10%;
+  left: 10%;
+}
+.number2{
+  top: 50%;
+  left: 80%;
+  animation-delay: 1s;
+}
+.number3{
+  top: 80%;
+  left: 40%;
+  animation-delay: 2s;
+}
+.number4{
+  top: 20%;
+  left: 65%;
+  animation-delay: 3s;
 }
 }
 </style>
