@@ -1,5 +1,6 @@
 <script>
 import api from '@/axios';
+import socket from '@/socket';
 import greenbg from './components/greenbg.vue';
 export default {
     name: 'dashboard3',
@@ -28,10 +29,119 @@ export default {
             lessons:[],
             cluster:false,
             uploadedLessons: [],
+            name:'',
+            lrn:'',
+            profilepic:'',
+            id:'',
+            ongoing:false,
+            title:'',
+            volume:0,
+            started:false,
+            audiosrc: "/musics/lobbym.mp3",
+            muted: false,
 
         }
     },
     methods: {
+        async lookforQuiz(){
+            try{
+                
+                const res = await api.get('/get/mode',{
+                    params: {
+                        id: this.id
+                    }
+                });
+
+                if(res.data.started === true){
+                    this.started = true;
+                }else{
+                    this.started = false;
+                }
+                if(res.data.quiz === true){
+                    this.ongoing = true;
+                }else{
+                    this.ongoing = false;
+                }
+                this.ongoing = true;
+            }catch(err){
+                console.error('Error fetching quiz data:', err);
+            }
+        },
+        // SeeNav() {
+        //     this.isNavVisible = !this.isNavVisible;
+        // },
+        // handleResize() {
+        //     this.isNavVisible = window.matchMedia('(min-width: 623px)').matches;
+        // },
+        async getLessonList(){
+            try{
+                const res = await api.get('/dlesson/list');
+                this.lessons = res.data;
+                // console.log(res.data);
+            }catch(err){
+                console.log(err);
+            }
+        },
+        async getQuestions(){
+            try{
+                const res12 = await api.post('/create-question',{
+                    fileId:this.fileId,
+                    num_questions:10,
+                    language:'English',
+                    difficulty:'easy',
+                    question_type:'multiple-choice'
+                });
+                return res12.data.quiz;
+                // console.log(res.data);
+            }catch(err){
+                console.log(err);
+            }
+        },
+        async playQuiz(){
+            this.cancelPractice = false;
+            this.loadquiz = true;
+            try{
+                // const res12 = await api.post('/create-question',{
+                //     fileId:this.fileId,
+                //     num_questions:10,
+                //     language:'English',
+                //     difficulty:'easy',
+                //     question_type:'multiple-choice'
+                // });
+                let res12 = null;
+                do{
+                    res12 = await this.getQuestions();
+                    if(this.cancelPractice){
+                        this.loadquiz = false;
+                        return;
+                    }
+                    
+                }while(this.loadquiz && (!res12 || res12.length === 0|| res12.some(q => !q.question || !q.options || q.options.length < 2 || !q.answer)));
+                // console.log(res12.data);
+                if(this.cancelPractice){
+                    this.loadquiz = false;
+                    return;
+                }
+                const res = await api.post('/create/mode/practice', {
+                    quiz: res12
+                });
+                this.$router.push({ name: 'practicemode' });
+                // alert(res.data.message);
+                // this.cluster = false;
+                // this.ongiong = true;
+                // this.$router.push({ name: 'waiting-lobby',query: { i: this.id } });
+            }catch(err){
+                console.log(err);
+            }
+            this.loadquiz = false;
+            
+        },
+        unlockAudio() {
+            const player = this.$refs.player;
+            player.muted = false;
+            player.volume = this.volume;
+            player.play().catch(err => console.warn("Still blocked:", err));
+        },
         get3(source) {
             return source.slice(0, this.splaceCount);
         },
@@ -90,9 +200,48 @@ export default {
                 console.log(err);
             }
         },
+        async getdata(){
+            try {
+                const response = await api.get('/get/student/data'); // Adjust the endpoint as needed
+                // console.log(response.data);
+                this.getLessonList();
+                this.name = response.data.name || 'John Doe';
+                this.lrn = response.data.lrn || '1234567890';
+                this.profilepic = response.data.profile; // Default profile picture
+                this.id = response.data.classId._id; // Assuming the student ID is returned
+                // console.log('Student ID:', this.id);
+                await this.lookforQuiz();
+                // await this.uploadedLessonsList();
+                socket.connect();
+            } catch (error) {
+                console.error('Error fetching student data:', error);
+                if(error.response && error.response.status === 401) {
+                    this.$router.push('/');
+                } else {
+                    alert('Failed to fetch data. Please try again later.');
+                }
+            }
+        },
     },
     mounted(){
+        this.getdata();
         this.getLessonList();
+        // console.log(socket.listeners('room-created').length);
+        socket.removeAllListeners();
+        document.body.addEventListener("click", this.unlockAudio, { once: true });
+
+        socket.on('room-created', (data) => {
+            this.ongiong = true; // Set ongoing status based on room creation
+            console.log('Lobby data received:', data);
+            // Handle lobby data here
+        });
+        socket.on('mode-deleted',(data) => {
+            this.ongoing = false; // Reset ongoing status when mode is deleted
+            console.log('Mode deleted:', data);
+        });
+        if(localStorage.getItem('volume')){
+            this.volume = parseFloat( localStorage.getItem('volume') );
+        }
         this.isMobile = window.innerWidth <= 768;
         window.addEventListener('resize', () => {
             this.isMobile = window.innerWidth <= 768;
@@ -122,8 +271,8 @@ export default {
             <div class="con-info">
                 <img class="character" src="/characters/berry.png" alt="">
                 <div class="info">
-                    <p class="name">Student Name</p>
-                    <p class="lrn">LRN:</p>
+                    <p class="name">{{ name }}</p>
+                    <p class="lrn">LRN: {{ lrn }}</p>
                 </div>
                 <font-awesome-icon class="menu-icon" icon="fa-solid fa-bars" />
             </div>
@@ -131,7 +280,11 @@ export default {
         <main>
             <button class="main-button">
                 <img class="button-icon-left" src="/gif/whalebtn.gif" alt="">
-                <p>Quiz</p>
+                <div class="txt">
+                    <p>Quiz</p>
+                    <small class="ongiong" v-if="ongoing">Join Now</small>
+                </div>
+                <!-- <p>Quiz</p> -->
                 <img class="button-icon-right" src="/gif/turtlebtn.gif" alt="">
             </button>
             <!-- <p class="title-lessons">LESSON:</p> -->
@@ -185,6 +338,13 @@ export default {
     
 </template>
 <style scoped>
+.txt p{
+    margin: 0;
+    padding: 0;
+}
+.txt{
+    text-align: center;
+}
 .grade-title{
     font-size: 20px;
     font-weight: 600;
@@ -355,6 +515,15 @@ export default {
     left: -60px;
     font-size: 24px;
     font-weight: 600;
+}
+.ongiong{
+    /* position: relative; */
+    /* font-size: 1px; */
+    /* top: 5%; */
+    /* bottom: 30px;
+    left: 40px; */
+    font-weight: 700;
+    color: rgb(221, 57, 57);
 }
 .button-icon-right{
     margin-right: 0;
