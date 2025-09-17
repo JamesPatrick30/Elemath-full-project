@@ -174,6 +174,10 @@
           </section>
           
           <section class="key-features" id="features">
+            <img class="animals crab" src="/gif/crab.gif" alt="">
+            <img class="animals turtle" src="/gif/turtle.gif" alt="">
+            <img class="animals fish" src="/gif/fish.gif" alt="">
+            <img class="animals dolphin" src="/gif/dolphin.gif" alt="">
             <div class="content">
               <p>Key Features
                 <br><br>
@@ -415,6 +419,35 @@ export default {
 </script>
 
 <style scoped>
+.dolphin{
+  top: 300%;
+  left: 30%;
+  /* height: 80px; */
+  /* animation: moveDolphin 6s linear infinite; */
+}
+.turtle{
+  top: 330%;
+  left: 65%;
+  /* height: 80px; */
+  /* animation: moveTurtle 6s linear infinite; */
+}
+.fish{
+  top: 370%;
+  left: 65%;
+  /* height: 80px; */
+  /* animation: moveFish 6s linear infinite; */
+}
+.crab{
+  top: 350%;
+  left: -10%;
+  /* height: 80px; */
+  /* animation: moveCrab 6s linear infinite; */
+}
+.animals{
+  z-index: 1000;
+  position: absolute;
+  height: 150px;
+}
 .info-img{
   width: 110px;
   height: auto;
@@ -528,7 +561,7 @@ export default {
 }
 .developers .team-con{
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 2fr));
 }
 .developers{
   background-color: #a8f5ff;
@@ -1134,21 +1167,21 @@ main {
   }
 }
 
-@media screen and (min-width: 768px) {
+/* @media screen and (max-width: 768px) {
   .tagline-contaner {
     top: 30%;
     left: 10%;
     font-size: 40px;
   }
-  /* header h1 {
+   header h1 {
     font-size: 30px;
     font-weight: bold;
-  } */
+  } 
   .tagline-contaner nav ul li button {
     width: 200px;
     font-size: 26px;
   }
-}
+} */
 @media screen and (min-width: 1024px) {
   /* Large desktop specific styles */
   .tagline-contaner {
@@ -1414,5 +1447,106 @@ header ul li a{
 .info .info-contaner .item2 p {
   font-size: 20px;
 }
+.dolphin{
+  top: 300%;
+  left: 40%;
+  /* height: 80px; */
+  /* animation: moveDolphin 6s linear infinite; */
+}
+.turtle{
+  top: 330%;
+  left: 80%;
+  /* height: 80px; */
+  /* animation: moveTurtle 6s linear infinite; */
+}
+.fish{
+  top: 380%;
+  left: 70%;
+  /* height: 80px; */
+  /* animation: moveFish 6s linear infinite; */
+}
+.crab{
+  top: 350%;
+  left: 10%;
+  /* height: 80px; */
+  /* animation: moveCrab 6s linear infinite; */
+}
+.animals{
+  z-index: 1000;
+  position: absolute;
+  height: 200px;
+}
+}
+@media screen and (min-width: 400px) and (max-width: 1024px)  and (orientation: landscape) {
+  .info .content .info-contaner{
+    grid-template-columns: repeat(2, 1fr); /* 2 columns of equal width */
+    gap: 1em;
+  }
+  .number4{
+    z-index: 5;
+  }
+  .about-contaner{
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+  }
+  .developers .team-con{
+    /* display: grid; */
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .developers .developer{
+    width: 180px;
+    height: 250px;
+  }
+  .developers .developer img{
+    height: 40%;
+  }
+  .about-contaner .item1{
+    display: none;
+    flex-direction: column;
+    padding: 20px;
+    flex-wrap: wrap; /* allow items to wrap */
+    justify-content: center; /* center items horizontally */
+    gap:10px; /* space between images */
+  }
+  .info-d{
+    height: 60%;
+    font-size: 12px;
+  }
+  .info-d h3{
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+  .info-d p{
+    font-size: 10px;
+  }
+  .link{
+    gap: 0.5em;
+    margin: 5px 0;
+  }
+  .dolphin{
+    top: 300%;
+    left: 40%;
+    /* height: 80px; */
+    /* animation: moveDolphin 6s linear infinite; */
+  }
+  .turtle{
+    top: 330%;
+    left: 70%;
+    /* height: 80px; */
+    /* animation: moveTurtle 6s linear infinite; */
+  }
+  .fish{
+    top: 370%;
+    left: 75%;
+    /* height: 80px; */
+    /* animation: moveFish 6s linear infinite; */
+  }
+  .crab{
+    top: 350%;
+    left: -5%;
+    /* height: 80px; */
+    /* animation: moveCrab 6s linear infinite; */
+  }
 }
 </style>
