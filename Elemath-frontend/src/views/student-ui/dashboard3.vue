@@ -1,4 +1,5 @@
 <script>
+import api from '@/axios';
 import greenbg from './components/greenbg.vue';
 export default {
     name: 'dashboard3',
@@ -8,30 +9,90 @@ export default {
     data(){
         return{
             source: [
-                {pic:'/characterUI/penguin.png', title:' asasdasdasdasd asdasas', desc:'Description'},
-                {pic:'/characterUI/penguin.png', title:' asasdasdasdasd asdasas', desc:'Description'},
-                {pic:'/characterUI/penguin.png', title:' asasdasdasdasd asdasas', desc:'Description'},
-                {pic:'/characterUI/penguin.png', title:' asasdasdasdasd asdasas', desc:'Description'},
-                {pic:'/characterUI/penguin.png', title:' asasdasdasdasd asdasas', desc:'Description'},
-                {pic:'/characterUI/penguin.png', title:' asasdasdasdasd asdasas', desc:'Description'},
-                {pic:'/characterUI/penguin.png', title:' asasdasdasdasd asdasas', desc:'Description'},
-                {pic:'/characterUI/penguin.png', title:' asasdasdasdasd asdasas', desc:'Description'},
-                {pic:'/characterUI/penguin.png', title:' asasdasdasdasd asdasas', desc:'Description'},
-                {pic:'/characterUI/penguin.png', title:' asasdasdasdasd asdasas', desc:'Description'},
+                // {pic:'/characterUI/penguin.png', title:' asasdasdasdasd asdasas', desc:'Description'},
+                // {pic:'/characterUI/penguin.png', title:' asasdasdasdasd asdasas', desc:'Description'},
+                // {pic:'/characterUI/penguin.png', title:' asasdasdasdasd asdasas', desc:'Description'},
+                // {pic:'/characterUI/penguin.png', title:' asasdasdasdasd asdasas', desc:'Description'},
+                // {pic:'/characterUI/penguin.png', title:' asasdasdasdasd asdasas', desc:'Description'},
+                // {pic:'/characterUI/penguin.png', title:' asasdasdasdasd asdasas', desc:'Description'},
+                // {pic:'/characterUI/penguin.png', title:' asasdasdasdasd asdasas', desc:'Description'},
+                // {pic:'/characterUI/penguin.png', title:' asasdasdasdasd asdasas', desc:'Description'},
+                // {pic:'/characterUI/penguin.png', title:' asasdasdasdasd asdasas', desc:'Description'},
+                // {pic:'/characterUI/penguin.png', title:' asasdasdasdasd asdasas', desc:'Description'},
             ],
             currentInGrade5: 0,
             currentInGrade6: 0,
             currentInGrade7: 0,
             splaceCount:0,
-            isMobile:null
+            isMobile:null,
+            lessons:[],
+            cluster:false,
+            uploadedLessons: [],
+
         }
     },
     methods: {
         get3(source) {
             return source.slice(0, this.splaceCount);
-        }
+        },
+        async getLessonList(){
+            try{
+                const res = await api.get('/dlesson/list');
+                this.uploadedLessonsList();
+                this.lessons = res.data;
+                // console.log(res.data);
+            }catch(err){
+                console.log(err);
+            }
+        },
+        async uploadedLessonsList(){
+            try{
+                const res = await api.get('/dlesson/uploadedlessons');
+                this.uploadedLessons = res.data;
+                // console.log('uploaded lessons : '+res.data);
+            }catch(err){
+                console.log(err);
+            }
+        },
+        sortgrade5(){
+            const Array = this.lessons.filter(lesson => lesson.gradeLevel === 'Grade 5');
+            return Array;
+        },
+        sortgrade6(){
+            const Array = this.lessons.filter(lesson => lesson.gradeLevel === 'Grade 6');
+            return Array;
+        },
+        randompics(){
+            const pics = [
+                '/characterUI/book2penguin.png',
+                '/characterUI/bookcrock.png',
+                '/characterUI/bookduck.png',
+                '/characterUI/penguin.png',
+                // '/characterUI/deer.png'
+            ];
+            const randomIndex = Math.floor(Math.random() * pics.length);
+            return pics[randomIndex];
+        },
+        async lessonData(id){
+            try{
+                this.fileId = id;
+                const res = await api.get('/dlesson/get',{
+                    params:{
+                        lessonId:id
+                    }
+                });
+                this.title = res.data.title;
+                this.lessonfile = res.data.file;
+                this.cluster = true;
+                this.summarize = res.data.summary;
+                // console.log(res.data);
+            }catch(err){
+                console.log(err);
+            }
+        },
     },
     mounted(){
+        this.getLessonList();
         this.isMobile = window.innerWidth <= 768;
         window.addEventListener('resize', () => {
             this.isMobile = window.innerWidth <= 768;
@@ -76,18 +137,21 @@ export default {
             <p class="title-lessons">LESSON:</p>
             <p>lessons</p>
             <div class="lesson-cons">
-                <div class="lessons" v-for="(value, index) in source" :key="index">
-                    <img class="lesson-pic" :src="value.pic" alt="">
+                <div v-if="uploadedLessons.length > 0" class="lessons" v-for="(value, index) in uploadedLessons" :key="index" @click="lessonData(value._id)">
+                    <img class="lesson-pic" :src="randompics()" alt="">
                     <div class="con-title">
                         <p class="lesson-title">{{value.title}}</p>
                     </div>
                     <!-- <p>{{value.desc}}</p> -->
                 </div>
+                <div v-else>
+                    <p>No uploaded lessons yet.</p>
+                </div>
             </div>
             <p>Grade 5</p>
             <div class="lesson-cons">
-                <div class="lessons" v-for="(value, index) in source" :key="index">
-                    <img class="lesson-pic" :src="value.pic" alt="">
+                <div class="lessons" v-for="(value, index) in sortgrade5()" :key="index" @click="lessonData(value._id)">
+                    <img class="lesson-pic" :src="randompics()" alt="">
                     <div class="con-title">
                         <p class="lesson-title">{{value.title}}</p>
                     </div>
@@ -96,8 +160,8 @@ export default {
             </div>
             <p>Grade 6</p>
             <div class="lesson-cons">
-                <div class="lessons" v-for="(value, index) in source" :key="index">
-                    <img class="lesson-pic" :src="value.pic" alt="">
+                <div class="lessons" v-for="(value, index) in sortgrade6()" :key="index" @click="lessonData(value._id)">
+                    <img class="lesson-pic" :src="randompics()" alt="">
                     <div class="con-title">
                         <p class="lesson-title">{{value.title}}</p>
                     </div>
@@ -108,9 +172,85 @@ export default {
             </div>
         </main>
     </body>
+    <div class="cluster-con" v-if="cluster">
+        <div class="cluster" >
+            <header>
+                <button @click="cluster = false"><font-awesome-icon :icon="['fas', 'xmark']" size="lg" color="red"/></button>
+                <p>{{ title }}</p>
+            </header>
+            <p>{{ summarize }}</p>
+            <button class="play-quiz-btn" @click="playQuiz()">Practice Test</button>
+        </div>
+    </div>
     
 </template>
 <style scoped>
+.play-quiz-btn:hover{
+    color: #4CAF50;
+    border: #4CAF50 1px solid;
+    background-color: white;
+    transition: all 0.3s ease;
+
+}
+.play-quiz-btn{
+    border: #4CAF50 1px solid;
+    background-color: #4CAF50;
+    color: white;
+    /* border: none; */
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 12px;
+}
+.cluster header p{
+    font-size: 15px;
+    font-weight: 800;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    color: black;}
+.cluster header button{
+    background-color: transparent;
+    border: none;
+    left: auto;
+    align-self: flex-end;
+}
+.cluster header{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    padding: 10px;
+    width: 90%;
+    color: black;
+    border-radius: 10px;
+}
+.cluster{
+    background-color: rgb(241, 241, 241);
+    width: 300px;
+    padding: 10px;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+}
+.cluster-con{
+    position: fixed;
+    z-index: 10000;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(90, 90, 90, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 .con-title{
     position: relative;
     top: -70px;
@@ -120,7 +260,8 @@ export default {
     width: 100%;
     display: flex;
     justify-content: center;
-    align-items: center;
+    text-align: center;
+    align-items: flex-end;
     /* background-color: red; */
     padding: 0 5px;
     background-color: #cfe2f0;
@@ -129,13 +270,10 @@ export default {
     /* max-width: 130px; */
 }
 .lesson-title{
-
     font-weight: 600;
-    text-align: center;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
-    max-width: 80px;
+    max-height: 50px;
 }
 .con-title:hover {
     background-color: #e0eef8;
@@ -162,8 +300,8 @@ export default {
     gap: 0.5em;
     transition: all 0.3s ease-in-out;
      max-height: 150px;
-    /* min-width: 180px; 
-    max-width: 100px; */
+    min-width: 160px; 
+    max-width: 180px;
 }
 .lesson-pic{
     position: relative;
@@ -181,7 +319,7 @@ export default {
     grid-template-rows: repeat(auto, 1fr);
     gap: 1em;
     height: fit-content;
-    width: 100%;
+    width: 90%;
     /* background-color: white; */
     margin-bottom: 10px;
     margin-top: 10px;
@@ -319,6 +457,7 @@ header {
 }
 body {
     overflow-x: hidden;
+    scrollbar-width: thin;
     height: 100%;
     width: 100%;
     position: absolute;
@@ -331,6 +470,13 @@ body {
     padding: 0;
 }
 @media screen and (min-width: 1024px) {
+    .lesson-title{
+        max-width: 80pc;
+    }
+    .lessons{
+        min-width: 200px; 
+        max-width: 200px;
+    }
     .main-button p{
         font-size: 24px;
         font-weight: 600;
