@@ -134,8 +134,8 @@ export default {
                 <p>Quiz</p>
                 <img class="button-icon-right" src="/gif/turtlebtn.gif" alt="">
             </button>
-            <p class="title-lessons">LESSON:</p>
-            <p>lessons</p>
+            <!-- <p class="title-lessons">LESSON:</p> -->
+            <p class="grade-title">Lessons</p>
             <div class="lesson-cons">
                 <div v-if="uploadedLessons.length > 0" class="lessons" v-for="(value, index) in uploadedLessons" :key="index" @click="lessonData(value._id)">
                     <img class="lesson-pic" :src="randompics()" alt="">
@@ -144,11 +144,11 @@ export default {
                     </div>
                     <!-- <p>{{value.desc}}</p> -->
                 </div>
-                <div v-else>
+                <div class="no-lessons" v-else>
                     <p>No uploaded lessons yet.</p>
                 </div>
             </div>
-            <p>Grade 5</p>
+            <p class="grade-title">Grade 5</p>
             <div class="lesson-cons">
                 <div class="lessons" v-for="(value, index) in sortgrade5()" :key="index" @click="lessonData(value._id)">
                     <img class="lesson-pic" :src="randompics()" alt="">
@@ -158,7 +158,7 @@ export default {
                     <!-- <p>{{value.desc}}</p> -->
                 </div>
             </div>
-            <p>Grade 6</p>
+            <p class="grade-title">Grade 6</p>
             <div class="lesson-cons">
                 <div class="lessons" v-for="(value, index) in sortgrade6()" :key="index" @click="lessonData(value._id)">
                     <img class="lesson-pic" :src="randompics()" alt="">
@@ -185,6 +185,23 @@ export default {
     
 </template>
 <style scoped>
+.grade-title{
+    font-size: 20px;
+    font-weight: 600;
+    margin-top: 50px ;
+    margin-bottom: 10px;
+    /* align-self: flex-start; */
+   
+}
+.no-lessons{
+    width: 100%;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    border-radius: 10px;
+}
 .play-quiz-btn:hover{
     color: #4CAF50;
     border: #4CAF50 1px solid;
@@ -383,6 +400,7 @@ export default {
 main{
     padding-top: 40px;
     padding-bottom: 50px;
+    margin-bottom: 20px;
     height: 100%;
     max-width: 100%;
     display: flex;
@@ -392,7 +410,7 @@ main{
     align-items: center;
     /* background-color: #f0f0f0; */
     flex-grow: 1;
-
+    
 }
 *{
     font-family: 'BubbleBody Neue','Poppins', sans-serif;
@@ -470,12 +488,28 @@ body {
     padding: 0;
 }
 @media screen and (min-width: 1024px) {
+    main{
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        /* justify-content: center; */
+    }
+    .lesson-pic{
+        height: 230px;
+    }
+    .con-title{
+        min-height: 180px;
+        max-height: 200px;
+        width: 100%;
+    }
     .lesson-title{
         max-width: 80pc;
     }
     .lessons{
-        min-width: 200px; 
-        max-width: 200px;
+        margin-top: 100px;
+        min-width:fit-content; 
+        max-width: 230px
     }
     .main-button p{
         font-size: 24px;
@@ -520,7 +554,16 @@ body {
         cursor: pointer;
     }
     .lesson-cons{
+        height: fit-content;
         grid-template-columns: repeat(4, 1fr);
+    }
+    .grade-title{
+        font-size: 30px;
+        font-weight: 600;
+        margin-top: 100px ;
+        margin-bottom: 10px;
+        /* align-self: flex-start; */
+    
     }
 }
 </style>
