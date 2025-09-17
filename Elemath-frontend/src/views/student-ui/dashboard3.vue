@@ -76,26 +76,32 @@ export default {
             <p class="title-lessons">LESSON:</p>
             <p>lessons</p>
             <div class="lesson-cons">
-                <div class="lessons" v-for="(value, index) in get3(source)" :key="index">
+                <div class="lessons" v-for="(value, index) in source" :key="index">
                     <img class="lesson-pic" :src="value.pic" alt="">
-                    <p class="lesson-title">{{value.title}}</p>
+                    <div class="con-title">
+                        <p class="lesson-title">{{value.title}}</p>
+                    </div>
                     <!-- <p>{{value.desc}}</p> -->
                 </div>
             </div>
             <p>Grade 5</p>
             <div class="lesson-cons">
-                <div class="lessons" v-for="(value, index) in get3(source)" :key="index">
+                <div class="lessons" v-for="(value, index) in source" :key="index">
                     <img class="lesson-pic" :src="value.pic" alt="">
-                    <p class="lesson-title">{{value.title}}</p>
-                    
+                    <div class="con-title">
+                        <p class="lesson-title">{{value.title}}</p>
+                    </div>
                     <!-- <p>{{value.desc}}</p> -->
                 </div>
             </div>
             <p>Grade 6</p>
             <div class="lesson-cons">
-                <div class="lessons" v-for="(value, index) in get3(source)" :key="index">
+                <div class="lessons" v-for="(value, index) in source" :key="index">
                     <img class="lesson-pic" :src="value.pic" alt="">
-                    <p class="lesson-title">{{value.title}}</p>
+                    <div class="con-title">
+                        <p class="lesson-title">{{value.title}}</p>
+                    </div>
+                    
                     
                     <!-- <p>{{value.desc}}</p> -->
                 </div>
@@ -105,7 +111,25 @@ export default {
     
 </template>
 <style scoped>
+.con-title{
+    position: relative;
+    top: -70px;
+    z-index: 1;
+    border-radius: 26px;
+
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* background-color: red; */
+    padding: 0 5px;
+    background-color: #cfe2f0;
+    min-height: 150px;
+    max-height: 150px;
+    /* max-width: 130px; */
+}
 .lesson-title{
+
     font-weight: 600;
     text-align: center;
     overflow: hidden;
@@ -113,13 +137,23 @@ export default {
     white-space: nowrap;
     max-width: 80px;
 }
-.lessons:hover{
-    transition: all 0.3s ease-in-out;
-    transform: scale(1.05);
-    background-color: #a8e15e;
+.con-title:hover {
+    background-color: #e0eef8;
+
     cursor: pointer;
 }
+
+.lessons:has(.con-title:hover),.lessons:has(.lesson-pic:hover) {
+    z-index: 3;
+    transition: all 0.3s ease-in-out;
+    transform: scale(1.05);
+}
 .lessons{
+    z-index: 3;
+
+    margin-top: 20px;
+    margin-bottom: 20px;
+
     border-radius: 26px;
     display: flex;
     flex-direction: column;
@@ -127,30 +161,30 @@ export default {
     justify-content: center;
     gap: 0.5em;
     transition: all 0.3s ease-in-out;
-    min-width: 100px;
-    max-width: 100px;
-    background-color: #cfe2f0;
+     max-height: 150px;
+    /* min-width: 180px; 
+    max-width: 100px; */
 }
 .lesson-pic{
-    height: 80px;
-    width: 80px;
+    position: relative;
+    z-index: 2;
+
+    top: 20px;
+    height: 170px;
+    /* width: 80px; */
 }
 .lesson-cons{
     /* padding: 10px; */
-    overflow-x: auto;
-    scrollbar-width: none; /* For Firefox */
-    -ms-overflow-style: none;  /* For Internet Explorer and Edge */
-    border-radius: 18px;
-    display: flex;
-    /* flex-direction: column; */
+ 
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(auto, 1fr);
     gap: 1em;
-    align-items: center;
-    justify-content: center;
-    width: 97%;
-    min-height: 200px;
-    max-height: 200px;
-    /* padding-left: 10px; */
-    background-color: white;
+    height: fit-content;
+    width: 100%;
+    /* background-color: white; */
+    margin-bottom: 10px;
+    margin-top: 10px;
 }
 .title-lessons{
     font-size: 20px;
@@ -338,6 +372,9 @@ body {
         background-color: #00d1ff;
         color: white;
         cursor: pointer;
+    }
+    .lesson-cons{
+        grid-template-columns: repeat(4, 1fr);
     }
 }
 </style>
