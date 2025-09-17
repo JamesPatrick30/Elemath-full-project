@@ -158,8 +158,13 @@
             <div class="content">
               <h1>Who is Elemath for ?</h1>
               <div class="info-contaner">
-                <div class="item1"><p>Students (Grades 5 & 6): Improve your skills by playing fun and competitive quizzes that match your lessons in school.</p></div>
-                <div class="item2"><p>Teachers: Easily track your students’ quiz results and monitor their progress without manual checking.</p></div>
+                <div class="item1">
+                  <img class="info-img" src="/gif/thinking.gif" alt="">
+                  <p>Students (Grades 5 & 6): Improve your skills by playing fun and competitive quizzes that match your lessons in school.</p>
+                </div>
+                <div class="item2">
+                  <img class="info-img" src="/gif/teacherl.gif" alt="">
+                  <p>Teachers: Easily track your students’ quiz results and monitor their progress without manual checking.</p></div>
               </div>
             </div>
             
@@ -410,6 +415,14 @@ export default {
 </script>
 
 <style scoped>
+.info-img{
+  width: 110px;
+  height: auto;
+  object-fit: cover;
+  border-radius: 10px;
+  /* box-shadow: #464c84 0px 0px 10px; */
+  margin-bottom: 10px;
+}
 .number1{
   top: 10%;
   left: 1%;
@@ -763,6 +776,7 @@ footer{
 .info .info-contaner .item1 p,
 .info .info-contaner .item2 p {
   text-align: center;
+  font-size: 10px;
   font-weight: bold;
   font-family: 'BubbleBody Neue','Poppins', sans-serif;
   color: #464c84;
@@ -1387,6 +1401,18 @@ header ul li a{
   top: 20%;
   left: 65%;
   animation-delay: 3s;
+}
+.info-img{
+  width: 200px;
+  height: auto;
+  object-fit: cover;
+  border-radius: 10px;
+  /* box-shadow: #464c84 0px 0px 10px; */
+  margin-bottom: 10px;
+}
+.info .info-contaner .item1 p,
+.info .info-contaner .item2 p {
+  font-size: 20px;
 }
 }
 </style>
