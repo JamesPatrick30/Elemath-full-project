@@ -3,7 +3,7 @@ import api from '@/axios';
 export default{
     data(){
         return{
-            rev:null,
+            rev:[],
             score:0
         }
         
@@ -56,7 +56,7 @@ export default{
                 <p v-else class="question">{{ c.q.question }} </p>
 
                 <div class="con-option" v-if="c.q?.options?.length > 0">
-                    <div class="option" v-for="(value,index) in c.q.options" :key="index" :style="{backgroundColor:colorpic(c.q.answer,value,c.playerAnswer)}">
+                    <div class="option" v-for="(value,index) in c.q.options" :key="index" :style="{color:colorpic(c.q.answer,value,c.playerAnswer)}">
                         <p>{{ value }}</p>
                     </div>
                 </div>
@@ -80,11 +80,12 @@ export default{
 </template>
 <style scoped>
 .correct-answer{
-    background-color: #8ee71a;
-
+    background-color: white;
+    color: #8ee71a;
 }
 .wrong-answer{
-    background-color: #ff4444;
+    background-color:white ;
+    color:#ff4444 ;
 }
 .correct-answer,.wrong-answer{
     width: 200px;
@@ -112,8 +113,11 @@ export default{
     background-color: #37c6e2;
 
 }
+*{
+    font-family: 'BubbleBody Neue','Poppins', sans-serif;
+}
 .score{
-    color: white;
+    color: black;
 }
 .correct-option{
     background-color: #8ee71a;
@@ -138,7 +142,9 @@ export default{
     justify-content: center;
 }
 .con{
-    width: 80%;
+    width: 100%;
+    background-color: #5ce7ff;
+
     height: fit-content;
     display: flex;
     align-items: center;
@@ -147,10 +153,10 @@ export default{
 }
 .rev{
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    background-color: white;
+    background-color: #c1ff72;
     height: fit-content;
     border-radius: 10px;
-    width: 100%;
+    width: 80%;
     padding: 10px;
     margin-bottom: 10px;
     display: flex;
@@ -166,13 +172,24 @@ export default{
     border: #b4ff52 3px solid;
     /* background-color: #b4ff52; */
 }
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+    background-color: #5ce7ff;
+
+  /* font-family: 'Poppins', sans-serif; */
+  /* background-color: #f0f4f8; */
+}
 main{
     position: absolute;
     z-index: 3;
-    height: 100vh;
+    height: 100%;
     width: 100vw;
     display: flex;
     flex-direction: column;
+    background-color: #5ce7ff;
     align-items: center;
 }
 .background{

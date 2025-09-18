@@ -131,16 +131,22 @@ export default{
                     <div class="no-grade" v-if="!source.length">
                         <p>No Grades Available</p>
                     </div>
-                    <div class="grade-head" v-if="source.length">
-                        <div class="grade" v-for="(item, index) in gradelist(source)" :key="index">
-                            <p>{{ item.quizMode }}</p>
-                        </div>
-                    </div>
-                    <div class="grade-body" v-if="source.length">
-                        <div class="grade" v-for="(item, index) in gradelist(source)" :key="index" :style="{backgroundColor: gradeColor(item.percentage)}">
-                            <p>{{ item.score }} / {{ item.total }}</p>
-                        </div>
-                    </div>
+                    <table v-if="source.length" class="grade-table">
+                        <thead>
+                            <tr>
+                                <th v-for="(item, index) in gradelist(source)" :key="index">
+                                    {{ item.quizMode }}
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td v-for="(item, index) in gradelist(source)" :key="index" :style="{backgroundColor: gradeColor(item.percentage)}">
+                                    {{ item.score }} / {{ item.total }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                     <div class="average" v-if="source.length" style="margin-top: 20px; text-align: center;">
                         <h2>Average Grade: 
                             {{
@@ -160,6 +166,12 @@ export default{
     </body>
 </template>
 <style scoped>
+th, td {
+    padding: 10px;
+    text-align: center;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+}
 .no-grade{
     width: 100%;
     height: 100px;

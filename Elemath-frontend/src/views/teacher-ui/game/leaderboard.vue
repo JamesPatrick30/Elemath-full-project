@@ -112,7 +112,20 @@ export default{
             </div>
             <button @click="finishbtn">Finish</button>
         </div>
-        <div class="player" v-for="(player,index) in players" :key="index">
+        <div class="playes-con">
+            
+            <div class="player">
+                <div class="name">
+                    <p>Name</p>
+                </div>
+                <div class="score">
+                    <p>Score</p>
+                </div>
+                <div class="time">
+                    <p>Time</p>
+                </div>
+            </div>
+            <div class="player" v-for="(player,index) in players" :key="index">
                 <div class="name">
                     <p>{{ player.player }}</p>
                 </div>
@@ -123,6 +136,7 @@ export default{
                     <p>{{ player.time }}</p>
                 </div>
             </div>
+        </div>
     </div>
     <main>
         <h1 class="title">Leader Board</h1>

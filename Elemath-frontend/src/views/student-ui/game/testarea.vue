@@ -92,7 +92,7 @@ export default {
                 this.inputanswer = '';
                 this.btnsubmit = true;
                 window.location.reload();
-                this.get1st();
+                // this.get1st();
 
                 // console.log('Id : '+res.data.id);
                 // this.id = res.data.id;
@@ -505,7 +505,7 @@ body{
     /* background-image: url('/images/bg.png'); */
     position: absolute;
     width: 100%;
-    height: 100vh;
+    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
