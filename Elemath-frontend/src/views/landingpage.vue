@@ -239,12 +239,12 @@
                   <h3>Kurt John N, Abalos</h3>
                 
                   <div class="link">
-                    <a href="https://www.facebook.com/ivan.c.usop"><font-awesome-icon icon="fa-brands fa-facebook" /></a>
+                    <a href="https://www.facebook.com/kurtezzx"><font-awesome-icon icon="fa-brands fa-facebook" /></a>
                     <a href="https://www.instagram.com/_whoeveniskurt/"><font-awesome-icon icon="fa-brands fa-instagram" /></a>
                   </div>
                   <h3>Ivan C, Usop</h3>
                   <div class="link">
-                    <a href="https://www.facebook.com/kurtezzx"><font-awesome-icon icon="fa-brands fa-facebook" /></a>
+                    <a href="https://www.facebook.com/ivan.c.usop "><font-awesome-icon icon="fa-brands fa-facebook" /></a>
                     <a href="https://www.instagram.com/your_van_carlos/"><font-awesome-icon icon="fa-brands fa-instagram" /></a>
                   </div>
                   <p>Documentation Specialist</p>
