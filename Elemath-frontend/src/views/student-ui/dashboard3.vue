@@ -317,6 +317,9 @@ export default {
             </button>
             <!-- <p class="title-lessons">LESSON:</p> -->
             <p class="grade-title">Lessons</p>
+            <div class="no-lessons" v-if="uploadedLessons.length === 0">
+                    <p>No uploaded lessons yet.</p>
+                </div>
             <div class="lesson-cons">
                 <div v-if="uploadedLessons.length > 0" class="lessons" v-for="(value, index) in uploadedLessons" :key="index" @click="lessonData(value._id)">
                     <img class="lesson-pic" :src="randompics()" alt="">
@@ -325,9 +328,7 @@ export default {
                     </div>
                     <!-- <p>{{value.desc}}</p> -->
                 </div>
-                <div class="no-lessons" v-else>
-                    <p>No uploaded lessons yet.</p>
-                </div>
+                
             </div>
             <p class="grade-title">Grade 5</p>
             <div class="lesson-cons">
@@ -441,10 +442,11 @@ export default {
    
 }
 .no-lessons{
-    width: 100%;
+    width: 90%;
     height: 100px;
     display: flex;
     justify-content: center;
+    font-weight: 600;
     align-items: center;
     background-color: white;
     border-radius: 10px;
