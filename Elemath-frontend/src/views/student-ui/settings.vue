@@ -2,10 +2,12 @@
 import greenbg from './components/greenbg.vue';
 import newnav from './components/newnav.vue';
 import api from '@/axios';
+import latestnav from './components/latestnav.vue';
 export default{
     components:{
         greenbg,
-        newnav
+        newnav,
+        latestnav
     },
     data(){
         return{
@@ -13,7 +15,8 @@ export default{
             profile:'',
             username:'',
             audiosrc:'/musics/lobbym.mp3',
-            volume:0
+            volume:0,
+            lrn:''
         }
     },
     methods:{
@@ -30,6 +33,7 @@ export default{
                 // console.log(response.data);
                 this.username = response.data.name || 'John Doe';
                 this.profile = response.data.profile;
+                this.lrn = response.data.lrn || '123456789012';
                 console.log('Student ID:', response.data);
                 await this.lookforQuiz();
                 socket.connect();
@@ -61,10 +65,14 @@ export default{
     <greenbg></greenbg>
     <body>
         <header>
-            <img class="profile" :src="profile" alt="" @click="switchNav">
-            <div class="textcon">
-                <p class="welcome">Welcome Back!</p>
-                <p class="name">{{ username }}</p>
+            <img class="logo" src="/images/logonobg.png" alt="">
+            <div class="con-info">
+                <img class="character" src="/characters/berry.png" alt="">
+                <div class="info">
+                    <p class="name">{{ username }}</p>
+                    <p class="lrn">LRN: {{ lrn }}</p>
+                </div>
+                <font-awesome-icon @click="switchNav()" class="menu-icon" icon="fa-solid fa-bars" />
             </div>
         </header>
         <div class="con">
@@ -109,7 +117,7 @@ export default{
             </div>
         </div>
     </body>
-    <newnav v-show="navshow"></newnav>
+    <latestnav v-show="navshow"></latestnav>
 
 </template>
 <style scoped>
@@ -183,14 +191,61 @@ export default{
     height: 50px;
     border-radius: 50%;
 }
-header{
-    padding: 10px;
-    /* border-radius: 10px; */
-    width: fit-content;
-    display: flex;
-    /* background-color: white; */
+.info{
+    margin-left: 10px;
 }
-
+.lrn{
+    font-weight: 500;
+    font-size: 14px;
+}
+.name{
+    font-weight: 600;
+    font-size: 18px;
+}
+.lrn, .name{
+    margin: 0;
+    padding: 0;
+}
+.menu-icon{
+z-index: 100;
+    margin-left: auto;
+    font-size: 20px;
+    margin-right: 10px;
+    /* color: #4CAF50; */
+    cursor: pointer;
+}
+.character {
+    border-radius: 50%;
+    height: 50px;
+    /* border: 2px solid white; */
+}
+.con-info{
+    display: flex;
+    /* justify-items: center; */
+    align-items: center;
+    border-radius: 20px;
+    margin-left: auto;
+    width: calc(100% - 90px);
+    background-color: white;
+    font-size: 20px;
+    padding: 5px;
+}
+header {
+    z-index: 100;
+    max-width: 100%;
+    min-width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3px;
+    padding-right: 10px;
+    /* padding-left: 10px; */
+    /* background-color: #4CAF50; */
+}
+.logo {
+    height: 60px;
+    margin-left: 10px;
+}
 body{
     position: absolute;
     height: 100vh;

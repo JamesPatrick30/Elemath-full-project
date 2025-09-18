@@ -1,7 +1,8 @@
 <template>
     <greenbg></greenbg>
     <body>
-        <header>
+      <header1 :info="{name:username,profile:profile,lrn:lrn}" ></header1>
+        <!-- <header>
             <img class="profile" :src="profile" alt="" @click="switchNav">
             <div class="textcon">
                 <p class="welcome">Welcome Back!</p>
@@ -9,7 +10,7 @@
                 
                 
             </div>
-        </header>
+        </header> -->
         <form @submit.prevent="sendBug" class="form-container">
     
             <select v-model="module" class="input">
@@ -47,7 +48,7 @@
             <button type="submit" class="btn">Report Bug</button>
         </form>
     </body>
-    <newnav :info="{name:username,profile:profile}" v-show="navshow"></newnav>
+    <latestnav  v-show="navshow"></latestnav>
 
 
 </template>
@@ -56,10 +57,14 @@
 import newnav from '../components/newnav.vue';
 import greenbg from '../components/greenbg.vue';
 import api from '@/axios';
+import latestnav from '../components/latestnav.vue';
+import header1 from '../components/header.vue';
 export default {
     components:{
         greenbg,
-        newnav
+        newnav,
+        header1,
+        latestnav
     },
   data() {
     return {
@@ -71,7 +76,8 @@ export default {
       files: [],
       navshow:false,
       username:'',
-      profile:''
+      profile:'',
+      lrn:'',
     };
   },
   methods: {
@@ -140,9 +146,10 @@ export default {
             // console.log(response.data);
             this.username = response.data.name || 'John Doe';
             this.profile = response.data.profile;
-            console.log('Student ID:', response.data);
-            await this.lookforQuiz();
-            socket.connect();
+            this.lrn = response.data.lrn || '123456789012';
+            // console.log('Student ID:', response.data);
+            // await this.lookforQuiz();
+            // socket.connect();
         } catch (error) {
             console.error('Error fetching student data:', error);
         }
