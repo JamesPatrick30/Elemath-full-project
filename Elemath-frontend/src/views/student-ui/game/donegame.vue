@@ -34,7 +34,7 @@ export default{
 }
 </script>
 <template>
-    <div class="background">
+    <!-- <div class="background">
         <div class="box">
             <div></div>
             <div></div>
@@ -47,7 +47,7 @@ export default{
             <div></div>
             <div></div>
         </div>
-    </div>
+    </div> -->
     <main>
         <h1 class="score">Score : {{ score }}/{{ rev.length }}</h1>
         <div class="con">

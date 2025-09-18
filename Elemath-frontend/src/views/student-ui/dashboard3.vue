@@ -62,7 +62,7 @@ export default {
                 }else{
                     this.ongoing = false;
                 }
-                this.ongoing = true;
+                // this.ongoing = true;
             }catch(err){
                 console.error('Error fetching quiz data:', err);
             }
@@ -228,7 +228,7 @@ export default {
                 alert('the quiz started');
                 return;
             }
-            if(this.ongiong){
+            if(this.ongoing){
                 this.$router.push({ name: 'waiting-lobby',query: { i: this.id } });
             }else{
                 alert('No ongoing quiz available.');
@@ -243,7 +243,7 @@ export default {
         document.body.addEventListener("click", this.unlockAudio, { once: true });
 
         socket.on('room-created', (data) => {
-            this.ongiong = true; // Set ongoing status based on room creation
+            this.ongoing = true; // Set ongoing status based on room creation
             console.log('Lobby data received:', data);
             // Handle lobby data here
         });
@@ -669,6 +669,14 @@ body {
     padding: 0;
 }
 @media screen and (min-width: 1024px) {
+    .main-button .txt p{
+        position: relative;
+        z-index: 1;
+        /* top: -20px; */
+        left: -60px;
+        font-size: 30px;
+        font-weight: 600;
+    }
     main{
         width: 100%;
         display: flex;
@@ -725,7 +733,7 @@ body {
         justify-content: space-between;
         align-items: center;
         padding: 10px 20px;
-        font-size: 16px;
+        /* font-size:100px; */
         width: 90%;
         height: 100px;
         border: none;
@@ -745,6 +753,19 @@ body {
         margin-bottom: 10px;
         /* align-self: flex-start; */
     
+    }
+    .main-button{
+        /* width: 60%; */
+        height: 200px;
+    }
+    .button-icon-left, .button-icon-right{
+        /* margin-left: auto; */
+        /* position: relative; */
+        /* background-color: black; */
+        /* top: -50px;
+        right: -10px; */
+        height: 240px;
+        margin-bottom: 10px;
     }
 }
 </style>
