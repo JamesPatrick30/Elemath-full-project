@@ -1,8 +1,8 @@
 <template>
     <div class="con-btn">
           <button @click="goDashboard"><font-awesome-icon icon="fa-solid fa-house"  /> Dash Board</button>
-          <button><font-awesome-icon icon="fa-solid fa-graduation-cap" /> Grade</button>
-          <button><font-awesome-icon icon="fa-solid fa-clock-rotate-left" /> History</button>
+            <button @click="goGrade"><font-awesome-icon icon="fa-solid fa-graduation-cap" /> Grade</button>
+          <button @click="goHistory"><font-awesome-icon icon="fa-solid fa-clock-rotate-left" /> History</button>
             <button @click="goSettings"><font-awesome-icon icon="fa-solid fa-gear" /> Settings</button>
             <button @click="logout()"><font-awesome-icon icon="fa-solid fa-arrow-right-from-bracket" /> Log out</button>
     </div>
@@ -12,6 +12,12 @@ import socket from '@/socket';
 import api from '@/axios';
 export default {
     methods: {
+        goHistory(){
+            this.$router.push('/th');
+        },
+        goGrade(){
+            this.$router.push('/sg');
+        },
         goDashboard() {
             this.$router.push('/ds');
         },
