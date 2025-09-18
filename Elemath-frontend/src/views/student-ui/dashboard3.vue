@@ -44,6 +44,7 @@ export default {
             audiosrc: "/musics/lobbym.mp3",
             muted: false,
             isNav:false,
+            loadquiz:false,
 
         }
     },
@@ -362,10 +363,68 @@ export default {
             <button class="play-quiz-btn" @click="playQuiz()">Practice Test</button>
         </div>
     </div>
+    <div class="cluster-con" v-if="loadquiz">
+        <div class="load-con">
+            <div>
+                <img src="/gif/loadingbox.gif" alt="Loading..." />
+                <p>Loading Quiz...</p>
+            </div>
+            <button @click="cancelPractice = true; loadquiz = false">Cancel</button>
+        </div>
+    </div>
     <latestnav v-if="isNav"/>
     
 </template>
 <style scoped>
+.load-con img{
+    height: 100px;
+    width: 100px;
+}
+.load-con button{
+    border: #ff4444 1px solid;
+    background-color: #ff4444;
+    color: white;
+    height: 40px;
+    width: 100px;
+    /* border: none; */
+    font-weight: 800;
+    padding: 5px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 12px;
+}
+.load-con div p{
+    color: #4CAF50;
+
+    font-weight: 700;
+    font-size: 20px;
+    text-align: center;
+    animation: alternate 4s infinite;
+}
+@keyframes alternate {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+.load-con div{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.load-con{
+    padding: 10px;
+    background-color: white;
+    border-radius: 10px;
+     display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
 .txt p{
     margin: 0;
     padding: 0;
