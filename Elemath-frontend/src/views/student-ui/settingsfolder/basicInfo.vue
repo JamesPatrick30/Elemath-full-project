@@ -2,10 +2,13 @@
 import greenbg from '../components/greenbg.vue';
 import newnav from '../components/newnav.vue';
 import api from '@/axios';
+import header1 from '../components/header.vue';
 export default{
     components:{
         greenbg,
-        newnav
+        newnav,
+        // latestnav,
+        header1
     },
     data(){
         return{
@@ -16,7 +19,8 @@ export default{
             profile:'',
             username:'',
             navshow:false,
-            waitbtn:false
+            waitbtn:false,
+            lrn:''
         }
     },
     methods:{
@@ -26,6 +30,7 @@ export default{
                 // console.log(response.data);
                 this.username = response.data.name || 'John Doe';
                 this.name = this.username;
+                this.lrn = response.data.lrn || '123456789012';
                 this.profile = response.data.profile;
                 console.log('Student ID:', response.data);
                 // await this.lookforQuiz();
@@ -67,13 +72,14 @@ export default{
 <template>
     <greenbg></greenbg>
     <main>
-        <header>
+        <header1 :info="{name:username,profile:profile,lrn:lrn}" ></header1>
+        <!-- <header>
             <img class="profile" :src="profile" alt="" @click="switchNav">
             <div class="textcon">
                 <p class="welcome">Welcome Back!</p>
                 <p class="name">{{ username }}</p>
             </div>
-        </header>
+        </header> -->
         <div class="form" >
             <h1>Basic Information</h1>
 
@@ -92,7 +98,7 @@ export default{
             <button class="submit" @click="updateInfo" :disabled="waitbtn">Update</button>
         </div>
     </main>
-        <newnav :info="{name:username,profile:profile}" v-show="navshow"></newnav>
+        <!-- <latestnav :info="{name:username,profile:profile}" v-show="navshow"></latestnav> -->
 
 </template>
 <style scoped>
