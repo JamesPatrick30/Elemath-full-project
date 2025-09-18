@@ -1,6 +1,8 @@
 <template>
     <div class="con-btn">
           <button @click="goDashboard"><font-awesome-icon icon="fa-solid fa-house"  /> Dash Board</button>
+          <button><font-awesome-icon icon="fa-solid fa-graduation-cap" /> Grade</button>
+          <button><font-awesome-icon icon="fa-solid fa-clock-rotate-left" /> History</button>
             <button @click="goSettings"><font-awesome-icon icon="fa-solid fa-gear" /> Settings</button>
             <button @click="logout()"><font-awesome-icon icon="fa-solid fa-arrow-right-from-bracket" /> Log out</button>
     </div>
@@ -41,6 +43,7 @@ button{
     color: green;
     /* width: 200px; */
     border: none;
+    
 
     border-bottom: #e0e0e0 solid 1px;
     border-top: #e0e0e0 solid 1px;
@@ -63,5 +66,6 @@ button{
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    margin-right: 10px;
 }
 </style>

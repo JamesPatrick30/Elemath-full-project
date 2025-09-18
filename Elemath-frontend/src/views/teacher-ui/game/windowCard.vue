@@ -143,7 +143,7 @@ export default {
 </template>
 <style scoped>
 .btn-start{
-    position: absolute;
+    position: fixed;
     bottom: 20px;
     right: 20px;
     background-color: #41b8d5;
