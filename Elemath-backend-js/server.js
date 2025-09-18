@@ -296,7 +296,33 @@ app.get('/get/student/data', auth, async (req, res) => {
   });
 });
 const Gradebook = require('./models/grade.js');
+app.get('/student/grade',auth,async(req,res)=>{
+  // const studentId = req.user.id;
+  const classId = req.user.classId;
+  const grades = await Gradebook.findOne({classId:classId},{_id:0,gradingPeriod:1,quizzes:1}).sort({ dateCreated: -1 });
 
+  if (!grades) {
+    return res.status(404).json({ message: 'No grades found for this student' });
+  }
+  if (!grades.quizzes.length) {
+    return res.status(404).json({ message: 'No quizzes found in the gradebook' });
+  }
+  // Find student's scores across all quizzes
+  const studentScores = grades.quizzes.map(quiz => {
+    const studentScore = quiz.students.find(student => student.lrn === req.user.username);
+    return {
+      score: studentScore ? studentScore.score : 0,
+      total: quiz.total,
+      quizMode: quiz.quizMode,
+      quizname: quiz.quizname,
+      percentage: studentScore ? Math.round((studentScore.score / quiz.total) * 100) : 0
+    };
+  });
+
+  // Add student scores to the response
+  grades.studentScores = studentScores;
+  res.status(200).json({gradingPeriod:grades.gradingPeriod,grade:studentScores});
+});
 app.post('/get/quarter', auth, async (req, res) => {
   const { quaterId } = req.body;
 
@@ -1524,6 +1550,7 @@ app.post('/mode/done', auth, async (req, res) => {
   }
 });
 const { buildQuiz } = require('./helper/windowcard.js');
+const grade = require('./models/grade.js');
 // ...existing code...
 
 // Minimal quiz endpoint

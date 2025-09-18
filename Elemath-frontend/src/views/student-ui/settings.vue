@@ -34,9 +34,9 @@ export default{
                 this.username = response.data.name || 'John Doe';
                 this.profile = response.data.profile;
                 this.lrn = response.data.lrn || '123456789012';
-                console.log('Student ID:', response.data);
-                await this.lookforQuiz();
-                socket.connect();
+                // console.log('Student ID:', response.data);
+                // await this.lookforQuiz();
+                // socket.connect();
             } catch (error) {
                 console.error('Error fetching student data:', error);
             }

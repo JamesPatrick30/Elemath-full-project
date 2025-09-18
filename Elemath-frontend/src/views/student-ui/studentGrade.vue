@@ -33,6 +33,7 @@ export default{
         }
     },
     mounted(){
+        this.getGrade();
         const player = this.$refs.player;
         player.volume = this.volume;
 
@@ -69,9 +70,21 @@ export default{
                 this.username = response.data.name || 'John Doe';
                 this.profile = response.data.profile;
                 this.lrn = response.data.lrn || '123456789012';
-                console.log('Student ID:', response.data);
+                // console.log('Student ID:', response.data);
             } catch (error) {
                 console.error('Error fetching student data:', error);
+            }
+            return;
+        },
+        async getGrade(){
+            try {
+                const response = await api.get('/student/grade'); // Adjust the endpoint as needed
+                // console.log(response.data);
+                // this.source = [];
+                this.source = response.data.grade || [];
+                // console.log('Grades:', this.source);
+            } catch (error) {
+                console.error('Error fetching student grades:', error);
             }
             return;
         },
@@ -113,27 +126,30 @@ export default{
         <header1 :info="{name:username,profile:profile,lrn:lrn}" ></header1>
         <main>
             <div class="container">
-                <button @click="prevTick"><font-awesome-icon icon="fa-solid fa-arrow-left" /></button>
+                <button @click="prevTick"><font-awesome-icon v-if="source.length > 5 && source.length" icon="fa-solid fa-arrow-left" /></button>
                 <div class="con-grade">
-                    <div class="grade-head">
+                    <div class="no-grade" v-if="!source.length">
+                        <p>No Grades Available</p>
+                    </div>
+                    <div class="grade-head" v-if="source.length">
                         <div class="grade" v-for="(item, index) in gradelist(source)" :key="index">
-                            <p>{{ item.mode }}</p>
+                            <p>{{ item.quizMode }}</p>
                         </div>
                     </div>
-                    <div class="grade-body">
-                        <div class="grade" v-for="(item, index) in gradelist(source)" :key="index" :style="{backgroundColor: gradeColor(item.grade)}">
-                            <p>{{ item.grade }}</p>
+                    <div class="grade-body" v-if="source.length">
+                        <div class="grade" v-for="(item, index) in gradelist(source)" :key="index" :style="{backgroundColor: gradeColor(item.percentage)}">
+                            <p>{{ item.score }} / {{ item.total }}</p>
                         </div>
                     </div>
-                    <div class="average">
+                    <div class="average" v-if="source.length" style="margin-top: 20px; text-align: center;">
                         <h2>Average Grade: 
                             {{
-                                (source.reduce((acc, curr) => acc + parseFloat(curr.grade), 0) / source.length).toFixed(2) + '%'
+                                (source.reduce((acc, curr) => acc + parseFloat(curr.percentage), 0) / source.length).toFixed(2) + '%'
                             }}
                         </h2>
                     </div>
                 </div>
-                <button @click="nextTick"><font-awesome-icon icon="fa-solid fa-arrow-right" /></button>
+                <button @click="nextTick" ><font-awesome-icon v-if="source.length > 5 && source.length" icon="fa-solid fa-arrow-right" /></button>
 
             </div>
             
@@ -144,6 +160,16 @@ export default{
     </body>
 </template>
 <style scoped>
+.no-grade{
+    width: 100%;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    font-weight: 600;
+    align-items: center;
+    background-color: white;
+    border-radius: 10px;
+}
 .container button{
     background-color: transparent;
     border: none;
@@ -157,6 +183,7 @@ export default{
 .container{
     display: flex;
     /* flex-direction: column; */
+    justify-content: center;
     align-items: center;
         background-color: white;
     border-radius: 10px;
@@ -167,7 +194,10 @@ export default{
     font-family: 'BubbleBody Neue','Poppins', sans-serif;
 }
 .grade{
-    font-size: 10px;
+    border:#555 2px solid;
+    border-bottom: none;
+    border-top: none;
+    font-size: 15px;
     font-weight: 700;
     width: 100%;
     height: 60px;
