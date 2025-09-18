@@ -83,7 +83,7 @@ const router = createRouter({
     {
       path:'/ds',
       name:'dash2',
-      component:dashboard2
+      component:dashboard3
     },
     {
       path:'/rev',

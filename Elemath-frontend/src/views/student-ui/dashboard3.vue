@@ -222,6 +222,18 @@ export default {
                 }
             }
         },
+        JoinBtn(){
+            this.lookforQuiz();
+            if(this.started){
+                alert('the quiz started');
+                return;
+            }
+            if(this.ongiong){
+                this.$router.push({ name: 'waiting-lobby',query: { i: this.id } });
+            }else{
+                alert('No ongoing quiz available.');
+            }
+        },
     },
     mounted(){
         this.getdata();
@@ -278,7 +290,7 @@ export default {
             </div>
         </header>
         <main>
-            <button class="main-button">
+            <button class="main-button"  @click="JoinBtn">
                 <img class="button-icon-left" src="/gif/whalebtn.gif" alt="">
                 <div class="txt">
                     <p>Quiz</p>

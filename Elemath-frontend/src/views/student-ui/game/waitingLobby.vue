@@ -59,7 +59,7 @@ export default {
         this.getdata();
         socket.removeAllListeners();
         socket.on('mode-deleted', (data) => {
-            this.$router.push({ name: 'studentDashboard' });
+            this.$router.push({ name: 'dash2' });
         });
         socket.on('player-joined', (data) => {
             this.students.push(data);
