@@ -13,7 +13,8 @@ import api from '@/axios';
 export default {
     methods: {
         goHistory(){
-            this.$router.push('/th');
+            // this.$router.push('/th');
+            alert('This feature is coming soon!');
         },
         goGrade(){
             this.$router.push('/sg');
