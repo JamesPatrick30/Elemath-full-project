@@ -78,8 +78,8 @@ z-index: 100;
 }
 header {
     z-index: 100;
-    max-width: 100%;
-    min-width: 100%;
+    max-width: 98%;
+    min-width: 98%;
     display: flex;
     justify-content: center;
     align-items: center;
