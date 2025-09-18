@@ -67,7 +67,7 @@ export default{
         <header>
             <img class="logo" src="/images/logonobg.png" alt="">
             <div class="con-info">
-                <img class="character" src="/characters/berry.png" alt="">
+                <img class="character" :src="profile" alt="">
                 <div class="info">
                     <p class="name">{{ username }}</p>
                     <p class="lrn">LRN: {{ lrn }}</p>
