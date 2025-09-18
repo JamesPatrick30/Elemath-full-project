@@ -2,10 +2,14 @@
 import api from '@/axios';
 import socket from '@/socket';
 import greenbg from './components/greenbg.vue';
+import newnav from './components/newnav.vue';
+import latestnav from './components/latestnav.vue';
 export default {
     name: 'dashboard3',
     components: {
-        greenbg
+        greenbg,
+        newnav,
+        latestnav
     },
     data(){
         return{
@@ -39,6 +43,7 @@ export default {
             started:false,
             audiosrc: "/musics/lobbym.mp3",
             muted: false,
+            isNav:false,
 
         }
     },
@@ -109,15 +114,21 @@ export default {
                 //     question_type:'multiple-choice'
                 // });
                 let res12 = null;
+                let temp = 0;
                 do{
                     res12 = await this.getQuestions();
                     if(this.cancelPractice){
                         this.loadquiz = false;
                         return;
                     }
-                    
-                }while(this.loadquiz && (!res12 || res12.length === 0|| res12.some(q => !q.question || !q.options || q.options.length < 2 || !q.answer)));
+                    temp++;
+                }while(this.loadquiz && temp < 5 && (!res12 || res12.length === 0|| res12.some(q => !q.question || !q.options || q.options.length < 2 || !q.answer)));
                 // console.log(res12.data);
+                if(temp === 5 && (!res12 || res12.length === 0|| res12.some(q => !q.question || !q.options || q.options.length < 2 || !q.answer))){
+                    alert('Failed to generate quiz. Please try again later.');
+                    this.loadquiz = false;
+                    return;
+                }
                 if(this.cancelPractice){
                     this.loadquiz = false;
                     return;
@@ -234,6 +245,9 @@ export default {
                 alert('No ongoing quiz available.');
             }
         },
+        toggleNav(){
+            this.isNav = !this.isNav;
+        }
     },
     mounted(){
         this.getdata();
@@ -276,6 +290,7 @@ export default {
 }
 </script>
 <template>
+    <audio ref="player" :src="audiosrc" loop autoplay muted></audio>
     <greenbg />
     <body>
         <header>
@@ -286,7 +301,7 @@ export default {
                     <p class="name">{{ name }}</p>
                     <p class="lrn">LRN: {{ lrn }}</p>
                 </div>
-                <font-awesome-icon class="menu-icon" icon="fa-solid fa-bars" />
+                <font-awesome-icon @click="toggleNav" class="menu-icon" icon="fa-solid fa-bars" />
             </div>
         </header>
         <main>
@@ -347,6 +362,7 @@ export default {
             <button class="play-quiz-btn" @click="playQuiz()">Practice Test</button>
         </div>
     </div>
+    <latestnav v-if="isNav"/>
     
 </template>
 <style scoped>
@@ -612,6 +628,7 @@ main{
     padding: 0;
 }
 .menu-icon{
+z-index: 100;
     margin-left: auto;
     font-size: 20px;
     margin-right: 10px;
@@ -630,6 +647,7 @@ main{
     padding: 5px;
 }
 header {
+    z-index: 100;
     max-width: 100%;
     min-width: 100%;
     display: flex;

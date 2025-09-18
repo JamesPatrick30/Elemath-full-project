@@ -1,10 +1,10 @@
 <template>
     <body>
-        <div class="con">
+        <!-- <div class="con">
             <br>
             <img class="profile" :src="info.profile" alt="">
             <p>{{ info.name }}</p>
-        </div>
+        </div> -->
         <div class="btncon">
             <button @click="goDashboard"><font-awesome-icon icon="fa-solid fa-house"  /> Dash Board</button>
             <button @click="goSettings"><font-awesome-icon icon="fa-solid fa-gear" /> Settings</button>
@@ -18,12 +18,12 @@
 import socket from '@/socket';
 import api from '@/axios';
 export default{
-    props: {
-        info: {
-            type: Object,
-            required: true
-        }
-    },
+    // props: {
+    //     info: {
+    //         type: Object,
+    //         required: true
+    //     }
+    // },
     methods:{
         goDashboard(){
             this.$router.push('/ds');
@@ -75,6 +75,8 @@ body{
     padding: 20px;
     border-radius: 5px;
     position: fixed;
+    left: auto;
+    right: 0;
     max-height: fit-content;
     max-width: 200px;
     margin: 10px;
@@ -90,7 +92,8 @@ button{
     width: calc(100% - 10px);
     font-family: 'BubbleBody Neue','Poppins', sans-serif;
     font-size: large;
-    color: rgb(100, 100, 100);
+        color: green;
+
     /* width: 200px; */
     background-color: white;
     text-align: left;

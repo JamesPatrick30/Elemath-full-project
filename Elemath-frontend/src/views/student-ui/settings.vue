@@ -109,7 +109,7 @@ export default{
             </div>
         </div>
     </body>
-    <newnav :info="{name:username,profile:profile}" v-show="navshow"></newnav>
+    <newnav v-show="navshow"></newnav>
 
 </template>
 <style scoped>
