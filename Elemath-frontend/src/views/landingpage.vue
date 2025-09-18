@@ -174,10 +174,12 @@
           </section>
           
           <section class="key-features" id="features">
-            <img class="animals crab" src="/gif/crab.gif" alt="">
-            <img class="animals turtle" src="/gif/turtle.gif" alt="">
-            <img class="animals fish" src="/gif/fish.gif" alt="">
-            <img class="animals dolphin" src="/gif/dolphin.gif" alt="">
+            <div class="pic-con">
+              <img class="animals crab" src="/gif/crab.gif" alt="">
+              <img class="animals turtle" src="/gif/turtle.gif" alt="">
+            </div>
+            
+            
             <div class="content">
               <p>Key Features
                 <br><br>
@@ -193,6 +195,10 @@
 
                 Rewards, avatars, and level-up system to motivate learners<br><br>
               </p>
+            </div>
+            <div class="pic-con">
+              <img class="animals fish" src="/gif/fish.gif" alt="">
+              <img class="animals dolphin" src="/gif/dolphin.gif" alt="">
             </div>
           </section>
           <section class="developers">
@@ -427,26 +433,29 @@ export default {
 }
 .turtle{
   top: 330%;
-  left: 65%;
+  left: 60%;
   /* height: 80px; */
   /* animation: moveTurtle 6s linear infinite; */
 }
 .fish{
   top: 370%;
-  left: 65%;
+  left: 55%;
   /* height: 80px; */
   /* animation: moveFish 6s linear infinite; */
 }
 .crab{
-  top: 350%;
-  left: -10%;
+  top: 330%; /* Use percentage relative to the section */
+  left: 10%; 
+  transform: translateY(-50%); /* Center vertically */
   /* height: 80px; */
   /* animation: moveCrab 6s linear infinite; */
 }
 .animals{
   z-index: 1000;
   position: absolute;
-  height: 150px;
+  height: 100px;
+  pointer-events: none;
+  overflow: hidden;
 }
 .info-img{
   width: 110px;
@@ -860,11 +869,12 @@ main {
 .key-features {
   padding: 10px;
   background-color: #4fc4f7;
-  height: 100%;
+  height: 100vh;
   width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: 0.5fr 2fr 0.5fr; /* 2 columns of equal width */
+  /* align-items: center;
+  justify-content: center; */
 }
 .key-features .content {
   display: flex;
@@ -873,7 +883,7 @@ main {
   justify-content: center;
   text-align: center;
   height: 100%;
-  width: 48%;
+  width: 100%;
   color: white;
   font-size: 15px;
   z-index: 1000;
