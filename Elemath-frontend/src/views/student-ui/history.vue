@@ -25,9 +25,22 @@ export default{
                 this.username = response.data.name || 'John Doe';
                 this.profile = response.data.profile;
                 this.lrn = response.data.lrn || '123456789012';
+                await this.getHistory();
                 // console.log('Student ID:', response.data);
             } catch (error) {
                 console.error('Error fetching student data:', error);
+            }
+            return;
+        },
+        async getHistory(){
+            try {
+                const response = await api.get('/student/history'); // Adjust the endpoint as needed
+                // console.log(response.data);
+                // this.source = [];
+                // this.source = response.data.history || [];
+                console.log('Grades:', response.data);
+            } catch (error) {
+                console.error('Error fetching student history:', error);
             }
             return;
         }
@@ -39,6 +52,9 @@ export default{
     <body>
         <!-- <h1>History</h1> -->
         <header1 :info="{name:username, profile:profile, lrn:lrn}"/>
+        <div class="history-con">
+            <div class="history"></div>
+        </div>
     </body>
     <!-- <h1>History</h1> -->
 </template>

@@ -296,6 +296,45 @@ app.get('/get/student/data', auth, async (req, res) => {
   });
 });
 const Gradebook = require('./models/grade.js');
+app.get('/student/history',auth,async(req,res)=>{
+  const classId = req.user.classId;
+  const grades = await Gradebook.findOne({classId:classId},{_id:0,gradingPeriod:1,quizzes:1}).sort({ dateCreated: -1 });
+
+  if (!grades) {
+    return res.status(404).json({ message: 'No grades found for this student' });
+  }
+  if (!grades.quizzes.length) {
+    return res.status(404).json({ message: 'No quizzes found in the gradebook' });
+  }
+
+  // Map quiz history data
+  const quizHistory = grades.quizzes.map(quiz => {
+    // Find student's score in this quiz
+    const studentScore = quiz.students.find(student => student.lrn === req.user.username);
+    
+    return {
+      quizId: quiz.quizId,
+      quizname: quiz.quizname,
+      quizMode: quiz.quizMode,
+      total: quiz.total,
+      score: studentScore ? studentScore.score : 0,
+      percentage: studentScore ? Math.round((studentScore.score / quiz.total) * 100) : 0,
+      questions: quiz.questions.map(q => ({
+        number: q.number,
+        question: q.question,
+        answer: q.answer,
+        choices: q.choices,
+        studentCorrect: q.studentCorrect,
+        topic: q.topic
+      }))
+    };
+  });
+
+  res.status(200).json({
+    gradingPeriod: grades.gradingPeriod,
+    quizzes: quizHistory
+  });
+});
 app.get('/student/grade',auth,async(req,res)=>{
   // const studentId = req.user.id;
   const classId = req.user.classId;
