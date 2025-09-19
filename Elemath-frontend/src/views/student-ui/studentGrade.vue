@@ -93,7 +93,7 @@ export default{
             localStorage.setItem('volume', this.volume);
         },
         nextTick(){
-            if(this.index < this.source.length - 5){
+            if(this.index < this.source.length - 3){
                 this.index++;
             }
         },
@@ -111,7 +111,7 @@ export default{
         },
         gradelist(grades){
             if(this.isMobile){
-                return grades.slice(this.index, this.index + 5);
+                return grades.slice(this.index, this.index + 3);
             }
             return grades;
         }
