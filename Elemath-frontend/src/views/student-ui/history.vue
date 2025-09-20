@@ -113,6 +113,9 @@ export default{
     <!-- <h1>History</h1> -->
 </template>
 <style scoped>
+.correct-answer{
+    color: #8ee71a;
+}
 .rev{
     margin-bottom: 20px;
     padding: 15px;
