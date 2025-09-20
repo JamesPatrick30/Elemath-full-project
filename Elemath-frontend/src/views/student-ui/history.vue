@@ -97,6 +97,9 @@ export default{
         <!-- <h1>History</h1> -->
         <header1 :info="{name:username, profile:profile, lrn:lrn}"/>
         <div class="history-con">
+            <div class="no-history" v-if="histories.length == 0">
+                <h3>No history available</h3>
+            </div>
             <div class="history" v-for="(quiz, index) in histories" :key="index" @click="showQuestion(quiz.questions, quiz.quizMode)">
                 <div><strong>Preview</strong><p>{{ quiz.quizMode }}</p></div>
                 <hr>
@@ -113,6 +116,13 @@ export default{
     <!-- <h1>History</h1> -->
 </template>
 <style scoped>
+.no-history{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 .correct-answer{
     color: #8ee71a;
 }
