@@ -77,7 +77,7 @@ z-index: 100;
     padding: 5px;
 }
 header {
-    z-index: 100;
+    z-index: 10;
     max-width: 98%;
     min-width: 98%;
     display: flex;

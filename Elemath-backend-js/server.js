@@ -231,10 +231,19 @@ app.post('/update/student/info',auth,async(req,res)=>{
   if(!student) return res.status(404).json({message:'Student not yet enrolled'});
 
   try{
-    const result = await StudentClass.updateOne(
-      { email: req.user.username },
-      { $set: { name: username, password: password } }
-    );
+    let result = null;
+    if(password) {
+      result = await StudentClass.updateOne(
+        { email: req.user.username },
+        { $set: { name: username, password: password } }
+      );
+    }else{
+      result = await StudentClass.updateOne(
+        { email: req.user.username },
+        { $set: { name: username } }
+      );
+    }
+    
     console.log('the update data : ', result);
     res.status(200).json({message:'updated'});
   }catch(err){

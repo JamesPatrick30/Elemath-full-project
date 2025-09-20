@@ -50,7 +50,7 @@ export default{
             this.waitbtn = true;
             try{
                 const res = await api.post('/update/student/info',{
-                    name:this.name,
+                    username:this.name,
                     password:this.password
                 });
                 this.password = '';
@@ -71,6 +71,7 @@ export default{
 </script>
 <template>
     <greenbg></greenbg>
+    
     <main>
         <header1 :info="{name:username,profile:profile,lrn:lrn}" ></header1>
         <!-- <header>
@@ -98,10 +99,25 @@ export default{
             <button class="submit" @click="updateInfo" :disabled="waitbtn">Update</button>
         </div>
     </main>
+    <div class="loading-container" v-if="waitbtn">
+        <!-- <img src="/gif/loadingbox.gif" alt=""> -->
+         <div class="loading"></div>
+    </div>
         <!-- <latestnav :info="{name:username,profile:profile}" v-show="navshow"></latestnav> -->
 
 </template>
 <style scoped>
+.loading-container{
+    position: fixed;
+    z-index: 100;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* z-index: 10; */
+}
 .submit{
     border: none;
     border-radius: 5px;
