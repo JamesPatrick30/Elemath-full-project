@@ -11,7 +11,8 @@ const nodemailer = require('nodemailer'); // ✅ use require instead of import
 const multer = require('multer');
 dotenv.config();
 const sgMail = require('@sendgrid/mail');
-
+const logger = require('./logger.js');
+const pinoHttp = require("pino-http");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 //redis client
 const redisClient = require('./redis/redisClient.js');
@@ -35,6 +36,15 @@ const cookie = require("cookie");
 
 //email
 
+// Attach logger to app
+// Attach logger to requests
+app.use(pinoHttp({ logger }));
+
+// Example: log incoming requests (method, url)
+app.use((req, res, next) => {
+  req.log.info({ method: req.method, url: req.url }, "Incoming request");
+  next();
+});
 
 // Middleware
 app.use(cors({
@@ -49,15 +59,27 @@ const student = require('./models/student.js');
 app.use(passport.initialize());
 
 app.use(bodyParser.urlencoded({ extended: true }));
+// Must be after all routes
+app.use((err, req, res, next) => {
+  if (req.log) {
+    req.log.error({ err }, "Unhandled error");
+  } else {
+    logger.error({ err }, "Unhandled error (no req.log)");
+  }
+
+  res.status(500).json({ error: "Internal Server Error" });
+});
+
+
 const server = http.createServer(app);
 mongoose.connect(uri)
   .then(() => {
     server.listen(PORT,() => {
-      console.log(`Server running on http://localhost:${PORT}`);
+      logger.info(`Server running on http://localhost:${PORT}`);
     });
-    console.log('✅ Connected to MongoDB Atlas')
+    logger.info('✅ Connected to MongoDB Atlas')
   })
-  .catch(err => console.error('❌ Connection error:', err));
+  .catch(err => logger.error({ matchId: 42 }, '❌ Connection error:', err));
 // Routes
 const uploadRouter = require('./routes/upload.js');
 
@@ -113,7 +135,7 @@ app.get('/dlesson/get',auth, async (req, res) => {
 
     const cachedData = await redisClient.get(cacheKey);
     if (cachedData) {
-      console.log('Cache hit for key:', cacheKey);
+      // console.log('Cache hit for key:', cacheKey);
       return res.json(JSON.parse(cachedData));
     }
     let output = null;
