@@ -134,7 +134,7 @@ export default{
                     <table v-if="source.length" class="grade-table">
                         <thead>
                             <tr>
-                                <th v-for="(item, index) in gradelist(source)" :key="index">
+                                <th v-for="(item, index) in gradelist(source)" :style="{ fontSize: item.quizMode == 'WINDOWCARD MODE' ? '12px' : '16px' }" :key="index">
                                     {{ item.quizMode }}
                                 </th>
                             </tr>
