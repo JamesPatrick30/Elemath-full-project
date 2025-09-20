@@ -76,11 +76,11 @@ export default{
             <div class="question-con">
                 <div class="rev" v-for="(c,index) in rev" :key="index" :class="c.correct? 'correct' : 'wrong'">
                     <p v-if="modeClicked == 'QUIZ MODE'" class="question">{{c.question  }}</p>
-                    <p v-else class="question">{{ getwindowcard(c?.question ).q1}} {{ getwindowcard(c?.question).operation }} {{ getwindowcard(c?.question ).q2 }}</p>
+                    <p v-else class="question">{{ getwindowcard(c?.question ).q1}} {{ getwindowcard(c?.question).operation }} {{ getwindowcard(c?.question ).q2 }} = ?</p>
 
                     <div class="con-option" v-if="c?.choices.length > 0">
                         <div class="option" v-for="(value,index) in c.choices" :key="index" :style="{color:colorpic(c.answer,value)}">
-                            <p>{{ value }}</p>
+                            <p >{{ value }}</p>
                         </div>
                     </div>
                     <div v-else>
@@ -101,7 +101,7 @@ export default{
                 <h3>No history available</h3>
             </div>
             <div class="history" v-for="(quiz, index) in histories" :key="index" @click="showQuestion(quiz.questions, quiz.quizMode)">
-                <div><strong>Preview</strong><p>{{ quiz.quizMode }}</p></div>
+                <div><strong>Preview</strong><p class="quiz-mode" :style="{ fontSize: quiz.quizMode == 'WINDOWCARD MODE' ? '12px' : '16px' }">{{ quiz.quizMode }}</p></div>
                 <hr>
                 <div><strong>Date</strong><p> {{ quiz.quizname }}</p></div>
                 <hr>
@@ -116,6 +116,17 @@ export default{
     <!-- <h1>History</h1> -->
 </template>
 <style scoped>
+.option p {
+    
+    /* background-color: #8ee71a; */
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.quiz-mode{
+    font-weight: 500;
+    text-decoration: underline;
+}
 .no-history{
     height: 100%;
     width: 100%;
