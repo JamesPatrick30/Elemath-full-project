@@ -12,7 +12,7 @@ function auth(req, res, next) {
       try {
         const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET); // ✅ Use REFRESH_SECRET
         req.user = decoded; // decoded may contain { id, username, etc. }
-        console.log("✅ Verified refresh token:", decoded);
+        // console.log("✅ Verified refresh token:", decoded);
         res.cookie('access_token', createToken(decoded).accessToken, {
           httpOnly: true,
           secure: false,       // true in production
@@ -29,7 +29,7 @@ function auth(req, res, next) {
           maxAge: 90 * 24 * 60 * 60 * 1000, 
           path:'/'
       });
-      console.log('\x1b[44m%s\x1b[0m','all the token is rotated in auth middleware');
+      // console.log('\x1b[44m%s\x1b[0m','all the token is rotated in auth middleware');
       next();
       return;
       } catch (err) {
@@ -41,7 +41,7 @@ function auth(req, res, next) {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
-        console.log("✅ Verified refresh token:", decoded);
+        // console.log("✅ Verified refresh token:", decoded);
 
     next();
   } catch (err) {
