@@ -222,7 +222,7 @@ app.post('/api/login',async (req, res) => {
     });
 
     res.status(200).json({ message: 'Login successful', classCount: classCount });
-    console.log('Login successful:', username);
+    // console.log('Login successful:', username);
 });
 app.post('/update/student/info',auth,async(req,res)=>{
   const { username, password } = req.body;
@@ -244,7 +244,7 @@ app.post('/update/student/info',auth,async(req,res)=>{
       );
     }
     
-    console.log('the update data : ', result);
+    // console.log('the update data : ', result);
     res.status(200).json({message:'updated'});
   }catch(err){
     console.error(err);
@@ -282,7 +282,7 @@ app.post('/student-login', async (req, res) => {
         path:'/'
     });
     res.status(200).json({ message: 'Login successful' });
-    console.log('Login successful:', student.name);
+    // console.log('Login successful:', student.name);
 })
 app.get('/get/student/data', auth, async (req, res) => {
   const studentId = req.user.id; // Assuming the student ID is stored in the token payload
@@ -383,7 +383,7 @@ app.post('/get/quarter', auth, async (req, res) => {
 
   // Flatten into student-based structure
   const studentMap = {};
-  console.log('quarter : '+quarter.quizzes);
+  // console.log('quarter : '+quarter.quizzes);
   quarter.quizzes.forEach(quiz => {
     quiz.students.forEach(student => {
       if (!studentMap[student.lrn]) {
@@ -417,7 +417,7 @@ app.post('/get/classrecord/Id',auth,async(req,res)=>{
 
   if (!records) return res.status(404).json({count : 0});
 
-  console.log('record in :'+classId +' ,' + records);
+  // console.log('record in :'+classId +' ,' + records);
   res.json({count: records.length,records: records});
 
 });
@@ -431,7 +431,7 @@ app.post('/create/record', auth, async (req, res) => {
     if (existing) {
       return res.status(400).json({ message: "Gradebook already exists for this class and grading period." });
     }
-    console.log('classId : '+classId + ' gradingPeriod : '+gradingPeriod);
+    // console.log('classId : '+classId + ' gradingPeriod : '+gradingPeriod);
     // 2. Get all students in the class
     const students = await StudentClass.find(
       { classId:classId },
@@ -450,7 +450,7 @@ app.post('/create/record', auth, async (req, res) => {
     });
 
     const result = await book.save(); // ✅ await here
-    console.log("the create book :"+ result);
+    // console.log("the create book :"+ result);
     // 4. Respond with result
     res.status(201).json({ message: 'Gradebook created successfully.', result });
 
@@ -467,7 +467,7 @@ app.post('/refresh-token', verifyRefreshToken, (req, res) => {
     if(accessToken){
       try{
         const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
-        console.log('\x1b[46m%s\x1b[0m','the token is not rotated');
+        // console.log('\x1b[46m%s\x1b[0m','the token is not rotated');
         res.status(200).json({ message: 'Access token is ok' });
         return;
       }catch(err){
@@ -495,7 +495,7 @@ app.post('/refresh-token', verifyRefreshToken, (req, res) => {
             maxAge: 90 * 24 * 60 * 60 * 1000, // 90 days
             path:'/'
         });
-        console.log('\x1b[43m%s\x1b[0m','all token is rotated in refresh token api');
+        // console.log('\x1b[43m%s\x1b[0m','all token is rotated in refresh token api');
         res.status(200).json({ message: 'Access token refreshed' });
     } catch (error) {
         console.error('Error refreshing token:', error);
@@ -514,7 +514,7 @@ app.post('/api/logout', (req, res) => {
     sameSite: 'none',
     secure: true
   });
-  console.log('User logged out');
+  // console.log('User logged out');
 
   res.status(200).json({ message: 'Logged out successfully' });
   
@@ -564,7 +564,7 @@ async function casheTeacherData(req,res,next){
   try {
     const cachedData = await redisClient.get(cacheKey);
     if (cachedData) {
-      console.log('Cache hit for key:', cacheKey);
+      // console.log('Cache hit for key:', cacheKey);
       return res.status(200).json(JSON.parse( cachedData));
     }
     next();
@@ -640,7 +640,7 @@ app.post('/createClass', auth, async (req, res) => {
       }
     );
 
-    console.log('Class created and teacher updated.'+savedClass);
+    // console.log('Class created and teacher updated.'+savedClass);
     res.json({ id: savedClass._id });
 
   } catch (err) {
@@ -685,7 +685,7 @@ app.post('/enroll-student',auth,async(req,res)=>{
       console.log('Error deleting cache:', err);
     }
 
-    console.log('Class created and teacher updated.');
+    // console.log('Class created and teacher updated.');
     res.json({ message: 'created' });
   }catch(err){
     console.log(err);
@@ -702,7 +702,7 @@ async function classCache(req,res,next){
   try {
     const cachedData = await redisClient.get(cacheKey);
     if (cachedData) {
-      console.log('Cache hit for key:', cacheKey);
+      // console.log('Cache hit for key:', cacheKey);
       return res.status(200).json(JSON.parse( cachedData));
     }
     next();
@@ -721,7 +721,7 @@ app.post('/get/classData',auth,classCache,async(req,res)=>{
     if(!classIn) return res.status(404).json({message: 'class doesnt exist'});
 
     const list = await StudentClass.find({classId : classId});
-    console.log('list :'+classIn);
+    // console.log('list :'+classIn);
     await redisClient.set(`classData:${classId}`, JSON.stringify(list), { EX: 3600 });
     res.status(200).json(list);
   }catch(err){
@@ -736,7 +736,7 @@ async function cashChart(req,res,next){
       next();
       return;
     }
-    console.log('hit chart cache');
+    // console.log('hit chart cache');
     const modeData = JSON.parse(datain);
     const LineChart = modeData.LineChart;
     const BarChart = modeData.BarChart;
@@ -912,7 +912,7 @@ app.get('/chart', auth,cashChart ,async (req, res) => {
 
 app.post('/data/teacher/classname',auth,async (req,res)=>{
   const { classid } = req.body;
-  console.log(classid);
+  // console.log(classid);
   const classvar = await classes.findById(classid);
 
   if(!classvar) return res.status(404).json({message : 'Class not exist'});
@@ -929,7 +929,7 @@ app.post('/edit/student', auth ,async ( req,res )=>{
     
     if (!student) return res.status(404).json({message : 'student not found'});
     const name =  lname + '. ' +fname  + ' ' + mname + ', ';
-    console.log('the name is : '+ name);
+    // console.log('the name is : '+ name);
     await StudentClass.updateOne(
       { lrn : lrn },
       { $set: {
@@ -954,13 +954,13 @@ app.delete('/remove/student', auth ,async ( req,res )=>{
     const { lrn } = req.body;
 
     const student = await StudentClass.findOne({ lrn : lrn });
-    console.log('student : '+ student + ' lrn : '+ lrn);
+    // console.log('student : '+ student + ' lrn : '+ lrn);
     
     if (!student) return res.status(404).json({message : 'student not found'});
 
     const deletedata = await StudentClass.findOneAndDelete({lrn : lrn});
     await redisClient.del(`classData:${deletedata.classId}`); // Clear cache for this class
-    console.log('deletedata: '+ deletedata);
+    // console.log('deletedata: '+ deletedata);
     res.json({message : 'success'});
   }catch(err){
     console.log(err);
@@ -1003,7 +1003,7 @@ app.post('/admin/trim-students', async (req, res) => {
 app.get('/role', auth, async (req, res) => {
   try {
     const id = req.user?.id;
-    console.log("User ID from token:", id);
+    // console.log("User ID from token:", id);
     if (!id) {
       return res.status(400).json({ message: "Invalid token payload." });
     }
@@ -1011,7 +1011,7 @@ app.get('/role', auth, async (req, res) => {
     // Check teacher
     const teacher = await teacher_accoount.findById(id).populate('class');
     if (teacher) {
-      console.log("✅ Teacher role found :", teacher);
+      // console.log("✅ Teacher role found :", teacher);
       return res.json({
         role: 'teacher',
         class: teacher.class
@@ -1040,7 +1040,7 @@ app.get('/get/grade/class',auth,async(req,res)=>{
 
   try{
     const data = await teacher_accoount.findById(id,{class:1,_id:0});
-    console.log(data);
+    // console.log(data);
     return res.json({data:data.class});
   }catch(err){
     console.log(err);
@@ -1057,7 +1057,7 @@ app.post('/create-question',auth ,async(req,res)=>{
   }
   const rawText = fileLesson.file;
   if(!rawText){
-    console.log('no file');
+    // console.log('no file');
     return res.status(404).json({message:'sada'});
     
   }
@@ -1071,14 +1071,14 @@ app.post('/create-question',auth ,async(req,res)=>{
          } }
       );
 
-      console.log("📨 FastAPI replied:",fastapiResponse.data);
+      // console.log("📨 FastAPI replied:",fastapiResponse.data);
       let rawString = fastapiResponse.data.quiz;
       rawString = rawString.replace(/```json|```/g, '').trim();
 
       
       try {
         quiz = JSON.parse(rawString);
-        console.dir(quiz, { depth: null });
+        // console.dir(quiz, { depth: null });
       } catch (err) {
         console.error('❌ Invalid JSON:', err.message);
       }
@@ -1121,7 +1121,7 @@ app.post('/create/mode/practice',auth,async (req,res)=>{
     rev: [],
     score: 0,
   };
-  console.log(createMode);
+  // console.log(createMode);
 
   await redisClient.set(`practice:${req.user.username}`, JSON.stringify(createMode), { EX: 3600 });
   res.json({message:'done',createMode:createMode})
@@ -1160,7 +1160,7 @@ app.delete('/clear/mode/practice/review',auth,async (req,res)=>{
 });
 app.post('/delete/mode', auth,async (req, res) => {
   const { id } = req.body;
-  console.log('delete mode id:', id);
+  // console.log('delete mode id:', id);
 
   // Count how many items match before deletion
   //const matches = list.filter(item => item.id === id).length;
@@ -1187,7 +1187,7 @@ app.get('/get/mode', auth,async (req, res) => {
   // const index = list.findIndex(item => String(item.id) === String(id));
   const quiz = await redisClient.get(`mode:${id}`);
   const data = JSON.parse(quiz);
-  console.log(quiz);
+  // console.log(quiz);
   if (!quiz) {
     return res.json({ quiz: false,started:false });
   }
@@ -1227,15 +1227,15 @@ app.get('/lesson/list',auth, async (req, res) => {
 });
 app.get('/get/mode/data',auth, async (req, res) => {
   const id = req.query.id; // comes in as a string
-  console.log('get mode data query: pong', req.query); // better logging
-  console.log('id:', id);
+  // console.log('get mode data query: pong', req.query); // better logging
+  // console.log('id:', id);
 
   const quiz = await redisClient.get(`mode:${id}`);
   if (!quiz) {
     return res.status(404).json({ message: 'No mode found' });
   }
   const modeData = JSON.parse(quiz);
-  console.log('Mode data:', modeData);
+  // console.log('Mode data:', modeData);
   // Return only the players array
   res.status(200).json({ modeData: modeData.players });
 });
@@ -1244,14 +1244,14 @@ app.get('/get/mode/question/1st',auth,async(req,res)=>{
   const modeData = JSON.parse(mode);
   let player = modeData.players.find(p => p.lrn === req.user.username);
   const qin = player.qIn;
-  console.log('quizMode in get : ' + modeData.quizMode);
+  // console.log('quizMode in get : ' + modeData.quizMode);
   // modeData.players.find(p => p.lrn === req.user.username).qIn+=1;
   res.json({question:modeData.questions[qin],done:false,time:modeData.gametime,quizMode:modeData.quizMode});
 });
 app.post('/get/mode/question', auth, async (req, res) => {
   const { answer } = req.body;
   const mode = await redisClient.get(`mode:${req.user.classId}`);
-  console.log('mode in get : ' + mode);
+  // console.log('mode in get : ' + mode);
 
   let modeData = JSON.parse(mode);
   let player = modeData.players.find(p => p.lrn === req.user.username);
@@ -1259,7 +1259,7 @@ app.post('/get/mode/question', auth, async (req, res) => {
   const qin = player.qIn;
   const question = modeData.questions[qin];
 
-  console.log('answer input : ' + answer + ' real answer : ' + question.answer);
+  // console.log('answer input : ' + answer + ' real answer : ' + question.answer);
 
   // normalize answers (ignore case + spaces)
   const normalizedAnswer = answer.trim().toLowerCase();
@@ -1377,7 +1377,7 @@ app.post('/report/teacher', auth, upload.array('screenshots', 5), async (req, re
  //     attachments
  //   });
 
-    console.log("✅ Email sent:");
+    // console.log("✅ Email sent:");
     res.json({ success: true, message: "Bug report sent!" });
   } catch (err) {
     console.error(err);
@@ -1408,7 +1408,7 @@ app.post('/report/student', auth, upload.array('screenshots', 5), async (req, re
     //  attachments
    // });
 
-    console.log("✅ Email sent:", info.messageId);
+    // console.log("✅ Email sent:", info.messageId);
     res.json({ success: true, message: "Bug report sent!" });
   } catch (err) {
     console.error(err);
@@ -1429,7 +1429,7 @@ app.get('/get/mode/player/rev',auth,async(req,res)=>{
   
   const modeData = JSON.parse(data);
   const player = modeData.players.find(p => p.lrn === req.user.username);
-  console.log(player);
+  // console.log(player);
   const rev = player.rev;
   res.json({rev:rev,score:player.score});
 });
@@ -1503,7 +1503,7 @@ app.post('/mode/finish',auth,async (req,res)=>{
 
     // 6. Save into Gradebook
     const updated = await addQuizAndAnalysis(id, newQuiz, chartPoint);
-    console.log(updated);
+    // console.log(updated);
     await redisClient.del(`chart:${id}`);
     await redisClient.del(`mode:${id}`);
 
@@ -1526,12 +1526,12 @@ app.post('/mode/done', auth, async (req, res) => {
 
     const players = modeData.players;  // present
     // const allStudents = await StudentClass.find({ classId: id }); // enrolled
-    console.log(modeData.questions.length);
+    // console.log(modeData.questions.length);
     let pass = 0;
     let failed = 0;
     for(const studs of players){
       const ave = studs.score / modeData.questions.length * 100;
-      console.log(ave);
+      // console.log(ave);
       if(ave >=50){
         pass+=1;
       }else{
@@ -1604,12 +1604,12 @@ const grade = require('./models/grade.js');
 // Minimal quiz endpoint
 app.get('/quiz', auth, (req, res) => {
   const { difficulty = 'medium', operation = 'mixed', count = 10 } = req.query;
-  console.log(`Generating quiz: difficulty=${difficulty}, operation=${operation}, count=${count}`);
+  // console.log(`Generating quiz: difficulty=${difficulty}, operation=${operation}, count=${count}`);
   const n = Math.max(1, Math.min(500, parseInt(count, 10) || 10));
   const  questions  = buildQuiz(difficulty, operation, n);
   // const quiz = buildQuiz("medium", "subtraction", 12);
-  console.log("Generated", questions.length, "questions");
-  console.log(questions);
+  // console.log("Generated", questions.length, "questions");
+  // console.log(questions);
   res.json({ data:questions.questions });
 });
 async function setgameData(id,payload) {
@@ -1651,20 +1651,20 @@ io.use((socket, next) => {
 
 
 io.on("connection", (socket) => {
-  console.log("Client connected:", socket.user.username);
+  // console.log("Client connected:", socket.user.username);
 
   if(!socket.user || !socket.user.classId) {
-    console.log("Teacher : ", socket.user.username);
+    // console.log("Teacher : ", socket.user.username);
     // return socket.disconnect();
   }
   if(!socket.user){
-    console.log("No user data found in socket, disconnecting...");
+    console.error("No user data found in socket, disconnecting...");
     return socket.disconnect();
   }
   socket.join(socket.user?.classId); // Join a room based on user ID
     // Handle user disconnect
   socket.on('create-room', (data) => {
-      console.log(`User ${socket.id} created room: ${data.roomId}`);
+      // console.log(`User ${socket.id} created room: ${data.roomId}`);
       socket.join(data.roomId);
       io.to(data.roomId).emit('room-created', { message: 'join please' });
       // socket.emit('room-created', { roomId: data.roomId });
@@ -1675,15 +1675,15 @@ socket.on('game-start', async (data) => {
 
   modeData.gametime = data.time;
   modeData.start = true;
-  console.log('mode data : '+data.questions);
+  // console.log('mode data : '+data.questions);
   // add studentCorrect:0 to each question
   modeData.questions = data.questions.map(q => ({
     ...q,
     studentCorrect: 0
   }));
 
-  console.log('questions : ' + JSON.stringify(modeData.questions));
-  console.log('mode data : ' + JSON.stringify(modeData));
+  // console.log('questions : ' + JSON.stringify(modeData.questions));
+  // console.log('mode data : ' + JSON.stringify(modeData));
 
   // store back in redis
   setgameData(`mode:${data.roomId}`, modeData);
@@ -1696,7 +1696,7 @@ socket.on('game-start', async (data) => {
 });
 
   socket.on('join-room',async (data) => {
-      console.log(`User ${socket.id} joined room: ${data.roomId}`);
+      // console.log(`User ${socket.id} joined room: ${data.roomId}`);
       socket.join(data.roomId);
       const mode =await redisClient.get(`mode:${data.roomId}`);
       if(!mode) {
@@ -1711,18 +1711,18 @@ socket.on('game-start', async (data) => {
         modeData.players.push({ player: data.name, lrn: data.lrn, profile: data.profile,score:0,qIn:0,done:false,rev:[] });
         // await redisClient.set(`mode:${data.roomId}`, JSON.stringify(modeData), { EX: 3600 });
         setgameData(`mode:${data.roomId}`,modeData);
-        console.log('Updated mode data:', modeData);
+        // console.log('Updated mode data:', modeData);
 
         await pubClient.publish('action',JSON.stringify({id:data.roomId,action:'player-joined',payload:{ player: data.name, lrn: data.lrn, profile: data.profile }}));
         // io.to(data.roomId).emit('player-joined', { player: data.name, lrn: data.lrn, profile: data.profile });
       } else {
-        console.log(`Player with LRN ${data.lrn} already exists in mode.`);
+        // console.log(`Player with LRN ${data.lrn} already exists in mode.`);
       }
       // Notify all clients in the room about the new player
       
   });
   socket.on('disconnect', (reason) => {
-      console.log(`User disconnected: ${socket.id}, username : ${socket.user.username}`);
+      // console.log(`User disconnected: ${socket.id}, username : ${socket.user.username}`);
 
       // Automatically remove all listeners for this socket
       socket.removeAllListeners();
