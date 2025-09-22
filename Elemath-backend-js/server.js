@@ -491,7 +491,8 @@ app.post('/create/record', auth, async (req, res) => {
     res.status(201).json({ message: 'Gradebook created successfully.', result });
 
   } catch (error) {
-    console.error("Error creating gradebook:", error);
+    logError(error, req);
+    // console.error("Error creating gradebook:", error);
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
@@ -534,7 +535,7 @@ app.post('/refresh-token', verifyRefreshToken, (req, res) => {
         // console.log('\x1b[43m%s\x1b[0m','all token is rotated in refresh token api');
         res.status(200).json({ message: 'Access token refreshed' });
     } catch (error) {
-        console.error('Error refreshing token:', error);
+        logError(error, req);
         res.status(500).json({ message: 'Internal server error' });
     }
 });
@@ -588,7 +589,9 @@ app.post('/sign-up', async (req, res) => {
     res.status(201).json({ message: 'User created successfully' });
 
   } catch (error) {
-    console.error('Error creating user:', error);
+    logError(error, req);
+    
+    // console.error('Error creating user:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
@@ -605,7 +608,7 @@ async function casheTeacherData(req,res,next){
     }
     next();
   } catch (error) {
-    console.error('Error fetching teacher data:', error);
+    logError(error, req);
     res.status(500).json({ message: 'Internal server error' });
   }
 } 
@@ -619,7 +622,7 @@ app.get('/data/teacher',auth,casheTeacherData, async (req, res) => {
     await redisClient.set('teacher:${userId}', JSON.stringify(user), { EX: 3600 });
     res.status(200).json(user);
   } catch (error) {
-    console.error('Error fetching teacher data:', error);
+    logError(error, req);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
@@ -639,7 +642,7 @@ app.post('/teacher/changeProfile',auth,async(req,res)=>{
     
     return res.json({message:'done'})
   }catch(err){
-    console.log('error is : '+ err);
+    logError(err, req);
   }
 });
 app.post('/find-student', auth, async (req, res) => {
@@ -680,7 +683,8 @@ app.post('/createClass', auth, async (req, res) => {
     res.json({ id: savedClass._id });
 
   } catch (err) {
-    console.error(err);
+    logError(err, req);
+    // console.error(err);
     res.status(500).json({ error: 'Server error' });
   }
 });
@@ -718,13 +722,13 @@ app.post('/enroll-student',auth,async(req,res)=>{
       const cacheKey = `classData:${classId}`;
       await redisClient.del(cacheKey);
     }catch(err){
-      console.log('Error deleting cache:', err);
+      logError(err, req);
     }
 
     // console.log('Class created and teacher updated.');
     res.json({ message: 'created' });
   }catch(err){
-    console.log(err);
+    logError(err, req);
   }
   
 
@@ -743,7 +747,7 @@ async function classCache(req,res,next){
     }
     next();
   } catch (error) {
-    console.error('Error fetching class data:', error);
+    logError(error, req);
     res.status(500).json({ message: 'Internal server error' });
   }
 }
@@ -761,7 +765,7 @@ app.post('/get/classData',auth,classCache,async(req,res)=>{
     await redisClient.set(`classData:${classId}`, JSON.stringify(list), { EX: 3600 });
     res.status(200).json(list);
   }catch(err){
-    console.log(err);
+    logError(err, req);
   }
 });
 async function cashChart(req,res,next){
@@ -941,7 +945,8 @@ app.get('/chart', auth,cashChart ,async (req, res) => {
     res.json({ LineChart, BarChart, PieChart, ImprovementChart, LowTopicBarChart });
 
   } catch (err) {
-    console.error(err);
+    logError(err, req);
+    // console.error(err);
     res.status(500).json({ message: "Server error" });
   }
 });
@@ -980,7 +985,8 @@ app.post('/edit/student', auth ,async ( req,res )=>{
     await redisClient.del(`classData:${student.classId}`); // Clear cache for this class
     res.json({message : 'success'});
   }catch(err){
-    console.log(err);
+    logError(err, req);
+    // console.log(err);
     res.status(500).json({message : 'server error'});
   }
 });
@@ -1032,7 +1038,7 @@ app.post('/admin/trim-students', async (req, res) => {
 
     res.status(200).json({ message: 'All student strings trimmed' });
   } catch (error) {
-    console.error(error);
+    logError(error, req);
     res.status(500).json({ message: 'Trimming failed', error });
   }
 });
@@ -1064,7 +1070,7 @@ app.get('/role', auth, async (req, res) => {
     return res.status(404).json({ message: 'User role not found' });
 
   } catch (error) {
-    console.error("🔥 Error in /role:", error);
+    logError(error, req);
     if (!res.headersSent) {
       return res.status(500).json({ message: "Internal server error" });
     }
@@ -1079,7 +1085,7 @@ app.get('/get/grade/class',auth,async(req,res)=>{
     // console.log(data);
     return res.json({data:data.class});
   }catch(err){
-    console.log(err);
+    logError(err, req);
   }
 });
 app.post('/create-question',auth ,async(req,res)=>{
@@ -1116,10 +1122,11 @@ app.post('/create-question',auth ,async(req,res)=>{
         quiz = JSON.parse(rawString);
         // console.dir(quiz, { depth: null });
       } catch (err) {
-        console.error('❌ Invalid JSON:', err.message);
+        logError(err, req);
+        // console.error('❌ Invalid JSON:', err.message);
       }
     } catch (fastapiErr) {
-      console.error("❌ Error sending to FastAPI:", fastapiErr.message);
+      logError(fastapiErr, req);
     }
     res.json({quiz:quiz});
 });
@@ -1247,7 +1254,8 @@ app.get('/get/mode/list', auth, async (req, res) => {
     const list = JSON.parse(quiz);
     res.status(200).json({ list: list.players });
   }catch (error) {
-    console.error('Error fetching mode list:', error);
+    logError(error, req);
+    // console.error('Error fetching mode list:', error);
     res.status(500).json({ message: 'Internal server error' });
   } 
 });
@@ -1416,7 +1424,8 @@ app.post('/report/teacher', auth, upload.array('screenshots', 5), async (req, re
     // console.log("✅ Email sent:");
     res.json({ success: true, message: "Bug report sent!" });
   } catch (err) {
-    console.error(err);
+    // console.error(err);
+    logError(err, req);
     res.status(500).json({ success: false, message: "Error sending bug report." });
   }
 });
@@ -1447,7 +1456,8 @@ app.post('/report/student', auth, upload.array('screenshots', 5), async (req, re
     // console.log("✅ Email sent:", info.messageId);
     res.json({ success: true, message: "Bug report sent!" });
   } catch (err) {
-    console.error(err);
+    // console.error(err);
+    logError(err, req);
     res.status(500).json({ success: false, message: "Error sending bug report." });
   }
 });
@@ -1547,7 +1557,8 @@ app.post('/mode/finish',auth,async (req,res)=>{
       message: "Quiz saved successfully",
     });
   } catch (err) {
-    console.error("Error in /mode/done:", err);
+    logError(err, req);
+    // console.error("Error in /mode/done:", err);
     res.status(500).json({ error: "Server error" });
   }
 })
@@ -1629,7 +1640,8 @@ app.post('/mode/done', auth, async (req, res) => {
       failed:failed
     });
   } catch (err) {
-    console.error("Error in /mode/done:", err);
+    // console.error("Error in /mode/done:", err);
+    logError(err, req);
     res.status(500).json({ error: "Server error" });
   }
 });
