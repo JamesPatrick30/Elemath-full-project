@@ -45,7 +45,7 @@
                 </div>
             </div> 
 
-            <button type="submit" class="btn">Report Bug</button>
+            <button type="submit" class="btn" :style="{ opacity: btnswitch ? 0.5 : 1 }" :disabled="btnswitch">Report Bug</button>
         </form>
     </body>
     <latestnav  v-show="navshow"></latestnav>
@@ -64,7 +64,8 @@ export default {
         greenbg,
         newnav,
         header1,
-        latestnav
+        latestnav,
+        
     },
   data() {
     return {
@@ -78,6 +79,7 @@ export default {
       username:'',
       profile:'',
       lrn:'',
+      btnswitch:false,
     };
   },
   methods: {
@@ -97,29 +99,32 @@ export default {
             alert('Module and description are required.');
             return;
         }
-
+        this.btnswitch = true;
         const formData = new FormData();
-        formData.append('name', this.name);
-        formData.append('email', this.email);
+        formData.append('name', this.username);
+        formData.append('email', this.lrn);
         formData.append('module', this.module);
         formData.append('suggestion',this.sudgest);
         formData.append('description', this.description);
         this.files.forEach(file => formData.append('screenshots', file));
 
         try {
-            // const response = await api.post('/report/student', formData, {
-            // headers: {
-            //     'Content-Type': 'multipart/form-data'
-            // }
-            // });
+            const response = await api.post('/report/student', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+            });
 
-            // if (response.data.success) {
-            alert('Bug report sent successfully!');
+            if (response.data.success) {
+              alert('Bug report sent successfully!');
+            }
+            // alert('Bug report sent successfully!');
             this.name = '';
             this.email = '';
             this.module = '';
             this.description = '';
             this.files = [];
+            this.sudgest = '';
             // } else {
             // alert('Error sending bug report.');
             // }
@@ -127,6 +132,7 @@ export default {
             console.error(err);
             alert('Server error.');
         }
+        this.btnswitch = false;
     },
     
     handleFiles(event) {

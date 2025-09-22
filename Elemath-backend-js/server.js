@@ -1376,8 +1376,8 @@ const upload = multer({
 //});
 
 // Route
-app.post('/report/teacher', auth, upload.array('screenshots', 5), async (req, res) => {
-  try {
+// app.post('/report/teacher', auth, upload.array('screenshots', 5), async (req, res) => {
+  // try {
 //    const { name, email, module, description, suggestion } = req.body;
 //    const files = req.files || [];
 
@@ -1422,45 +1422,118 @@ app.post('/report/teacher', auth, upload.array('screenshots', 5), async (req, re
  //   });
 
     // console.log("✅ Email sent:");
+//     res.json({ success: true, message: "Bug report sent!" });
+//   } catch (err) {
+//     // console.error(err);
+//     logError(err, req);
+//     res.status(500).json({ success: false, message: "Error sending bug report." });
+//   }
+// });
+// const axios = require("axios");
+
+app.post('/report/teacher', auth, upload.array('screenshots', 5), async (req, res) => {
+  try {
+    const { name, email, module, description, suggestion } = req.body;
+    const files = req.files || [];
+
+    // Format main message
+    const message = `
+🐞 *Bug Report (Teacher)*
+
+👤 Name: \`${name || "N/A"}\`
+📧 Email: \`${email || "N/A"}\`
+📚 Module: \`${module || "N/A"}\`
+📝 Description: ${description || "N/A"}
+💡 Suggestion: ${suggestion || "N/A"}
+    `.trim();
+
+    // Send message to Telegram first
+    await axios.post(
+      `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`,
+      {
+        chat_id: process.env.TELEGRAM_CHAT_ID_REPORT,
+        text: message,
+        parse_mode: "Markdown"
+      }
+    );
+
+    // Send each screenshot to Telegram (if any)
+    for (const file of files) {
+      await axios.postForm(
+        `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendPhoto`,
+        {
+          chat_id: process.env.TELEGRAM_CHAT_ID,
+          photo: file.buffer,   // buffer from multer
+          caption: `📎 Screenshot: ${file.originalname}`
+        }
+      );
+    }
+
     res.json({ success: true, message: "Bug report sent!" });
   } catch (err) {
-    // console.error(err);
-    logError(err, req);
+    console.error("❌ Error sending bug report:", err.response?.data || err.message);
     res.status(500).json({ success: false, message: "Error sending bug report." });
   }
 });
+
+// import axios from 'axios';
+// const axios = require("axios");
+const FormData = require("form-data");
+
+async function sendScreenshot(file) {
+  const form = new FormData();
+  form.append("chat_id", process.env.TELEGRAM_CHAT_ID_REPORT);
+  form.append("photo", file.buffer, file.originalname);
+  form.append("caption", `📎 Screenshot: ${file.originalname}`);
+
+  await axios.post(
+    `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendPhoto`,
+    form,
+    { headers: form.getHeaders() }
+  );
+}
 
 app.post('/report/student', auth, upload.array('screenshots', 5), async (req, res) => {
   try {
-    const nameuser = await StudentClass.findById(req.user.id).populate('classId');
-    const { name, email, module, description,suggestion } = req.body;
+    const nameuser = await classes.findById(req.user.classId);
+    // console.log(req.user);
+    const { name, email, module, description, suggestion } = req.body;
     const files = req.files || [];
 
-   // const attachments = files.map(file => ({
-   //   filename: file.originalname,
-   //   content: file.buffer
-   // }));
+    // ✅ Main text report
+    const message = `
+🐞 *Bug Report (Student)*
 
- //   const info = await transporter.sendMail({
- //     from: `"ELEMATH" <${process.env.EMAIL_USER}>`,
- //     to: process.env.EMAIL_PROGRAMMER,
- //     subject: "🐞 Bug Report",
- //     text: `Bug Report
- //       From: ${nameuser.name || 'Anonymous'} <${req.user.username || 'N/A'}>
- //       Module: ${module || 'N/A'}
- //       Description: ${description || 'No description provided'}
- //       Suggestions: ${suggestion || 'No suggestions provided' }`,
-    //  attachments
-   // });
+👤 Name: \`${name || "N/A"}\`
+📧 Email: \`${email || "N/A"}\`
+🏫 Class: \`${nameuser?.Class_name || "N/A"}\`
+📚 Module: \`${module || "N/A"}\`
+📝 Description: ${description || "N/A"}
+💡 Suggestion: ${suggestion || "N/A"}
+    `.trim();
 
-    // console.log("✅ Email sent:", info.messageId);
+    // Send message
+    await axios.post(
+      `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`,
+      {
+        chat_id: process.env.TELEGRAM_CHAT_ID_REPORT,
+        text: message,
+        parse_mode: "Markdown"
+      }
+    );
+
+    // ✅ Send screenshots (if any)
+    for (const file of files) {
+      await sendScreenshot(file);
+    }
+
     res.json({ success: true, message: "Bug report sent!" });
   } catch (err) {
-    // console.error(err);
     logError(err, req);
     res.status(500).json({ success: false, message: "Error sending bug report." });
   }
 });
+
 
 app.get('/get/mode/player/done',auth,async(req,res)=>{
   const {id} = req.query;
