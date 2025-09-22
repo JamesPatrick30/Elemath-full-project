@@ -1431,6 +1431,8 @@ const upload = multer({
 // });
 // const axios = require("axios");
 
+const FormData = require("form-data");
+
 app.post('/report/teacher', auth, upload.array('screenshots', 5), async (req, res) => {
   try {
     const { name, email, module, description, suggestion } = req.body;
@@ -1447,7 +1449,7 @@ app.post('/report/teacher', auth, upload.array('screenshots', 5), async (req, re
 💡 Suggestion: ${suggestion || "N/A"}
     `.trim();
 
-    // Send message to Telegram first
+    // Send text message first
     await axios.post(
       `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`,
       {
@@ -1459,26 +1461,32 @@ app.post('/report/teacher', auth, upload.array('screenshots', 5), async (req, re
 
     // Send each screenshot to Telegram (if any)
     for (const file of files) {
-      await axios.postForm(
+      const form = new FormData();
+      form.append("chat_id", process.env.TELEGRAM_CHAT_ID_REPORT);
+      form.append("caption", `📎 Screenshot: ${file.originalname}`);
+      form.append("photo", file.buffer, {
+        filename: file.originalname,
+        contentType: file.mimetype,
+      });
+
+      await axios.post(
         `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendPhoto`,
-        {
-          chat_id: process.env.TELEGRAM_CHAT_ID,
-          photo: file.buffer,   // buffer from multer
-          caption: `📎 Screenshot: ${file.originalname}`
-        }
+        form,
+        { headers: form.getHeaders() }
       );
     }
 
     res.json({ success: true, message: "Bug report sent!" });
   } catch (err) {
-    console.error("❌ Error sending bug report:", err.response?.data || err.message);
+    logError(err, req);
     res.status(500).json({ success: false, message: "Error sending bug report." });
   }
 });
 
+
 // import axios from 'axios';
 // const axios = require("axios");
-const FormData = require("form-data");
+// const FormData = require("form-data");
 
 async function sendScreenshot(file) {
   const form = new FormData();

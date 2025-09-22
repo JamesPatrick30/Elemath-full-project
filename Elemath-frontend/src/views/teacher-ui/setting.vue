@@ -87,7 +87,7 @@
             <textarea v-model="description" placeholder="Describe the problem" class="input"></textarea>
 
 
-            <textarea v-model="sudgest" placeholder="Share your suggestions…" class="input" ></textarea>
+            <textarea v-model="suggestion" placeholder="Share your suggestions…" class="input" ></textarea>
 
             <!-- <input type="file" @change="handleFiles" multiple accept="image/*" /> -->
             <div class="file-upload">
@@ -109,7 +109,7 @@
                 </div>
             </div> 
 
-            <button type="submit" class="btn">Submit</button>
+            <button type="submit" class="btn" :style="{ opacity: btnSwitch ? 0.5 : 1 }" :disabled="btnSwitch">Submit</button>
         </form>
             </section>
             <button class="logout" @click="logout()">Logout</button>
@@ -130,7 +130,7 @@ export default{
     },
     data() {
         return {
-            
+            btnSwitch: false,
             showInfo: false,
             infoName:'',
             infoMiddleName:'',
@@ -215,46 +215,49 @@ export default{
         },
         async sendBug() {
             if (!this.module || !this.description) {
-                alert('Module and description are required.');
+                alert('⚠️ Module and description are required.');
                 return;
             }
-
+            if (this.files.length > 5) {
+                alert('⚠️ You can upload up to 5 screenshots only.');
+                return;
+            }
+            this.btnSwitch = true; 
             const formData = new FormData();
             formData.append('name', this.name);
-            formData.append('email', this.user?.Email);
+            formData.append('email', this.user?.email || "N/A"); // safer fallback
             formData.append('module', this.module);
-            formData.append('suggestion',this.sudgest);
+            formData.append('suggestion', this.suggestion || ""); // fixed typo: sudgest → suggestion
             formData.append('description', this.description);
+
+            // Attach screenshots
             this.files.forEach(file => formData.append('screenshots', file));
 
             try {
-                this.name = '';
-                    this.email = '';
-                    this.module = '';
-                    this.description = '';
-                    this.files = [];
-                    alert('Bug report sent successfully!');
-                // const response = await api.post('/report/teacher', formData, {
-                //     headers: {
-                //         'Content-Type': 'multipart/form-data'
-                //     }
-                // });
+                const response = await api.post('/report/teacher', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+                });
 
-                // if (response.data.success) {
-                //     alert('Bug report sent successfully!');
-                //     this.name = '';
-                //     this.email = '';
-                //     this.module = '';
-                //     this.description = '';
-                //     this.files = [];
-                // } else {
-                //     alert('Error sending bug report.');
-                // }
-        } catch (err) {
-            console.error(err);
-            alert('Server error.');
-        }
-    },
+                if (response.data.success) {
+                alert('✅ Bug report sent successfully!');
+                // Clear form only if success
+                this.name = '';
+                this.email = '';
+                this.module = '';
+                this.description = '';
+                this.suggestion = '';
+                this.files = [];
+                } else {
+                alert('❌ Error sending bug report.');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('🚨 Server error. Please try again later.');
+            }
+            this.btnSwitch = false;
+        },
+
+    
     
     handleFiles(event) {
       const selectedFiles = Array.from(event.target.files);
