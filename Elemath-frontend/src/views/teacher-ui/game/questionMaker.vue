@@ -96,11 +96,14 @@
                 <!-- <input type="text" placeholder="Passing Score" class="input-a"> -->
             </div>
             <div class="con-Questions" v-if="btnActive.Question">
-                <p>Choice</p>
-                <select name="" id="" v-model="questionOption" >
-                    <option value="Generate">Generate</option>
-                    <option value="Costumize">Customize</option>
-                </select>
+                <div class="header-con">
+                    <p>Quiz Type:</p>
+                    <select name="" id="" v-model="questionOption" >
+                        <option value="Generate">Generate</option>
+                        <option value="Costumize">Customize</option>
+                    </select>
+                </div>
+                
                 <input type="number" placeholder="Time per question (minutes)" class="input-a" style="margin: 10px; text-align: center;" v-model="time">
                 
 
@@ -759,6 +762,15 @@ export default{
 }
 </script>
 <style scoped>
+.header-con p{
+    color: white;
+    font-weight: 600;
+}
+.header-con{
+    display: flex;
+    align-items: center;
+    gap: 1em;
+}
 select{
     text-align: center;
 }
@@ -1209,7 +1221,7 @@ select{
 .btn-add{
     width: 120px;
     height: 40px;
-    background-color:#96faa2 ;
+    background-color:#4CAF50 ;
     border: none;
     color:white;
     font-weight: 800;
@@ -1289,7 +1301,7 @@ select{
     justify-content: center;
 }
 .input-answer{
-    background-color: #54de63;
+    background-color: #4CAF50;
     border-radius: 10px;
     color: white;
     font-weight: bold;
@@ -1334,7 +1346,7 @@ select{
     justify-content: center;
 }
 .r-answer{
-    background-color: #54de63;
+    background-color: #4CAF50;
     color: white;
 }
 .w-answer{
@@ -1364,7 +1376,7 @@ select{
     width: 100px;
     height: 50px;
     border-radius: 10px;
-    background-color: #82d7f5;
+    background-color: #65b4d1;
     color: white;
     font-weight: bold;
     cursor: pointer;
@@ -1441,10 +1453,10 @@ select{
     color: white;
     outline: none;
     border: none;
-    background-color: #91eea5;
+    background-color: #4CAF50;
 }
 option{
-    background-color: #b8ebc3;
+    background-color: rgb(146, 204, 159);
     outline: none;
     border: none;
 }

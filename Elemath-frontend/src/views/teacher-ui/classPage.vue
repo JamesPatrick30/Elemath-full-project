@@ -11,7 +11,7 @@
     <body v-if="user">
         <navbar/>
         <main>
-            <h1 class="title">Class </h1>
+            <h1 class="title">Class Roster</h1>
             <header>
                 <select
                     name="class"
