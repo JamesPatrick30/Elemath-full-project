@@ -1,4 +1,5 @@
 const axios = require("axios");
+const logger = require("./logger");
 
 const TELEGRAM_API = `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}`;
 const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
@@ -29,9 +30,12 @@ ${title}
       parse_mode: "Markdown",
     });
 
-    console.log("✅ Error sent to Telegram");
+    // console.log("✅ Error sent to Telegram");
   } catch (err) {
-    console.error("❌ Telegram error:", err.response?.data || err.message);
+    logger.error("❌ Telegram notification failed", {
+      error: err.message,
+    });
+    // console.error("❌ Telegram error:", err.response?.data || err.message);
   }
 }
 
