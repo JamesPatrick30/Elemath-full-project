@@ -33,7 +33,7 @@ router.post('/uploadlist', upload.single('file'), async (req, res) => {
         const sheetName = workbook.SheetNames[0];
         const sheet = workbook.Sheets[sheetName];
         const json = xlsx.utils.sheet_to_json(sheet, { header: 1 });
-        console.log(json);
+        // console.log(json);
         const lrns = [];
         const failed = [];
 
@@ -100,7 +100,7 @@ router.post('/uploadlist', upload.single('file'), async (req, res) => {
                 });
                 lrns.push(lrnMale[0]);
             }else if (rowcount < 50 && rowcount > 16 && ( typeof nameMale !== 'string' || !lrnMale)){
-                console.log('failed Male: name : '+nameMale+' lrn : '+lrnMale + ' row : '+rowcount);
+                // console.log('failed Male: name : '+nameMale+' lrn : '+lrnMale + ' row : '+rowcount);
                 if(typeof nameMale !== 'string'){
                     failed.push({name: null , lrn : nameMale});
                 }else{
@@ -153,7 +153,7 @@ router.post('/uploadlist', upload.single('file'), async (req, res) => {
         const enrolledLRNs = enrolled.map(e => e.lrn);
         const male = students.filter(student => student.gender === 'Male');
         const female = students.filter(student => student.gender === 'Female');
-        console.log('male : '+male.length+' female : '+ female.length);
+        // console.log('male : '+male.length+' female : '+ female.length);
         for(fail of failed){
             console.log('lrn : '+fail.lrn + ' name : '+fail.name);
         }
@@ -169,7 +169,7 @@ router.post('/uploadlist', upload.single('file'), async (req, res) => {
         res.json({ studentReadCount :students.length,insterted : db,enrolled : enrolled, failed : failed });
 
     } catch (err) {
-        console.error(err);
+        logError(err, req);
         res.status(500).json({ error: 'Failed to process the file' });
     }
 });

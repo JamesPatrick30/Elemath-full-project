@@ -211,40 +211,46 @@ app.get('/list', (req, res) => {
     res.json({ message: list });
 });
 app.post('/api/login',async (req, res) => {
-    const { username, password } = req.body;
-    console.log("Login request body:", req.body);
-    if (!username || !password) {
-        return res.status(400).json({ message: 'Username and password are required' });
-    }
-    const user = await teacher_accoount.findOne({ Email: username });
-    if (!user) {
-        return res.status(401).json({ message: 'User not found' });
-    }
-    // Here you would typically check the username and password against your database
-    if (user.password !== password) {
-        return res.status(401).json({ message: 'wrong password' });
-    }
-    const payload = {id: user._id, username: user.Email};
-    const classCount = user.class.length;
-    // Access token cookie (90 minutes)
-    res.cookie('access_token', createToken(payload).accessToken, {
-        httpOnly: true,
-        secure: true,       // true in production
-        sameSite: 'none',     // 'none' only if cross-site
-        maxAge: 90 * 60 * 1000, // 90 minutes
-        path:'/'
-    });
+  try{
+      const { username, password } = req.body;
+      // console.log("Login request body:", req.body);
+      if (!username || !password) {
+          return res.status(400).json({ message: 'Username and password are required' });
+      }
+      const user = await teacher_accoount.findOne({ Email: username });
+      if (!user) {
+          return res.status(401).json({ message: 'User not found' });
+      }
+      // Here you would typically check the username and password against your database
+      if (user.password !== password) {
+          return res.status(401).json({ message: 'wrong password' });
+      }
+      const payload = {id: user._id, username: user.Email};
+      const classCount = user.class.length;
+      // Access token cookie (90 minutes)
+      res.cookie('access_token', createToken(payload).accessToken, {
+          httpOnly: true,
+          secure: true,       // true in production
+          sameSite: 'none',     // 'none' only if cross-site
+          maxAge: 90 * 60 * 1000, // 90 minutes
+          path:'/'
+      });
 
-    // Refresh token cookie (90 days)
-    res.cookie('refresh_token', createToken(payload).refreshToken, {
-        httpOnly: true,
-        secure: true,       // true in production
-        sameSite: 'none',
-        maxAge: 90 * 24 * 60 * 60 * 1000, // 90 days
-        path:'/'
-    });
+      // Refresh token cookie (90 days)
+      res.cookie('refresh_token', createToken(payload).refreshToken, {
+          httpOnly: true,
+          secure: true,       // true in production
+          sameSite: 'none',
+          maxAge: 90 * 24 * 60 * 60 * 1000, // 90 days
+          path:'/'
+      });
 
-    res.status(200).json({ message: 'Login successful', classCount: classCount });
+      res.status(200).json({ message: 'Login successful', classCount: classCount });
+  }catch(err){
+    logError(err, req);
+    return res.status(500).json({message:'Server error'});
+  }
+    
     // console.log('Login successful:', username);
 });
 app.post('/update/student/info',auth,async(req,res)=>{
@@ -270,7 +276,7 @@ app.post('/update/student/info',auth,async(req,res)=>{
     // console.log('the update data : ', result);
     res.status(200).json({message:'updated'});
   }catch(err){
-    console.error(err);
+    logError(err, req);
     return res.status(500).json({message:'Server error'});
   }
 });
