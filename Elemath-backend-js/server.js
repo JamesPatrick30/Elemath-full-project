@@ -1005,7 +1005,7 @@ app.delete('/remove/student', auth ,async ( req,res )=>{
     // console.log('deletedata: '+ deletedata);
     res.json({message : 'success'});
   }catch(err){
-    console.log(err);
+    logError(err, req);
     res.status(500).json({message : 'server error'});
   }
 });
@@ -1030,7 +1030,8 @@ app.post('/admin/trim-students', async (req, res) => {
         try {
           await student.save();
         } catch (err) {
-          console.error('Failed to save:', student._id, err);
+          // console.error('Failed to save:', student._id, err);
+          logError(err, req);
         }
       }
     }
@@ -1772,7 +1773,8 @@ io.use((socket, next) => {
       socket.user = decoded; // Attach user data to socket
       // next();
     } catch (err) {
-      console.error("❌ Invalid token:", err.message);
+      // console.error("❌ Invalid token:", err.message);
+      logError(err);
       return next(new Error("Authentication error"));
     }
   next();
