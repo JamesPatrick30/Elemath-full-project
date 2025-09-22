@@ -1,5 +1,5 @@
 const logger = require("../logger");
-const notifyTelegram = require("../notifier");
+const notifyTelegram = require("../notifiers/notifier");
 // A helper to log errors consistently
 function logError(err, req = null) {
   const context = {};
