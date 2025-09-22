@@ -34,7 +34,8 @@ const verifyRefreshToken = require('./security/refreshtoken.js');
 const auth = require('./security/auth.js');
 const cookie = require("cookie");
 
-//email
+//logger
+const logError = require('./utils/errorlogger.js');
 
 // Attach logger to app
 // Attach logger to requests
@@ -42,7 +43,7 @@ app.use(pinoHttp({ logger }));
 
 // Example: log incoming requests (method, url)
 app.use((req, res, next) => {
-  req.log.info({ method: req.method, url: req.url }, "Incoming request");
+  // req.log.info({ method: req.method, url: req.url }, "Incoming request");
   next();
 });
 
@@ -60,15 +61,15 @@ app.use(passport.initialize());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 // Must be after all routes
-app.use((err, req, res, next) => {
-  if (req.log) {
-    req.log.error({ err }, "Unhandled error");
-  } else {
-    logger.error({ err }, "Unhandled error (no req.log)");
-  }
+// app.use((err, req, res, next) => {
+//   if (req.log) {
+//     req.log.error({ err }, "Unhandled error");
+//   } else {
+//     logger.error({ err }, "Unhandled error (no req.log)");
+//   }
 
-  res.status(500).json({ error: "Internal Server Error" });
-});
+//   res.status(500).json({ error: "Internal Server Error" });
+// });
 
 
 const server = http.createServer(app);
@@ -307,24 +308,31 @@ app.post('/student-login', async (req, res) => {
     // console.log('Login successful:', student.name);
 })
 app.get('/get/student/data', auth, async (req, res) => {
-  const studentId = req.user.id; // Assuming the student ID is stored in the token payload
+  
+  try{
+    // const p = u + 1;
+    const studentId = req.user.id; // Assuming the student ID is stored in the token payload
 
-  const studentData = await StudentClass.findById(studentId).populate('classId');
-
-  if (!studentData) {
-    return res.status(404).json({ message: 'Student not found' });
+    const studentData = await StudentClass.findById(studentId).populate('classId');
+    
+    if (!studentData) {
+      return res.status(404).json({ message: 'Student not found' });
+    }
+    res.status(200).json({
+      id: studentData._id,
+      name: studentData.name,
+      classId: studentData.classId,
+      profile: studentData.profile,
+      firstname: studentData.firstname,
+      middlename: studentData.middlename,
+      lastname: studentData.lastname,
+      lrn: studentData.lrn,
+      email: studentData.email
+    });
+  }catch(err){
+    logError(err, req);
+    return res.status(500).json({message:'Server error'});
   }
-  res.status(200).json({
-    id: studentData._id,
-    name: studentData.name,
-    classId: studentData.classId,
-    profile: studentData.profile,
-    firstname: studentData.firstname,
-    middlename: studentData.middlename,
-    lastname: studentData.lastname,
-    lrn: studentData.lrn,
-    email: studentData.email
-  });
 });
 const Gradebook = require('./models/grade.js');
 app.get('/student/history',auth,async(req,res)=>{
