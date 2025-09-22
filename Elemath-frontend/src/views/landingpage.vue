@@ -1201,7 +1201,7 @@ main {
     font-size: 35px;
   }
   .tagline-contaner nav ul {
-    justify-content: right;
+    justify-content: center;
   }
   .tagline-contaner nav ul li button {
     width: 200px;
