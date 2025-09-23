@@ -1,8 +1,8 @@
 const pm2 = require("pm2");
 const axios = require("axios");
 
-const TELEGRAM_API = `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}`;
-const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
+// const TELEGRAM_API = `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}`;
+// const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
 const lastNotif = {}; // track per app
 const COOLDOWN_MS = 60000; // 1 minute
@@ -36,6 +36,7 @@ async function sendTelegram(name, event) {
   const message = `🚨 *PM2 Alert*\nApp: ${name}\nEvent: ${event}\nTime: ${new Date().toISOString()}`;
   try {
     const TELEGRAM_API = `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}`;
+    const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
     await axios.post(`${TELEGRAM_API}/sendMessage`, {
         chat_id: CHAT_ID,
         text: message,
