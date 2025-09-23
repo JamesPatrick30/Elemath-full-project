@@ -11,6 +11,7 @@
                 
             </div>
         </header> -->
+        <h1>Report a Bug</h1>
         <form @submit.prevent="sendBug" class="form-container">
     
             <select v-model="module" class="input">
@@ -170,6 +171,21 @@ export default {
 </script>
 
 <style scoped>
+form{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 80%;
+    max-width: 400px;
+    margin: 20px auto;
+}
+h1{
+    margin: 20px 0 0 0;
+    padding: 0;
+    font-size: 32px;
+    font-weight: 700;
+    color: white;
+}
 .file-upload {
   display: flex;
   flex-direction: column;
@@ -230,6 +246,9 @@ header{
 body{
     position: absolute;
     z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     
 }
 .preview-container {

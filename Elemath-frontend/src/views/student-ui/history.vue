@@ -96,6 +96,7 @@ export default{
     <body>
         <!-- <h1>History</h1> -->
         <header1 :info="{name:username, profile:profile, lrn:lrn}"/>
+        <h1>History</h1>
         <div class="history-con">
             <div class="no-history" v-if="histories.length == 0">
                 <h3>No history available</h3>
@@ -116,6 +117,13 @@ export default{
     <!-- <h1>History</h1> -->
 </template>
 <style scoped>
+h1{
+    margin: 20px 0 0 0;
+    padding: 0;
+    font-size: 32px;
+    font-weight: 700;
+    color: white;
+}
 .question{
     font-weight: 600;
     margin-bottom: 10px;
@@ -225,6 +233,9 @@ body{
     /* background-color: #f0f0f0; */
     /* background-color: #e8f5e9; */
     /* min-height: 100vh; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 @media screen and (min-width: 1024px) {
     .history{

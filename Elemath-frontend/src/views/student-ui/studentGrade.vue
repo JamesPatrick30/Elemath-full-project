@@ -132,7 +132,9 @@ export default{
     <body>
         <audio ref="player" :src="audiosrc" loop></audio>
         <header1 :info="{name:username,profile:profile,lrn:lrn}" ></header1>
+        <h1>Grades</h1>
         <main>
+            
             <div class="container">
                 <button @click="prevTick"><font-awesome-icon v-if="source.length > 5 && source.length" icon="fa-solid fa-arrow-left" /></button>
                 <div class="con-grade">
@@ -143,7 +145,10 @@ export default{
                         <thead>
                             <tr>
                                 <th v-for="(item, index) in gradelist(source)" :style="{ fontSize: item.quizMode == 'WINDOWCARD MODE' ? '12px' : '16px' }" :key="index">
-                                    {{ item.quizMode }}
+                                    <!-- {{ item.quizMode }} -->
+                                    <p v-if="item.quizMode == 'QUIZ MODE'">Quiz</p>
+                                    <p v-if="item.quizMode == 'WINDOWCARD MODE'">Window Card</p>
+
                                 </th>
                             </tr>
                         </thead>
@@ -174,8 +179,15 @@ export default{
     </body>
 </template>
 <style scoped>
+/* .grade-table{
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+    font-size: 14px;
+} */
 th, td {
     padding: 10px;
+    max-width: 50px;
     text-align: center;
     border-left: 1px solid #ddd;
     border-right: 1px solid #ddd;
@@ -203,12 +215,13 @@ th, td {
 .container{
     display: flex;
     /* flex-direction: column; */
+    width: 90%;
     justify-content: center;
     align-items: center;
         background-color: white;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
+    padding: 10px;
 }
 *{
     font-family: 'BubbleBody Neue','Poppins', sans-serif;
@@ -247,6 +260,10 @@ main{
     /* background-color: white; */
 }
 body, html {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   margin: 0;
   padding: 0;
   width: 100%;
@@ -254,7 +271,17 @@ body, html {
   /* font-family: 'Poppins', sans-serif; */
   /* background-color: #f0f4f8; */
 }
+h1{
+    margin: 20px 0 0 0;
+    padding: 0;
+    font-size: 32px;
+    font-weight: 700;
+    color: white;
+}
 @media screen and (min-width: 1024px) {
+    th, td{
+        width: 300px;
+    }
     main {
         margin-top: 80px;
     }
@@ -268,8 +295,9 @@ body, html {
         /* flex-direction: column; */
         align-items: center;
         justify-content: center;
-        width: 80%;
+        width: 100%;
         max-width: 1200px;
+        padding: 20px;
     }
     .grade{
         font-size: 14px;
@@ -277,6 +305,12 @@ body, html {
     }
     .con-grade{
         width: 100%;
+    }
+    .grade-table{
+        width: 100%;
+        border-collapse: collapse;
+        text-align: center;
+        font-size: 16px;
     }
 }
 </style>

@@ -75,6 +75,7 @@ export default{
                 <font-awesome-icon @click="switchNav()" class="menu-icon" icon="fa-solid fa-bars" />
             </div>
         </header>
+        <h1>Settings</h1>
         <div class="con">
             <div class="box" @click="gotorouter('basicInfo')">
                 <div class="text">
@@ -121,6 +122,13 @@ export default{
 
 </template>
 <style scoped>
+h1{
+    margin: 20px 0 0 0;
+    padding: 0;
+    font-size: 32px;
+    font-weight: 700;
+    color: white;
+}
 .box {
     
     position: relative;
@@ -251,6 +259,9 @@ body{
     height: 100vh;
     width: 100vw;
     overflow-y: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 @media screen and (min-width: 600px) and (max-width: 1023px){
     .box{
