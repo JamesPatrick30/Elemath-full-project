@@ -47,20 +47,20 @@ export default{
         window.addEventListener('resize', () => {
             this.isMobile = window.innerWidth <= 768;
         });
-        if(this.isMobile){
-            this.index =  0;
-        } else {
-            this.index = this.source.length > 5 ? this.source.length - 5 : 0;
-        }
+        // if(this.isMobile){
+        //     this.index =  0;
+        // } else {
+        //     this.index = this.source.length > 5 ? this.source.length - 5 : 0;
+        // }
     },
     watch: {
-        isMobile(newValue) {
-            if (newValue) {
-                this.index =  0;
-            } else {
-                this.index = this.source.length > 5 ? this.source.length - 5 : 0;
-            }
-        }
+        // isMobile(newValue) {
+        //     if (newValue) {
+        //         this.index =  this.source.length > 5 ? this.source.length - 3 : 0;
+        //     } else {
+        //         this.index = this.source.length > 5 ? this.source.length - 5 : 0;
+        //     }
+        // }
     },
     methods:{
         async getdata(){
