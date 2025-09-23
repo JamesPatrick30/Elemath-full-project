@@ -285,11 +285,7 @@ h1{
     main {
         margin-top: 80px;
     }
-    .container button{
-        /* display: block; */
-        /* background-color: tomato; */
-        /* display: none; */
-    }
+
     .container{
         display: flex;
         /* flex-direction: column; */
