@@ -35,11 +35,13 @@ function canNotify(name, event) {
 async function sendTelegram(name, event) {
   const message = `🚨 *PM2 Alert*\nApp: ${name}\nEvent: ${event}\nTime: ${new Date().toISOString()}`;
   try {
+    const TELEGRAM_API = `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}`;
     await axios.post(`${TELEGRAM_API}/sendMessage`, {
-      chat_id: CHAT_ID,
-      text: message,
-      parse_mode: "Markdown",
+        chat_id: CHAT_ID,
+        text: message,
+        parse_mode: "Markdown",
     });
+
   } catch (err) {
     console.error("Telegram send error:", err.message);
   }
