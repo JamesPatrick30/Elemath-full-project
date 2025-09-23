@@ -151,15 +151,15 @@ export default {
     }
   },
   methods:{
-    async chart(){
+    // async chart(){
 
-    },
+    // },
     async getAllQuarter(classId){
             try{
               if(!classId){
                 return alert('nodata')
               }
-              console.log(classId);
+              // console.log(classId);
                 const res = await api.get('/chart',{
                     params:{classId:classId}
                 });
@@ -169,7 +169,7 @@ export default {
                 this.PieChart = res.data.PieChart;
                 this.LowTopicBarChart = res.data.LowTopicBarChart;
                 
-                console.log('res get all record id '+ JSON.stringify(this.improvementChart));
+                // console.log('res get all record id '+ JSON.stringify(this.improvementChart));
             }catch(err){
               this.LineChart = null;
                 this.barChart = null;
@@ -184,7 +184,7 @@ export default {
         try {
             const res = await api.get('/get/grade/class');
             this.class = res.data.data;
-            console.log('classes ? '+JSON.stringify( this.class));
+            // console.log('classes ? '+JSON.stringify( this.class));
             // Automatically select the first class if available
             if (this.class && this.class.length > 0) {
                 const firstClass = this.class[0];
@@ -197,9 +197,9 @@ export default {
             }
 
 
-            console.log('Data fetched successfully:', res.data);
+            // console.log('Data fetched successfully:', res.data);
         } catch (err) {
-            console.error('Error fetching data:', err);
+            // console.error('Error fetching data:', err);
             
             if (err.response?.status === 401) {
                 this.$router.push('/');

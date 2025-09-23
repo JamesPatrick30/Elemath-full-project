@@ -48,7 +48,7 @@ export default{
             this.isMobile = window.innerWidth <= 768;
         });
         if(this.isMobile){
-            this.index = this.source.length > 5 ? this.source.length - 5 : 0;
+            this.index =  0;
         } else {
             this.index = this.source.length > 5 ? this.source.length - 5 : 0;
         }
@@ -56,7 +56,7 @@ export default{
     watch: {
         isMobile(newValue) {
             if (newValue) {
-                this.index = this.source.length > 5 ? this.source.length - 5 : 0;
+                this.index =  0;
             } else {
                 this.index = this.source.length > 5 ? this.source.length - 5 : 0;
             }
@@ -277,6 +277,11 @@ h1{
     font-size: 32px;
     font-weight: 700;
     color: white;
+}
+@media screen and (min-width: 400px) and (max-width: 1024px)  and (orientation: landscape) {
+    th, td{
+        min-width: 60px;
+    }
 }
 @media screen and (min-width: 1024px) {
     th, td{

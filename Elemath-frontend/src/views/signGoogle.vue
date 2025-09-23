@@ -25,7 +25,7 @@ function handleGoogleCredentialResponse(response) {
 
   api.post('/google', { idToken })
     .then(res => {
-      console.log('✅ Login success:', res.data);
+      // console.log('✅ Login success:', res.data);
       // alert('Login successful!');
       socket.connect();
       if(res.data.class >0) {
@@ -42,11 +42,11 @@ function handleGoogleCredentialResponse(response) {
 }
 
 function manualLogin() {
-  console.log("🔁 manualLogin triggered");
+  // console.log("🔁 manualLogin triggered");
   if (window.google) {
     window.google.accounts.id.prompt(); 
   } else {
-    console.warn('Google script not loaded yet.');
+    // console.warn('Google script not loaded yet.');
   }
 }
 

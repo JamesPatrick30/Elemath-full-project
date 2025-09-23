@@ -145,7 +145,8 @@ export default{
             files: [],
             navshow:false,
             username:'',
-            profile:''
+            profile:'',
+            suggestion:'',
         };
     },
     methods: {
@@ -188,7 +189,7 @@ export default{
                 // this.infoLastName = this.user.lastName;
                 // this.classlength = this.user.class.length;
                 
-                console.log('Data fetched successfully:', res.data);
+                // console.log('Data fetched successfully:', res.data);
             } catch (err) {
                 console.error('Error fetching data:', err);
                 if(err.response && err.response.status === 401) {

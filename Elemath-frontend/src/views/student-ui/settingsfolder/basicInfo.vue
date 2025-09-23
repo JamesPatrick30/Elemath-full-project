@@ -32,7 +32,7 @@ export default{
                 this.name = this.username;
                 this.lrn = response.data.lrn || '123456789012';
                 this.profile = response.data.profile;
-                console.log('Student ID:', response.data);
+                // console.log('Student ID:', response.data);
                 // await this.lookforQuiz();
                 // socket.connect();
             } catch (error) {

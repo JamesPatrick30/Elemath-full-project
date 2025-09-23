@@ -412,8 +412,8 @@ export default {
         }
         
       }catch(err){
-        console.log(err)
-        this.getIn = false
+        // console.log(err)
+        this.getIn = false;
       }
     }
   },

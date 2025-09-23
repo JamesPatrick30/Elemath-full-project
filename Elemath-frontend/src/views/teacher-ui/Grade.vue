@@ -254,13 +254,13 @@ export default{
                     );
                     // console.log('quiz' + this.students[0]?.quiz.length);
                     this.line = this.students[0].quiz.length > 7 ? 0 : this.line;
-                    console.log('sasdas'+JSON.stringify( this.students));
+                    // console.log('sasdas'+JSON.stringify( this.students));
                 } else {
                     console.warn("No students found in response:", res.data);
                     
                 }
 
-                console.log("Sorted students:", this.students);
+                // console.log("Sorted students:", this.students);
             } catch (err) {
                 console.error("Error fetching quarter:", err);
             }
@@ -268,7 +268,7 @@ export default{
 
         async getClassData(classIn) {
             try {
-            console.log('class id : ' + classIn);
+            // console.log('class id : ' + classIn);
             const res = await api.post('/get/classData', { classId: classIn });
 
             if (res.data.length <= 0) {
@@ -311,7 +311,7 @@ export default{
             //     };
             // });
 
-            console.log('Structured dataset:', this.dataset);
+            // console.log('Structured dataset:', this.dataset);
 
             } catch (err) {
             console.error('Error fetching class data:', err);
@@ -334,7 +334,7 @@ export default{
                 }
 
 
-                console.log('Data fetched successfully:', res.data);
+                // console.log('Data fetched successfully:', res.data);
             } catch (err) {
                 console.error('Error fetching data:', err);
                 

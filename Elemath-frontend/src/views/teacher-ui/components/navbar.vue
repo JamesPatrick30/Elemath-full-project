@@ -30,7 +30,7 @@ export default{
         // You can access the parameter here if needed
         this.parameter = this.$route.path; // Adjust according to your route
         
-        console.log('Navbar mounted with classlength:', this.classlength);
+        // console.log('Navbar mounted with classlength:', this.classlength);
     },
     methods: {
         // Add any methods if needed

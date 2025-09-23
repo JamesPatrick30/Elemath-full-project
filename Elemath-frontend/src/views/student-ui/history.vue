@@ -32,7 +32,7 @@ export default{
                 await this.getHistory();
                 // console.log('Student ID:', response.data);
             } catch (error) {
-                console.error('Error fetching student data:', error);
+                // console.error('Error fetching student data:', error);
             }
             return;
         },
@@ -42,15 +42,15 @@ export default{
                 // console.log(response.data);
                 // this.source = [];
                 // this.source = response.data.history || [];
-                console.log('Grades:', response.data);
+                // console.log('Grades:', response.data);
                 this.histories = response.data.quizzes || [];
             } catch (error) {
-                console.error('Error fetching student history:', error);
+                // console.error('Error fetching student history:', error);
             }
             return;
         },
         showQuestion(question,mode){
-            console.log(question );
+            // console.log(question );
             this.cluster = true;
             this.modeClicked = mode;
             this.rev = question;

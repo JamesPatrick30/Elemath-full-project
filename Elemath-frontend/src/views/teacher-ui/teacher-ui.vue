@@ -121,7 +121,7 @@ export default {
                 }
                 
             }catch(err){
-                console.log(err);
+                // console.log(err);
                 alert(err.response.data.message);
             }
         },
@@ -133,16 +133,16 @@ export default {
                     }
                 });
                 this.lesson = res.data.htmlLesson;
-                console.log(res.data);
+                // console.log(res.data);
             }catch(err){
-                console.log(err);
+                // console.log(err);
             }
         },
         async getLessonList(){
             try{
                 const res = await api.get('/dlesson/list');
                 this.lessons = res.data;
-                console.log(res.data);
+                // console.log(res.data);
             }catch(err){
                 console.log(err);
             }
@@ -157,9 +157,9 @@ export default {
                     this.$router.push('/tc');
                 }
                 this.currentProfile = this.user.profile;
-                console.log('Data fetched successfully:', res.data);
+                // console.log('Data fetched successfully:', res.data);
             } catch (err) {
-                console.error('Error fetching data:', err);
+                // console.error('Error fetching data:', err);
                 if(err.response && err.response.status === 401) {
                     this.$router.push('/');
                 } else {
@@ -171,7 +171,7 @@ export default {
             try {
                 const res = await api.post('/refresh-token');
                 this.user = res.data;
-                console.log('Token refreshed successfully:', res.data);
+                // console.log('Token refreshed successfully:', res.data);
                 await this.getData();
             } catch (err) {
                 console.error('Error refreshing token:', err);
@@ -188,7 +188,7 @@ export default {
         },
         changeProfile(img){
             this.currentProfile=img;
-            console.log(img)
+            // console.log(img)
         },
         async saveProfile(){
             const btn = document.getElementsByClassName('btn-saveProfile');
@@ -202,13 +202,13 @@ export default {
                 })
                 // alert('save!');
                 await this.getData();
-                console.log(res.data.message);
+                // console.log(res.data.message);
                 this.picCharacterb = false;
                 // const con = document.getElementsByClassName('profile-outer')[0];
                 // con.style.display = 'none'; // or 'block', 'flex', etc.
                 btn.disabled = false;
             }catch(err){
-                console.log('Error is :' + err)
+                // console.log('Error is :' + err)
             }
         },
         sortgrade5(){
@@ -231,7 +231,7 @@ export default {
         });
         socket.on("connection", () => {
             alert("Connected to server");
-            console.log("Connected:", socket.id);
+            // console.log("Connected:", socket.id);
         });
         // this.refreshtoken();
         // this.trimdb();

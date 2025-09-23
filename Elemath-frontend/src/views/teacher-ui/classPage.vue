@@ -168,7 +168,7 @@ export default {
                     classId: classIn
                 });
 
-                console.log('Student list:', res.data);
+                // console.log('Student list:', res.data);
                 this.students = res.data;
                 this.students = this.students.sort((a, b) => {
                     const nameA = a.name || '';
@@ -176,7 +176,7 @@ export default {
                     return nameA.localeCompare(nameB);
                 });
             } catch (err) {
-                console.error('Error fetching class data:', err);
+                // console.error('Error fetching class data:', err);
                 alert('Failed to load class data. Please try again later.');
             }
         },
@@ -195,9 +195,9 @@ export default {
                 }
 
 
-                console.log('Data fetched successfully:', res.data);
+                // console.log('Data fetched successfully:', res.data);
             } catch (err) {
-                console.error('Error fetching data:', err);
+                // console.error('Error fetching data:', err);
                 
                 if (err.response?.status === 401) {
                     this.$router.push('/');
