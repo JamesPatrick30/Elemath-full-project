@@ -42,7 +42,7 @@ async function sendTelegram(name, event) {
         text: message,
         parse_mode: "Markdown",
     });
-
+    console.log("Telegram message sent:", res.data);
   } catch (err) {
     console.error("Telegram send error:", err.message);
   }
