@@ -1,4 +1,5 @@
 const pm2 = require("pm2");
+const axios = require("axios");
 
 const TELEGRAM_API = `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}`;
 const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
@@ -7,16 +8,13 @@ const lastNotif = {}; // track per app
 const COOLDOWN_MS = 60000; // 1 minute
 
 function canNotify(name, event) {
-  const now = Date.now();
-
   if (!lastNotif[name]) {
-    lastNotif[name] = { lastTime: 0, inCooldown: false };
+    lastNotif[name] = { inCooldown: false };
   }
 
   // Always reset cooldown if app is online
   if (event === "online") {
     lastNotif[name].inCooldown = false;
-    lastNotif[name].lastTime = 0;
     return true;
   }
 
@@ -25,16 +23,26 @@ function canNotify(name, event) {
     return false;
   }
 
-  // First event in a while → notify + enter cooldown
+  // Enter cooldown
   lastNotif[name].inCooldown = true;
-  lastNotif[name].lastTime = now;
-
-  // Reset cooldown after 1 minute
   setTimeout(() => {
     lastNotif[name].inCooldown = false;
   }, COOLDOWN_MS);
 
   return true;
+}
+
+async function sendTelegram(name, event) {
+  const message = `🚨 *PM2 Alert*\nApp: ${name}\nEvent: ${event}\nTime: ${new Date().toISOString()}`;
+  try {
+    await axios.post(`${TELEGRAM_API}/sendMessage`, {
+      chat_id: CHAT_ID,
+      text: message,
+      parse_mode: "Markdown",
+    });
+  } catch (err) {
+    console.error("Telegram send error:", err.message);
+  }
 }
 
 pm2.connect(err => {
@@ -51,46 +59,16 @@ pm2.connect(err => {
 
     console.log("✅ PM2 monitor started...");
 
-    bus.on("process:event", data => {
+    bus.on("process:event", async data => {
       const { event, process } = data;
       const name = process.name;
 
       if (["exit", "restart"].includes(event) && canNotify(name, event)) {
-        // console.log(`❌ Crash/Restart detected: ${name}`);
-        try{
-            const message = `🚨 *PM2 Alert*
-                App: ${name}
-                Event: ${event}
-                Time: ${new Date().toISOString()}
-                `;
-            await axios.post(`${TELEGRAM_API}/sendMessage`, {
-                chat_id: CHAT_ID,
-                text: message,
-                parse_mode: "Markdown",
-            });
-        }catch(e){
-            console.log(e);
-        }
-       
-        // send Telegram/Slack/email here
+        await sendTelegram(name, event);
       }
 
       if (event === "online" && canNotify(name, event)) {
-        // console.log(`✅ Back online: ${name}`);
-        try{
-            const message = `🚨 *PM2 Alert*
-                App: ${name}
-                Event: ${event}
-                Time: ${new Date().toISOString()}
-                `;
-            await axios.post(`${TELEGRAM_API}/sendMessage`, {
-                chat_id: CHAT_ID,
-                text: message,
-                parse_mode: "Markdown",
-            });
-        }catch(e){
-            console.log(e);
-        }
+        await sendTelegram(name, event);
       }
     });
   });
