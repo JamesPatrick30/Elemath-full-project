@@ -426,25 +426,33 @@ export default {
 
 <style scoped>
 .dolphin{
-  top: 300%;
+  /* top: 300%; */
+  margin-top: 100px;
+
   left: 30%;
   /* height: 80px; */
   /* animation: moveDolphin 6s linear infinite; */
 }
 .turtle{
-  top: 330%;
-  left: 60%;
+  /* top: 330%; */
+  margin-top: 300px;
+
+  left: 70%;
   /* height: 80px; */
   /* animation: moveTurtle 6s linear infinite; */
 }
 .fish{
-  top: 370%;
-  left: 55%;
+  /* top: 370%; */
+  margin-top: 700px;
+
+  left: 70%;
+  /* z-index: -1; */
   /* height: 80px; */
   /* animation: moveFish 6s linear infinite; */
 }
 .crab{
-  top: 330%; /* Use percentage relative to the section */
+  margin-top: 700px;
+  /* top: 330%; Use percentage relative to the section */
   left: 10%; 
   transform: translateY(-50%); /* Center vertically */
   /* height: 80px; */
@@ -1457,6 +1465,10 @@ header ul li a{
 .info .info-contaner .item2 p {
   font-size: 20px;
 }
+.crab,.dolphin,.fish,.turtle{
+  pointer-events: none;
+  margin: 0;
+}
 .dolphin{
   top: 300%;
   left: 40%;
@@ -1476,6 +1488,7 @@ header ul li a{
   /* animation: moveFish 6s linear infinite; */
 }
 .crab{
+  
   top: 350%;
   left: 10%;
   /* height: 80px; */
@@ -1488,6 +1501,10 @@ header ul li a{
 }
 }
 @media screen and (min-width: 400px) and (max-width: 1024px)  and (orientation: landscape) {
+  .crab,.dolphin,.fish,.turtle{
+  pointer-events: none;
+  margin: 0;
+}
   .info .content .info-contaner{
     grid-template-columns: repeat(2, 1fr); /* 2 columns of equal width */
     gap: 1em;
