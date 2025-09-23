@@ -57,9 +57,16 @@
             </header>
             <div class="table-con">
                 <!-- TODO: create better table -->
-                 <div class="btn-table">
-                    <button @click="moveless()"><font-awesome-icon icon="fa-solid fa-arrow-left" size="lg" /></button><button @click="movemore()"><font-awesome-icon icon="fa-solid fa-arrow-right" size="lg" /></button>
+                 <div class="head-table">
+                    <div class="counter-con">
+                        <p>No. of Quiz <span>{{ students[0]?.quiz.filter(quiz => quiz.mode === 'QUIZ MODE').length }}</span></p>
+                        <p>NO. of Window Card <span>{{ students[0]?.quiz.filter(quiz => quiz.mode === 'WINDOWCARD MODE').length }}</span></p>
+                    </div>
+                    <div class="btn-table">
+                        <button @click="moveless()"><font-awesome-icon icon="fa-solid fa-arrow-left" size="lg" /></button><button @click="movemore()"><font-awesome-icon icon="fa-solid fa-arrow-right" size="lg" /></button>
+                    </div>
                  </div>
+                 
                  <div class="table">
                     <div class="thead">
                         <div class="th-name" @click="add()"><h3>Name</h3></div>
@@ -385,6 +392,27 @@ export default{
 }
 </script>
 <style scoped>
+.counter-con{
+    display: flex;
+    gap: 20px;
+    margin-left: 10px;
+}
+.counter-con p span {
+    padding: 0% 5px;
+    color: #41b8d5;
+    background-color: white;
+    font-weight: 800;
+}
+.counter-con p{
+    color: #4fc4f7;
+    font-weight: 800;
+}
+.head-table{
+    width: 94%;
+    height: 40px;
+    display: flex;
+    justify-content: space-between;
+}
 .tittle-btn{
     font-weight: 600;
     margin-left: 0;
@@ -596,8 +624,8 @@ th,td{
     outline: auto;
 }
 .btn-table{
-    width: 94%;
-    height: 40px;
+    /* width: 94%;
+    height: 40px; */
     display: flex;
     justify-content: end;
 }
