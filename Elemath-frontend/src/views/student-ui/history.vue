@@ -210,6 +210,10 @@ export default{
     padding-bottom: 50px;
     
 }
+*{
+     font-family: 'BubbleBody Neue','Poppins', sans-serif; 
+
+}
 body{
     position: absolute;
     z-index: 1;
