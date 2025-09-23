@@ -116,8 +116,12 @@ export default{
     <!-- <h1>History</h1> -->
 </template>
 <style scoped>
+.question{
+    font-weight: 600;
+    margin-bottom: 10px;
+}
 .option p {
-    
+    font-weight: 600;
     /* background-color: #8ee71a; */
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -135,7 +139,7 @@ export default{
     justify-content: center;
 }
 .correct-answer{
-    color: #8ee71a;
+    color: #76b81f;
 }
 .rev{
     margin-bottom: 20px;

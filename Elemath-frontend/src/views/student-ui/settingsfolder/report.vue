@@ -45,7 +45,7 @@
                 </div>
             </div> 
 
-            <button type="submit" class="btn" :style="{ opacity: btnswitch ? 0.5 : 1 }" :disabled="btnswitch">Report Bug</button>
+            <button type="submit" class="btn" :style="{ opacity: btnswitch ? 0.5 : 1 }" :disabled="btnswitch">SEND REPORT</button>
         </form>
     </body>
     <latestnav  v-show="navshow"></latestnav>

@@ -110,7 +110,7 @@ export default{
     height: 50px;
     border: none;
     color: white;
-    background-color: #37c6e2;
+    background-color: #d32828;
 
 }
 *{
@@ -127,6 +127,7 @@ export default{
 }
 .option{
     color: white;
+    background-color: white;
     border-radius: 10px;
     margin: 5px;
     width: 100%;
