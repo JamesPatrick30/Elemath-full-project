@@ -3,7 +3,7 @@
     <navbar />
     <main>
       <header>
-        <h3 class="header-text">Analytics Dashboard</h3>
+        <h1 class="header-text">Analytics Dashboard</h1>
         <select name="" id="" class="classes" @change="getClassData(selectedClassId)" v-model="selectedClassId">
           <option v-for="value in class" :key="value.Class_id" :value="value.Class_id">{{ value.Class_name }}</option>
 
@@ -288,8 +288,8 @@ header{
   justify-content: center;
 }
 .header-text{
-  margin: 2px;
-  margin-left: 10px;
+    color: #41b8d5;
+    margin-left: 19px;
 }
 .analysis-title{
   margin: 0;

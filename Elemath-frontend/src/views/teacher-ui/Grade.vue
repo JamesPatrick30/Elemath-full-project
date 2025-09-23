@@ -59,8 +59,8 @@
                 <!-- TODO: create better table -->
                  <div class="head-table">
                     <div class="counter-con">
-                        <p>No. of Quiz <span>{{ students[0]?.quiz.filter(quiz => quiz.mode === 'QUIZ MODE').length }}</span></p>
-                        <p>NO. of Window Card <span>{{ students[0]?.quiz.filter(quiz => quiz.mode === 'WINDOWCARD MODE').length }}</span></p>
+                        <p>No. of Quiz <span>{{counterQuizandWindowCard().quizCount }}</span></p>
+                        <p>NO. of Window Card <span>{{ counterQuizandWindowCard().windowcardCount }}</span></p>
                     </div>
                     <div class="btn-table">
                         <button @click="moveless()"><font-awesome-icon icon="fa-solid fa-arrow-left" size="lg" /></button><button @click="movemore()"><font-awesome-icon icon="fa-solid fa-arrow-right" size="lg" /></button>
@@ -72,7 +72,11 @@
                         <div class="th-name" @click="add()"><h3>Name</h3></div>
                         <div class="th-con">
                             <!-- sadadads -->
-                            <div class="th" v-for="(quiz,index) in  mazLength(students[0]?.quiz)" :key="index"><p>{{ quiz.mode }}</p></div>
+                            <div class="th" v-for="(quiz, index) in mazLength(students[0]?.quiz)" :key="quiz.quizId">
+                                <p v-if="quiz.mode === 'QUIZ MODE'">Quiz</p>
+                                <p v-else-if="quiz.mode === 'WINDOWCARD MODE'">Window Card</p>
+
+                            </div>
                         </div>
                         <div class="th-total"><p>Ave</p></div>
                     </div>
@@ -117,23 +121,38 @@ export default{
             students: [],       // list of students in the class
             dataset: [],
 
-            line:0
+            line:0,
+            quizCount1:0,
+            windowcardCount1:0,
         }
     },
     methods:{
+        counterQuizandWindowCard(){
+            let quizCount = 0;
+            let windowcardCount = 0;
+            if(!this.students[0]?.quiz) return {quizCount,windowcardCount};
+            for(let quiz of this.students[0]?.quiz){
+                if(quiz.mode === 'QUIZ MODE'){
+                    quizCount++;
+                }else if(quiz.mode === 'WINDOWCARD MODE'){
+                    windowcardCount++;
+                }
+            }
+            return {quizCount,windowcardCount};
+        },
         movemore(){
             if(this.line < (this.students[0].quiz.length - 5)){
                  
                 this.line++;
             }
-            console.log('line : '+this.line +' quiz : '+(this.students[0].quiz.length - 5));
+            // console.log('line : '+this.line +' quiz : '+(this.students[0].quiz.length - 5));
         },
         moveless(){
             if(this.line > 0){
                  
                 this.line--;
             }
-            console.log('line : '+this.line +' quiz : '+(this.students[0].quiz.length - 5));
+            // console.log('line : '+this.line +' quiz : '+(this.students[0].quiz.length - 5));
         },
         mazLength(quiz){
             let list = [];
@@ -233,6 +252,7 @@ export default{
                     this.students = res.data.students.sort((a, b) => 
                         a.name.localeCompare(b.name)
                     );
+                    // console.log('quiz' + this.students[0]?.quiz.length);
                     this.line = this.students[0].quiz.length > 7 ? 0 : this.line;
                     console.log('sasdas'+JSON.stringify( this.students));
                 } else {
@@ -358,7 +378,7 @@ export default{
             for( i ; i < this.line + 7 && i < quiz.length; i++){
                 list.push({name : quiz[i],score : quizstotal[i]});
             }
-            console.log('line : '+i +' Student : '+(quiz.length-7));
+            // console.log('line : '+i +' Student : '+(quiz.length-7));
             return list;
         },
         average(grades){
@@ -386,7 +406,9 @@ export default{
         }
     },
     mounted(){
-        this.refreshtoken()
+        this.refreshtoken();
+        // console.log(students[0]?.quiz.length);
+        // alert(students[0]?.quiz.length);
         // this.getData();
     }
 }
