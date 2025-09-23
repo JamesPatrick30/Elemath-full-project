@@ -48,7 +48,7 @@ export default{
             this.isMobile = window.innerWidth <= 768;
         });
         if(this.isMobile){
-            this.index = 0;
+            this.index = this.source.length > 5 ? this.source.length - 5 : 0;
         } else {
             this.index = this.source.length > 5 ? this.source.length - 5 : 0;
         }
@@ -56,7 +56,7 @@ export default{
     watch: {
         isMobile(newValue) {
             if (newValue) {
-                this.index = 0;
+                this.index = this.source.length > 5 ? this.source.length - 5 : 0;
             } else {
                 this.index = this.source.length > 5 ? this.source.length - 5 : 0;
             }
@@ -93,6 +93,12 @@ export default{
             localStorage.setItem('volume', this.volume);
         },
         nextTick(){
+            if(!this.isMobile){
+                if(this.index < this.source.length - 5){
+                    this.index++;
+                }
+                return;
+            }
             if(this.index < this.source.length - 3){
                 this.index++;
             }
@@ -112,6 +118,8 @@ export default{
         gradelist(grades){
             if(this.isMobile){
                 return grades.slice(this.index, this.index + 3);
+            }else{
+                return grades.slice(this.index, this.index + 5);
             }
             return grades;
         }
@@ -253,11 +261,11 @@ body, html {
     .container button{
         /* display: block; */
         /* background-color: tomato; */
-        display: none;
+        /* display: none; */
     }
     .container{
         display: flex;
-        flex-direction: column;
+        /* flex-direction: column; */
         align-items: center;
         justify-content: center;
         width: 80%;
