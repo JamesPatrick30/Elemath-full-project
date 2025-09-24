@@ -1,6 +1,6 @@
 const pm2 = require("pm2");
 const axios = require("axios");
-
+require('dotenv').config();
 // const TELEGRAM_API = `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}`;
 // const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
