@@ -37,6 +37,7 @@ async function sendTelegram(name, event) {
   try {
     const TELEGRAM_API = `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}`;
     const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
+	console.log('chat ID: '+CHAT_ID + ' Tele : '+ TELEGRAM_API);
     await axios.post(`${TELEGRAM_API}/sendMessage`, {
         chat_id: CHAT_ID,
         text: message,
