@@ -112,7 +112,7 @@ export default {
                     id:id,
                     mode:mode
                 });
-                alert(res.data.message);
+                // alert(res.data.message);
                 if(mode === 'WINDOWCARD MODE'){
                     this.$router.push({name:'window-card',query: { i: id }});
                     return;
