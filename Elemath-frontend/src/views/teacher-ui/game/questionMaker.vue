@@ -429,7 +429,7 @@ export default{
             generatingLoading: false, // <- add this
             fileloading: false,
             filetitle:'',
-            time:{minutes:0,seconds:0},
+            time:{minutes:null,seconds:null},
             uploading:false,
             edit:{option:[],question:'',story:'',answer:''},
             editcluster:false,
