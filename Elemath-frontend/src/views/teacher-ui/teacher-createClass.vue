@@ -2,8 +2,8 @@
     <div class="create-con" v-if="createClassCluster">
         <div class="create">
             <button class="close" @click="createClassClusterToggle()">X</button>
-            <input type="text" placeholder="Class Name" v-model="className">
-            <button class="createClass" @click="createClass()">Create Class</button>
+            <input type="text" @keyup.enter="createClass()" placeholder="Class Name" v-model="className">
+            <button class="createClass"  @click="createClass()">Create Class</button>
         </div>
     </div>
     <div class="body" v-if="user">
@@ -40,7 +40,12 @@ export default {
     methods: {
         // Add methods for handling class creation logic
         async createClass() {
+            if (!this.className.trim()) {
+                alert('Class name cannot be empty.');
+                return;
+            }
             try {
+
                 const response = await api.post('/createClass', {
                     ClassName: this.className,
                 });
