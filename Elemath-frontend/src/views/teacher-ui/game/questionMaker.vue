@@ -103,8 +103,12 @@
                         <option value="Costumize">Customize</option>
                     </select>
                 </div>
-                
-                <input type="number" placeholder="Time per question (minutes)" class="input-a" style="margin: 10px; text-align: center;" v-model="time">
+                <div>
+                    <label for="time" class="labelQ">Time per question :</label>
+                    <input type="number" name="time" placeholder="minutes" class="input-a" style="max-width: 100px; margin: 10px; text-align: center;" v-model="time.minutes">
+                    <input type="number" name="time" placeholder="seconds" class="input-a" style="max-width: 100px; margin: 10px; text-align: center;" v-model="time.seconds">
+
+                </div>
                 
 
 
@@ -425,7 +429,7 @@ export default{
             generatingLoading: false, // <- add this
             fileloading: false,
             filetitle:'',
-            time:null,
+            time:{minutes:0,seconds:0},
             uploading:false,
             edit:{option:[],question:'',story:'',answer:''},
             editcluster:false,
@@ -460,7 +464,14 @@ export default{
             this.editindex = index ;
         },
         startGame(){
-            if(!this.time){
+            if(!this.time.minutes && !this.time.seconds){
+                if(this.time.seconds < 0){
+                    alert('⚠️ Time per question cannot be negative.');
+                    return;
+                }else if(this.time.seconds > 300){
+                    alert('⚠️ Time per question is too long. Please set a time less than 5 minutes.');
+                    return;
+                }
                 alert('⚠️ Time limit not set. Please configure a timer before starting.');
                 return;
             }
