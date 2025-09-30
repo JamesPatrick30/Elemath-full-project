@@ -153,7 +153,7 @@
                                 <h4>File Selected: {{ filetitle }}</h4>
                                 <div>
                                     <label for="numQuestions">Number of Questions</label>
-                                    <input class="num-in" type="number" id="numQuestions" placeholder="Number of Questions" v-model="uploadGenerate.num_questions">
+                                    <input class="num-in" type="number" id="numQuestions" placeholder="" v-model="uploadGenerate.num_questions">
                                 </div>
                                 
                                     <select class="t-o-q" v-model="uploadGenerate.type"  >
@@ -503,8 +503,8 @@ export default{
               
                 // alert(res.data.message);
             } catch (err) {
-                console.error("❌ Error fetching file list:", err);
-                alert("Failed to load files. Please try again later.");
+                // console.error("❌ Error fetching file list:", err);
+                // alert("Failed to load files. Please try again later.");
                 this.fileloading = false;
             }
             this.fileloading = false;
