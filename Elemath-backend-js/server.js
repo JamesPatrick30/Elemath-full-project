@@ -1326,7 +1326,9 @@ app.post('/get/mode/question', auth, async (req, res) => {
   }
 
   // check if this was the last question
+  console.log('qin : ' + qin + ' length : ' + modeData.questions.length);
   if ((qin + 1) === modeData.questions.length) {
+    console.log('done');
     player.done = true;
 
     setgameData(`mode:${req.user.classId}`, modeData);

@@ -115,13 +115,13 @@ export default {
                 this.question=data.question;
                 this.options = data?.options;
                 this.story = data?.story;
-                this.totaltime = res.data.time * 60;
+                this.totaltime = (res.data.time.minutes * 60) + res.data.time.seconds;
                 this.table = data?.table;
                 this.tabletype = data?.tabletype;
                 this.typeOfTest = data?.type;
                 this.btnsubmit = false;
                 console.log(data);
-
+                // alert(`time ${res.data.time.minutes} minutes ${res.data.time.seconds} sec per question`);
                 const time2 = localStorage.getItem('timeLeft');
                 console.log(this.table);
                 if(time2 == 0){

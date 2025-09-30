@@ -14,9 +14,11 @@ export default{
                 const res = await api.get('/get/mode/player/rev');
                 this.rev = res.data.rev;
                 this.score = res.data.score;
-                console.log(res.data.rev);
+                // console.log(res.data.rev);
+                
             }catch(err){
-                console.log(err);
+                // console.log(err);
+                this.$router.push('/ds');
             }
         },
         colorpic(realans,value,player){
