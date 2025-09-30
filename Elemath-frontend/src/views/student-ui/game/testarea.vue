@@ -50,11 +50,12 @@ export default {
     },
     methods: {
         startTimer() {
+            // alert(`time ${this.timeLeft} seconds per question`);
             this.unlockAudio();
             this.timer = setInterval(() => {
                 if (this.timeLeft > -1) {
                     this.timeLeft--;
-                    this.persent = (this.timeLeft / this.totaltime) * 100;
+                    this.persent = (this.timeLeft / this.totalTime) * 100;
                     if(this.persent > 83){
                         this.color = this.colors[0];
                     }else if (this.persent > 67){
@@ -115,13 +116,17 @@ export default {
                 this.question=data.question;
                 this.options = data?.options;
                 this.story = data?.story;
-                this.totaltime = (res.data.time.minutes * 60) + res.data.time.seconds;
+                this.timeLeft = (res.data.time.minutes * 60) + res.data.time.seconds;
+                if(!this.timeLeft){
+                    this.timeLeft = res.data.time * 60;
+                }
+                this.totalTime = this.timeLeft;
                 this.table = data?.table;
                 this.tabletype = data?.tabletype;
                 this.typeOfTest = data?.type;
                 this.btnsubmit = false;
                 console.log(data);
-                // alert(`time ${res.data.time.minutes} minutes ${res.data.time.seconds} sec per question`);
+                // alert(`time ${this.timeLeft} minutes ${this.timeLeft} sec per question`);
                 const time2 = localStorage.getItem('timeLeft');
                 console.log(this.table);
                 if(time2 == 0){
@@ -129,7 +134,8 @@ export default {
                     this.timeLeft = time2;
                     return;
                 }
-                this.timeLeft = res.data.time * 60;
+                // this.timeLeft = res.data.time * 60;
+                this.startTimer();
             }catch(err){
                 console.log(err);
             }
@@ -162,7 +168,6 @@ export default {
     mounted() {
         // this.getIDres();
         this.get1st();
-        this.startTimer();
         document.body.addEventListener("click", this.unlockAudio, { once: true });
         // document.body.addEventListener("click", this.unlockAudio, { once: true });
     },
@@ -190,6 +195,7 @@ export default {
             
         </header> 
         <div class="timer" :style="{width: persent+ '%',backgroundColor: color } "></div>
+        <p class="time-left">{{ timeLeft }}s</p>
         <button class="setting" @click="settingf()"><font-awesome-icon icon="fa-solid fa-gear" size="2xl" /></button>
         <main>
             
@@ -271,7 +277,7 @@ export default {
                             <div class="true-false-c" @click="getIDres('false')" >False</div>
                         </div>
                         <div v-else class="input-text">
-                            <input  type="text" v-model="inputanswer">
+                            <input  type="text" v-model="inputanswer" autofocus >
                             <button @click="getIDres(inputanswer)" :disabled="btnsubmit">Submit</button>
                         </div>
                         
@@ -286,7 +292,7 @@ export default {
                             <p></p>
                         </div>
                         <div  class="input-text">
-                            <input  type="text" v-model="inputanswer">
+                            <input  type="text" @keyup.enter="getIDres(inputanswer)" v-model="inputanswer" autofocus >
                             <button @click="getIDres(inputanswer)" :disabled="btnsubmit">Submit</button>
                         </div>
                         
@@ -318,6 +324,13 @@ export default {
     </div>
 </template>
 <style scoped>
+.time-left{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-weight: 700;
+    color: white;
+}
 .q p{
     margin: 0;
 }
