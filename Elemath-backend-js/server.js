@@ -17,7 +17,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 //redis client
 const redisClient = require('./redis/redisClient.js');
 const {init,pubClient,subClient} = require('./redis/redispubsub.js');
-
+const rateLimit = require('express-rate-limit');
 //websocket
 // const WebSocket = require("ws");
 const lessonUpload = require('./models/lessonfile.js');
@@ -37,14 +37,27 @@ const cookie = require("cookie");
 //logger
 const logError = require('./utils/errorlogger.js');
 
+
 // Attach logger to app
 // Attach logger to requests
 app.use(pinoHttp({ logger }));
 
-// Example: log incoming requests (method, url)
-app.use((req, res, next) => {
-  // req.log.info({ method: req.method, url: req.url }, "Incoming request");
-  next();
+
+// Basic rate limiter
+const generalLimiter = rateLimit({
+  windowMs: 2 * 60 * 1000, // 2 minutes
+  max: 200, // limit each IP to 200 requests per windowMs
+  message: (req, res) => {
+    //console.log(`Rate limit exceeded for IP: ${req.ip} on path: ${req.path}, User-Agent: ${req.get('sec-ch-ua-platform')}`);
+    logError(new Error(`Rate limit exceeded for IP: ${req.ip} on path: ${req.path}, User-Agent: ${req.get('sec-ch-ua-platform')}`), req);
+    return {
+      status:429,
+      error: `Too many requests from this IP for ${req.path}. Try again later.`,
+      path: req.path,
+    };
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 
 // Middleware
@@ -52,6 +65,7 @@ app.use(cors({
   origin: process.env.FRONTEND_URL, // or whatever port your frontend uses
   credentials: true
 }));
+app.use(generalLimiter);
 app.use(cookieParser());
 app.use(bodyParser.json());
 
@@ -122,7 +136,7 @@ async function Cache(key, data) {
   // Proper usage: set(key, value, options)
   await redisClient.set(key, JSON.stringify(data), { EX: 3600 });
 
-  console.log('cached : ' + key);
+  // console.log('cached : ' + key);
   return data;
 }
 const dlessons = require('./models/dlesson.js');
@@ -1731,6 +1745,7 @@ app.post('/mode/done', auth, async (req, res) => {
 });
 const { buildQuiz } = require('./helper/windowcard.js');
 const grade = require('./models/grade.js');
+const { errorMonitor } = require('events');
 // ...existing code...
 
 // Minimal quiz endpoint

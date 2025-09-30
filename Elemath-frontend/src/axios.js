@@ -19,7 +19,11 @@ api.interceptors.response.use(
   error => {
     if (error.response && error.response.status === 401) {
       // use Vue Router to redirect
-      router.push('/')
+      router.push('/');
+    }else if (error.response && error.response.status === 429) {
+      alert("Too many requests! Please try again later.");
+      router.push('/');
+
     }
     return Promise.reject(error)
   }

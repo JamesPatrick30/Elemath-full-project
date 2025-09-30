@@ -163,7 +163,7 @@ export default {
                 if(err.response && err.response.status === 401) {
                     this.$router.push('/');
                 } else {
-                    alert('Failed to fetch data. Please try again later.');
+                    // alert('Failed to fetch data. Please try again later.');
                 }
             }
         },
