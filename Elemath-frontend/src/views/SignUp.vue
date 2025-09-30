@@ -144,6 +144,14 @@ export default {
 };
 </script>
 <style scoped>
+input::placeholder {
+    color: white;
+    
+}
+input:focus::placeholder {
+    color: white;
+    transition: color 0.3s ease;
+}
 body{
     background-image: url('../backgrounds/bgImage.png');
     background-size: cover;
