@@ -120,7 +120,7 @@ export default {
                         <label for="difficulty">Difficulty:</label>
                         <select class="input-s" id="difficulty" v-model="difficulty">
                             <option value="easy">Easy</option>
-                            <option value="medium">Medium</option>
+                            <option value="medium">Moderate</option>
                             <option value="hard">Hard</option>
                         </select>
                         <label for="operation">Operations</label>

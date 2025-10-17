@@ -173,7 +173,7 @@
                                     <select class="t-o-q" v-model="uploadGenerate.difficulty"  >
                                         <option disabled value="">-- Select Difficulty --</option>
                                         <option value="easy">Easy</option>
-                                        <option value="medium">Medium</option>
+                                        <option value="medium">Moderate</option>
                                         <option value="hard">Hard</option>
                                         <option value="very-hard">Very Hard</option>
                                     </select>
