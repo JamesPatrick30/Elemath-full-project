@@ -19,6 +19,9 @@
             :series="LineChart.series"
             :options="LineChart.options"
           />
+          <div class="filler" v-else>
+            <p>No quiz performance data yet</p>
+          </div>
         </div>
         <div class="item1">
           <h4 class="analysis-title">Pass vs. Fail Pie Chart</h4>
@@ -30,6 +33,9 @@
               :series="PieChart.series"
               :options="PieChart.options"
             />
+            <div class="filler" v-else>
+            <p>No quiz performance data yet</p>
+          </div>
           </div>
           
         </div>
@@ -43,6 +49,9 @@
             :series="barChart.series"
             :options="barChart.options"
           />
+          <div class="filler" v-else>
+            <p>No quiz performance data yet</p>
+          </div>
         </div>
         <!-- <div class="item3">
           <h4>Top Students</h4>
@@ -64,6 +73,9 @@
             :series="LowTopicBarChart?.series"
             :options="LowTopicBarChart?.options"
           />
+          <div class="filler" v-else>
+            <p>No quiz performance data yet</p>
+          </div>
         </div>
         <div class="item5">
           <h4 class="analysis-title">
@@ -264,6 +276,13 @@ export default {
 </script>
 
 <style scoped>
+.filler{
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+}
 *{
     font-family: 'BubbleBody Neue','Poppins', sans-serif;
 }
