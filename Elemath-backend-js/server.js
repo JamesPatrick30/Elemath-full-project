@@ -669,12 +669,13 @@ app.post('/find-student', auth, async (req, res) => {
   res.status(200).json(student);
 });
 app.post('/createClass', auth, async (req, res) => {
-  const { ClassName } = req.body;
+  const { ClassName, ClassLevel } = req.body;
 
   try {
     // 1. Create and save the class
     const newClass = new classes({
       Class_name: ClassName,
+      Class_level: ClassLevel,
       teacherId: req.user.id
     });
 
@@ -776,8 +777,8 @@ app.post('/get/classData',auth,classCache,async(req,res)=>{
 
     const list = await StudentClass.find({classId : classId});
     // console.log('list :'+classIn);
-    await redisClient.set(`classData:${classId}`, JSON.stringify(list), { EX: 3600 });
-    res.status(200).json(list);
+    await redisClient.set(`classData:${classId}`, JSON.stringify({ list: list, gradelevel: classIn.Class_level, classname: classIn.Class_name }), { EX: 3600 });
+    res.status(200).json({ list: list, gradelevel: classIn.Class_level, classname: classIn.Class_name });
   }catch(err){
     logError(err, req);
   }

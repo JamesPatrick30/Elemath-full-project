@@ -15,7 +15,7 @@ const classSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Student'
   }],
-  gradeLevel: {
+  Class_level: {
     type: String,
     required: true
   }

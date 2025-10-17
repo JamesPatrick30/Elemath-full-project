@@ -140,7 +140,11 @@
          </div>
          <div class="list">
             <div class="list-con">
-                <h3 style="color: #4fc4f7;">Student Count : {{ students.length }}</h3>
+                <div class="header-list">
+                    <h3 style="color: #4fc4f7;">Student Count : {{ students?.length }}</h3>
+                    <h3 style="color: #4fc4f7;">Class Level : {{ classLevel }}</h3>
+                </div>
+                
                 <div class="table">
                     <div class="table-head">
                         <div class="thead"><strong>Profile</strong></div>
@@ -231,7 +235,8 @@ export default{
             editordelete: true,
             classname: '',
             loading:false,
-
+            classLevel:'',
+            
             ename:'',
             efname:'',
             elrn:'',
@@ -281,8 +286,9 @@ export default{
                 });
 
                 console.log('Student list:', res.data);
-                this.students = res.data;
-                this.students = this.students.sort((a, b) => {
+                this.students = res.data.list;
+                this.classLevel = res.data.gradelevel;
+                this.students = this.students?.sort((a, b) => {
                     const nameA = a.name || '';
                     const nameB = b.name || '';
                     return nameA.localeCompare(nameB);
@@ -526,6 +532,13 @@ export default{
 }
 </script>
 <style scoped>
+.header-list{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 90%;
+    /* margin: 10px auto; */
+}
 .btn-upload{
     border: none;
     background-color: #4fc4f7;
