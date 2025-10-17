@@ -119,14 +119,14 @@ export default {
       selectedClassId: null,
       LineChart: {
         series: [
-          { name: "Quiz", data: [80, 70, 90, 77, 85, 92] }
+          // { name: "Quiz", data: [80, 70, 90, 77, 85, 92] }
         ],
         options: {
-          chart: { background: "#fff" },
-          colors: ["#4fc4f7"],
-          stroke: { curve: "smooth", width: 3 },
-          xaxis: { categories: ["Mon","Tue","Wed","Thu","Fri","Sat"] },
-          grid: { borderColor: "#e0e0e0" }
+          // chart: { background: "#fff" },
+          // colors: ["#4fc4f7"],
+          // stroke: { curve: "smooth", width: 3 },
+          // xaxis: { categories: ["Mon","Tue","Wed","Thu","Fri","Sat"] },
+          // grid: { borderColor: "#e0e0e0" }
         }
       },
       barChart: {
@@ -141,19 +141,19 @@ export default {
         // }
       },
       PieChart: {
-        series: [10, 27],
-        options: {
-          labels: ["Failed", "Pass"],
-          colors: ["#FF5252", "#4CAF50"],
-          legend: { position: "right" }
-        }
+        // series: [10, 27],
+        // options: {
+        //   labels: ["Failed", "Pass"],
+        //   colors: ["#FF5252", "#4CAF50"],
+        //   legend: { position: "right" }
+        // }
       },
       improvementChart: {
-        series: [10, 27,8],
+        series: [],
         options: {
-           labels: ["Improved", "No Change", "Declined"],
-           colors: ["#28a745", "#ffc107", "#dc3545"],
-          legend: { position: "right" }
+        //    labels: ["Improved", "No Change", "Declined"],
+        //    colors: ["#28a745", "#ffc107", "#dc3545"],
+        //   legend: { position: "right" }
         }
       },
       classInput:null,
