@@ -255,7 +255,7 @@ export default{
         async editstudent(){
             this.loading = true;
             try{
-                if( !this.elrn || !this.efname || !this.emname || !this.elname || !this.epassword ){
+                if( !this.elrn || !this.efname || !this.emname || !this.elname ){
                     alert('Fill up the form')
                     return
                 }
