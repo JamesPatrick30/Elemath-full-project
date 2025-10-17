@@ -9,7 +9,9 @@
                 <li class="item1" :class="((parameter === '/tc') || (parameter === '/th'))? 'in': 'out'" @click="goHome()">Home</li>
                 <li class="item2" :class="parameter === '/an'? 'in': 'out'" @click="this.$router.push('/an')">Analytics</li>
                 <li :class="parameter === '/c'? 'in': 'out'" @click="this.$router.push('/c')">Class</li>
-                <li :class="parameter == '/g'? 'in': 'out'" @click="this.$router.push('/g')">Grade</li>
+                <li :class="parameter == '/wcg'? 'in': 'out'" @click="this.$router.push('/wcg')">windowCard</li>
+                <li :class="parameter == '/qg'? 'in': 'out'" @click="this.$router.push('/qg')">Quiz</li>
+
                 <!-- <li class="item3" :class="parameter === '/t'? 'in': 'out'">History</li> -->
                 <li class="item4" :class="parameter === '/ts'? 'in': 'out'" @click="this.$router.push('/stt')">Settings</li>
             </ul>

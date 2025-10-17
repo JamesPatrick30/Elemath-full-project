@@ -31,12 +31,24 @@ import addlist from '@/views/admin-ui/addlist.vue'
 import Grade from '@/views/teacher-ui/Grade.vue'
 import leaderboard from '@/views/teacher-ui/game/leaderboard.vue'
 import basicInfo from '@/views/student-ui/settingsfolder/basicInfo.vue'
+import windowCardGrade from '@/views/teacher-ui/windowCardGrade.vue'
+import quizGrade from '@/views/teacher-ui/quizGrade.vue'
 
 import uploadd from '@/views/admin-ui/uploadd.vue'
 import notfound from '@/views/notfound.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path: '/qg',
+      name: 'quiz-grade',
+      component: quizGrade
+    },
+    {
+      path: '/wcg',
+      name: 'window-card-grade',
+      component: windowCardGrade
+    },
     {
       path: '/history',
       name: 'history',
