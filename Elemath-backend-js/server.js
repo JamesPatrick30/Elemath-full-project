@@ -777,7 +777,7 @@ async function classCache(req,res,next){
   }
 }
 // TODO : FIX THIS TOMORROW MORNING
-app.post('/get/classData',auth,async(req,res)=>{
+app.post('/get/classData',auth,classCache,async(req,res)=>{
   const {classId } = req.body;
 
   try{
