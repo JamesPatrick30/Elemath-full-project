@@ -72,7 +72,7 @@
                 <p>First Name : {{ efname }}</p>
                 <p>Middle Name : {{ emname }}</p>
                 <p>Last Name : {{ elname }}</p>
-                <p>Password : {{ epassword }}</p>
+                <!-- <p>Password : {{ epassword }}</p> -->
             </div>
             <div class="edit-cluster-body" v-else>
                 <p>lrn {{ elrn }}</p>
@@ -422,6 +422,8 @@ export default{
 
             
                 this.Dlrn = lrn;
+            
+                this.loading = false;
             
         },
         async deletestudent(){

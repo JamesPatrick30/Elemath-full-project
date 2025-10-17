@@ -770,7 +770,7 @@ async function classCache(req,res,next){
   }
 }
 // TODO : FIX THIS TOMORROW MORNING
-app.post('/get/classData',auth,classCache,async(req,res)=>{
+app.post('/get/classData',auth,async(req,res)=>{
   const {classId } = req.body;
 
   try{
@@ -778,7 +778,7 @@ app.post('/get/classData',auth,classCache,async(req,res)=>{
     const classIn = await classes.findOne({_id : classId});
     if(!classIn) return res.status(404).json({message: 'class doesnt exist'});
 
-    const list = await StudentClass.find({classId : classId});
+    const list = await StudentClass.find({classId : classId},{_id:1,name:1,firstname:1,middlename:1,lastname:1,profile:1,lrn:1,email:1});
     // console.log('list :'+classIn);
     await redisClient.set(`classData:${classId}`, JSON.stringify({ list: list, gradelevel: classIn.Class_level, classname: classIn.Class_name }), { EX: 3600 });
     res.status(200).json({ list: list, gradelevel: classIn.Class_level, classname: classIn.Class_name });
@@ -989,17 +989,33 @@ app.post('/edit/student', auth ,async ( req,res )=>{
     if (!student) return res.status(404).json({message : 'student not found'});
     const name =  lname + '. ' +fname  + ' ' + mname + ', ';
     // console.log('the name is : '+ name);
-    await StudentClass.updateOne(
+
+    if(password){
+      const hashedPassword = await bcrypt.hash(password, 12);
+      await StudentClass.updateOne(
       { lrn : lrn },
       { $set: {
           name:name,
           firstname: fname,
           middlename: mname,
           lastname: lname,
-          password: password
+          password: hashedPassword
         }
       }
     );
+    } else{
+      await StudentClass.updateOne(
+        { lrn : lrn },
+        { $set: {
+            name:name,
+            firstname: fname,
+            middlename: mname,
+            lastname: lname
+          }
+        }
+      );
+    }
+    
     await redisClient.del(`classData:${student.classId}`); // Clear cache for this class
     res.json({message : 'success'});
   }catch(err){
