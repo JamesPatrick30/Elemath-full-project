@@ -1,5 +1,21 @@
 <template>
     <loading v-if="!user"></loading>
+    <div class="create-con" v-if="classDeleteCluster">
+        <div class="edit" >
+            <button class="btn-close-cluster" @click="classDeleteCluster = false"><font-awesome-icon :icon="['fas', 'xmark']" size="lg"/></button>
+            <p class="main-title">Are you sure you want to delete this Class?</p>
+            <p class="secondary">(This action will permanently remove.)</p>
+            <!-- <input class="input-cluster" type="text" placeholder="Class Name" v-model="className"> -->
+            <button @click="deleteClass()" class="btn-cluster">Delete Class</button>
+        </div>
+    </div>
+    <div class="create-con" v-if="classEditCluster">
+        <div class="edit" >
+            <button class="btn-close-cluster" @click="classEditCluster = false"><font-awesome-icon :icon="['fas', 'xmark']" size="lg"/></button>
+            <input type="text" placeholder="Class Name" v-model="className">
+            <button @click="editClass()" class="btn-cluster">Edit Class</button>
+        </div>
+    </div>
     <div class="create-con" v-if="createClassCluster">
         <div class="create">
             <button class="btn-close-cluster" @click="createClassCluster = false"><font-awesome-icon :icon="['fas', 'xmark']" size="lg"/></button>
@@ -15,8 +31,8 @@
                 <h1 class="title">Class Roster</h1>
                 <div>
                                     
-                    <button @click="nofeatures"><font-awesome-icon :icon="['fas', 'user-pen']"  style="color:#ffda03;" />Edit Class </button>
-                    <button @click="nofeatures"><font-awesome-icon :icon="['fas', 'trash']" style="color:#ff4d4d;" />Delete Class</button>
+                    <button @click="classEditCluster = true"><font-awesome-icon :icon="['fas', 'user-pen']"  style="color:#ffda03;" />Edit Class </button>
+                    <button @click="classDeleteCluster = true"><font-awesome-icon :icon="['fas', 'trash']" style="color:#ff4d4d;" />Delete Class</button>
                 </div>
             </div>
             
@@ -130,6 +146,8 @@ export default {
     data() {
         return {
             className:'',
+            classEditCluster:false,
+            classDeleteCluster:false,
             selectedClassId: null,
             createClassCluster:false,
             classlength: 0,
@@ -242,6 +260,42 @@ export default {
 }
 </script>
 <style scoped>
+.secondary{
+    font-size: 14px;
+    color: rgb(68, 68, 68);
+    margin-bottom: 15px;
+}
+.edit .main-title{
+    width: 300px;
+    font-weight: 800;
+    font-size: 21px;
+    color: black;
+    margin-bottom: 20px;
+    text-align: center;
+}
+.edit{
+    width: 350px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    padding:10px;
+    border-radius: 10px;
+}
+.edit input{
+    border: 2px solid rgb(145, 145, 145);
+    width: 300px;
+    height: 30px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    text-align: center;
+    /* border-bottom: 2px solid rgb(114, 241, 131); */
+}.edit input:focus{
+    /* border: none; */
+    outline: none;
+    box-shadow: 0 0px 10px rgb(175, 175, 175);
+}
 .title-btn div button:hover{
     background-color: #4fc4f7;
     color: white;
