@@ -330,9 +330,9 @@ export default {
                 </div>
                 
             </div>
-            <p class="grade-title">Grade 5</p>
+            <p class="grade-title">lessons</p>
             <div class="lesson-cons">
-                <div class="lessons" v-for="(value, index) in sortgrade5()" :key="index" @click="lessonData(value._id)">
+                <div class="lessons" v-for="(value, index) in lessons" :key="index" @click="lessonData(value._id)">
                     <img class="lesson-pic" :src="randompics()" alt="">
                     <div class="con-title">
                         <p class="lesson-title">{{value.title}}</p>
@@ -340,7 +340,7 @@ export default {
                     <!-- <p>{{value.desc}}</p> -->
                 </div>
             </div>
-            <p class="grade-title">Grade 6</p>
+            <!-- <p class="grade-title">Grade 6</p>
             <div class="lesson-cons">
                 <div class="lessons" v-for="(value, index) in sortgrade6()" :key="index" @click="lessonData(value._id)">
                     <img class="lesson-pic" :src="randompics()" alt="">
@@ -349,9 +349,9 @@ export default {
                     </div>
                     
                     
-                    <!-- <p>{{value.desc}}</p> -->
+                    
                 </div>
-            </div>
+            </div> -->
         </main>
     </body>
     <div class="cluster-con" v-if="cluster">
