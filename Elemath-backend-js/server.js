@@ -194,8 +194,13 @@ app.get('/dlesson/uploadedlessons', auth, async (req, res) => {
 app.get('/dlesson/list', auth, async (req, res) => {
   try {
     const lessons = await dlessons.find({}, { title: 1, gradeLevel: 1, _id: 1}).sort({ dateCreated: -1 }); // latest first
+    const classid = req.user.classId;
+    const classIn = await classes.findOne({_id : classid});
 
-    res.json(lessons);
+    const studentClass = await StudentClass.findOne({ _id: req.user.id });
+    console.log('the class grade level : '+ classIn.Class_level);
+    const filteredLessons = lessons.filter(lesson => lesson.gradeLevel === classIn.Class_level);
+    res.json(filteredLessons);
   } catch (error) {
     console.error("❌ Error fetching lessons:", error);
     res.status(500).json({ message: "Internal server error" });
