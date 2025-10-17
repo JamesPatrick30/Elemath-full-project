@@ -37,6 +37,8 @@ const cookie = require("cookie");
 //logger
 const logError = require('./utils/errorlogger.js');
 
+// brcypt salt rounds
+const bcrypt = require('bcrypt');
 
 // Attach logger to app
 // Attach logger to requests
@@ -710,6 +712,7 @@ app.post('/enroll-student',auth,async(req,res)=>{
   const student = await StudentClass.findOne({lrn:lrn});
 
   if (student) return res.status(409).json({message: 'Student already enrolled!'});
+  const hashedPassword = await bcrypt.hash(password, 12);
   try{
     const studentenrolled = await StudentClass({
         name: fname + ', ' + mname + ', ' + lname,
@@ -719,7 +722,7 @@ app.post('/enroll-student',auth,async(req,res)=>{
         lastname:lname,
         lrn:lrn,
         email:lrn,
-        password:password,
+        password:hashedPassword,
         classId:classId
     });
 
