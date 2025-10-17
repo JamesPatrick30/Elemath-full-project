@@ -14,7 +14,11 @@ const classSchema = new mongoose.Schema({
   studentIds: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Student'
-  }]
+  }],
+  gradeLevel: {
+    type: String,
+    required: true
+  }
 });
 
 module.exports = mongoose.model('Class', classSchema);
