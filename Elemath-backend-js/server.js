@@ -191,6 +191,10 @@ app.get('/dlesson/uploadedlessons', auth, async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+app.get('/dlesson/list/teacher', auth, async (req, res) => {
+    const lessons = await dlessons.find({}, { title: 1, gradeLevel: 1, _id: 1}).sort({ dateCreated: -1 }); // latest first
+    res.json(lessons);
+});
 app.get('/dlesson/list', auth, async (req, res) => {
   try {
     const lessons = await dlessons.find({}, { title: 1, gradeLevel: 1, _id: 1}).sort({ dateCreated: -1 }); // latest first

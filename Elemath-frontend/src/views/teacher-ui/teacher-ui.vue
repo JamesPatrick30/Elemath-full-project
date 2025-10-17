@@ -140,7 +140,7 @@ export default {
         },
         async getLessonList(){
             try{
-                const res = await api.get('/dlesson/list');
+                const res = await api.get('/dlesson/list/teacher');
                 this.lessons = res.data;
                 // console.log(res.data);
             }catch(err){
