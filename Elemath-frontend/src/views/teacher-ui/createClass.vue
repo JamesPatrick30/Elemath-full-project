@@ -152,7 +152,7 @@
                         <!-- <div class="thead"><strong>Middle Name</strong></div>
                         <div class="thead"><strong>Last Name</strong></div> -->
                         <div class="thead"><strong>LRN</strong></div>
-                        <div class="thead"><strong>Password</strong></div>
+                        <!-- <div class="thead"><strong>Password</strong></div> -->
                         <div class="thead"><strong>Action</strong></div>
 
                     </div>
@@ -163,7 +163,7 @@
                                 <!-- <div class="tbody"><p>{{ student.middlename }}.</p></div>
                                 <div class="tbody"><p>{{student.lastname}}</p></div> -->
                                 <div class="tbody"><p>{{student.lrn}}</p></div>
-                                <div class="tbody"><p>{{student.password}}</p></div> 
+                                <!-- <div class="tbody"><p>{{student.password}}</p></div>  -->
                             <div class="tbody">
                                 <button class="action-btn" id="edit-icon" @click="openCluster(
                                         true,
@@ -236,7 +236,7 @@ export default{
             classname: '',
             loading:false,
             classLevel:'',
-            
+
             ename:'',
             efname:'',
             elrn:'',
