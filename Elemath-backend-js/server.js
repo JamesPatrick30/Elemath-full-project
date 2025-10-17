@@ -278,9 +278,10 @@ app.post('/update/student/info',auth,async(req,res)=>{
   try{
     let result = null;
     if(password) {
+      const hashedPassword = await bcrypt.hash(password, 12);
       result = await StudentClass.updateOne(
         { email: req.user.username },
-        { $set: { name: username, password: password } }
+        { $set: { name: username, password: hashedPassword } }
       );
     }else{
       result = await StudentClass.updateOne(
@@ -306,7 +307,8 @@ app.post('/student-login', async (req, res) => {
 
   if(!student) return res.status(404).json({message:'Student not yet enrolled'});
 
-  if (student.password !== password) return res.status(404).json({message:'Wrong password'});
+  const isValidPassword = await bcrypt.compare(password, student.password);
+  if (!isValidPassword) return res.status(404).json({message:'Wrong password'});
 
   const payload = {id:student._id,username:student.email,classId:student.classId};
 
