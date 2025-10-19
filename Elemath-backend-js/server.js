@@ -869,7 +869,7 @@ app.get('/chart', auth,cashChart ,async (req, res) => {
     // compute averages
     const studentAverages = Object.values(studentTotals).map(s => ({
       name: s.name,
-      average: s.totalScore / s.quizzes * 10
+      average: Math.floor(s.totalScore / s.quizzes * 10)
     }));
 
     // sort and take top 10
