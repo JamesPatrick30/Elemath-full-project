@@ -3,6 +3,10 @@
         <div class="create">
             <button class="close" @click="createClassClusterToggle()">X</button>
             <input type="text" @keyup.enter="createClass()" placeholder="Class Name" v-model="className">
+            <select name="grade" id="" v-model="classLevel">
+                <option value="Grade 5">Grade 5</option>
+                <option value="Grade 6">Grade 6</option>
+            </select>
             <button class="createClass"  @click="createClass()">Create Class</button>
         </div>
     </div>
@@ -33,6 +37,7 @@ export default {
     data() {
         return {
             className: '',
+            classLevel: '',
             createClassCluster:false,
             user: null,
         };
@@ -48,6 +53,7 @@ export default {
 
                 const response = await api.post('/createClass', {
                     ClassName: this.className,
+                    ClassLevel: this.classLevel
                 });
                 if (response.status === 200) {
                     // Handle successful class creation, e.g., redirect to class list
@@ -105,6 +111,13 @@ export default {
 };
 </script>
 <style scoped>
+select{
+    font-weight: 800;
+    border-radius: 10px;
+    padding: 5px;
+    font-size: large;
+    margin-top: 10px;
+}
 .close{
     align-self: end;
     left: auto;

@@ -37,6 +37,8 @@ const cookie = require("cookie");
 //logger
 const logError = require('./utils/errorlogger.js');
 
+// brcypt salt rounds
+const bcrypt = require('bcrypt');
 
 // Attach logger to app
 // Attach logger to requests
@@ -189,11 +191,28 @@ app.get('/dlesson/uploadedlessons', auth, async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+app.get('/dlesson/list/teacher', auth, async (req, res) => {
+    const lessons = await dlessons.find({}, { title: 1, gradeLevel: 1, _id: 1}).sort({ dateCreated: -1 }); // latest first
+    res.json(lessons);
+});
+app.get('/dlesson/list/quiz', auth, async (req, res) => {
+  try {
+    const lessons = await dlessons.find({}, { title: 1, gradeLevel: 1, _id: 1}).sort({ dateCreated: -1 }); // latest first
+  } catch (error) {
+    console.error("❌ Error fetching quiz lessons:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 app.get('/dlesson/list', auth, async (req, res) => {
   try {
     const lessons = await dlessons.find({}, { title: 1, gradeLevel: 1, _id: 1}).sort({ dateCreated: -1 }); // latest first
+    const classid = req.user.classId;
+    const classIn = await classes.findOne({_id : classid});
 
-    res.json(lessons);
+    const studentClass = await StudentClass.findOne({ _id: req.user.id });
+    console.log('the class grade level : '+ classIn.Class_level);
+    const filteredLessons = lessons.filter(lesson => lesson.gradeLevel === classIn.Class_level);
+    res.json(filteredLessons);
   } catch (error) {
     console.error("❌ Error fetching lessons:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -276,9 +295,10 @@ app.post('/update/student/info',auth,async(req,res)=>{
   try{
     let result = null;
     if(password) {
+      const hashedPassword = await bcrypt.hash(password, 12);
       result = await StudentClass.updateOne(
         { email: req.user.username },
-        { $set: { name: username, password: password } }
+        { $set: { name: username, password: hashedPassword } }
       );
     }else{
       result = await StudentClass.updateOne(
@@ -304,7 +324,8 @@ app.post('/student-login', async (req, res) => {
 
   if(!student) return res.status(404).json({message:'Student not yet enrolled'});
 
-  if (student.password !== password) return res.status(404).json({message:'Wrong password'});
+  const isValidPassword = await bcrypt.compare(password, student.password);
+  if (!isValidPassword) return res.status(404).json({message:'Wrong password'});
 
   const payload = {id:student._id,username:student.email,classId:student.classId};
 
@@ -669,12 +690,13 @@ app.post('/find-student', auth, async (req, res) => {
   res.status(200).json(student);
 });
 app.post('/createClass', auth, async (req, res) => {
-  const { ClassName } = req.body;
+  const { ClassName, ClassLevel } = req.body;
 
   try {
     // 1. Create and save the class
     const newClass = new classes({
       Class_name: ClassName,
+      Class_level: ClassLevel,
       teacherId: req.user.id
     });
 
@@ -709,6 +731,7 @@ app.post('/enroll-student',auth,async(req,res)=>{
   const student = await StudentClass.findOne({lrn:lrn});
 
   if (student) return res.status(409).json({message: 'Student already enrolled!'});
+  const hashedPassword = await bcrypt.hash(password, 12);
   try{
     const studentenrolled = await StudentClass({
         name: fname + ', ' + mname + ', ' + lname,
@@ -718,7 +741,7 @@ app.post('/enroll-student',auth,async(req,res)=>{
         lastname:lname,
         lrn:lrn,
         email:lrn,
-        password:password,
+        password:hashedPassword,
         classId:classId
     });
 
@@ -774,10 +797,10 @@ app.post('/get/classData',auth,classCache,async(req,res)=>{
     const classIn = await classes.findOne({_id : classId});
     if(!classIn) return res.status(404).json({message: 'class doesnt exist'});
 
-    const list = await StudentClass.find({classId : classId});
+    const list = await StudentClass.find({classId : classId},{_id:1,name:1,firstname:1,middlename:1,lastname:1,profile:1,lrn:1,email:1});
     // console.log('list :'+classIn);
-    await redisClient.set(`classData:${classId}`, JSON.stringify(list), { EX: 3600 });
-    res.status(200).json(list);
+    await redisClient.set(`classData:${classId}`, JSON.stringify({ list: list, gradelevel: classIn.Class_level, classname: classIn.Class_name }), { EX: 3600 });
+    res.status(200).json({ list: list, gradelevel: classIn.Class_level, classname: classIn.Class_name });
   }catch(err){
     logError(err, req);
   }
@@ -854,7 +877,7 @@ app.get('/chart', auth,cashChart ,async (req, res) => {
     // compute averages
     const studentAverages = Object.values(studentTotals).map(s => ({
       name: s.name,
-      average: s.totalScore / s.quizzes * 10
+      average: Math.floor(s.totalScore / s.quizzes * 10)
     }));
 
     // sort and take top 10
@@ -985,17 +1008,33 @@ app.post('/edit/student', auth ,async ( req,res )=>{
     if (!student) return res.status(404).json({message : 'student not found'});
     const name =  lname + '. ' +fname  + ' ' + mname + ', ';
     // console.log('the name is : '+ name);
-    await StudentClass.updateOne(
+
+    if(password){
+      const hashedPassword = await bcrypt.hash(password, 12);
+      await StudentClass.updateOne(
       { lrn : lrn },
       { $set: {
           name:name,
           firstname: fname,
           middlename: mname,
           lastname: lname,
-          password: password
+          password: hashedPassword
         }
       }
     );
+    } else{
+      await StudentClass.updateOne(
+        { lrn : lrn },
+        { $set: {
+            name:name,
+            firstname: fname,
+            middlename: mname,
+            lastname: lname
+          }
+        }
+      );
+    }
+    
     await redisClient.del(`classData:${student.classId}`); // Clear cache for this class
     res.json({message : 'success'});
   }catch(err){
@@ -1321,7 +1360,7 @@ app.post('/get/mode/question', auth, async (req, res) => {
   // console.log('answer input : ' + answer + ' real answer : ' + question.answer);
 
   // normalize answers (ignore case + spaces)
-  const normalizedAnswer = answer.trim().toLowerCase();
+  const normalizedAnswer = String(answer).trim().toLowerCase();
   const normalizedCorrect = question.answer.trim().toLowerCase();
 
   if (normalizedAnswer === normalizedCorrect) {

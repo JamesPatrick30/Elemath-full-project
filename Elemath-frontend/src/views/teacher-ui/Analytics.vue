@@ -19,6 +19,9 @@
             :series="LineChart.series"
             :options="LineChart.options"
           />
+          <div class="filler" v-else>
+            <p>No quiz performance data yet</p>
+          </div>
         </div>
         <div class="item1">
           <h4 class="analysis-title">Pass vs. Fail Pie Chart</h4>
@@ -30,6 +33,9 @@
               :series="PieChart.series"
               :options="PieChart.options"
             />
+            <div class="filler" v-else>
+            <p>No quiz performance data yet</p>
+          </div>
           </div>
           
         </div>
@@ -43,6 +49,9 @@
             :series="barChart.series"
             :options="barChart.options"
           />
+          <div class="filler" v-else>
+            <p>No quiz performance data yet</p>
+          </div>
         </div>
         <!-- <div class="item3">
           <h4>Top Students</h4>
@@ -64,6 +73,9 @@
             :series="LowTopicBarChart?.series"
             :options="LowTopicBarChart?.options"
           />
+          <div class="filler" v-else>
+            <p>No quiz performance data yet</p>
+          </div>
         </div>
         <div class="item5">
           <h4 class="analysis-title">
@@ -107,14 +119,14 @@ export default {
       selectedClassId: null,
       LineChart: {
         series: [
-          { name: "Quiz", data: [80, 70, 90, 77, 85, 92] }
+          // { name: "Quiz", data: [80, 70, 90, 77, 85, 92] }
         ],
         options: {
-          chart: { background: "#fff" },
-          colors: ["#4fc4f7"],
-          stroke: { curve: "smooth", width: 3 },
-          xaxis: { categories: ["Mon","Tue","Wed","Thu","Fri","Sat"] },
-          grid: { borderColor: "#e0e0e0" }
+          // chart: { background: "#fff" },
+          // colors: ["#4fc4f7"],
+          // stroke: { curve: "smooth", width: 3 },
+          // xaxis: { categories: ["Mon","Tue","Wed","Thu","Fri","Sat"] },
+          // grid: { borderColor: "#e0e0e0" }
         }
       },
       barChart: {
@@ -129,19 +141,19 @@ export default {
         // }
       },
       PieChart: {
-        series: [10, 27],
-        options: {
-          labels: ["Failed", "Pass"],
-          colors: ["#FF5252", "#4CAF50"],
-          legend: { position: "right" }
-        }
+        // series: [10, 27],
+        // options: {
+        //   labels: ["Failed", "Pass"],
+        //   colors: ["#FF5252", "#4CAF50"],
+        //   legend: { position: "right" }
+        // }
       },
       improvementChart: {
-        series: [10, 27,8],
+        series: [],
         options: {
-           labels: ["Improved", "No Change", "Declined"],
-           colors: ["#28a745", "#ffc107", "#dc3545"],
-          legend: { position: "right" }
+        //    labels: ["Improved", "No Change", "Declined"],
+        //    colors: ["#28a745", "#ffc107", "#dc3545"],
+        //   legend: { position: "right" }
         }
       },
       classInput:null,
@@ -264,6 +276,13 @@ export default {
 </script>
 
 <style scoped>
+.filler{
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+}
 *{
     font-family: 'BubbleBody Neue','Poppins', sans-serif;
 }

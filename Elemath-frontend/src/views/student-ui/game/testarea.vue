@@ -83,6 +83,8 @@ export default {
         },
         async getIDres(answer){
             try{
+                this.btnsubmit = true;
+                console.log('Answer sent: '+answer);
                 const res =await api.post('/get/mode/question',
                     {answer:answer}
                 );
@@ -91,8 +93,9 @@ export default {
                     return;
                 }
                 this.inputanswer = '';
-                this.btnsubmit = true;
-                window.location.reload();
+                this.get1st();
+
+                // window.location.reload();
                 // this.get1st();
 
                 // console.log('Id : '+res.data.id);
@@ -135,6 +138,9 @@ export default {
                     return;
                 }
                 // this.timeLeft = res.data.time * 60;
+                if(this.timer){
+                    clearInterval(this.timer);
+                }
                 this.startTimer();
             }catch(err){
                 console.log(err);
@@ -277,8 +283,10 @@ export default {
                             <div class="true-false-c" @click="getIDres('false')" >False</div>
                         </div>
                         <div v-else class="input-text">
-                            <input  type="text" v-model="inputanswer" autofocus >
-                            <button @click="getIDres(inputanswer)" :disabled="btnsubmit">Submit</button>
+
+                            <!-- <input v-if="quizMode === 'WINDOWCARD MODE'" type="number" :disabled="btnsubmit" v-model="inputanswer" autofocus > -->
+                            <input type="text" :disabled="btnsubmit" v-model="inputanswer" autofocus >
+                            <button @click="getIDres(inputanswer)" :class="btnsubmit ? 'disabled' : ''" :disabled="btnsubmit">Submit</button>
                         </div>
                         
                     </div>
@@ -292,8 +300,8 @@ export default {
                             <p></p>
                         </div>
                         <div  class="input-text">
-                            <input  type="text" @keyup.enter="getIDres(inputanswer)" v-model="inputanswer" autofocus >
-                            <button @click="getIDres(inputanswer)" :disabled="btnsubmit">Submit</button>
+                            <input  type="number" @keyup.enter="getIDres(inputanswer)" v-model="inputanswer" autofocus :disabled="btnsubmit">
+                            <button @click="getIDres(inputanswer)" :class="btnsubmit ? 'disabled' : ''" :disabled="btnsubmit">Submit</button>
                         </div>
                         
                     
@@ -324,6 +332,9 @@ export default {
     </div>
 </template>
 <style scoped>
+.disabled{
+    opacity: 0.6;
+}
 .time-left{
     position: absolute;
     top: 10px;

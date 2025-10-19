@@ -1,5 +1,21 @@
 <template>
     <loading v-if="!user"></loading>
+    <div class="create-con" v-if="classDeleteCluster">
+        <div class="edit" >
+            <button class="btn-close-cluster" @click="classDeleteCluster = false"><font-awesome-icon :icon="['fas', 'xmark']" size="lg"/></button>
+            <p class="main-title">Are you sure you want to delete this Class?</p>
+            <p class="secondary">(This action will permanently remove.)</p>
+            <!-- <input class="input-cluster" type="text" placeholder="Class Name" v-model="className"> -->
+            <button @click="deleteClass()" class="btn-cluster">Delete Class</button>
+        </div>
+    </div>
+    <div class="create-con" v-if="classEditCluster">
+        <div class="edit" >
+            <button class="btn-close-cluster" @click="classEditCluster = false"><font-awesome-icon :icon="['fas', 'xmark']" size="lg"/></button>
+            <input type="text" placeholder="Class Name" v-model="className">
+            <button @click="editClass()" class="btn-cluster">Edit Class</button>
+        </div>
+    </div>
     <div class="create-con" v-if="createClassCluster">
         <div class="create">
             <button class="btn-close-cluster" @click="createClassCluster = false"><font-awesome-icon :icon="['fas', 'xmark']" size="lg"/></button>
@@ -11,7 +27,15 @@
     <body v-if="user">
         <navbar/>
         <main>
-            <h1 class="title">Class Roster</h1>
+            <div class="title-btn">
+                <h1 class="title">Class Roster</h1>
+                <div>
+                                    
+                    <button @click="classEditCluster = true"><font-awesome-icon :icon="['fas', 'user-pen']"  style="color:#ffda03;" />Edit Class </button>
+                    <button @click="classDeleteCluster = true"><font-awesome-icon :icon="['fas', 'trash']" style="color:#ff4d4d;" />Delete Class</button>
+                </div>
+            </div>
+            
             <header>
                 <select
                     name="class"
@@ -70,7 +94,7 @@
                             <!-- <div class="thead"><strong>Middle Name</strong></div>
                             <div class="thead"><strong>Last Name</strong></div> -->
                             <div class="thead"><strong>LRN</strong></div>
-                            <div class="thead"><strong>Password</strong></div>
+                            <!-- <div class="thead"><strong>Password</strong></div> -->
                             <!-- <div class="thead"><strong>Action</strong></div> -->
 
                         </div>
@@ -81,7 +105,7 @@
                                 <!-- <div class="tbody"><p>{{ student.middlename }}.</p></div>
                                 <div class="tbody"><p>{{student.lastname}}</p></div> -->
                                 <div class="tbody"><p>{{student.lrn}}</p></div>
-                                <div class="tbody"><p>{{student.password}}</p></div> 
+                                <!-- <div class="tbody"><p>{{student.password}}</p></div>  -->
                                 <!-- <div class="tbody">
                                     <button class="action-btn" id="edit-icon">
                                         <font-awesome-icon :icon="['fas', 'user-pen']"  style="color: yellow;" />
@@ -122,6 +146,8 @@ export default {
     data() {
         return {
             className:'',
+            classEditCluster:false,
+            classDeleteCluster:false,
             selectedClassId: null,
             createClassCluster:false,
             classlength: 0,
@@ -135,6 +161,9 @@ export default {
         };
     },
     methods:{
+        nofeatures(){
+            alert('This feature is not yet available. Gawa ka muna ng ui');
+        },
         async createClass() {
             try {
                 const response = await api.post('/createClass', {
@@ -169,14 +198,14 @@ export default {
                 });
 
                 // console.log('Student list:', res.data);
-                this.students = res.data;
-                this.students = this.students.sort((a, b) => {
+                this.students = res.data.list;
+                this.students = this.students?.sort((a, b) => {
                     const nameA = a.name || '';
                     const nameB = b.name || '';
                     return nameA.localeCompare(nameB);
                 });
             } catch (err) {
-                // console.error('Error fetching class data:', err);
+                console.error('Error fetching class data:', err);
                 alert('Failed to load class data. Please try again later.');
             }
         },
@@ -231,6 +260,73 @@ export default {
 }
 </script>
 <style scoped>
+.secondary{
+    font-size: 14px;
+    color: rgb(68, 68, 68);
+    margin-bottom: 15px;
+}
+.edit .main-title{
+    width: 300px;
+    font-weight: 800;
+    font-size: 21px;
+    color: black;
+    margin-bottom: 20px;
+    text-align: center;
+}
+.edit{
+    width: 350px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    padding:10px;
+    border-radius: 10px;
+}
+.edit input{
+    border: 2px solid rgb(145, 145, 145);
+    width: 300px;
+    height: 30px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    text-align: center;
+    /* border-bottom: 2px solid rgb(114, 241, 131); */
+}.edit input:focus{
+    /* border: none; */
+    outline: none;
+    box-shadow: 0 0px 10px rgb(175, 175, 175);
+}
+.title-btn div button:hover{
+    background-color: #4fc4f7;
+    color: white;
+    transition: 0.3s;
+}
+.title-btn div button{
+    font-weight: 800;
+    width: 120px;
+    font-size: 11.5px;
+    color: #4fc4f7;
+    background-color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-left: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.title-btn div{
+    display: flex;
+    /* gap: 10px */
+    flex-direction: column;
+}
+.title-btn{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-right: 20px;
+}
 .title-c{
     color: #4fc4f7;
     margin-bottom:10px ;

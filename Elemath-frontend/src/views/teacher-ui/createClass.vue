@@ -72,7 +72,7 @@
                 <p>First Name : {{ efname }}</p>
                 <p>Middle Name : {{ emname }}</p>
                 <p>Last Name : {{ elname }}</p>
-                <p>Password : {{ epassword }}</p>
+                <!-- <p>Password : {{ epassword }}</p> -->
             </div>
             <div class="edit-cluster-body" v-else>
                 <p>lrn {{ elrn }}</p>
@@ -140,7 +140,11 @@
          </div>
          <div class="list">
             <div class="list-con">
-                <h3 style="color: #4fc4f7;">Student Count : {{ students.length }}</h3>
+                <div class="header-list">
+                    <h3 style="color: #4fc4f7;">Student Count : {{ students?.length }}</h3>
+                    <h3 style="color: #4fc4f7;">Class Level : {{ classLevel }}</h3>
+                </div>
+                
                 <div class="table">
                     <div class="table-head">
                         <div class="thead"><strong>Profile</strong></div>
@@ -148,7 +152,7 @@
                         <!-- <div class="thead"><strong>Middle Name</strong></div>
                         <div class="thead"><strong>Last Name</strong></div> -->
                         <div class="thead"><strong>LRN</strong></div>
-                        <div class="thead"><strong>Password</strong></div>
+                        <!-- <div class="thead"><strong>Password</strong></div> -->
                         <div class="thead"><strong>Action</strong></div>
 
                     </div>
@@ -159,7 +163,7 @@
                                 <!-- <div class="tbody"><p>{{ student.middlename }}.</p></div>
                                 <div class="tbody"><p>{{student.lastname}}</p></div> -->
                                 <div class="tbody"><p>{{student.lrn}}</p></div>
-                                <div class="tbody"><p>{{student.password}}</p></div> 
+                                <!-- <div class="tbody"><p>{{student.password}}</p></div>  -->
                             <div class="tbody">
                                 <button class="action-btn" id="edit-icon" @click="openCluster(
                                         true,
@@ -231,6 +235,7 @@ export default{
             editordelete: true,
             classname: '',
             loading:false,
+            classLevel:'',
 
             ename:'',
             efname:'',
@@ -250,7 +255,7 @@ export default{
         async editstudent(){
             this.loading = true;
             try{
-                if( !this.elrn || !this.efname || !this.emname || !this.elname || !this.epassword ){
+                if( !this.elrn || !this.efname || !this.emname || !this.elname ){
                     alert('Fill up the form')
                     return
                 }
@@ -281,8 +286,9 @@ export default{
                 });
 
                 console.log('Student list:', res.data);
-                this.students = res.data;
-                this.students = this.students.sort((a, b) => {
+                this.students = res.data.list;
+                this.classLevel = res.data.gradelevel;
+                this.students = this.students?.sort((a, b) => {
                     const nameA = a.name || '';
                     const nameB = b.name || '';
                     return nameA.localeCompare(nameB);
@@ -417,6 +423,8 @@ export default{
             
                 this.Dlrn = lrn;
             
+                this.loading = false;
+            
         },
         async deletestudent(){
             this.loading = true;
@@ -526,6 +534,13 @@ export default{
 }
 </script>
 <style scoped>
+.header-list{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 90%;
+    /* margin: 10px auto; */
+}
 .btn-upload{
     border: none;
     background-color: #4fc4f7;
