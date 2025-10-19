@@ -195,6 +195,14 @@ app.get('/dlesson/list/teacher', auth, async (req, res) => {
     const lessons = await dlessons.find({}, { title: 1, gradeLevel: 1, _id: 1}).sort({ dateCreated: -1 }); // latest first
     res.json(lessons);
 });
+app.get('/dlesson/list/quiz', auth, async (req, res) => {
+  try {
+    const lessons = await dlessons.find({}, { title: 1, gradeLevel: 1, _id: 1}).sort({ dateCreated: -1 }); // latest first
+  } catch (error) {
+    console.error("❌ Error fetching quiz lessons:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 app.get('/dlesson/list', auth, async (req, res) => {
   try {
     const lessons = await dlessons.find({}, { title: 1, gradeLevel: 1, _id: 1}).sort({ dateCreated: -1 }); // latest first
@@ -1352,7 +1360,7 @@ app.post('/get/mode/question', auth, async (req, res) => {
   // console.log('answer input : ' + answer + ' real answer : ' + question.answer);
 
   // normalize answers (ignore case + spaces)
-  const normalizedAnswer = answer.trim().toLowerCase();
+  const normalizedAnswer = String(answer).trim().toLowerCase();
   const normalizedCorrect = question.answer.trim().toLowerCase();
 
   if (normalizedAnswer === normalizedCorrect) {

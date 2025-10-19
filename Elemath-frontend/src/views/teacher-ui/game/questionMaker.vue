@@ -732,7 +732,7 @@ export default{
         },
         async uploadedLessonsList(){
             try{
-                const res = await api.get('/dlesson/list');
+                const res = await api.get('/dlesson/list/teacher');
                 this.uploadedLessons = res.data;
                 console.log(this.uploadedLessons);
             }catch(err){
