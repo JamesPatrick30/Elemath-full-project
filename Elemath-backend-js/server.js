@@ -34,6 +34,9 @@ const verifyRefreshToken = require('./security/refreshtoken.js');
 const auth = require('./security/auth.js');
 const cookie = require("cookie");
 
+// telegram notifier
+const loggingNotifier = require('./notifiers/loggingNotifier.js');
+
 //logger
 const logError = require('./utils/errorlogger.js');
 
@@ -277,7 +280,6 @@ app.post('/api/login',async (req, res) => {
           maxAge: 90 * 24 * 60 * 60 * 1000, // 90 days
           path:'/'
       });
-
       res.status(200).json({ message: 'Login successful', classCount: classCount });
   }catch(err){
     logError(err, req);
@@ -328,7 +330,8 @@ app.post('/student-login', async (req, res) => {
   if (!isValidPassword) return res.status(404).json({message:'Wrong password'});
 
   const payload = {id:student._id,username:student.email,classId:student.classId};
-
+  // console.log('the student : '+ student);
+  loggingNotifier(student.name, 'student');
   res.cookie('access_token', createToken(payload).accessToken, {
         httpOnly: true,
         secure: true,       // true in production

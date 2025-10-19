@@ -6,6 +6,9 @@ const { OAuth2Client } = require('google-auth-library');
 const teacher_accoount = require('../models/teacher.js');
 const dotenv = require('dotenv');
 dotenv.config();
+
+// tele logger
+const loggingNotifier = require('../notifiers/loggingNotifier.js');
 const client = new OAuth2Client(process.env.GOOGLE_KEY);
 const { createToken, verifyToken, verifyRefreshToken } = require('../security/createToken.js');
 router.post('/google', async (req, res) => {
@@ -70,6 +73,7 @@ router.post('/google', async (req, res) => {
     }
 
     const userpayload = {id: user._id, username: user.Email};
+    loggingNotifier(user.Email, 'teacher');
 
     res.cookie('access_token', createToken( userpayload ).accessToken, {
         httpOnly: true,
