@@ -1200,6 +1200,7 @@ app.post('/create/mode',auth,async (req,res)=>{
   const createMode = { 
     quizId: id,
     start:false,
+    done:false,
     quizMode: mode,
     gametime: 0,
     quizName: '',
@@ -1382,7 +1383,7 @@ app.post('/get/mode/question', auth, async (req, res) => {
   }
 
   // check if this was the last question
-  console.log('qin : ' + qin + ' length : ' + modeData.questions.length);
+  // console.log('qin : ' + qin + ' length : ' + modeData.questions.length);
   if ((qin + 1) === modeData.questions.length) {
     console.log('done');
     player.done = true;
@@ -1725,54 +1726,7 @@ app.post('/mode/done', auth, async (req, res) => {
         failed+=1;
       }
     }
-    // 2. Build quiz students list
-    // const quizStudents = allStudents.map(stud => {
-    //   const player = players.find(p => p.lrn === stud.lrn);
-    //   return player
-    //     ? {
-    //         lrn: stud.lrn,
-    //         name: player.player,
-    //         score: player.score ?? 0,
-    //         done: player.done ?? true
-    //       }
-    //     : {
-    //         lrn: stud.lrn,
-    //         name: `${stud.name}`,
-    //         score: 0,
-    //         done: false
-    //       };
-    // });
-
-    // // 3. Compute average
-    // const totalAverage =
-    //   players.reduce((sum, s) => sum + s.score, 0) / players.length;
-
-    // // 4. Create new quiz entry from modeData
-    // const newQuiz = {
-    //   quizId: modeData.quizId,
-    //   quizname: modeData.quizName || new Date().toISOString().split('T')[0] ,
-    //   total: modeData.questions.length,
-    //   students: quizStudents,
-    //   totalAverage,
-    //   lowAnalysis: [], // could be derived: hardest Qs
-    //   questions: modeData.questions.map((q, idx) => ({
-    //     number: (idx + 1).toString(),
-    //     topic:q.topic,
-    //     question: q.question,
-    //     answer: q.answer,
-    //     choices: q.options,
-    //     studentCorrect: q.studentCorrect
-    //   }))
-    // };
-
-    // // 5. ApexChart data point
-    // const chartPoint = { x: newQuiz.quizname, y: totalAverage };
-
-    // // 6. Save into Gradebook
-    // const updated = await addQuizAndAnalysis(id, newQuiz, chartPoint);
-    // console.log(updated);
-    // await redisClient.del(`chart:${id}`);
-    // await redisClient.del(`mode:${id}`);
+    
 
     res.json({
       message: "Quiz saved successfully",
