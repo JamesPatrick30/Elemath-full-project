@@ -50,6 +50,8 @@ export default {
             showToast:false,
             toasttimer:3,
             classId:'',
+            classLevel:'',
+            className:'',
 
         }
     },
@@ -226,6 +228,8 @@ export default {
                 this.lrn = response.data.lrn || '1234567890';
                 this.profilepic = response.data.profile; // Default profile picture
                 this.id = response.data.classId._id; // Assuming the student ID is returned
+                this.classLevel = response.data.ClassLevel;
+                this.className = response.data.classname;
                 // console.log('Student ID:', this.id);
                 this.classId = response.data.classId._id;
                 // console.log('Class ID:', response.data.classId._id);
@@ -356,7 +360,10 @@ export default {
                 <img class="button-icon-right" src="/gif/turtlebtn.gif" alt="">
             </button>
             <!-- <p class="title-lessons">LESSON:</p> -->
-            <p class="grade-title">Lessons</p>
+             <div class="title-holder">
+                <p class="grade-title">NEW LESSON: </p>
+             </div>
+            <!-- <p class="grade-title">Lessons</p> -->
             <div class="no-lessons" v-if="uploadedLessons.length === 0">
                     <p>No uploaded lessons yet.</p>
                 </div>
@@ -370,7 +377,10 @@ export default {
                 </div>
                 
             </div>
-            <p class="grade-title">lessons</p>
+             <div class="title-holder">
+                <p class="grade-title">LESSONS FOR {{ classLevel }}: {{ className }}</p>
+             </div>
+            <!-- <p class="grade-title">lessons</p> -->
             <div class="lesson-cons">
                 <div class="lessons" v-for="(value, index) in lessons" :key="index" @click="lessonData(value._id)">
                     <img class="lesson-pic" :src="randompics()" alt="">
@@ -417,6 +427,11 @@ export default {
     
 </template>
 <style scoped>
+.title-holder{
+    width: 90%;
+    display: flex;
+    justify-content: flex-start;
+}
 .toast p{
     margin: 0;
     margin-bottom: 10px;

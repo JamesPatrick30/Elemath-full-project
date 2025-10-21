@@ -363,6 +363,9 @@ app.get('/get/student/data', auth, async (req, res) => {
     if (!studentData) {
       return res.status(404).json({ message: 'Student not found' });
     }
+    const classData = await classes.findById(studentData.classId);
+    // const ClassLevel = classData.Class_level;
+    // console.log('the class data : '+ classData + ' level : '+ classData.Class_level+ ' class name : '+ classData.Class_name);
     res.status(200).json({
       id: studentData._id,
       name: studentData.name,
@@ -372,7 +375,9 @@ app.get('/get/student/data', auth, async (req, res) => {
       middlename: studentData.middlename,
       lastname: studentData.lastname,
       lrn: studentData.lrn,
-      email: studentData.email
+      email: studentData.email,
+      ClassLevel:classData.Class_level,
+      classname:classData.Class_name
     });
   }catch(err){
     logError(err, req);
