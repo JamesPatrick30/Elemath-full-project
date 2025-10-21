@@ -264,7 +264,7 @@ export default {
         });
         socket.on('mode-deleted',(data) => {
             this.ongoing = false; // Reset ongoing status when mode is deleted
-            console.log('Mode deleted:', data);
+            // console.log('Mode deleted:', data);
         });
         if(localStorage.getItem('volume')){
             this.volume = parseFloat( localStorage.getItem('volume') );
@@ -278,6 +278,10 @@ export default {
         } else {
             this.splaceCount = 4;
         }
+        socket.on('mode-done',(data)=>{
+            this.lookforQuiz(); // Reset ongoing status when mode is done
+
+        });
     },
     watch: {
         isMobile(newValue) {

@@ -213,7 +213,7 @@ app.get('/dlesson/list', auth, async (req, res) => {
     const classIn = await classes.findOne({_id : classid});
 
     const studentClass = await StudentClass.findOne({ _id: req.user.id });
-    console.log('the class grade level : '+ classIn.Class_level);
+    // console.log('the class grade level : '+ classIn.Class_level);
     const filteredLessons = lessons.filter(lesson => lesson.gradeLevel === classIn.Class_level);
     res.json(filteredLessons);
   } catch (error) {
@@ -236,8 +236,9 @@ app.use('/',uploadD);
 app.use('/',uploadlist);
 
 app.use('/', require('./routes/google'));
+let playerGame = null;
 app.get('/', (req, res) => {
-    res.send('Welcome to the Elemath Backend API');
+    res.send('Welcome to the Elemath Backend API' + ` player : ${JSON.stringify(playerGame)}`);
 });
 
 const lessonRoutes = require("./routes/lesson");
@@ -1387,9 +1388,11 @@ app.post('/get/mode/question', auth, async (req, res) => {
   if ((qin + 1) === modeData.questions.length) {
     console.log('done');
     player.done = true;
+    playerGame = player;
+    setgameData(`rev:${player.lrn}`, player.rev);
 
     setgameData(`mode:${req.user.classId}`, modeData);
-
+    console.log('player done data : ' + JSON.stringify(player));
     await pubClient.publish(
       'action',
       JSON.stringify({
@@ -1613,12 +1616,16 @@ app.get('/get/mode/player/done',auth,async(req,res)=>{
 });
 app.get('/get/mode/player/rev',auth,async(req,res)=>{
   const data = await redisClient.get(`mode:${req.user.classId}`);
+  const revdata = await redisClient.get(`rev:${req.user.username}`);
   
   const modeData = JSON.parse(data);
   const player = modeData.players.find(p => p.lrn === req.user.username);
-  // console.log(player);
-  const rev = player.rev;
-  res.json({rev:rev,score:player.score});
+  console.log(data);
+  // if(modeData.done === false){
+  //   return res.json({rev:[],score:player.score});
+  // }
+  const rev = JSON.parse(revdata);
+  res.json({rev:rev,score:player.score,modeDone:modeData.done});
 });
 async function addQuizAndAnalysis(classId, quiz, chartPoint) {
   return await Gradebook.findOneAndUpdate(
@@ -1693,7 +1700,11 @@ app.post('/mode/finish',auth,async (req,res)=>{
     // console.log(updated);
     await redisClient.del(`chart:${id}`);
     await redisClient.del(`mode:${id}`);
-
+    await pubClient.publish('action', JSON.stringify({
+      id: id,
+      action: 'mode-done',
+      payload: { doneMode: true,id:id }
+    }));
     res.json({
       message: "Quiz saved successfully",
     });
@@ -1711,7 +1722,8 @@ app.post('/mode/done', auth, async (req, res) => {
     const data = await redisClient.get(`mode:${id}`);
     if (!data) return res.status(404).json({ error: "Mode not found" });
     const modeData = JSON.parse(data);
-
+    modeData.done = true;
+    await redisClient.set(`mode:${id}`, JSON.stringify(modeData), { EX: 3600 });
     const players = modeData.players;  // present
     // const allStudents = await StudentClass.find({ classId: id }); // enrolled
     // console.log(modeData.questions.length);
@@ -1727,7 +1739,11 @@ app.post('/mode/done', auth, async (req, res) => {
       }
     }
     
-
+    await pubClient.publish('action', JSON.stringify({
+      id: id,
+      action: 'mode-done',
+      payload: { doneMode: true,id:id }
+    }));
     res.json({
       message: "Quiz saved successfully",
       pass:pass,
@@ -1864,6 +1880,10 @@ socket.on('game-start', async (data) => {
       }
       // Notify all clients in the room about the new player
       
+  });
+  socket.on('mode-done', async (data) => {
+    io.to(data.id).emit('mode-done', { doneMode: true });
+      // await pubClient.publish('action',JSON.stringify({id:data.roomId,action:'mode-done',payload:{ doneMode: true }}));
   });
   socket.on('disconnect', (reason) => {
       // console.log(`User disconnected: ${socket.id}, username : ${socket.user.username}`);

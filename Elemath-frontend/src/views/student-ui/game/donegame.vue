@@ -1,10 +1,13 @@
 <script>
 import api from '@/axios';
+// import { io } from 'socket.io-client';
+import socket from '@/socket';
 export default{
     data(){
         return{
             rev:[],
-            score:0
+            score:0,
+            modeDone:false,
         }
         
     },
@@ -12,9 +15,14 @@ export default{
         async getdata(){
             try{
                 const res = await api.get('/get/mode/player/rev');
+    
+                this.rev = [];
+
+                socket.connect();
                 this.rev = res.data.rev;
+                this.modeDone = res.data.modeDone;
                 this.score = res.data.score;
-                // console.log(res.data.rev);
+                console.log(res.data.rev);
                 
             }catch(err){
                 // console.log(err);
@@ -32,6 +40,9 @@ export default{
     },
     mounted(){
         this.getdata();
+        socket.on('mode-done',(data)=>{
+            this.modeDone = data.doneMode;
+        });
     }
 }
 </script>
@@ -51,8 +62,25 @@ export default{
         </div>
     </div> -->
     <main>
-        <h1 class="score">Score : {{ score }}/{{ rev.length }}</h1>
-        <div class="con">
+        <div class="con-score">
+            <div class="analysis">
+                <p>Score</p>
+                <div class="middle-an">
+                    <p class="score">{{ score }}/{{ rev.length }}</p>
+                </div>
+                
+
+            </div>
+            <div class="analysis">
+                <p>Accuracy</p>
+                <div class="red-con">
+                    <div class="green-con" :style="{width: (score/rev.length)*100 + '%', backgroundColor: '#8ee71a'}"></div><div class="indicator">{{ Math.floor((score/rev.length)*100) }}%</div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <br>
+        <div class="con" v-if="modeDone">
             <div class="rev" v-for="(c,index) in rev" :key="index" :class="c.correct? 'correct' : 'wrong'">
                 <p v-if="c.q.question?.question" class="question">{{ c.q.question?.question }}</p>
                 <p v-else class="question">{{ c.q.question }} </p>
@@ -69,18 +97,94 @@ export default{
                 
                 <p v-if="c.q.explanation">Explanation: {{ c.q.explanation }}</p>
             </div>
-            <br>
+            
+        </div>
+        <!-- <br> -->
+        <div class="con">
             <h1 class="score">Score : {{ score }}/{{ rev.length }}</h1>
 
             <button class="leave" @click="gotohome">Leave</button>
             <br>
         </div>
-        
+            
         <br>
         <br>
     </main>
 </template>
 <style scoped>
+.indicator{
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: fit-content;
+    padding: 4px;
+    border-radius: 10px;
+    background-color: white;
+    font-weight: 700;
+    font-size: 17px;
+}
+.green-con{
+    display: flex;
+    width: 90%;
+    height: 20px;
+    background-color: #8ee71a;
+    border-radius: 10px 0 0 10px;
+}
+.red-con{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 90%;
+    height: 20px;
+    background-color: red;
+    border-radius: 10px;
+}
+.middle-an .score{
+    font-size: 30px;
+}
+.middle-an{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* background-color: white; */
+    height: 30px;
+    width: 100%;
+    /* padding: 10px; */
+    
+}
+.analysis p{
+    font-weight: 700;
+    font-size: 17px;
+    text-align: left;
+    justify-self: left;
+}
+.analysis{
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; 
+    justify-content: center; */
+    padding-left: 10px;
+    padding-bottom: 10px;
+    width: 100%;
+    background-color:#c2cdff;
+    width: 90%;
+    border-radius: 10px;
+}
+.con-score{
+    margin-top: 10px;
+    background-color: white;
+    display: flex;
+    max-width: 700px;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+    width: 80%;
+    min-height: fit-content;
+    padding: 20px;
+}
 .correct-answer{
     background-color: white;
     color: #8ee71a;
@@ -119,6 +223,8 @@ export default{
     font-family: 'BubbleBody Neue','Poppins', sans-serif;
 }
 .score{
+    font-weight: 700;
+
     color: black;
 }
 .correct-option{
@@ -160,6 +266,8 @@ export default{
     height: fit-content;
     border-radius: 10px;
     width: 80%;
+    max-width: 700px;
+
     padding: 10px;
     margin-bottom: 10px;
     display: flex;
