@@ -363,6 +363,7 @@ export default {
              <div class="title-holder">
                 <p class="grade-title">NEW LESSON: </p>
              </div>
+             <br>
             <!-- <p class="grade-title">Lessons</p> -->
             <div class="no-lessons" v-if="uploadedLessons.length === 0">
                     <p>No uploaded lessons yet.</p>
@@ -379,7 +380,9 @@ export default {
             </div>
              <div class="title-holder">
                 <p class="grade-title">LESSONS FOR {{ classLevel }}: {{ className }}</p>
+                
              </div>
+             <br>
             <!-- <p class="grade-title">lessons</p> -->
             <div class="lesson-cons">
                 <div class="lessons" v-for="(value, index) in lessons" :key="index" @click="lessonData(value._id)">
