@@ -335,7 +335,7 @@ export default {
     <div class="toast" v-if="showToast">
         <p>{{ toastMessage }}</p>
         <!-- <p v-if="toasttimer > 0">Closing in {{ toasttimer }}...</p> -->
-        <div style="align-self:baseline; background-color: red; height: 5px; animation-delay: 0s;   transition: all 1s linear;" :style="{width: ((toasttimer-1)/3)*100 + '%', animation: toasttimer < 2 ? `alternate 1s, donetoast 1s ease forwards` : ''}"></div>
+        <div style="align-self:baseline; background-color: #74cc00; height: 5px; animation-delay: 0s;   transition: all 1s linear;" :style="{width: ((toasttimer-1)/4)*100 + '%', animation: toasttimer < 1 ? `alternate 1s, donetoast 1s ease forwards` : ''}"></div>
     </div>
     <body>
         <header>
