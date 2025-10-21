@@ -49,6 +49,7 @@ export default {
             timer:null,
             showToast:false,
             toasttimer:3,
+            classId:'',
 
         }
     },
@@ -226,6 +227,8 @@ export default {
                 this.profilepic = response.data.profile; // Default profile picture
                 this.id = response.data.classId._id; // Assuming the student ID is returned
                 // console.log('Student ID:', this.id);
+                this.classId = response.data.classId._id;
+                // console.log('Class ID:', response.data.classId._id);
                 await this.lookforQuiz();
                 // await this.uploadedLessonsList();
                 socket.connect();

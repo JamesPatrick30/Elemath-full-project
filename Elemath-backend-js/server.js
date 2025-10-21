@@ -186,7 +186,7 @@ app.get('/dlesson/uploadedlessons', auth, async (req, res) => {
     const classId = studentClass.classId;
     const ownerId = await classes.findOne({ _id: classId }, { teacherId: 1 });
     // console.log('the owner id : '+ ownerId.teacherId);
-    const lessons = await lessonUpload.find({ ownerId: ownerId.teacherId }, { file: 1, title: 1, summary: 1 }).sort({ dateCreated: -1 });
+    const lessons = await lessonUpload.find({ ownerId: ownerId.teacherId, classId: classId }, { file: 1, title: 1, summary: 1 }).sort({ dateCreated: -1 });
     // console.log('the lessons : '+ lessons);
     res.json(lessons);
   } catch (error) {
