@@ -328,7 +328,7 @@ export default {
     <div class="toast" v-if="showToast">
         <p>{{ toastMessage }}</p>
         <!-- <p v-if="toasttimer > 0">Closing in {{ toasttimer }}...</p> -->
-        <div style="align-self:baseline; background-color: red; height: 5px; animation-delay: 0s;   transition: all 1s linear;" :style="{width: ((toasttimer-1)/4)*100 + '%'}"></div>
+        <div style="align-self:baseline; background-color: red; height: 5px; animation-delay: 0s;   transition: all 1s linear;" :style="{width: ((toasttimer-1)/3)*100 + '%', animation: toasttimer < 2 ? `alternate 1s, donetoast 1s ease forwards` : ''}"></div>
     </div>
     <body>
         <header>
@@ -436,6 +436,15 @@ export default {
     top: 100px;
     right: 0;
     position: fixed;
+    animation: alternate 0.5s, toast 0.5s ease forwards;
+}
+@keyframes donetoast {
+    from { right: 0; }
+    to { right: -350px; }
+}
+@keyframes toast {
+    from { right: -350px; }
+    to { right: 0; }
 }
 .load-con img{
     height: 100px;
