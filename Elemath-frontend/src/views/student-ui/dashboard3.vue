@@ -45,6 +45,10 @@ export default {
             muted: false,
             isNav:false,
             loadquiz:false,
+            toastMessage:'',
+            timer:null,
+            showToast:false,
+            toasttimer:3,
 
         }
     },
@@ -237,13 +241,37 @@ export default {
         JoinBtn(){
             this.lookforQuiz();
             if(this.started){
-                alert('the quiz started');
+                this.toastMessage = 'The quiz has already started.';
+                // alert('the quiz started');
+                this.showToast = true;
+                if(this.timer) clearInterval(this.timer);
+                this.showToast = true;
+                this.toasttimer = 5;
+                this.timer = setInterval(() => {
+                    this.toasttimer--;
+                    if(this.toasttimer <= 0){
+                        this.showToast = false;
+                        clearInterval(this.timer);
+                    }
+                }, 1000);
                 return;
             }
             if(this.ongoing){
                 this.$router.push({ name: 'waiting-lobby',query: { i: this.id } });
             }else{
-                alert('No ongoing quiz available.');
+                if(this.timer) clearInterval(this.timer);
+                this.showToast = true;
+                this.toasttimer = 5;
+                this.timer = setInterval(() => {
+                    this.toasttimer--;
+                    if(this.toasttimer <= 0){
+                        this.showToast = false;
+                        clearInterval(this.timer);
+                    }
+                }, 1000);
+                // alert('No ongoing quiz available.');
+                this.toastMessage = 'No ongoing quiz available.';
+
             }
         },
         toggleNav(){
@@ -297,6 +325,11 @@ export default {
 <template>
     <audio ref="player" :src="audiosrc" loop autoplay muted></audio>
     <greenbg />
+    <div class="toast" v-if="showToast">
+        <p>{{ toastMessage }}</p>
+        <!-- <p v-if="toasttimer > 0">Closing in {{ toasttimer }}...</p> -->
+        <div style="align-self:baseline; background-color: red; height: 5px; animation-delay: 0s;   transition: all 1s linear;" :style="{width: ((toasttimer-1)/4)*100 + '%'}"></div>
+    </div>
     <body>
         <header>
             <img class="logo" src="/images/logonobg.png" alt="">
@@ -381,6 +414,29 @@ export default {
     
 </template>
 <style scoped>
+.toast p{
+    margin: 0;
+    margin-bottom: 10px;
+    padding: 0;
+    font-weight: 600;
+    text-align: left;
+}
+.toast{
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    justify-content: center;
+    padding: 10px;
+    background-color: #ffadad;
+    border-radius: 10px ;
+    z-index: 1000;
+    width: 300px;
+    height: fit-content;
+    left: auto;
+    top: 100px;
+    right: 0;
+    position: fixed;
+}
 .load-con img{
     height: 100px;
     width: 100px;
