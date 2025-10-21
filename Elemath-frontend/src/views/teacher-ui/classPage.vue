@@ -21,6 +21,10 @@
             <button class="btn-close-cluster" @click="createClassCluster = false"><font-awesome-icon :icon="['fas', 'xmark']" size="lg"/></button>
             <h1 class="title-c">Create Class</h1>
             <input class="input-cluster" type="text" placeholder="Class Name" v-model="className">
+            <select name="" id="" v-model="classgrade">
+                <option value="Grade 5">Grade 5</option>
+                <option value="Grade 6">Grade 6</option>
+            </select>
             <button @click="createClass()" class="btn-cluster">Create Class</button>
         </div>
     </div>
@@ -157,7 +161,8 @@ export default {
             infoMiddleName: '',
             infoLastName: '',
             students: [],
-            user:null
+            user:null,
+            classgrade:'Grade 5',
         };
     },
     methods:{
@@ -168,6 +173,7 @@ export default {
             try {
                 const response = await api.post('/createClass', {
                     ClassName: this.className,
+                    ClassLevel: this.classgrade
                 });
                 if (response.status === 200) {
                     // Handle successful class creation, e.g., redirect to class list
