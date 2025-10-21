@@ -5,7 +5,8 @@ const lessonFile = new Schema({
     ownerId:String,
     title: String,
     summary: String,
-    gradeLevel: String,
+    classId: String,
+    htmlLesson: String,
     file:String,
     dateCreated: { type: Date, default: Date.now }
 })

@@ -31,6 +31,8 @@ const upload = multer({ dest: "uploads/" });
 // Upload and extract lesson file
 router.post("/upload",auth, upload.single("lessonFile"), async (req, res) => {
   try {
+    const classId = req.body.class || null;
+    // console.log('Class ID: '+classId);
     let title = '';
     if (!req.file) {
       return res.status(400).json({ message: "No file uploaded" });
@@ -69,23 +71,24 @@ router.post("/upload",auth, upload.single("lessonFile"), async (req, res) => {
 
     fs.unlinkSync(filePath); // cleanup uploaded file
     console.log("✅ OCR rawText:\n" + JSON.stringify(rawText));
-    const oldfile = await filesave.findOne({file:rawText,ownerId:req.user.id});
+    const oldfile = await filesave.findOne({file:rawText,ownerId:req.user.id,classId:classId});
     let id = '';
     if(!oldfile){
       let d = null;
       try {
         const fastapiResponse = await axios.post(
-              "http://127.0.0.1:8000/lesson", // FastAPI endpoint
+              "http://127.0.0.1:8000/dlesson", // FastAPI endpoint
               { lesson:rawText}, // Send as JSON object
               { headers: { "Content-Type": "application/json",
                 "x-api-key": process.env.API_KEY_AI // Include your API key here
                } }
       );
       console.log("📨 FastAPI replied:", fastapiResponse.data.summary);
-      d = JSON.parse( fastapiResponse.data.summary);
-      if (d.content === false) {
-        return res.status(400).json({ message: "No useful content in the lesson text" });
-      }
+        d = fastapiResponse.data;
+        if (d.content === false) {
+          return res.status(400).json({ message: "No useful content in the lesson text" });
+        }
+        // console.log("✅ Parsed lesson data:\n" + JSON.stringify(fastapiResponse.data));
       } catch (error) {
         console.error("❌ Error processing file:", error);
       }
@@ -94,12 +97,14 @@ router.post("/upload",auth, upload.single("lessonFile"), async (req, res) => {
         ownerId: req.user.id,
         file:rawText,
         title: d.title || "Untitled Lesson",
+        classId: classId,
+        htmlLesson: d.htmlLesson || "<p>No content extracted</p>",
         summary: d.summary || "No summary available",
       });
       const outputfile = await file.save();
       id = outputfile._id;
       title = outputfile.title;
-      // console.log('file :'+outputfile);
+      console.log('file :'+outputfile);
     }else{
       console.log('already save file : '+oldfile);
       id = oldfile._id;

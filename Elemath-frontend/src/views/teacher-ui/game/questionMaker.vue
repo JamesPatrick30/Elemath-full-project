@@ -496,7 +496,9 @@ export default{
             this.fileloading = true;
             this.filelist = [];
             try {
-                const res = await api.get('/lesson/list');
+                const res = await api.get('/lesson/list', {
+                    params: { classId: this.id },
+                });
                 this.filelist = res.data.files;
                 // this.uploadedLessonsList();
                 this.fileloading = false;
@@ -591,7 +593,7 @@ export default{
         this.progress = 0;
         const formData = new FormData();
         formData.append("lessonFile", this.file); // must match backend
-
+        formData.append("class", this.id); // must match backend
         try {
             const res = await api.post("/lesson/upload", formData, {
                 headers: { "Content-Type": "multipart/form-data" },

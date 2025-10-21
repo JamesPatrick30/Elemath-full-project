@@ -1321,7 +1321,9 @@ app.get('/get/mode/list', auth, async (req, res) => {
 const lessonfile = require('./models/lessonfile.js');
 app.get('/lesson/list',auth, async (req, res) => {
   const id = req.user.id; // Assuming the user ID is stored in the token payload
-  const lessons = await lessonfile.find({ ownerId: id },{file:0, __v:0}).sort({ dateCreated: -1 }); // Sort by dateCreated in descending order
+  const classId = req.query.classId; // Assuming the class ID is stored in the token payload
+  // console.log('lesson list for user id:', id, 'classId:', classId);
+  const lessons = await lessonfile.find({ ownerId: id,classId:classId},{file:0, __v:0}).sort({ dateCreated: -1 }); // Sort by dateCreated in descending order
 
   if (!lessons || lessons.length === 0) {
     return res.status(404).json({ message: 'No lessons found' });
