@@ -243,6 +243,7 @@ export default{
 
         async getQuarter(quaterId) {
             try {
+                this.students = [];
                 const res = await api.post('/get/quarter', {
                     quaterId: quaterId
                 });

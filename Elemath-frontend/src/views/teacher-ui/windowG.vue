@@ -279,6 +279,7 @@ export default{
 
         async getClassData(classIn) {
             try {
+                this.students = [];
             // console.log('class id : ' + classIn);
             const res = await api.post('/get/classData', { classId: classIn });
 
