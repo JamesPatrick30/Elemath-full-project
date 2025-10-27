@@ -49,7 +49,6 @@ export default {
 <style scoped>
 *{
     font-family: 'BubbleBody Neue','Poppins', sans-serif;
-
 }
 header{
     background-color: #70cbff;
@@ -65,6 +64,7 @@ header button{
 }
 main{
     padding: 20px;
+    min-height: 100vh;
     background-color: #c9ebff;
     display: flex;
     justify-content: center;
@@ -72,6 +72,10 @@ main{
 }
 main div{
     max-width: 800px;
-
+    /* text-align: center; */
+    /* display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; */
 }
 </style>
