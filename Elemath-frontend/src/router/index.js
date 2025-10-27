@@ -16,6 +16,7 @@ import donePractice from '@/views/student-ui/game/donePractice.vue'
 import dashboard3 from '@/views/student-ui/dashboard3.vue'
 import studentGrade from '@/views/student-ui/studentGrade.vue'
 import history from '@/views/student-ui/history.vue'
+import seefile from '@/views/student-ui/seefile.vue'
 
 import teacherSetting from '@/views/teacher-ui/setting.vue'
 import windowCard from '@/views/teacher-ui/game/windowCard.vue'
@@ -41,6 +42,11 @@ import notfound from '@/views/notfound.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path: '/sf',
+      name: 'seefile',
+      component: seefile
+    },
     {
       path: '/dqgss',
       name: 'quiz-grades',

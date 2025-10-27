@@ -52,6 +52,7 @@ export default {
             classId:'',
             classLevel:'',
             className:'',
+            fileselectedID:''
 
         }
     },
@@ -210,6 +211,7 @@ export default {
                         lessonId:id
                     }
                 });
+                this.fileselectedID = id;
                 this.title = res.data.title;
                 this.lessonfile = res.data.file;
                 this.cluster = true;
@@ -283,6 +285,9 @@ export default {
         },
         toggleNav(){
             this.isNav = !this.isNav;
+        },
+        viewfile(){
+            this.$router.push({ name: 'seefile', query: { lessonId: this.fileselectedID } });
         }
     },
     mounted(){
@@ -414,7 +419,9 @@ export default {
                 <p>{{ title }}</p>
             </header>
             <p>{{ summarize }}</p>
+            <button class="file-btn" @click="viewfile()">VIEW LESSON</button>
             <button class="play-quiz-btn" @click="playQuiz()">Practice Test</button>
+            
         </div>
     </div>
     <div class="cluster-con" v-if="loadquiz">
@@ -547,6 +554,20 @@ export default {
     background-color: white;
     transition: all 0.3s ease;
 
+}
+.file-btn{
+    border: #52b7c9 1px solid;
+    background-color: #52b7c9;
+    color: white;
+    /* border: none; */
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 12px;
 }
 .play-quiz-btn{
     border: #4CAF50 1px solid;
