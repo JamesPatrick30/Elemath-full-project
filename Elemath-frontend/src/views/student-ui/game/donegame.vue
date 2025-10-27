@@ -99,6 +99,13 @@ export default{
             </div>
             
         </div>
+        <div class="con" v-else>
+            <div class="waiting-ui">
+                <p class="waiting-text">Waiting for Result</p>
+                <img src="/gif/penguin.gif" alt="">
+                <p class="waiting-d">Waiting for the  other students who are still answering</p>
+            </div>
+        </div>
         <!-- <br> -->
         <div class="con">
             <h1 class="score">Score : {{ score }}/{{ rev.length }}</h1>
@@ -259,6 +266,32 @@ export default{
     align-items: center;
     justify-content: center;
     flex-direction: column;
+}
+.waiting-d{
+    font-weight: 500;
+    font-size: 20px;
+}
+.waiting-text{
+    font-weight: 700;
+    font-size: 30px;
+}
+.waiting-ui p {
+    text-align: center;
+}
+.waiting-ui{
+    width: 80%;
+    max-width: 700px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    background-color: white;
+    min-height: 100px;
+
+    border-radius: 10px;
+    padding: 10px;
 }
 .rev{
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
