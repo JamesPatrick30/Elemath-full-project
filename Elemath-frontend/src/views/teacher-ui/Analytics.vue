@@ -4,7 +4,7 @@
     <main>
       <header>
         <h1 class="header-text">Analytics Dashboard</h1>
-        <select name="" id="" class="classes" @change="getClassData(selectedClassId)" v-model="selectedClassId">
+        <select name="" id="" class="classes" @change="selectINs(selectedClassId)" v-model="selectedClassId">
           <option v-for="value in class" :key="value.Class_id" :value="value.Class_id">{{ value.Class_name }}</option>
 
         </select>
@@ -116,37 +116,30 @@ export default {
   components: { navbar, ApexChart },
   data() {
     return {
+      students:[],
       selectedClassId: null,
       LineChart: {
         series: [
           // { name: "Quiz", data: [80, 70, 90, 77, 85, 92] }
         ],
         options: {
-          // chart: { background: "#fff" },
-          // colors: ["#4fc4f7"],
-          // stroke: { curve: "smooth", width: 3 },
-          // xaxis: { categories: ["Mon","Tue","Wed","Thu","Fri","Sat"] },
-          // grid: { borderColor: "#e0e0e0" }
+          chart: { background: "#fff" },
+          colors: ["#4fc4f7"],
+          stroke: { curve: "smooth", width: 3 },
+          xaxis: { categories: ["Mon","Tue","Wed","Thu","Fri","Sat"] },
+          grid: { borderColor: "#e0e0e0" }
         }
       },
       barChart: {
-        // series: [
-        //   { name: "Quiz", data: [80, 70, 90, 77, 85, 92].sort((a,b ) => b -a) }
-        // ],
-        // options: {
-        //   chart: { background: "#fff" },
-        //   colors: ["#FF9800"],
-        //   plotOptions: { bar: { horizontal: true, borderRadius: 5 } },
-        //   xaxis: { categories: ["Patrick","Clariza","Rodel","Kurt","Ivan","Nicole"] }
-        // }
+        
       },
       PieChart: {
-        // series: [10, 27],
-        // options: {
-        //   labels: ["Failed", "Pass"],
-        //   colors: ["#FF5252", "#4CAF50"],
-        //   legend: { position: "right" }
-        // }
+        series: [],
+        options: {
+          labels: ["Failed", "Pass"],
+          colors: ["#FF5252", "#4CAF50"],
+          legend: { position: "right" }
+        }
       },
       improvementChart: {
         series: [],
@@ -159,13 +152,38 @@ export default {
       classInput:null,
       selectedClassId:null,
       class:null,
-      LowTopicBarChart:null
+      LowTopicBarChart:null,
+      classIN:''
     }
   },
   methods:{
     // async chart(){
 
     // },
+    async selectINs(classsss){
+      // this.classIN = classsss;
+
+      // await this.getClassData(classsss);
+      this.$router.push({name:'Analytics',query:{c:classsss}});
+      setTimeout(() => {
+        window.location.reload();
+      }, 100);
+      // this.reloadthePage();
+    },
+
+    reloadthePage(){
+      window.location.reload();
+    },
+    async getInreload(){
+      
+      const c = this.$route.query.c;
+
+      if(!c) return ;
+      this.selectedClassId = c;
+      // window.location.reload();
+      await this.getAllQuarter(c);
+      
+    },
     async getAllQuarter(classId){
             try{
               if(!classId){
@@ -175,8 +193,17 @@ export default {
                 const res = await api.get('/chart',{
                     params:{classId:classId}
                 });
+
+                // this.LineChart = null;
+                // this.barChart = null;
+                // this.improvementChart = null;
+                // this.PieChart = null;
+                // this.LowTopicBarChart = null;
                 this.LineChart = res.data.LineChart;
+                // this.barChart.options = null;
                 this.barChart = res.data.BarChart;
+                // console.log(this.barChart);
+
                 this.improvementChart = res.data.ImprovementChart;
                 this.PieChart = res.data.PieChart;
                 this.LowTopicBarChart = res.data.LowTopicBarChart;
@@ -199,10 +226,16 @@ export default {
             // console.log('classes ? '+JSON.stringify( this.class));
             // Automatically select the first class if available
             if (this.class && this.class.length > 0) {
+
+                console.log('classes'+ JSON.stringify(this.class));
                 const firstClass = this.class[0];
-                this.selectedClassId = firstClass.Class_id;
-                this.classInput = firstClass;
-                this.getAllQuarter(this.selectedClassId);
+
+                if(!this.selectedClassId){
+                  this.selectedClassId = firstClass.Class_id;
+                  this.classInput = firstClass;
+                  this.getAllQuarter(this.selectedClassId);
+                }
+                
             }else{
                 alert('No class yet!');
                 this.$router.push('/tc');
@@ -223,6 +256,9 @@ export default {
     },
     async getClassData(classIn) {
             try {
+      // window.location.reload();
+
+              // this.classIN = classIn;
             console.log('class id : ' + classIn);
             const res = await api.post('/get/classData', { classId: classIn });
 
@@ -233,12 +269,15 @@ export default {
             }
 
             // Sort students by name
-            this.students = res.data.sort((a, b) => a.name.localeCompare(b.name));
+            // this.students = res.data.sort((a, b) => a.name.localeCompare(b.name));
             this.reload = false;
 
             // After fetching students, get their quiz data
-            await this.getAllQuarter(classIn);
+            // this.reloadthePage();
 
+            
+            await this.getAllQuarter(classIn);
+            // this.reloadthePage();
             // // Build dataset
             // this.dataset = this.students.map(student => {
             //     // Find all quiz scores for this student
@@ -270,7 +309,10 @@ export default {
         },
   },
   mounted(){
+    
     this.getData();
+    this.getInreload();
+
   }
 }
 </script>
