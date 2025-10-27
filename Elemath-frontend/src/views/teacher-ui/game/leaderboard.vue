@@ -98,45 +98,48 @@ export default{
         </div>
     </div>
     <div class="cluster-con" v-if="playerdone === true">
-        <div class="cluster">
-            <h2>Result</h2>
-            <div class="result-con">
-                <div class="result">
-                    <h3>Pass</h3>
-                    <h1>{{ pass }}</h1>
+        <div class="white-con">
+            <div class="cluster">
+                <h2>Result</h2>
+                <div class="result-con">
+                    <div class="result">
+                        <h3>Pass</h3>
+                        <h1>{{ pass }}</h1>
+                    </div>
+                    <div class="result2">
+                        <h3>Failed</h3>
+                        <h1>{{ failed }}</h1>
+                    </div>
                 </div>
-                <div class="result2">
-                    <h3>Failed</h3>
-                    <h1>{{ failed }}</h1>
+                <button @click="finishbtn">Finish</button>
+            </div>
+            <div class="playes-con">
+                
+                <div class="player">
+                    <div class="name">
+                        <p>Name</p>
+                    </div>
+                    <div class="score">
+                        <p>Score</p>
+                    </div>
+                    <div class="time">
+                        <p>Time</p>
+                    </div>
+                </div>
+                <div class="player" v-for="(player,index) in players" :key="index">
+                    <div class="name">
+                        <p>{{ player.player }}</p>
+                    </div>
+                    <div class="score">
+                        <p>{{ player.score }}</p>
+                    </div>
+                    <div class="time">
+                        <p>{{ player.time }}</p>
+                    </div>
                 </div>
             </div>
-            <button @click="finishbtn">Finish</button>
         </div>
-        <div class="playes-con">
-            
-            <div class="player">
-                <div class="name">
-                    <p>Name</p>
-                </div>
-                <div class="score">
-                    <p>Score</p>
-                </div>
-                <div class="time">
-                    <p>Time</p>
-                </div>
-            </div>
-            <div class="player" v-for="(player,index) in players" :key="index">
-                <div class="name">
-                    <p>{{ player.player }}</p>
-                </div>
-                <div class="score">
-                    <p>{{ player.score }}</p>
-                </div>
-                <div class="time">
-                    <p>{{ player.time }}</p>
-                </div>
-            </div>
-        </div>
+        
     </div>
     <main>
         <h1 class="title">Leader Board</h1>
@@ -206,10 +209,11 @@ export default{
 
 <style scoped>
 .cluster button{
+
     margin: 10px;
     border-radius: 10px;
-    color: #83a8f3;
-    background-color: white;
+    color: white;
+    background-color: #83a8f3;
     border: none;
     height: 50px;
     width: 100px;
@@ -233,6 +237,7 @@ export default{
     border-radius: 10px;
 }
 .result-con{
+    width: 100%;
     display: flex;
     gap:1em;
 }
@@ -240,13 +245,31 @@ export default{
     font-family: 'BubbleBody Neue', 'Poppins', sans-serif;
 }
 .cluster h2{
-    color: #80ec83;
+    color: #5ce7ff;
 }
 .cluster{
     text-align: center;
-    background-color: rgb(245, 245, 245);
+    /* background-color: rgb(245, 245, 245); */
     padding: 10px;
     border-radius: 10px;
+}
+.white-con .playes-con{
+    width: 100%;
+    height: fit-content;
+    /* background-color: #412070; */
+}
+.white-con{
+    border-radius: 10px;
+    max-width: 900px;
+    border-radius: 10px;
+
+    width: 60%;
+    background-color: white;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
 }
 .cluster-con{
     position: fixed;
