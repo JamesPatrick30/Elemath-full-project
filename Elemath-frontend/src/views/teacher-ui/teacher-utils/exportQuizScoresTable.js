@@ -46,19 +46,19 @@ export async function exportQuizScoresTable(data,titlegive="📘 Quiz Scores Rep
     const row = [];
     row.push(student.name);
 
-    let totalScore = 0;
-    let totalPossible = 0;
+    let totalQuiz = 0;
+    let averagesum = 0;
 
     student.quiz.forEach(q => {
       row.push(`${q.score}/${q.total}`);
-      totalScore += q.score;
-      totalPossible += q.total;
+      totalQuiz ++;
+      averagesum += (q.score / q.total || 0);
     });
 
     // Fill missing cells if not all students have the same number of quizzes
     while (row.length < maxQuizzes + 1) row.push("");
 
-    const average = ((totalScore / totalPossible) * 100).toFixed(2) + "%";
+    const average = ((averagesum / totalQuiz) * 100).toFixed(2) + "%";
     row.push(average);
 
     worksheet.addRow(row);
