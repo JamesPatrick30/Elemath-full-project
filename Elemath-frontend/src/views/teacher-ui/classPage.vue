@@ -182,7 +182,7 @@ export default {
             this.cancelDeleteSwitch = true;
             this.toastVisible = false;
             clearInterval(this.countdownInterval);
-            alert('Class deletion cancelled.');
+            // alert('Class deletion cancelled.');
         },
         deleteFunction(){
             if(this.cancelDeleteSwitch){
@@ -248,7 +248,7 @@ export default {
                         // Handle successful class edit, e.g., refresh class list
                         this.getData();
                         this.classEditCluster = false;
-                        alert(response.data.message);
+                        // alert(response.data.message);
                         this.inputeditClass='';
                     }
                 });
@@ -356,6 +356,23 @@ export default {
 }
 </script>
 <style scoped>
+.toast button{
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    height: 100%;
+    /* margin-top: 10px; */
+}
+.toast hr{
+    border: none;
+    /* height: 1px; */
+    background-color: white;
+    height: 100%;
+    width: 1px;
+}
 .toast{
     position: fixed;
     bottom: 20px;
@@ -367,6 +384,10 @@ export default {
     opacity: 0.9;
     z-index: 1000;
     display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    gap: 10px;
     animation: popside 0.5s ease-in-out;
 }
 @keyframes popside {
