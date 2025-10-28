@@ -12,7 +12,7 @@
     <div class="create-con" v-if="classEditCluster">
         <div class="edit" >
             <button class="btn-close-cluster" @click="classEditCluster = false"><font-awesome-icon :icon="['fas', 'xmark']" size="lg"/></button>
-            <input type="text" placeholder="Class Name" v-model="className">
+            <input type="text" placeholder="Class Name" v-model="inputeditClass">
             <button @click="editClass()" class="btn-cluster">Edit Class</button>
         </div>
     </div>
@@ -150,6 +150,7 @@ export default {
     data() {
         return {
             className:'',
+            inputeditClass:'',
             classEditCluster:false,
             classDeleteCluster:false,
             selectedClassId: null,
@@ -166,6 +167,25 @@ export default {
         };
     },
     methods:{
+        editClass(){
+            // alert(this.selectedClassId);
+            try {
+                api.post('/editClass', {
+                    classId: this.selectedClassId,
+                    className: this.inputeditClass
+                }).then((response) => {
+                    if (response.status === 200) {
+                        // Handle successful class edit, e.g., refresh class list
+                        this.getData();
+                        this.classEditCluster = false;
+                        alert(response.data.message);
+                        this.className='';
+                    }
+                });
+            } catch (error) {
+                console.error('Class edit failed:', error);
+            }
+        },
         nofeatures(){
             alert('This feature is not yet available. Gawa ka muna ng ui');
         },
