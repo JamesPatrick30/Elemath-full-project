@@ -77,6 +77,7 @@
                 <ul>
                   <li><button @click="goToSignIn('student')">Student</button></li>
                   <li><button @click="openSignUpCluster()">Teacher</button></li>
+                  
                 </ul>
               </nav>
             </div>
@@ -323,11 +324,11 @@
   
     <div class="studentorteacher">
       <button class="btn-x" @click="closeCluster()">X</button>
-      <h1>Sign In</h1>
+      <h1>Student</h1>
       <p>Are you a student or a teacher?</p>
       <div class="btn-contaner">
-        <button @click="goToSignIn('student')">Student</button>
-        <button @click="goToSignIn('teacher')">Teacher</button>
+        <button @click="goToSignIn('student')">Sign In</button>
+        <button @click="goToSignUp('student')">Sign Up</button>
       </div>
     </div>
   </div>
