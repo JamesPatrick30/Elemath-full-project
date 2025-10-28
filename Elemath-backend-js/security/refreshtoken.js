@@ -12,7 +12,7 @@ function verifyRefreshToken(req, res, next) {
   try {
     const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET); // ✅ Use REFRESH_SECRET
     req.user = decoded; // decoded may contain { id, username, etc. }
-    console.log("✅ Verified refresh token:", decoded);
+    // console.log("✅ Verified refresh token:", decoded);
     next();
   } catch (err) {
     return res.status(403).json({ message: 'Invalid or expired refresh token.' });
