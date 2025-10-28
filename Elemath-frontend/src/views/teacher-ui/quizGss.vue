@@ -51,6 +51,7 @@
                     
                     
                     <button class="btn" @click="clusterCreateGrade = true">Create an Quarter</button>
+                    <button class="btn-dl" @click="turnToExcel()">Download xslx</button>
                     <!-- <button class="list-q"><font-awesome-icon icon="fa-solid fa-list" size="xl"/></button> -->
                 </div>
                 
@@ -100,6 +101,7 @@
 import api from '@/axios';
 import navbar from './components/navbar.vue';
 import loading from './components/loading.vue';
+import { exportQuizScoresTable } from './teacher-utils/exportQuizScoresTable.js';
 export default{
     components:{
         navbar,
@@ -127,6 +129,10 @@ export default{
         }
     },
     methods:{
+        turnToExcel(){
+            exportQuizScoresTable(this.students,`📘 Quiz Scores Report - Class ${this.classInput?.Class_name} - Quarter ${this.quaterlist.find(q => q._id === this.quarterSelected)?.gradingPeriod || ''}`,`Quiz Scores Report - Class ${this.classInput?.Class_name} - Quarter ${this.quaterlist.find(q => q._id === this.quarterSelected)?.gradingPeriod || ''}`);
+
+        },
         counterQuizandWindowCard(){
             let quizCount = 0;
             let windowcardCount = 0;
@@ -263,8 +269,8 @@ export default{
                             return {...quiz, quizCount};
                         })
                     }));
-                    
-                    // console.log('quiz' + this.students[0]?.quiz.length);
+
+                    console.log('quiz' + JSON.stringify(this.students));
                     this.line = this.students[0].quiz.length > 7 ? 0 : this.line;
                     // console.log('sasdas'+JSON.stringify( this.students));
                 } else {
@@ -426,6 +432,21 @@ export default{
 }
 </script>
 <style scoped>
+.btn-dl{
+    background-color:  white;
+    color: #4fc4f7;
+    position: absolute;
+    top: 10px;
+    left: auto;
+    right: 30px;
+    cursor: pointer;
+
+    border: none;
+    font-weight: 800;
+    height: 50px;
+    border-radius: 5px;
+    padding: 10px;
+}
 .counter-con{
     display: flex;
     gap: 20px;

@@ -51,6 +51,9 @@
                     
                     
                     <button class="btn" @click="clusterCreateGrade = true">Create an Quarter</button>
+                    <button class="btn-dl" @click="turnToExcel()">Download xslx</button>
+
+
                     <!-- <button class="list-q"><font-awesome-icon icon="fa-solid fa-list" size="xl"/></button> -->
                 </div>
                 
@@ -100,6 +103,8 @@
 import api from '@/axios';
 import navbar from './components/navbar.vue';
 import loading from './components/loading.vue';
+import { exportQuizScoresTable } from './teacher-utils/exportQuizScoresTable.js';
+
 export default{
     components:{
         navbar,
@@ -127,6 +132,9 @@ export default{
         }
     },
     methods:{
+        turnToExcel(){
+            exportQuizScoresTable(this.students,`📘 Window Card Scores Report - Class ${this.classInput?.Class_name} - Quarter ${this.quaterlist.find(q => q._id === this.quarterSelected)?.gradingPeriod || ''}`,`Window Card Scores Report - Class ${this.classInput?.Class_name} - Quarter ${this.quaterlist.find(q => q._id === this.quarterSelected)?.gradingPeriod || ''}`);
+        },
         counterQuizandWindowCard(){
             let quizCount = 0;
             let windowcardCount = 0;
@@ -452,6 +460,21 @@ export default{
     margin-left: 0;
     padding: 0;
     font-family: 'BubbleBody Neue','Poppins', sans-serif;
+}
+.btn-dl{
+    background-color:  white;
+    color: #4fc4f7;
+    position: absolute;
+    top: 10px;
+    left: auto;
+    right: 30px;
+    cursor: pointer;
+
+    border: none;
+    font-weight: 800;
+    height: 50px;
+    border-radius: 5px;
+    padding: 10px;
 }
 .btn{
     border: none;
