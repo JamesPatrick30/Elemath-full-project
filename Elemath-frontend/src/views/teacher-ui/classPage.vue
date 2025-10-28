@@ -12,7 +12,7 @@
     <div class="create-con" v-if="classEditCluster">
         <div class="edit" >
             <button class="btn-close-cluster" @click="classEditCluster = false"><font-awesome-icon :icon="['fas', 'xmark']" size="lg"/></button>
-            <input type="text" placeholder="Class Name" v-model="className">
+            <input type="text" placeholder="Class Name" v-model="inputeditClass">
             <button @click="editClass()" class="btn-cluster">Edit Class</button>
         </div>
     </div>
@@ -136,7 +136,11 @@
             </div>
         </main>
     </body>
-    
+    <div class="toast" v-if="toastVisible">
+        <p>this will delete in <span id="countdown">{{ deleteCountdown }}</span> seconds</p>
+        <hr>
+        <button @click="cancelDelete">Cancel</button>
+    </div>
 </template>
 <script>
 import api from '@/axios';
@@ -150,6 +154,7 @@ export default {
     data() {
         return {
             className:'',
+            inputeditClass:'',
             classEditCluster:false,
             classDeleteCluster:false,
             selectedClassId: null,
@@ -163,9 +168,94 @@ export default {
             students: [],
             user:null,
             classgrade:'Grade 5',
+
+            deleteCountdown: 5,
+            toastVisible: false,
+
+            countdownInterval: null,
+
+            cancelDeleteSwitch:false,
         };
     },
     methods:{
+        cancelDelete(){
+            this.cancelDeleteSwitch = true;
+            this.toastVisible = false;
+            clearInterval(this.countdownInterval);
+            // alert('Class deletion cancelled.');
+        },
+        deleteFunction(){
+            if(this.cancelDeleteSwitch){
+                    this.cancelDeleteSwitch = false;
+                    return;
+            }
+                api.post('/deleteClass', {
+                    classId: this.selectedClassId
+                }).then((response) => {
+                    if (response.status === 200) {
+                        // Handle successful class deletion, e.g., refresh class list
+                        this.getData();
+                        this.classDeleteCluster = false;
+                        alert(response.data.message);
+                        this.className='';
+                    }
+                });
+        },
+        deleteClass(){
+            // alert(this.selectedClassId);
+            try {
+                this.cancelDeleteSwitch = false;
+                this.deleteCountdown = 5;
+                this.toastVisible = true;
+                this.classDeleteCluster = false;
+
+                this.countdownInterval = setInterval(() => {
+                    if (this.deleteCountdown > 0) {
+                        this.deleteCountdown--;
+                        // document.getElementById('countdown').innerText = this.deleteCountdown;
+                    } else {
+                        this.toastVisible = false;
+                        this.deleteFunction();
+                        clearInterval(this.countdownInterval);
+                    }
+                }, 1000);
+                
+                // alert('Class deleted successfully.');
+                // this.getData();
+                // api.post('/deleteClass', {
+                //     classId: this.selectedClassId
+                // }).then((response) => {
+                //     if (response.status === 200) {
+                //         // Handle successful class deletion, e.g., refresh class list
+                //         this.getData();
+                //         this.classDeleteCluster = false;
+                //         alert(response.data.message);
+                //         this.className='';
+                //     }
+                // });
+            } catch (error) {
+                console.error('Class deletion failed:', error);
+            }
+        },
+        editClass(){
+            // alert(this.selectedClassId);
+            try {
+                api.post('/editClass', {
+                    classId: this.selectedClassId,
+                    className: this.inputeditClass
+                }).then((response) => {
+                    if (response.status === 200) {
+                        // Handle successful class edit, e.g., refresh class list
+                        this.getData();
+                        this.classEditCluster = false;
+                        // alert(response.data.message);
+                        this.inputeditClass='';
+                    }
+                });
+            } catch (error) {
+                console.error('Class edit failed:', error);
+            }
+        },
         nofeatures(){
             alert('This feature is not yet available. Gawa ka muna ng ui');
         },
@@ -266,6 +356,50 @@ export default {
 }
 </script>
 <style scoped>
+.toast button{
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    height: 100%;
+    /* margin-top: 10px; */
+}
+.toast hr{
+    border: none;
+    /* height: 1px; */
+    background-color: white;
+    height: 100%;
+    width: 1px;
+}
+.toast{
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    opacity: 0.9;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    gap: 10px;
+    animation: popside 0.5s ease-in-out;
+}
+@keyframes popside {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
 .secondary{
     font-size: 14px;
     color: rgb(68, 68, 68);
