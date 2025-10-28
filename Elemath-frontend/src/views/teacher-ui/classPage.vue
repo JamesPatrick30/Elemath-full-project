@@ -136,7 +136,11 @@
             </div>
         </main>
     </body>
-    
+    <div class="toast" v-if="toastVisible">
+        <p>this will delete in <span id="countdown">{{ deleteCountdown }}</span> seconds</p>
+        <hr>
+        <button @click="cancelDelete">Cancel</button>
+    </div>
 </template>
 <script>
 import api from '@/axios';
@@ -164,9 +168,75 @@ export default {
             students: [],
             user:null,
             classgrade:'Grade 5',
+
+            deleteCountdown: 5,
+            toastVisible: false,
+
+            countdownInterval: null,
+
+            cancelDeleteSwitch:false,
         };
     },
     methods:{
+        cancelDelete(){
+            this.cancelDeleteSwitch = true;
+            this.toastVisible = false;
+            clearInterval(this.countdownInterval);
+            alert('Class deletion cancelled.');
+        },
+        deleteFunction(){
+            if(this.cancelDeleteSwitch){
+                    this.cancelDeleteSwitch = false;
+                    return;
+            }
+                api.post('/deleteClass', {
+                    classId: this.selectedClassId
+                }).then((response) => {
+                    if (response.status === 200) {
+                        // Handle successful class deletion, e.g., refresh class list
+                        this.getData();
+                        this.classDeleteCluster = false;
+                        alert(response.data.message);
+                        this.className='';
+                    }
+                });
+        },
+        deleteClass(){
+            // alert(this.selectedClassId);
+            try {
+                this.cancelDeleteSwitch = false;
+                this.deleteCountdown = 5;
+                this.toastVisible = true;
+                this.classDeleteCluster = false;
+
+                this.countdownInterval = setInterval(() => {
+                    if (this.deleteCountdown > 0) {
+                        this.deleteCountdown--;
+                        // document.getElementById('countdown').innerText = this.deleteCountdown;
+                    } else {
+                        this.toastVisible = false;
+                        this.deleteFunction();
+                        clearInterval(this.countdownInterval);
+                    }
+                }, 1000);
+                
+                // alert('Class deleted successfully.');
+                // this.getData();
+                // api.post('/deleteClass', {
+                //     classId: this.selectedClassId
+                // }).then((response) => {
+                //     if (response.status === 200) {
+                //         // Handle successful class deletion, e.g., refresh class list
+                //         this.getData();
+                //         this.classDeleteCluster = false;
+                //         alert(response.data.message);
+                //         this.className='';
+                //     }
+                // });
+            } catch (error) {
+                console.error('Class deletion failed:', error);
+            }
+        },
         editClass(){
             // alert(this.selectedClassId);
             try {
@@ -179,7 +249,7 @@ export default {
                         this.getData();
                         this.classEditCluster = false;
                         alert(response.data.message);
-                        this.className='';
+                        this.inputeditClass='';
                     }
                 });
             } catch (error) {
@@ -286,6 +356,29 @@ export default {
 }
 </script>
 <style scoped>
+.toast{
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    opacity: 0.9;
+    z-index: 1000;
+    display: flex;
+    animation: popside 0.5s ease-in-out;
+}
+@keyframes popside {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
 .secondary{
     font-size: 14px;
     color: rgb(68, 68, 68);

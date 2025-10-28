@@ -382,7 +382,28 @@ app.post('/editClass',auth,async(req,res)=>{
     return res.status(500).json({ message: 'Server error' });
   }
 });
+app.post('/deleteClass',auth,async(req,res)=>{
+  const { classId } = req.body;
+  try {
+    const deletedClass = await classes.deleteOne({ _id: classId });
+    if (deletedClass.deletedCount === 0) {
+      return res.status(404).json({ message: 'Class not found' });
+    }
+    const studentsDeleted = await StudentClass.deleteMany({ classId: classId });
 
+    const teacherUpdate = await teacher_accoount.updateOne(
+      { _id: req.user.id },
+      { $pull: { class: { Class_id: classId } } }
+    );
+    console.log('the deleted students count : '+ studentsDeleted.deletedCount);
+    await redisClient.del(`classData:${classId}`);
+    await redisClient.del(`teacher:${req.user.id}`);
+    res.status(200).json({ message: 'Class deleted successfully', studentsDeleted: studentsDeleted.deletedCount });
+  } catch (error) {
+    logError(error, req);
+    return res.status(500).json({ message: 'Server error' });
+  }
+});
 app.get('/get/student/data', auth, async (req, res) => {
   
   try{
@@ -694,7 +715,9 @@ app.get('/data/teacher',auth,casheTeacherData, async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    await redisClient.set('teacher:${userId}', JSON.stringify(user), { EX: 3600 });
+  const userId = req.user.id;
+
+    await redisClient.set(`teacher:${userId}`, JSON.stringify(user), { EX: 3600 });
     res.status(200).json(user);
   } catch (error) {
     logError(error, req);
@@ -754,7 +777,7 @@ app.post('/createClass', auth, async (req, res) => {
         }
       }
     );
-
+    await redisClient.del(`teacher:${req.user.id}`);
     // console.log('Class created and teacher updated.'+savedClass);
     res.json({ id: savedClass._id });
 
@@ -1796,6 +1819,7 @@ app.post('/mode/done', auth, async (req, res) => {
 const { buildQuiz } = require('./helper/windowcard.js');
 const grade = require('./models/grade.js');
 const { errorMonitor } = require('events');
+const { console } = require('inspector');
 // ...existing code...
 
 // Minimal quiz endpoint
