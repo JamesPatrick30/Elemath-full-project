@@ -1,4 +1,13 @@
 <template>
+  <div class="headUp-cluster-con" v-if="clusterlowestTopic">
+    <div class="headUp-cluster">
+      <button class="close" @click="clusterlowestTopic = false"><font-awesome-icon :icon="['fas', 'xmark']" size="lg"/></button>
+      <header>[⚠️] Heads up! </header>
+      <hr></hr>
+
+      <p>Many students struggled with <span class="topics-low" v-for="(value,index) in lowestTopic" :key="index"> {{ value }}<span v-if="index != (lowestTopic.length - 1)">, </span></span>. The average score was lower than other topics, so teachers are encouraged to discuss and study the lesson further, and provide more practice, reviews, and short tests to help students improve.</p>
+    </div>
+  </div>
   <div class="analytics-page">
     <navbar />
     <main>
@@ -153,7 +162,9 @@ export default {
       selectedClassId:null,
       class:null,
       LowTopicBarChart:null,
-      classIN:''
+      classIN:'',
+      lowestTopic:[],
+      clusterlowestTopic:false
     }
   },
   methods:{
@@ -207,6 +218,21 @@ export default {
                 this.improvementChart = res.data.ImprovementChart;
                 this.PieChart = res.data.PieChart;
                 this.LowTopicBarChart = res.data.LowTopicBarChart;
+                // console.log(this.LowTopicBarChart);
+                for (const [index, value] of this.LowTopicBarChart?.series[0].data.entries()) {
+                  // console.log('value '+ value);
+                  if(value < 30){
+
+                    this.lowestTopic.push(this.LowTopicBarChart?.options?.xaxis.categories[index]);
+                  }
+                }
+                // console.log('lowest topic '+ JSON.stringify( this.lowestTopic));
+                if(this.lowestTopic.length > 0){
+                  this.clusterlowestTopic = true;
+                }
+                // if(this.LowTopicBarChart?.series[0].data[0] < 30){
+                  
+                // }
                 
                 // console.log('res get all record id '+ JSON.stringify(this.improvementChart));
             }catch(err){
@@ -318,6 +344,60 @@ export default {
 </script>
 
 <style scoped>
+.topics-low{
+  font-weight: bold;
+  color: #ff5722;
+}
+.close:hover{
+  color: darkred;
+}
+.close{
+  color: red;
+  cursor: pointer;
+  align-self:flex-end;
+  border: none;
+  background-color: transparent;
+}
+.headUp-cluster p{
+  font-size: 14px;
+  color: #555;
+  text-align: center;
+}
+.headUp-cluster header{
+  font-size: 18px;
+  font-weight: bold;
+  color: #ff9800;
+  margin-bottom: 5px;
+}
+.headUp-cluster hr{
+  border: none;
+  border-top: 1px solid #eee;
+  color: #888;
+  width: 90%;
+  margin: 10px 0;
+}
+.headUp-cluster{
+  background-color: #ffffff;
+  max-width: 400px;
+  padding: 10px 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.headUp-cluster-con{
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  /* box-shadow: 0 2px 8px rgba(0,0,0,0.1); */
+}
 .filler{
   height: 100%;
   display: flex;
