@@ -47,6 +47,7 @@ export default {
             loadquiz:false,
             toastMessage:'',
             timer:null,
+
             showToast:false,
             toasttimer:3,
             classId:'',
@@ -338,6 +339,7 @@ export default {
     <audio ref="player" :src="audiosrc" loop autoplay muted></audio>
     <greenbg />
     <div class="toast" v-if="showToast">
+        <button @click="showToast = false" class="toastbtn"><font-awesome-icon :icon="['fas', 'xmark']" size="lg" color="red"/></button>
         <p>{{ toastMessage }}</p>
         <!-- <p v-if="toasttimer > 0">Closing in {{ toasttimer }}...</p> -->
         <div style="align-self:baseline; background-color: #74cc00; height: 5px; animation-delay: 0s;   transition: all 1s linear;" :style="{width: ((toasttimer-1)/4)*100 + '%', animation: toasttimer < 1 ? `alternate 1s, donetoast 1s ease forwards` : ''}"></div>
@@ -437,6 +439,16 @@ export default {
     
 </template>
 <style scoped>
+.toastbtn{
+    /* position: absolute; */
+    /* top: 5px;
+
+    right: 5px; */
+    align-self: flex-end;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
 .title-holder{
     width: 90%;
     display: flex;
