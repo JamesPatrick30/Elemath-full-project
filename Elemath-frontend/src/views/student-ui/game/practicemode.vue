@@ -141,6 +141,15 @@ export default {
         this.tabletype = nextQ.tabletype;
         this.inputanswer = '';
         this.btnsubmit = false;
+    },
+    async leave() {
+        try{
+            const res = await api.delete('/clear/mode/practice/review');
+            console.log(res.data);
+            this.$router.push('/ds');
+        }catch(err){
+            console.log(err);
+        }
     }
     },
 };
@@ -158,7 +167,7 @@ export default {
         muted
         ></audio>
         <h1>Practice Mode</h1>
-        <div class="test-area" v-if="quizMode !== 'WINDOWCARD MODE'">
+        <div class="test-area">
                     <apexChart
                         type="line"
                         v-if="tabletype == 'Line'"
@@ -231,7 +240,7 @@ export default {
                             <!-- <p>Choose the correct answer:</p> -->
                             <ul>
                                 <li v-for="(option, index) in options" :key="index">
-                                    <button @click="check(option, questions[num].answer)">{{ option }}</button>
+                                    <button @click="check(option, questions[num]?.answer)">{{ option }}</button>
                                 </li>
                             </ul>
                         </div>
