@@ -245,21 +245,42 @@ export default {
             </div>
             <div class="body">
                 <h3>MUSIC </h3>
-            <input
-                type="range"
-                min="0"
-                max="1"
-                step="0.01"
-                v-model="volume"
-                @input="updateVolume"
-                />
-                <button @click="mutevol()"><font-awesome-icon icon="fa-solid fa-volume-high" size="xl" v-if="!mute"/> <font-awesome-icon icon="fa-solid fa-volume-xmark" size="xl" v-if="mute"/></button>
-        </div>
+                <input
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    v-model="volume"
+                    @input="updateVolume"
+                    />
+                    <button @click="mutevol()"><font-awesome-icon icon="fa-solid fa-volume-high" size="xl" v-if="!mute"/> <font-awesome-icon icon="fa-solid fa-volume-xmark" size="xl" v-if="mute"/></button>
             </div>
+            <footer>
+                <button @click="leave" class="leave-btn">Leave</button>
+            </footer>
+            
+        </div>
             
     </div>
 </template>
 <style scoped>
+.cluster footer {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 10px;
+}
+.leave-btn{
+    background-color: #e83737;
+    color: white;
+    font-weight: 800;
+    border: none;
+    padding: 10px;
+    border-radius: 10px;
+    margin-top: 10px;
+    justify-self: flex-end;
+}
 .multi-choice ul li button{
     width: 100%;
     height: 50px;
@@ -364,7 +385,7 @@ export default {
     justify-content: center;
     align-items: center;
     width: 300px;
-    height: 100px;
+    height: fit-content;
     padding: 5px;
     background-color: white;
     border-radius: 10px;
