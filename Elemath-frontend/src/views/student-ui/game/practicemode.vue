@@ -141,6 +141,15 @@ export default {
         this.tabletype = nextQ.tabletype;
         this.inputanswer = '';
         this.btnsubmit = false;
+    },
+    async leave() {
+        try{
+            const res = await api.delete('/clear/mode/practice/review');
+            console.log(res.data);
+            this.$router.push('/ds');
+        }catch(err){
+            console.log(err);
+        }
     }
     },
 };
@@ -158,7 +167,7 @@ export default {
         muted
         ></audio>
         <h1>Practice Mode</h1>
-        <div class="test-area" v-if="quizMode !== 'WINDOWCARD MODE'">
+        <div class="test-area">
                     <apexChart
                         type="line"
                         v-if="tabletype == 'Line'"
@@ -231,7 +240,7 @@ export default {
                             <!-- <p>Choose the correct answer:</p> -->
                             <ul>
                                 <li v-for="(option, index) in options" :key="index">
-                                    <button @click="check(option, questions[num].answer)">{{ option }}</button>
+                                    <button @click="check(option, questions[num]?.answer)">{{ option }}</button>
                                 </li>
                             </ul>
                         </div>
@@ -245,21 +254,42 @@ export default {
             </div>
             <div class="body">
                 <h3>MUSIC </h3>
-            <input
-                type="range"
-                min="0"
-                max="1"
-                step="0.01"
-                v-model="volume"
-                @input="updateVolume"
-                />
-                <button @click="mutevol()"><font-awesome-icon icon="fa-solid fa-volume-high" size="xl" v-if="!mute"/> <font-awesome-icon icon="fa-solid fa-volume-xmark" size="xl" v-if="mute"/></button>
-        </div>
+                <input
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    v-model="volume"
+                    @input="updateVolume"
+                    />
+                    <button @click="mutevol()"><font-awesome-icon icon="fa-solid fa-volume-high" size="xl" v-if="!mute"/> <font-awesome-icon icon="fa-solid fa-volume-xmark" size="xl" v-if="mute"/></button>
             </div>
+            <footer>
+                <button @click="leave" class="leave-btn">Leave</button>
+            </footer>
+            
+        </div>
             
     </div>
 </template>
 <style scoped>
+.cluster footer {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 10px;
+}
+.leave-btn{
+    background-color: #e83737;
+    color: white;
+    font-weight: 800;
+    border: none;
+    padding: 10px;
+    border-radius: 10px;
+    margin-top: 10px;
+    justify-self: flex-end;
+}
 .multi-choice ul li button{
     width: 100%;
     height: 50px;
@@ -364,7 +394,7 @@ export default {
     justify-content: center;
     align-items: center;
     width: 300px;
-    height: 100px;
+    height: fit-content;
     padding: 5px;
     background-color: white;
     border-radius: 10px;
