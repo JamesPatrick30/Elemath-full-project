@@ -180,6 +180,7 @@ h1{
     margin: 10px 0;
 }
 .grade-item{
+    user-select: none;
     background-color: #f9f9f9;
     border: 1px solid #ddd;
     border-radius: 5px;
