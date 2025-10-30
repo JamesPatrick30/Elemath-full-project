@@ -99,8 +99,10 @@ export default {
                         <p class="grade-date">{{ item.dateTaken }}</p>
                         <hr>
                         <strong>{{ item.grade }} / {{ item.total }}</strong>
-                        <!-- <hr>
-                        <p class="grade-title">{{ item.quizMode }}</p> -->
+                         <hr>
+                        <p class="grade-title" v-if="item.percentage >=75">PASSED</p>
+                        <p class="grade-title" v-if="item.percentage < 75">FAILED</p>
+
 
                     </div>
                 </div>
@@ -117,6 +119,9 @@ export default {
                         <p class="grade-date">{{ item.dateTaken }}</p>
                         <hr>
                         <strong>{{ item.grade }} / {{ item.total }}</strong>
+                        <hr>
+                        <p class="grade-title" v-if="item.percentage >=75">PASSED</p>
+                        <p class="grade-title" v-if="item.percentage < 75">FAILED</p>
                         <!-- <hr>
                         <p class="grade-title">{{ item.quizMode }}</p> -->
 
@@ -164,7 +169,7 @@ h1{
     margin: 8px 0;
 }
 .grade-title{
-    font-size: 10px;
+    font-size: 13px;
     font-weight: bold;
     color: #333333;
     margin-bottom: 8px;
