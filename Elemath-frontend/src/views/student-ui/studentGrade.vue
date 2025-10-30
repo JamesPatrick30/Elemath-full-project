@@ -30,6 +30,7 @@ export default{
             ],
             index:0,
             isMobile:null,
+            windowCardgrades:[],
         }
     },
     mounted(){
@@ -82,7 +83,8 @@ export default{
                 // console.log(response.data);
                 // this.source = [];
                 this.source = response.data.grade || [];
-                // console.log('Grades:', this.source);
+                this.windowCardgrades = this.source.filter(item => item.quizMode === 'WINDOWCARD MODE');
+                console.log('Grades:', this.source);
             } catch (error) {
                 console.error('Error fetching student grades:', error);
             }
@@ -122,6 +124,9 @@ export default{
                 return grades.slice(this.index, this.index + 5);
             }
             return grades;
+        },
+        grade6(){
+            return;
         }
     }
 }
@@ -171,7 +176,32 @@ export default{
                 <button @click="nextTick" ><font-awesome-icon v-if="source.length > 5 && source.length" icon="fa-solid fa-arrow-right" /></button>
 
             </div>
-            
+            <div class="container">
+                <header>
+                    <p>Window Card Grades</p>
+                </header>
+                <div class="main">
+                    <div class="no-grade" v-if="!windowCardgrades.length">
+                        <p>No Window Card Grades Available</p>
+                    </div>
+                    <table v-if="windowCardgrades.length" class="grade-table">
+                        <thead>
+                            <tr>
+                                <th v-for="(item, index) in gradelist(windowCardgrades)" :key="index">
+                                    {{ item.quizMode }}
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td v-for="(item, index) in gradelist(windowCardgrades)" :key="index" :style="{backgroundColor: gradeColor(item.percentage)}">
+                                    {{ item.score }} / {{ item.total }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
             <!-- <div class="container">
                 <h1>Grade</h1>
             </div> -->
@@ -179,6 +209,9 @@ export default{
     </body>
 </template>
 <style scoped>
+.container header{
+    width: 100%;
+}
 /* .grade-table{
     width: 100%;
     border-collapse: collapse;
@@ -222,6 +255,7 @@ th, td {
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 10px;
+    margin-bottom: 20px;
 }
 *{
     font-family: 'BubbleBody Neue','Poppins', sans-serif;

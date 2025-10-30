@@ -17,7 +17,7 @@ export default {
             // alert('This feature is coming soon!');
         },
         goGrade(){
-            this.$router.push('/sg');
+            this.$router.push('/ng');
         },
         goDashboard() {
             this.$router.push('/ds');
@@ -63,7 +63,7 @@ button{
     border-radius: 20px;
     padding: 10px;
     background-color: white;
-    position: fixed;
+    position: absolute;
     top: 50px;
     left: auto;
     right: 0;
