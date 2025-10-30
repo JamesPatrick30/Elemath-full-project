@@ -17,7 +17,7 @@ export default {
             // alert('This feature is coming soon!');
         },
         goGrade(){
-            this.$router.push('/sg');
+            this.$router.push('/ng');
         },
         goDashboard() {
             this.$router.push('/ds');

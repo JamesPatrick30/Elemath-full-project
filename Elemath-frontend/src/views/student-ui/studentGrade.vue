@@ -30,6 +30,7 @@ export default{
             ],
             index:0,
             isMobile:null,
+            windowCardgrades:[],
         }
     },
     mounted(){
@@ -82,7 +83,8 @@ export default{
                 // console.log(response.data);
                 // this.source = [];
                 this.source = response.data.grade || [];
-                // console.log('Grades:', this.source);
+                this.windowCardgrades = this.source.filter(item => item.quizMode === 'WINDOWCARD MODE');
+                console.log('Grades:', this.source);
             } catch (error) {
                 console.error('Error fetching student grades:', error);
             }
@@ -122,6 +124,9 @@ export default{
                 return grades.slice(this.index, this.index + 5);
             }
             return grades;
+        },
+        grade6(){
+            return;
         }
     }
 }
@@ -172,42 +177,31 @@ export default{
 
             </div>
             <div class="container">
-                <button @click="prevTick"><font-awesome-icon v-if="source.length > 5 && source.length" icon="fa-solid fa-arrow-left" /></button>
-                <div class="con-grade">
-                    <div class="no-grade" v-if="!source.length">
-                        <p>No Grades Available</p>
+                <header>
+                    <p>Window Card Grades</p>
+                </header>
+                <div class="main">
+                    <div class="no-grade" v-if="!windowCardgrades.length">
+                        <p>No Window Card Grades Available</p>
                     </div>
-                    <table v-if="source.length" class="grade-table">
+                    <table v-if="windowCardgrades.length" class="grade-table">
                         <thead>
                             <tr>
-                                <th v-for="(item, index) in gradelist(source)" :style="{ fontSize: item.quizMode == 'WINDOWCARD MODE' ? '12px' : '16px' }" :key="index">
-                                    <!-- {{ item.quizMode }} -->
-                                    <p v-if="item.quizMode == 'QUIZ MODE'">Quiz</p>
-                                    <p v-if="item.quizMode == 'WINDOWCARD MODE'">Window Card</p>
-
+                                <th v-for="(item, index) in gradelist(windowCardgrades)" :key="index">
+                                    {{ item.quizMode }}
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td v-for="(item, index) in gradelist(source)" :key="index" :style="{backgroundColor: gradeColor(item.percentage)}">
+                                <td v-for="(item, index) in gradelist(windowCardgrades)" :key="index" :style="{backgroundColor: gradeColor(item.percentage)}">
                                     {{ item.score }} / {{ item.total }}
                                 </td>
                             </tr>
                         </tbody>
                     </table>
-                    <div class="average" v-if="source.length" style="margin-top: 20px; text-align: center;">
-                        <h2>Average Grade: 
-                            {{
-                                (source.reduce((acc, curr) => acc + parseFloat(curr.percentage), 0) / source.length).toFixed(2) + '%'
-                            }}
-                        </h2>
-                    </div>
                 </div>
-                <button @click="nextTick" ><font-awesome-icon v-if="source.length > 5 && source.length" icon="fa-solid fa-arrow-right" /></button>
-
             </div>
-            
             <!-- <div class="container">
                 <h1>Grade</h1>
             </div> -->
@@ -215,6 +209,9 @@ export default{
     </body>
 </template>
 <style scoped>
+.container header{
+    width: 100%;
+}
 /* .grade-table{
     width: 100%;
     border-collapse: collapse;

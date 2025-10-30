@@ -17,6 +17,7 @@ import dashboard3 from '@/views/student-ui/dashboard3.vue'
 import studentGrade from '@/views/student-ui/studentGrade.vue'
 import history from '@/views/student-ui/history.vue'
 import seefile from '@/views/student-ui/seefile.vue'
+import newGrade from '@/views/student-ui/newGradeUI.vue'
 
 import teacherSetting from '@/views/teacher-ui/setting.vue'
 import windowCard from '@/views/teacher-ui/game/windowCard.vue'
@@ -42,6 +43,11 @@ import notfound from '@/views/notfound.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path: '/ng',
+      name: 'new-grade',
+      component: newGrade
+    },
     {
       path: '/sf',
       name: 'seefile',
