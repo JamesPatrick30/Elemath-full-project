@@ -63,7 +63,7 @@ button{
     border-radius: 20px;
     padding: 10px;
     background-color: white;
-    position: fixed;
+    position: absolute;
     top: 50px;
     left: auto;
     right: 0;
