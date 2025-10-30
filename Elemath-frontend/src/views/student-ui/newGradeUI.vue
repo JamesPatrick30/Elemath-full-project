@@ -43,7 +43,7 @@ export default {
 
                 let quizCounter = 1;
                 this.quizGrades = this.quizGrades.map(item => ({
-                    quizMode: item.quizMode + ` ${quizCounter++}`,
+                    quizMode: 'QUIZ' + ` ${quizCounter++}`,
                     total: item.total,
                     grade: item.score,
                     percentage: item.percentage,
@@ -53,7 +53,7 @@ export default {
 
                 let windowCardCounter = 1;
                 this.windowCardgrades = this.windowCardgrades.map(item => ({
-                    quizMode: item.quizMode + ` ${windowCardCounter++}`,
+                    quizMode: 'WINDOWCARD' + ` ${windowCardCounter++}`,
                     total: item.total,
                     grade: item.score,
                     percentage: item.percentage,
@@ -66,8 +66,8 @@ export default {
             }
             return;
         },
-        calculateAverageGrade() {
-            if (this.source.length === 0) return 'N/A';
+        calculateAverageGrade(grade) {
+            if (grade.length === 0) return 'N/A';
             const totalGrades = this.source.reduce((sum, item) => sum + item.percentage, 0);
             return (totalGrades / this.source.length).toFixed(2);
         }
@@ -94,7 +94,8 @@ export default {
                 </header>
                 <div class="container-grades">
                     <div v-for="(item, index) in windowCardgrades" :key="index" class="grade-item" 
-                    :style="{backgroundColor: item.percentage >= 75 ? '#d4edda' : '#f8d7da'}">
+                    :style="{backgroundColor: item.percentage >= 75 ? '#d4edda' : '#f8d7da'}"
+                    v-if="windowCardgrades.length > 0">
                         <p class="grade-title">{{ item.quizMode }}</p>
                         <p class="grade-date">{{ item.dateTaken }}</p>
                         <hr>
@@ -105,6 +106,9 @@ export default {
 
 
                     </div>
+                    <div v-else>
+                        <p>No Windowcard Grades Available</p>
+                    </div>
                 </div>
             </div>
 
@@ -114,7 +118,8 @@ export default {
                 </header>
                 <div class="container-grades">
                     <div v-for="(item, index) in quizGrades" :key="index" class="grade-item" 
-                    :style="{backgroundColor: item.percentage >= 75 ? '#d4edda' : '#f8d7da'}">
+                    :style="{backgroundColor: item.percentage >= 75 ? '#d4edda' : '#f8d7da'}"
+                    v-if="quizGrades.length > 0">
                         <p class="grade-title">{{ item.quizMode }}</p>
                         <p class="grade-date">{{ item.dateTaken }}</p>
                         <hr>
@@ -126,13 +131,16 @@ export default {
                         <p class="grade-title">{{ item.quizMode }}</p> -->
 
                     </div>
+                    <div v-else>
+                        <p>No Windowcard Grades Available</p>
+                    </div>
                 </div>
             </div>
 
             <div class="container-average">
                 
                 <p>Average Grade:</p>
-                <strong>{{ calculateAverageGrade() }}</strong>
+                <strong>{{ calculateAverageGrade(source) }}</strong>
             </div>
         </main>
     </body>
