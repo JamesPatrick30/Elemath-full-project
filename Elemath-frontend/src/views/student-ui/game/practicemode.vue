@@ -157,7 +157,10 @@ export default {
 <template>
     <greenbg />
         <button class="setting" @click="settingf()"><font-awesome-icon icon="fa-solid fa-gear" size="2xl" /></button>
-
+    <div class="image-con">
+        <img src="/gif/park.gif"  />
+        <img src="/gif/park.gif"  />
+    </div>
     <main>
         <audio
         ref="player"
@@ -273,6 +276,25 @@ export default {
     </div>
 </template>
 <style scoped>
+.image-con img{
+    width: 100%;
+    height: 100px;
+    /* object-fit: cover; */
+    /* opacity: 0.7; */
+}
+.image-con{
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+
+    width: 100%;
+    height: fit-content;
+
+    z-index: -1;
+    display: flex;
+    /* opacity: 0.2; */
+}
 .cluster footer {
     width: 100%;
     display: flex;

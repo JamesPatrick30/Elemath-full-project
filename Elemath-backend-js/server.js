@@ -1668,7 +1668,10 @@ app.post('/report/student', auth, upload.array('screenshots', 5), async (req, re
 
 
 app.get('/get/mode/player/done',auth,async(req,res)=>{
-  const {id} = req.query;
+  let {id} = req.query;
+  if(!id){
+    id = req.user.classId;
+  }
   const data = await redisClient.get(`mode:${id}`);
   const modeData = JSON.parse(data);
   const players = modeData.players.filter(p => p.done);

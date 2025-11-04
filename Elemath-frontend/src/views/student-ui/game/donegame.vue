@@ -8,10 +8,23 @@ export default{
             rev:[],
             score:0,
             modeDone:false,
+            players:[],
+            lrn:'',
+            rank:0,
         }
         
     },
     methods:{
+        async getmydata(){
+            try{
+                const res = await api.get('/get/student/data');
+                this.lrn = res.data.lrn;
+                await this.getplayers();
+
+            }catch(err){
+                console.log(err);
+            }
+        },
         async getdata(){
             try{
                 const res = await api.get('/get/mode/player/rev');
@@ -36,13 +49,54 @@ export default{
         },
         gotohome(){
             this.$router.push('/ds');
-        }
+        },
+        async getplayers(){
+            try{
+                const res = await api.get('/get/mode/player/done',{
+                    params:{
+                        id:this.roomId
+                    }
+                });
+                this.players = res.data.players.sort((a, b) => b.score - a.score);
+                console.log(this.players);
+                this.rank = 0;
+                for(let i = 0; i < this.players.length; i++){
+                    console.log(this.players[i].lrn,this.lrn);
+                    if(this.players[i].lrn == this.lrn){
+                        
+                        this.rank = i + 1;
+                        break;
+                    }
+                }
+                // if(this.stillPlaying.length == 0){
+                //     try{
+                //         const res = await api.post('/mode/done',{id:this.roomId});
+                //         this.pass = res.data.pass;
+                //         this.failed = res.data.failed;
+                //         this.playerdone = true;
+                //     }catch(err){
+                //         console.log(err);
+                //     }
+                // }
+            }catch(err){
+                this.$router.push('/');
+                console.log(err);
+            }
+        },
     },
     mounted(){
         this.getdata();
+        this.getmydata();
+
         socket.on('mode-done',(data)=>{
             this.modeDone = data.doneMode;
+            this.getplayers();
         });
+        socket.on('player-done',(data)=>{
+            this.getplayers();
+        });
+            // this.getplayers();
+
     }
 }
 </script>
@@ -63,14 +117,25 @@ export default{
     </div> -->
     <main>
         <div class="con-score">
-            <div class="analysis">
-                <p>Score</p>
-                <div class="middle-an">
-                    <p class="score">{{ score }}/{{ rev.length }}</p>
-                </div>
-                
+            <div  style="display: flex; width: 90%; justify-content: space-around; align-items: center; gap: 2em;">
+                <div class="analysis">
+                    <p>Score</p>
+                    <div class="middle-an">
+                        <p class="score">{{ score }}/{{ rev.length }}</p>
+                    </div>
+                    
 
+                </div>
+                <div class="analysis">
+                    <p>Rank</p>
+                    <div class="middle-an">
+                        <p class="score">{{ rank }}</p>
+                    </div>
+                    
+
+                </div>
             </div>
+            
             <div class="analysis">
                 <p>Accuracy</p>
                 <div class="red-con">
@@ -173,7 +238,7 @@ export default{
     justify-content: center; */
     padding-left: 10px;
     padding-bottom: 10px;
-    width: 100%;
+    /* width: 100%; */
     background-color:#c2cdff;
     width: 90%;
     border-radius: 10px;
@@ -295,7 +360,7 @@ export default{
 }
 .rev{
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    background-color: #c1ff72;
+    background-color: white;
     height: fit-content;
     border-radius: 10px;
     width: 80%;

@@ -185,6 +185,13 @@ export default {
 <template>
 
     <greenbg></greenbg>
+    <div class="clouds">
+        <img src="/gif/clouds.gif" alt="">
+        <img src="/gif/clouds.gif" alt="">
+        <img src="/gif/clouds.gif" alt="">
+
+    </div>
+    
     <body>
     <audio
         ref="player"
@@ -194,14 +201,14 @@ export default {
         muted
         ></audio>
 
-
+<!-- 
         <header>
                     
             <p> {{ topic }}</p>
             
-        </header> 
-        <div class="timer" :style="{width: persent+ '%',backgroundColor: color } "></div>
-        <p class="time-left">{{ timeLeft }}s</p>
+        </header>  -->
+        <!-- <div class="timer" :style="{width: persent+ '%',backgroundColor: color } "></div> -->
+        <!-- <p class="time-left">{{ timeLeft }}s</p> -->
         <button class="setting" @click="settingf()"><font-awesome-icon icon="fa-solid fa-gear" size="2xl" /></button>
         <main>
             
@@ -270,9 +277,21 @@ export default {
                                 </tbody>
                             </table> -->
                         </div>
-                    <div  :class="tabletype? 'question':'question-notable'">
-                        <p v-if="story" >{{ story }}</p>
-                        <p>{{ question }}</p>
+                    <div
+                        :class="tabletype ? 'question timer-border' : 'question-notable timer-border'"
+                        :style="{
+                            background: `conic-gradient(${color || '#7577ff'} ${persent}%, rgba(0,0,0,0) ${persent}%)`,
+                            padding: '6px',
+                            borderRadius: '12px'
+                        }"
+                    >
+                        <div
+    
+                            style="transition: all 1s linear; background:white; border-radius:8px; padding:12px; min-width:280px; min-height:80px; transition: transform 300ms ease, box-shadow 300ms ease, opacity 300ms ease; will-change: transform, opacity; animation: firsttime 0.35s ease;"
+                        >
+                            <p v-if="story">{{ story }}</p>
+                            <p>{{ question }}</p>
+                        </div>
                     </div>
                     <div class="answer-con">
                         <div class="option" v-if="typeOfTest === 'multiple-choice'">
@@ -292,19 +311,27 @@ export default {
                     </div>
                 </div>
                 <div class="test-area" v-else>
-                    <div class="card">
-                        <h2>Window Card Mode</h2>
-                        <div class="q">
-                            <p>{{ question.q1 }}</p>
-                            <p>{{ question.operation }} {{ question.q2 }}</p>
-                            <p></p>
+                    <div
+                    style="display: flex; justify-content: center; align-items: center;"
+                        :style="{
+                            background: `conic-gradient(${color || '#7577ff'} ${persent}%, rgba(0,0,0,0) ${persent}%)`,
+                            padding: '6px',
+                            borderRadius: '10px',
+                            transition: 'all 1s linear'
+                        }"
+                    >
+                        <div class="card" style="background: white; border-radius: 8px; padding: 12px;">
+                            <h2>Window Card Mode</h2>
+                            <div class="q">
+                                <p>{{ question.q1 }}</p>
+                                <p>{{ question.operation }} {{ question.q2 }}</p>
+                                <p></p>
+                            </div>
+                            <div class="input-text">
+                                <input type="number" @keyup.enter="getIDres(inputanswer)" v-model="inputanswer" autofocus :disabled="btnsubmit">
+                                <button @click="getIDres(inputanswer)" :class="btnsubmit ? 'disabled' : ''" :disabled="btnsubmit">Submit</button>
+                            </div>
                         </div>
-                        <div  class="input-text">
-                            <input  type="number" @keyup.enter="getIDres(inputanswer)" v-model="inputanswer" autofocus :disabled="btnsubmit">
-                            <button @click="getIDres(inputanswer)" :class="btnsubmit ? 'disabled' : ''" :disabled="btnsubmit">Submit</button>
-                        </div>
-                        
-                    
                     </div>
                 </div>
                     
@@ -332,6 +359,26 @@ export default {
     </div>
 </template>
 <style scoped>
+.clouds img{
+    width: 100%;
+    height: auto;
+}
+.clouds{
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    position: absolute;
+    width: 100%;
+    height: auto;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+.timer-border{
+    /* border: #7577ff 5px solid; */
+    transition: all 1s linear;
+    /* border-radius: 12px; */
+}
 .disabled{
     opacity: 0.6;
 }
@@ -374,7 +421,7 @@ export default {
     width: 90%;
     height: 500px;
     background-color: white;
-    border: #7577ff 5px solid;
+    /* border: #7577ff 5px solid; */
     padding: 10px;
 }
 .true-false{
