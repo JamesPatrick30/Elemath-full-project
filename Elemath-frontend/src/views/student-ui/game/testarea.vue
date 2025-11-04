@@ -311,19 +311,26 @@ export default {
                     </div>
                 </div>
                 <div class="test-area" v-else>
-                    <div class="card">
-                        <h2>Window Card Mode</h2>
-                        <div class="q">
-                            <p>{{ question.q1 }}</p>
-                            <p>{{ question.operation }} {{ question.q2 }}</p>
-                            <p></p>
+                    <div
+                        :style="{
+                            background: `conic-gradient(${color || '#7577ff'} ${persent}%, rgba(0,0,0,0) ${persent}%)`,
+                            padding: '6px',
+                            borderRadius: '10px',
+                            transition: 'all 1s linear'
+                        }"
+                    >
+                        <div class="card" style="background: white; border-radius: 8px; padding: 12px;">
+                            <h2>Window Card Mode</h2>
+                            <div class="q">
+                                <p>{{ question.q1 }}</p>
+                                <p>{{ question.operation }} {{ question.q2 }}</p>
+                                <p></p>
+                            </div>
+                            <div class="input-text">
+                                <input type="number" @keyup.enter="getIDres(inputanswer)" v-model="inputanswer" autofocus :disabled="btnsubmit">
+                                <button @click="getIDres(inputanswer)" :class="btnsubmit ? 'disabled' : ''" :disabled="btnsubmit">Submit</button>
+                            </div>
                         </div>
-                        <div  class="input-text">
-                            <input  type="number" @keyup.enter="getIDres(inputanswer)" v-model="inputanswer" autofocus :disabled="btnsubmit">
-                            <button @click="getIDres(inputanswer)" :class="btnsubmit ? 'disabled' : ''" :disabled="btnsubmit">Submit</button>
-                        </div>
-                        
-                    
                     </div>
                 </div>
                     
@@ -413,7 +420,7 @@ export default {
     width: 90%;
     height: 500px;
     background-color: white;
-    border: #7577ff 5px solid;
+    /* border: #7577ff 5px solid; */
     padding: 10px;
 }
 .true-false{
