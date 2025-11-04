@@ -194,14 +194,14 @@ export default {
         muted
         ></audio>
 
-
+<!-- 
         <header>
                     
             <p> {{ topic }}</p>
             
-        </header> 
+        </header>  -->
         <div class="timer" :style="{width: persent+ '%',backgroundColor: color } "></div>
-        <p class="time-left">{{ timeLeft }}s</p>
+        <!-- <p class="time-left">{{ timeLeft }}s</p> -->
         <button class="setting" @click="settingf()"><font-awesome-icon icon="fa-solid fa-gear" size="2xl" /></button>
         <main>
             
@@ -270,9 +270,21 @@ export default {
                                 </tbody>
                             </table> -->
                         </div>
-                    <div  :class="tabletype? 'question':'question-notable'">
-                        <p v-if="story" >{{ story }}</p>
-                        <p>{{ question }}</p>
+                    <div
+                        :class="tabletype ? 'question timer-border' : 'question-notable timer-border'"
+                        :style="{
+                            background: `conic-gradient(${color || '#7577ff'} ${persent}%, rgba(0,0,0,0) ${persent}%)`,
+                            padding: '6px',
+                            borderRadius: '12px'
+                        }"
+                    >
+                        <div
+    
+                            style="transition: all 1s linear; background:white; border-radius:8px; padding:12px; min-width:280px; min-height:80px; transition: transform 300ms ease, box-shadow 300ms ease, opacity 300ms ease; will-change: transform, opacity; animation: firsttime 0.35s ease;"
+                        >
+                            <p v-if="story">{{ story }}</p>
+                            <p>{{ question }}</p>
+                        </div>
                     </div>
                     <div class="answer-con">
                         <div class="option" v-if="typeOfTest === 'multiple-choice'">
@@ -332,6 +344,11 @@ export default {
     </div>
 </template>
 <style scoped>
+.timer-border{
+    /* border: #7577ff 5px solid; */
+    transition: all 1s linear;
+    /* border-radius: 12px; */
+}
 .disabled{
     opacity: 0.6;
 }
