@@ -185,6 +185,13 @@ export default {
 <template>
 
     <greenbg></greenbg>
+    <div class="clouds">
+        <img src="/gif/clouds.gif" alt="">
+        <img src="/gif/clouds.gif" alt="">
+        <img src="/gif/clouds.gif" alt="">
+
+    </div>
+    
     <body>
     <audio
         ref="player"
@@ -200,7 +207,7 @@ export default {
             <p> {{ topic }}</p>
             
         </header>  -->
-        <div class="timer" :style="{width: persent+ '%',backgroundColor: color } "></div>
+        <!-- <div class="timer" :style="{width: persent+ '%',backgroundColor: color } "></div> -->
         <!-- <p class="time-left">{{ timeLeft }}s</p> -->
         <button class="setting" @click="settingf()"><font-awesome-icon icon="fa-solid fa-gear" size="2xl" /></button>
         <main>
@@ -344,6 +351,21 @@ export default {
     </div>
 </template>
 <style scoped>
+.clouds img{
+    width: 100%;
+    height: auto;
+}
+.clouds{
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    position: absolute;
+    width: 100%;
+    height: auto;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
 .timer-border{
     /* border: #7577ff 5px solid; */
     transition: all 1s linear;
