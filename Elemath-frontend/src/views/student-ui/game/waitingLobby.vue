@@ -204,7 +204,7 @@ main{
 }
 main::before {
     z-index: -1;
-    background-image: url('/images/bg.png');
+    background-image: url('/gif/waitinglobby.gif');
     content: '';
     position: absolute;
     top: 0;
