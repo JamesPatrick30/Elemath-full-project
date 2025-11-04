@@ -312,6 +312,7 @@ export default {
                 </div>
                 <div class="test-area" v-else>
                     <div
+                    style="display: flex; justify-content: center; align-items: center;"
                         :style="{
                             background: `conic-gradient(${color || '#7577ff'} ${persent}%, rgba(0,0,0,0) ${persent}%)`,
                             padding: '6px',
