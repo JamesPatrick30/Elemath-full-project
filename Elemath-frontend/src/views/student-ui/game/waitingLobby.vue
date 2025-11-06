@@ -32,6 +32,9 @@ export default {
                 this.id = response.data.classId._id; // Assuming the student ID is returned
                 // console.log('Student ID:', this.id);
                 socket.connect();
+            
+        
+                await this.GameStatus();
                 socket.emit('join-room', { roomId: this.classId,name:this.name,lrn:this.lrn,profile:this.profilepic });
                 await this.ListforQuiz();
             } catch (error) {
@@ -49,11 +52,27 @@ export default {
                         id: this.id
                     }
                 });
+                console.log('Quiz List Response:', res.data);
                 this.students = res.data.list;
             }catch(err){
                 console.error('Error fetching quiz data:', err);
             }
         },
+        async GameStatus(){
+            try{
+                const res = await api.get('/get/mode/status',{
+                    params: {
+                        id: this.id
+                    }
+                });
+                if(res.data.start){
+                    this.$router.push({ name: 'testarea',query: { data: res.data } });
+                }
+                console.log('Quiz List Response:', res.data);
+            }catch(err){
+                console.error('Error fetching game status:', err);
+            }
+        }
     },
     mounted(){
         this.getdata();

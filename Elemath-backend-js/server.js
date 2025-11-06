@@ -1703,6 +1703,12 @@ async function addQuizAndAnalysis(classId, quiz, chartPoint) {
     { new: true, sort: { dateCreated: -1 } } // return updated doc
   ).exec();
 }
+app.get('/get/mode/status',auth,async(req,res)=>{
+  const data = await redisClient.get(`mode:${req.user.classId}`);
+  const modeData = JSON.parse(data);
+  // console.log(modeData);
+  res.json({start:modeData.start});
+});
 app.post('/mode/finish',auth,async (req,res)=>{
   try {
     const { id } = req.body;
