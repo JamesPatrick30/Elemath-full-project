@@ -71,6 +71,9 @@ export default {
                     }
                     // ⏱ Save progress on every tick
                     if(this.timeLeft == 0){
+                        if(this.btnsubmit){
+                            return;
+                        }
                         this.getIDres('');
                     }
                     
@@ -86,6 +89,7 @@ export default {
                 if( this.btnsubmit){
                     return;
                 }
+                clearInterval(this.timer);
                 this.btnsubmit = true;
                 console.log('Answer sent: '+answer);
                 const res =await api.post('/get/mode/question',

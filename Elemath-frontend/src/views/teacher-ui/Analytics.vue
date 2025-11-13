@@ -1,4 +1,7 @@
 <template>
+  <div class="con-info-btn" @click="clusterlowestTopic = true" v-if="this.lowestTopic.length > 0">
+    <font-awesome-icon icon="fa-solid fa-info" size="2xl" />
+  </div>
   <div class="headUp-cluster-con" v-if="clusterlowestTopic">
     <div class="headUp-cluster">
       <button class="close" @click="clusterlowestTopic = false"><font-awesome-icon :icon="['fas', 'xmark']" size="lg"/></button>
@@ -344,6 +347,27 @@ export default {
 </script>
 
 <style scoped>
+.con-info-btn{
+  border-radius: 50%;
+
+  background-color: #41b8d5;
+  height: 60px;
+  width: 60px;
+  position: fixed;
+  top: auto;
+  bottom: 20px;
+  left:auto;
+  right: 20px;
+  z-index: 200;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.con-info-btn:hover{
+  cursor: pointer;
+  background-color: #339ecf;
+}
 .topics-low{
   font-weight: bold;
   color: #ff5722;
