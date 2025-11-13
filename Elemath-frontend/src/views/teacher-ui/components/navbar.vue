@@ -9,7 +9,7 @@
                 <li class="item1" :class="((parameter === '/tc') || (parameter === '/th'))? 'in': 'out'" @click="goHome()">Home</li>
                 <li class="item2" :class="parameter === '/an'? 'in': 'out'" @click="this.$router.push('/an')">Analytics</li>
                 <li :class="parameter === '/c'? 'in': 'out'" @click="this.$router.push('/c')">Class</li>
-                <li :class="parameter == '/wg'? 'in': 'out'" @click="this.$router.push('/wg')">windowCard</li>
+                <li :class="parameter == '/wg'? 'in': 'out'" @click="this.$router.push('/wg')">Window Card</li>
                 <li :class="parameter == '/dqgss'? 'in': 'out'" @click="this.$router.push('/dqgss')">Quiz</li>
 
                 <!-- <li class="item3" :class="parameter === '/t'? 'in': 'out'">History</li> -->

@@ -71,6 +71,9 @@ export default {
                     }
                     // ⏱ Save progress on every tick
                     if(this.timeLeft == 0){
+                        if(this.btnsubmit){
+                            return;
+                        }
                         this.getIDres('');
                     }
                     
@@ -83,6 +86,10 @@ export default {
         },
         async getIDres(answer){
             try{
+                if( this.btnsubmit){
+                    return;
+                }
+                clearInterval(this.timer);
                 this.btnsubmit = true;
                 console.log('Answer sent: '+answer);
                 const res =await api.post('/get/mode/question',
@@ -297,9 +304,9 @@ export default {
                         <div class="option" v-if="typeOfTest === 'multiple-choice'">
                             <button class="option-c" v-for="(choice,index) in options" :key="index" @click="getIDres(choice)">{{ choice }}</button>
                         </div>
-                        <div class="true-false" v-else-if="typeOfTest==='true-false'">
-                            <div class="true-false-c" @click="getIDres('true')" >True</div>
-                            <div class="true-false-c" @click="getIDres('false')" >False</div>
+                        <div class="true-false" v-else-if="(typeOfTest==='true-false') ">
+                            <div class="true-false-c" @click="getIDres('true')" :class="btnsubmit ? 'disabled' : ''" :disabled="btnsubmit">True</div>
+                            <div class="true-false-c" @click="getIDres('false')" :class="btnsubmit ? 'disabled' : ''" :disabled="btnsubmit">False</div>
                         </div>
                         <div v-else class="input-text">
 

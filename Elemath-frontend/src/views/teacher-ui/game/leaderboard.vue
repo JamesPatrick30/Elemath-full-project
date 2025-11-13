@@ -62,7 +62,8 @@ export default{
                     id:this.roomId
                 });
                 this.$router.push('/');
-                alert(res.data.message);
+                // alert(res.data.message);
+
             }catch(err){
                 console.log(err);
             }
@@ -142,7 +143,10 @@ export default{
         
     </div>
     <main>
+    <div class="header">
         <h1 class="title">Leader Board</h1>
+    </div>
+        
         <div class="top-player">
             <div id="top">
                 
@@ -208,6 +212,13 @@ export default{
 </template>
 
 <style scoped>
+.header{
+    margin-top: 10px;
+    border-radius: 10px;
+    padding-left: 30px;
+    padding-right: 30px;
+    background-color: #83a8f3;
+}
 .cluster button{
 
     margin: 10px;
