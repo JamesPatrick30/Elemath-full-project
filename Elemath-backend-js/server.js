@@ -45,7 +45,7 @@ const bcrypt = require('bcrypt');
 
 // Attach logger to app
 // Attach logger to requests
-// app.use(pinoHttp({ logger }));
+app.use(pinoHttp({ logger }));
 
 
 // Basic rate limiter
