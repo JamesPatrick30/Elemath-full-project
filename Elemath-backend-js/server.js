@@ -45,7 +45,7 @@ const bcrypt = require('bcrypt');
 
 // Attach logger to app
 // Attach logger to requests
-app.use(pinoHttp({ logger }));
+// app.use(pinoHttp({ logger }));
 
 
 // Basic rate limiter
@@ -1415,10 +1415,16 @@ app.get('/get/mode/question/1st',auth,async(req,res)=>{
 app.post('/get/mode/question', auth, async (req, res) => {
   const { answer } = req.body;
   const mode = await redisClient.get(`mode:${req.user.classId}`);
-  // console.log('mode in get : ' + mode);
-
+  // console.error('mode in get : ' + mode);
+  
   let modeData = JSON.parse(mode);
+  // console.error('mode in get : ' + JSON.stringify(modeData));
+
   let player = modeData.players.find(p => p.lrn === req.user.username);
+
+  if(player.done){
+    return  res.json({ question: {}, done: true });
+  }
   let scoreP = player.score;
   const qin = player.qIn;
   const question = modeData.questions[qin];

@@ -43,9 +43,9 @@ export default{
             }
         },
         colorpic(realans,value,player){
-            if(player == value) return '#ff7b00';
-            if(realans == value) return '#8ee71a';
-            return '#ff4444';
+            // if(player == value) return '#ff7b00';
+            if(realans == value) return '#c1ff72';
+            return '#a6a6a6';
         },
         gotohome(){
             this.$router.push('/ds');
@@ -83,6 +83,11 @@ export default{
                 console.log(err);
             }
         },
+        colorAnswer(realans,player){
+            // if(player == value) return '#ff7b00';
+            if(realans == player) return '#c1ff72';
+            return '#a6a6a6';
+        }
     },
     mounted(){
         this.getdata();
@@ -150,14 +155,28 @@ export default{
                 <p v-if="c.q.question?.question" class="question">{{ c.q.question?.question }}</p>
                 <p v-else class="question">{{ c.q.question }} </p>
 
+                
                 <div class="con-option" v-if="c.q?.options?.length > 0">
-                    <div class="option" v-for="(value,index) in c.q.options" :key="index" :style="{color:colorpic(c.q.answer,value,c.playerAnswer)}">
-                        <p>{{ value }}</p>
+                    <div class="option"  style="display: flex; flex-direction: column;" :style="{backgroundColor:colorAnswer(c.q.answer,c.playerAnswer)}">
+                        <p >Your Answer</p>
+                        <p class="answer-key">{{ c.playerAnswer}} </p>
+                    </div>
+                    <div class="option" v-for="(value,index) in c.q.options" :key="index" :style="{backgroundColor:colorpic(c.q.answer,value,c.playerAnswer)}" >
+                        <div class="option-in" v-if="c.playerAnswer != value">
+                            <p v-if="c.q.answer == value">Correct Answer</p>
+                            <p class="answer-key">{{ value }}</p>
+                        </div>
+                        <!-- <p v-if="c.playerAnswer == value">Your Answer</p> -->
+                        
                     </div>
                 </div>
                 <div v-else>
-                    <p :class="c.correct ? 'correct-answer' : 'wrong-answer'">{{ c.playerAnswer }}</p>
-                    <p class="correct-answer" v-if="!c.correct ">Answer: {{ c.q.answer }}</p>
+                    <div class="option opt" style="display: flex; flex-direction: column;" :style="{backgroundColor:colorAnswer(c.q.answer,c.playerAnswer)}">
+                        <p>Your Answer</p>
+                        <p style="font-weight: 700;">{{ c.playerAnswer }}</p>
+                    </div>
+                    
+                    <p class="option opt" style="background-color: #c1ff72;" v-if="!c.correct ">Answer: <span style="font-weight: 700;">{{ c.q.answer }}</span></p>
                 </div>
                 
                 <p v-if="c.q.explanation">Explanation: {{ c.q.explanation }}</p>
@@ -184,6 +203,27 @@ export default{
     </main>
 </template>
 <style scoped>
+.opt{
+    padding: 10px;
+}
+.answer-key{
+    font-weight: 700;
+    font-size: 20px;
+    text-align: center;
+}
+.Answer-con p {
+    margin: 0;
+}
+.Answer-con{
+    width: 100%;
+    color: white;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 10px 0;
+    /* color: black; */
+    font-weight: 700;
+    text-align: center;
+}
 .indicator{
     position: relative;
     display: flex;
@@ -305,8 +345,17 @@ export default{
 .wrong-option{
     background-color: #ff4444;
 }
+.option p{
+    margin: 0;
+    /* font-weight: 700; */
+    /* font-size: 17px; */
+}
+.option-in{
+    padding: 10px;
+}
 .option{
-    color: white;
+    /* border: black 2px solid; */
+    color: black;
     background-color: white;
     border-radius: 10px;
     margin: 5px;
@@ -362,6 +411,8 @@ export default{
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     background-color: white;
     height: fit-content;
+    border: 10px solid ;
+
     border-radius: 10px;
     width: 80%;
     max-width: 700px;
@@ -374,11 +425,11 @@ export default{
     justify-content: center;
 }
 .wrong{
-    border: #ff4444 3px solid;
+    border: #ff4444 8px solid;
     /* background-color: #ff4444; */
 }
 .correct{
-    border: #b4ff52 3px solid;
+    border: #b4ff52 8px solid;
     /* background-color: #b4ff52; */
 }
 body, html {
