@@ -1,6 +1,6 @@
 <template>
   <div class="con-info-btn" @click="clusterlowestTopic = true" v-if="this.lowestTopic.length > 0">
-    <font-awesome-icon icon="fa-solid fa-info" size="2xl" />
+    <font-awesome-icon icon="fa-solid fa-triangle-exclamation" size="2xl" style="color: #FFD43B;" />
   </div>
   <div class="headUp-cluster-con" v-if="clusterlowestTopic">
     <div class="headUp-cluster">
@@ -350,7 +350,7 @@ export default {
 .con-info-btn{
   border-radius: 50%;
 
-  background-color: #41b8d5;
+  background-color: #a6a6a6;
   height: 60px;
   width: 60px;
   position: fixed;
@@ -366,7 +366,7 @@ export default {
 }
 .con-info-btn:hover{
   cursor: pointer;
-  background-color: #339ecf;
+  background-color: #818181;
 }
 .topics-low{
   font-weight: bold;

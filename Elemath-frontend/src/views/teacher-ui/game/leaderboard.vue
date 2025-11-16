@@ -232,10 +232,10 @@ export default{
     font-size: large;
 }
 .result2{
-    background-color: #ec9773;
+    background-color: #ff3a3a;
 }
 .result{
-    background-color: #80ec83;
+    background-color: #74cc00;
 }
 .result,.result2{
     color: white;
