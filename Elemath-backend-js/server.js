@@ -1407,28 +1407,28 @@ app.get('/get/mode/question/1st',auth,async(req,res)=>{
   const mode =await redisClient.get(`mode:${req.user.classId}`);
   const modeData = JSON.parse(mode);
   let player = modeData.players.find(p => p.lrn === req.user.username);
+  
   const qin = player.qIn;
   // console.log('quizMode in get : ' + modeData.quizMode);
   // modeData.players.find(p => p.lrn === req.user.username).qIn+=1;
-  res.json({question:modeData.questions[qin],done:false,time:modeData.gametime,quizMode:modeData.quizMode});
+  res.json({question:player.questions[qin],done:false,time:modeData.gametime,quizMode:modeData.quizMode});
 });
-app.post('/set/mode/question/skip',async(id,data)=>{
+app.post('/set/mode/question/skip',auth, async(req,res)=>{
   // this is for skip question
-  const mode = await redisClient.get(`mode:${id}`);
+  const mode = await redisClient.get(`mode:${req.user.classId}`);
   let modeData = JSON.parse(mode);
-  let player = modeData.players.find(p => p.lrn === data.lrn);
-  let playerInNumberOfQuestionsAnswered = player.qIn;
+  let player = modeData.players.find(p => p.lrn === req.user.username);
+  let qIn = player.qIn;
   player.qIn += 1;
   let gameQuestions = modeData.questions;
-  for(let i = playerInNumberOfQuestionsAnswered; i < gameQuestions.length; i++){
-    player.skips.push({ q: gameQuestions[i], playerAnswer: null, correct: false });
-  }
-  setgameData(`rev:${player.lrn}`, player.rev);
 
-  setgameData(`mode:${id}`, modeData);
-
-
+  // store the index of the skipped question
+  player.questions.push(gameQuestions[qIn]);
+  setgameData(`mode:${req.user.classId}`, modeData);
+  return res.json({message:'done'});
 });
+
+
 app.post('/game/mode/timeup',auth,async(req,res)=>{
   // this is for time up
   const mode = await redisClient.get(`mode:${req.user.classId}`);
@@ -1469,7 +1469,7 @@ app.post('/get/mode/question', auth, async (req, res) => {
   }
   let scoreP = player.score;
   const qin = player.qIn;
-  const question = modeData.questions[qin];
+  const question = player.questions[qin];
 
   // console.log('answer input : ' + answer + ' real answer : ' + question.answer);
 
@@ -1484,7 +1484,11 @@ app.post('/get/mode/question', auth, async (req, res) => {
     player.score += 1;
 
     // increment question's studentCorrect counter
-    modeData.questions[qin].studentCorrect += 1;
+    modeData.questions.forEach(q => {
+      if (q.qid === question.qid) {
+        q.studentCorrect = (q.studentCorrect || 0) + 1;
+      }
+    });
 
     // save review with correct=true
     player.rev.push({ q: question, playerAnswer: answer, correct: true });
@@ -1494,7 +1498,7 @@ app.post('/get/mode/question', auth, async (req, res) => {
 
   // check if this was the last question
   // console.log('qin : ' + qin + ' length : ' + modeData.questions.length);
-  if ((qin + 1) === modeData.questions.length) {
+  if ((qin + 1) === player.questions.length) {
     console.log('done');
     player.done = true;
     playerGame = player;
@@ -1516,10 +1520,10 @@ app.post('/get/mode/question', auth, async (req, res) => {
   }
 
   // otherwise, go to next question
-  if (qin !== (modeData.questions.length - 1)) {
+  if (qin !== (player.questions.length - 1)) {
     player.qIn += 1;
 
-    res.json({ question: modeData.questions[qin + 1], done: false });
+    res.json({ question: player.questions[qin + 1], done: false,skips:player.skips });
     setgameData(`mode:${req.user.classId}`, modeData);
     return;
   }
@@ -1960,6 +1964,12 @@ socket.on('game-start', async (data) => {
     ...q,
     studentCorrect: 0
   }));
+  modeData.players.forEach(player => {
+    player.questions = modeData.questions.map(q => ({
+      ...q,
+      
+    }));
+  });
 
   // console.log('questions : ' + JSON.stringify(modeData.questions));
   // console.log('mode data : ' + JSON.stringify(modeData));
@@ -1987,7 +1997,7 @@ socket.on('game-start', async (data) => {
       // Check if player already exists
       const playerExists = modeData.players.some(player => player.lrn === data.lrn);
       if (!playerExists) {
-        modeData.players.push({ player: data.name, lrn: data.lrn, profile: data.profile,score:0,qIn:0,done:false,rev:[],skips:[] });
+        modeData.players.push({ player: data.name, lrn: data.lrn, profile: data.profile,score:0,qIn:0,done:false,rev:[],questions:[] });
         // await redisClient.set(`mode:${data.roomId}`, JSON.stringify(modeData), { EX: 3600 });
         setgameData(`mode:${data.roomId}`,modeData);
         // console.log('Updated mode data:', modeData);

@@ -45,7 +45,8 @@ export default {
             volume: 0.5,
             resvolume:0,
             typeOfTest:'',
-            btnsubmit:false
+            btnsubmit:false,
+            skipSwitch:false,
         }
     },
     methods: {
@@ -108,6 +109,7 @@ export default {
                 const res =await api.post('/get/mode/question',
                     {answer:answer}
                 );
+                console.log(res.data);
                 if(res.data.done){
                     this.$router.push('/rev');
                     localStorage.removeItem('timeLeftingame');
@@ -130,14 +132,15 @@ export default {
                 const res =await api.get('/get/mode/question/1st');
                 const data = res.data.question;
                 // this.id = res.data.id;
-                if(data.done){
+                if(data?.done){
                     this.$router.push('/rev');
 
                 }
+                console.log(res.data);
                 this.quizMode = res.data.quizMode;
                 console.log('Quiz mode: '+this.quizMode);
-                this.topic = data.topic;
-                this.question=data.question;
+                this.topic = data?.topic;
+                this.question=data?.question;
                 this.options = data?.options;
                 this.story = data?.story;
                 this.timeLeft = (res.data.time.minutes * 60) + res.data.time.seconds;
@@ -149,11 +152,13 @@ export default {
                 this.tabletype = data?.tabletype;
                 this.typeOfTest = data?.type;
                 this.btnsubmit = false;
-                console.log(data);
+                // console.log(data);
                 // alert(`time ${this.timeLeft} minutes ${this.timeLeft} sec per question`);
                 const time2 = localStorage.getItem('timeLeftingame');
                 // console.log(this.table);
                 // console.log("time : "+time2);
+
+                this.skipSwitch = false;
                 if(time2 != 0 && time2 != null){
                     // console.log("time : "+time2);
                     this.timeLeft = time2;
@@ -199,6 +204,21 @@ export default {
             const seconds = secs % 60;
             return { minutes, seconds };
         },
+        async skipQuestion(){
+            if(this.skipSwitch){
+                return;
+            }
+            this.skipSwitch = true;
+            try{
+                clearInterval(this.timer);
+                const res = await api.post('/set/mode/question/skip',
+                    {id:this.id}
+                );
+                this.get1st();
+            }catch(err){
+                console.log(err);
+            }
+        }
     },
     mounted() {
         // this.getIDres();
@@ -240,13 +260,16 @@ export default {
         <!-- <div class="timer" :style="{width: persent+ '%',backgroundColor: color } "></div> -->
         <!-- <p class="time-left">{{ timeLeft }}s</p> -->
          <div class="top-setting-and-time-con">
-            <div class="timer-con">
+            <div class="setting-and-time-con">
+                <div class="timer-con">
                 <!-- <div class="timer" :style="{width: persent+ '%',backgroundColor: color } "></div> -->
-                <p class="timer-top">{{ secondsToTime(timeLeft).minutes }}m {{ secondsToTime(timeLeft).seconds }}s</p>
-            </div>
+                    <p class="timer-top">{{ secondsToTime(timeLeft).minutes }}m {{ secondsToTime(timeLeft).seconds }}s</p>
+                </div>
 
-            <button class="setting" @click="settingf()"><font-awesome-icon icon="fa-solid fa-gear" size="2xl" /></button>
+                <button class="setting" @click="settingf()"><font-awesome-icon icon="fa-solid fa-gear" size="2xl" /></button>
+            </div>
             
+            <button class="skip-btn" @click="skipQuestion">Skip</button>
          </div>
         
         
@@ -363,8 +386,8 @@ export default {
                         <div class="card" style="background: white; border-radius: 8px; padding: 12px;">
                             <h2>Window Card Mode</h2>
                             <div class="q">
-                                <p>{{ question.q1 }}</p>
-                                <p>{{ question.operation }} {{ question.q2 }}</p>
+                                <p>{{ question?.q1 }}</p>
+                                <p>{{ question?.operation }} {{ question?.q2 }}</p>
                                 <p></p>
                             </div>
                             <div class="input-text">
@@ -399,17 +422,38 @@ export default {
     </div>
 </template>
 <style scoped>
+.skip-btn{
+    background-color: #e69b00;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: 0.3s linear;
+    margin-top: 10px;
+}
+.setting-and-time-con{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    /* padding: 10px; */
+    box-sizing: border-box;
+    gap: 1em;
+
+}
 .top-setting-and-time-con{
     align-self: flex-end;
 
     display: flex;
+    flex-direction: column;
     /* justify-content: space-between; */
     align-items: center;
     /* width: 100%; */
     padding: 10px;
     box-sizing: border-box;
 
-    gap: 1em;
+    /* gap: 1em; */
     /* justify-self: flex-end; */
 }
 .timer-con p{
