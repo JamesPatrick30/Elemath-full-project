@@ -74,7 +74,11 @@ export default {
                         if(this.btnsubmit){
                             return;
                         }
-                        this.getIDres('');
+                        // this.getIDres('');
+
+                        clearInterval(this.timer);
+                        localStorage.removeItem('timeLeftingame');
+                        this.timesup();
                     }
                     
                 } else {
@@ -83,6 +87,15 @@ export default {
                 clearInterval(this.timer);
                 }
             }, 1000);
+        },
+        async timesup(){
+            try{
+                const res = await api.post('/game/mode/timeup');
+                this.$router.push('/rev');
+
+            }catch(err){
+                console.log(err);
+            }
         },
         async getIDres(answer){
             try{
