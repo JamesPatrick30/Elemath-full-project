@@ -98,7 +98,7 @@ export default {
             <p>Once all players are ready, the game will start.</p>
         </header>
         <div class="contaner">
-            <div class="player" v-for="student in students" :key="student.lrn" @click="showInfofunction(student)" >
+            <div class="player" v-for="student in students" :key="student.lrn" >
              
                     <p>{{ student.player }}</p>
                 
