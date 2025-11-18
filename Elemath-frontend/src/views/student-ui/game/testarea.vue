@@ -97,6 +97,7 @@ export default {
                 );
                 if(res.data.done){
                     this.$router.push('/rev');
+                    localStorage.removeItem('timeLeftingame');
                     return;
                 }
                 this.inputanswer = '';
@@ -137,18 +138,17 @@ export default {
                 this.btnsubmit = false;
                 console.log(data);
                 // alert(`time ${this.timeLeft} minutes ${this.timeLeft} sec per question`);
-                const time2 = localStorage.getItem('timeLeft');
-                console.log(this.table);
-                if(time2 == 0){
-                    console.log(time2);
+                const time2 = localStorage.getItem('timeLeftingame');
+                // console.log(this.table);
+                // console.log("time : "+time2);
+                if(time2 != 0 && time2 != null){
+                    // console.log("time : "+time2);
                     this.timeLeft = time2;
-                    return;
                 }
                 // this.timeLeft = res.data.time * 60;
-                if(this.timer){
-                    clearInterval(this.timer);
-                }
                 this.startTimer();
+                
+                
             }catch(err){
                 console.log(err);
             }
@@ -176,17 +176,27 @@ export default {
             player.muted = false;
             player.volume = this.volume;
             player.play().catch(err => console.warn("Still blocked:", err));
-        }
+        },
+        handleBeforeUnload(event) {
+            localStorage.setItem('timeLeftingame', this.timeLeft);
+            clearInterval(this.timer);
+        },
+        secondsToTime(secs) {
+            const minutes = Math.floor(secs / 60);
+            const seconds = secs % 60;
+            return { minutes, seconds };
+        },
     },
     mounted() {
         // this.getIDres();
         this.get1st();
         document.body.addEventListener("click", this.unlockAudio, { once: true });
         // document.body.addEventListener("click", this.unlockAudio, { once: true });
+        window.addEventListener('beforeunload', this.handleBeforeUnload);
     },
-    beforeMount(){
-        // localStorage.setItem('timeLeft',this.timeLeft);
-    }
+    beforeUnmount() {
+        window.removeEventListener('beforeunload', this.handleBeforeUnload);
+    },
 }
 </script>
 <template>
@@ -216,7 +226,17 @@ export default {
         </header>  -->
         <!-- <div class="timer" :style="{width: persent+ '%',backgroundColor: color } "></div> -->
         <!-- <p class="time-left">{{ timeLeft }}s</p> -->
-        <button class="setting" @click="settingf()"><font-awesome-icon icon="fa-solid fa-gear" size="2xl" /></button>
+         <div class="top-setting-and-time-con">
+            <div class="timer-con">
+                <!-- <div class="timer" :style="{width: persent+ '%',backgroundColor: color } "></div> -->
+                <p class="timer-top">{{ secondsToTime(timeLeft).minutes }}m {{ secondsToTime(timeLeft).seconds }}s</p>
+            </div>
+
+            <button class="setting" @click="settingf()"><font-awesome-icon icon="fa-solid fa-gear" size="2xl" /></button>
+            
+         </div>
+        
+        
         <main>
             
             <!-- <div class="bar-chart" > -->
@@ -335,7 +355,7 @@ export default {
                                 <p></p>
                             </div>
                             <div class="input-text">
-                                <input type="number" @keyup.enter="getIDres(inputanswer)" v-model="inputanswer" autofocus :disabled="btnsubmit">
+                                <input type="number" @keyup.enter="getIDres(inputanswer)" v-model="inputanswer" placeholder="Put your answer here." autofocus :disabled="btnsubmit">
                                 <button @click="getIDres(inputanswer)" :class="btnsubmit ? 'disabled' : ''" :disabled="btnsubmit">Submit</button>
                             </div>
                         </div>
@@ -366,6 +386,36 @@ export default {
     </div>
 </template>
 <style scoped>
+.top-setting-and-time-con{
+    align-self: flex-end;
+
+    display: flex;
+    /* justify-content: space-between; */
+    align-items: center;
+    /* width: 100%; */
+    padding: 10px;
+    box-sizing: border-box;
+
+    gap: 1em;
+    /* justify-self: flex-end; */
+}
+.timer-con p{
+    margin: 0;
+    font-weight: 700;
+    color: white;
+}
+.timer-con{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 700;
+    color: white;
+    text-align: center;
+    height: 35px;
+    width: 100px;
+    border-radius: 10px;
+    background-color: #7577ff;
+}
 .clouds img{
     width: 100%;
     height: auto;
@@ -410,6 +460,9 @@ export default {
     justify-self: flex-end;
     margin-top: auto;
 }
+.input-text input::placeholder{
+    color:white;
+}
 .test-area{
     /* background-color: #3f51b5; */
     width: 100%;
@@ -438,7 +491,6 @@ export default {
 }
 .setting{
     background-color: rgb(112, 112, 255);
-    align-self: flex-end;
     color: white;
     padding: 5px;
     border: none;
