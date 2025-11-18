@@ -27,7 +27,8 @@ export default{
             stillPlaying:0,
             pass:0,
             failed:0,
-            playerdone:false
+            playerdone:false,
+            terminate:false
         }
     },
     methods:{
@@ -142,6 +143,18 @@ export default{
         </div>
         
     </div>
+    <button class="terminate-btn" @click="terminate = true">Exit</button>
+    <div class="cluster-con" v-if="terminate === true">
+        <div class="termanate">
+            <p class="title-terminate">Are you sure you want to exit?</p>
+            <p class="caution">This action cannot be undone. <br> The game will be terminated for all players and the session will never be recorded.</p>
+            <div class="btn-termate">
+                <button class="btn-cancel" @click="terminate = false">Cancel</button>
+                <button class="btn-confirm">Confirm</button>
+                
+            </div>
+        </div>
+    </div>
     <main>
     <div class="header">
         <h1 class="title">Leader Board</h1>
@@ -212,6 +225,76 @@ export default{
 </template>
 
 <style scoped>
+.btn-cancel:hover{
+    cursor: pointer;
+    background-color: #ff4c4c;
+    transition: 0.2s linear;
+}
+.btn-cancel{
+    background-color: #ca5858;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 10px;
+    font-weight: 700;
+}
+.btn-confirm:hover{
+    cursor: pointer;
+    background-color: #28a428;
+    transition: 0.2s linear;
+}
+.btn-confirm{
+    background-color: #2db840;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 10px;
+    font-weight: 700;
+}
+.btn-termate{
+    display: flex;
+    width: 80%;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+.title-terminate{
+    font-weight: 700;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+.caution{
+    color: red;
+    font-weight: 700;
+    font-size: 15px;
+}
+.termanate{
+    background-color: white;
+    padding: 20px;
+    width: 400px;
+    border-radius: 10px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.terminate-btn:hover{
+    cursor: pointer;
+    background-color: #ff1a1a;
+    transition: 0.2s linear;
+}
+.terminate-btn{
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    border-radius: 10px;
+    padding: 10px;
+    color: white;
+    background-color: #ff3a3a;
+    border: none;
+    font-weight: 700;
+}
 .header{
     margin-top: 10px;
     border-radius: 10px;

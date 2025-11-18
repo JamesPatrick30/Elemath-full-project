@@ -166,6 +166,7 @@ function buildQuiz(difficulty, operation, count = 10) {
     console.log(problems);
     return {
         questions: problems.map(p => ({
+            topic: p.operation,
             question: p.problem,
             type: 'input answer',
             answerType: '',
