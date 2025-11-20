@@ -48,6 +48,8 @@ export default {
             btnsubmit:false,
             skipSwitch:false,
             skipCountDown:0,
+            answerIsNull:true,
+            inputanswerWindowCard:null
         }
     },
     methods: {
@@ -105,8 +107,19 @@ export default {
                     return;
                 }
                 clearInterval(this.timer);
+
+                if(answer === '' || answer === null || answer === undefined){
+                    this.answerIsNull = true;
+                    setTimeout(() => {
+                        this.answerIsNull = false;
+                    }, 200);
+                    this.startTimer();
+                    return;
+                } else {
+                    this.answerIsNull = false;
+                }
                 this.btnsubmit = true;
-                console.log('Answer sent: '+answer);
+                // console.log('Answer sent: '+answer);
                 const res =await api.post('/get/mode/question',
                     {answer:answer}
                 );
@@ -164,6 +177,7 @@ export default {
                 this.tabletype = data?.tabletype;
                 this.typeOfTest = data?.type;
                 this.btnsubmit = false;
+                this.inputanswerWindowCard = null;
                 // console.log(data);
                 // alert(`time ${this.timeLeft} minutes ${this.timeLeft} sec per question`);
 
@@ -239,6 +253,17 @@ export default {
                     this.skipCountDown -= 1;
                 }
             }, 1000);
+        },
+        blockNonNumeric(event) {
+            // Allow control keys
+            const allowed = ["Backspace", "Delete", "Tab", "Escape", "Enter", "ArrowLeft", "ArrowRight"];
+
+            if (allowed.includes(event.key)) return;
+
+            // Only allow digits
+            if (!/^\d$/.test(event.key)) {
+                event.preventDefault();
+            }
         }
     },
     mounted() {
@@ -251,6 +276,17 @@ export default {
     beforeUnmount() {
         window.removeEventListener('beforeunload', this.handleBeforeUnload);
     },
+    watch:{
+        inputanswerWindowCard(newVal){
+            if(newVal >10000000 || newVal < -10000000){
+                this.inputanswerWindowCard = null;
+                this.answerIsNull = true;
+                setTimeout(() => {
+                    this.answerIsNull = false;
+                }, 200);
+            }
+        }
+    }
 }
 </script>
 <template>
@@ -413,8 +449,9 @@ export default {
                                 <p></p>
                             </div>
                             <div class="input-text">
-                                <input type="number" @keyup.enter="getIDres(inputanswer)" v-model="inputanswer" placeholder="Put your answer here." autofocus :disabled="btnsubmit">
-                                <button @click="getIDres(inputanswer)" :class="btnsubmit ? 'disabled' : ''" :disabled="btnsubmit">Submit</button>
+                                <input type="number" @keyup.enter="getIDres(inputanswerWindowCard)" v-model="inputanswerWindowCard" @keydown="blockNonNumeric" placeholder="Put your answer here." autofocus :disabled="btnsubmit" :class="answerIsNull? 'shortAnimation-if-the-player-is-didn-t-answer' : ''">
+                                
+                                <button @click="getIDres(inputanswerWindowCard)" :class="btnsubmit ? 'disabled' : ''" :disabled="btnsubmit">Submit</button>
                             </div>
                         </div>
                     </div>
@@ -444,6 +481,24 @@ export default {
     </div>
 </template>
 <style scoped>
+.shortAnimation-if-the-player-is-didn-t-answer{
+    animation: shake 0.3s;
+}
+@keyframes shake {
+    0% { transform: translate(1px, 1px) rotate(0deg);
+    background-color: rgb(252, 127, 127); }
+    10% { transform: translate(-1px, -2px) rotate(-1deg); }
+    20% { transform: translate(-3px, 0px) rotate(1deg); }
+    30% { transform: translate(3px, 2px) rotate(0deg); }
+    40% { transform: translate(1px, -1px) rotate(1deg); }
+    50% { transform: translate(-1px, 2px) rotate(-1deg); }
+    60% { transform: translate(-3px, 1px) rotate(0deg); }
+    70% { transform: translate(3px, 1px) rotate(-1deg); }
+    80% { transform: translate(-1px, -1px) rotate(1deg); }
+    90% { transform: translate(1px, 2px) rotate(0deg); }
+    100% { transform: translate(1px, -2px) rotate(-1deg); }
+    
+}
 .skip-btn{
     background-color: #e69b00;
     color: white;
