@@ -197,6 +197,12 @@ export default {
                 
             }catch(err){
                 console.log(err);
+                if(err.response && err.response.data && err.response.data.message === "No active mode found"){
+                    clearInterval(this.timer);
+                    this.$router.push('/');
+
+                    return;
+                }
             }
         },
         mutevol(){
@@ -281,6 +287,7 @@ export default {
 
         socket.on('terminate-mode', (data) => {
             alert(data.message);
+            clearInterval(this.timer);
             this.$router.push('/');
         });
     },
@@ -436,7 +443,7 @@ export default {
                         <div v-else class="input-text">
 
                             <!-- <input v-if="quizMode === 'WINDOWCARD MODE'" type="number" :disabled="btnsubmit" v-model="inputanswer" autofocus > -->
-                            <input type="text" :disabled="btnsubmit" v-model="inputanswer" autofocus >
+                            <input type="text" :disabled="btnsubmit" v-model="inputanswer" autofocus :class="answerIsNull? 'shortAnimation-if-the-player-is-didn-t-answer' : ''">
                             <button @click="getIDres(inputanswer)" :class="btnsubmit ? 'disabled' : ''" :disabled="btnsubmit">Submit</button>
                         </div>
                         

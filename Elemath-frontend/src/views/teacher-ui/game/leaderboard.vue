@@ -28,7 +28,8 @@ export default{
             pass:0,
             failed:0,
             playerdone:false,
-            terminate:false
+            terminate:false,
+            btnsave:false
         }
     },
     methods:{
@@ -59,6 +60,10 @@ export default{
         },
         async finishbtn(){
             try{
+                if(this.btnsave){
+                    return;
+                }
+                this.btnsave = true;
                 const res = await api.post('/mode/finish',{
                     id:this.roomId
                 });
@@ -72,7 +77,7 @@ export default{
         async terminatebtn(){
             try{
                 const res = await api.post('/terminate/mode',{
-                    id:this.roomId
+                    modeId:this.roomId
                 });
                 socket.emit('terminate-mode',{id:this.roomId});
                 this.$router.push('/');
@@ -126,7 +131,7 @@ export default{
                         <h1>{{ failed }}</h1>
                     </div>
                 </div>
-                <button @click="finishbtn">Finish</button>
+                <button @click="finishbtn" :style="{opacity: btnsave?'50%':'100%'}">Finish</button>
             </div>
             <div class="playes-con">
                 

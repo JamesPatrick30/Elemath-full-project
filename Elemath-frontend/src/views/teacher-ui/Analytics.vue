@@ -34,6 +34,8 @@
           <div class="filler" v-else>
             <p>No quiz performance data yet</p>
           </div>
+          <p class="linechart-p"><span>Notes: </span>This graph shows students’ recent quiz scores as percentages, highlighting trends in performance over time.</p>
+
         </div>
         <div class="item1">
           <h4 class="analysis-title">Pass vs. Fail Pie Chart</h4>
@@ -46,8 +48,10 @@
               :options="PieChart.options"
             />
             <div class="filler" v-else>
-            <p>No quiz performance data yet</p>
-          </div>
+              <p>No quiz performance data yet</p>
+            </div>
+          <p class="linechart-p">This table shows the number of students who passed and failed, 
+          providing a clear overview of overall performance.</p>
           </div>
           
         </div>
@@ -57,13 +61,14 @@
             type="bar"
             v-if="barChart"
             width="100%"
-            height="387"
+            height="307"
             :series="barChart.series"
             :options="barChart.options"
           />
           <div class="filler" v-else>
             <p>No quiz performance data yet</p>
           </div>
+          <p class="linechart-p"><span>Notes: </span>This chart highlights the top-performing students based on their recent quiz scores.</p>
         </div>
         <!-- <div class="item3">
           <h4>Top Students</h4>
@@ -81,12 +86,16 @@
             v-if="LowTopicBarChart"
             type="bar"
             width="100%"
-            height="387"
+            height="307"
             :series="LowTopicBarChart?.series"
             :options="LowTopicBarChart?.options"
+            :ref="LowTopicBarChart?.series"
           />
           <div class="filler" v-else>
             <p>No quiz performance data yet</p>
+          </div>
+          <div>
+            <p class="linechart-p"><span>Notes: </span>This chart identifies the average of students' scores in various topics, helping teachers focus on areas that need improvement.</p>
           </div>
         </div>
         <div class="item5">
@@ -101,7 +110,7 @@
               :series="improvementChart?.series"
               :options="improvementChart?.options"
             /> -->
-            <div v-if="improvementChart?.series.some(v => v > 0)">
+            <div  v-if="improvementChart?.series.some(v => v > 0)">
               <apexChart
                 v-if="improvementChart"
                 type="pie"
@@ -113,6 +122,8 @@
             <div v-else>
               <p>No improvement data yet.</p>
             </div>
+            <p class="linechart-p"><span>Notes: </span> This section shows the overall progress of the students
+ by comparing their previous scores to their latest results.</p>
           </div>
         </div>
       </div>
@@ -220,8 +231,27 @@ export default {
 
                 this.improvementChart = res.data.ImprovementChart;
                 this.PieChart = res.data.PieChart;
-                this.LowTopicBarChart = res.data.LowTopicBarChart;
-                // console.log(this.LowTopicBarChart);
+                let lowestTopicTemp = res.data.LowTopicBarChart;  
+
+                const chart = lowestTopicTemp;
+
+                // Ensure structure exists
+                chart.options = chart.options || {};
+                chart.options.plotOptions = chart.options.plotOptions || {};
+                chart.options.plotOptions.bar = chart.options.plotOptions.bar || {};
+                chart.options.plotOptions.bar.distributed = true;
+
+                // Generate dynamic bar colors
+                chart.options.colors = chart.series[0].data.map(value => {
+                  if (value < 30) return '#D32F2F';   // red-dark
+                  if (value < 50) return '#FF5722';   // red
+                  return '#4CAF50';                  // green
+                });
+
+                this.LowTopicBarChart = chart;
+
+
+                console.log(this.LowTopicBarChart);
                 for (const [index, value] of this.LowTopicBarChart?.series[0].data.entries()) {
                   // console.log('value '+ value);
                   if(value < 30){
@@ -347,6 +377,15 @@ export default {
 </script>
 
 <style scoped>
+.linechart-p span{
+  font-weight: bold;
+  color: rgb(255, 89, 89);
+}
+.linechart-p{
+  text-align: center;
+  font-size: 12px;
+  color: #555;
+}
 .con-info-btn{
   border-radius: 50%;
 
@@ -449,6 +488,7 @@ header{
   height:100%;
   width: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 }

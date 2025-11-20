@@ -1024,7 +1024,7 @@ app.get('/chart', auth,cashChart ,async (req, res) => {
     // compute percentage per topic
     const topicPerformance = Object.entries(topicStats).map(([topic, stats]) => ({
       topic,
-      percentage: stats.total > 0 ? Math.floor((stats.correct / stats.total) * 100) : 0
+      percentage: stats.total > 0 ? Math.floor((stats.correct / stats.total) * 100) > 100? 100 : Math.floor((stats.correct / stats.total) * 100) : 0
     }));
 
     // sort by weakest topics (ascending)
@@ -1035,7 +1035,9 @@ app.get('/chart', auth,cashChart ,async (req, res) => {
       series: [{ name: "Mastery (%)", data: weakestTopics.slice(0, 5).map(t => t.percentage) }],
       options: {
         chart: { background: "#fff" },
+        // if lower than 50% use red, else use green
         colors: ["#e53935"], // red to emphasize weak
+
         plotOptions: { bar: { horizontal: true, borderRadius: 5 } },
         xaxis: { categories: weakestTopics.slice(0, 5).map(t => t.topic) },
         yaxis: { max: 100, min: 0, title: { text: "Percentage (%)" } }
