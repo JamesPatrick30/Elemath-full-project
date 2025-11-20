@@ -39,25 +39,20 @@ export default {
 </script>
 <template>
     
-    
-    <body>
-        <header>
+    <header>
             <button @click="back">back</button>
         </header>
-    </body>
-    <div class="file" v-html="htmlLesson" v-if="htmlLesson"></div>
+    <body>
+        
+        <div class="file" v-html="htmlLesson" v-if="htmlLesson"></div>
         <loading v-else></loading>
+
+    </body>
 </template>
 <style scoped>
 .file{
-    width: 70%;
-    background-color:#c9ebff;
-    padding: 20px;
-    position: absolute;
-    top: 100px;
-    /* bottom: 100px; */
-    left: 50%;
-    transform: translateX(-50%);
+    width: 90%;
+    max-width: 800px;
 }
 *{
     font-family: 'BubbleBody Neue','Poppins', sans-serif;
@@ -77,12 +72,16 @@ header button{
     color: white;
 }
 body{
-    position: fixed;
+    /* position: fixed; */
+    background-color:#c9ebff;
+
     /* padding: 20px; */
-    background-color:#30b0fa;
+    /* background-color:#30b0fa; */
+    display: flex;
+    justify-content: center;
+    /* align-items: center; */
     width: 100%;
     min-height: 100vh;
-
 }
 
 </style>
