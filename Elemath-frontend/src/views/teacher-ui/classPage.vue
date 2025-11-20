@@ -21,7 +21,7 @@
             <button class="btn-close-cluster" @click="createClassCluster = false"><font-awesome-icon :icon="['fas', 'xmark']" size="lg"/></button>
             <h1 class="title-c">Create Class</h1>
             <input class="input-cluster" type="text" placeholder="Class Name" v-model="className">
-            <select name="" id="" v-model="classgrade">
+            <select class="createClass" name="" id="" v-model="classgrade">
                 <option value="Grade 5">Grade 5</option>
                 <option value="Grade 6">Grade 6</option>
             </select>
@@ -356,6 +356,23 @@ export default {
 }
 </script>
 <style scoped>
+.createClass:hover{
+    color: rgb(151, 244, 58);
+    background-color: white;
+    border: rgb(151, 244, 58) 1px solid;
+
+}
+.createClass{
+    margin: 10px;
+    border-radius: 5px;
+    padding: 10px 20px;
+    background-color: rgb(151, 244, 58);
+    border: rgb(151, 244, 58) 1px solid;
+    font-weight: 800;
+    width: 150px;
+    /* border: none; */
+    color: white;
+}
 .toast button{
     background-color: red;
     color: white;
@@ -483,6 +500,8 @@ export default {
     color: white;
     font-weight: 800;
     border: none;
+    /* padding: 10px 20px; */
+    border-radius: 5px;
 }
 .input-cluster{
     border: 2px solid rgb(114, 241, 131);
