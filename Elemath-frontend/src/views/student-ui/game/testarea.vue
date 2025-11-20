@@ -47,6 +47,7 @@ export default {
             typeOfTest:'',
             btnsubmit:false,
             skipSwitch:false,
+            skipCountDown:0,
         }
     },
     methods: {
@@ -144,22 +145,21 @@ export default {
                 this.question=data?.question;
                 this.options = data?.options;
                 this.story = data?.story;
-                if(this.timeLeft == 0 || this.timeLeft == null){
-                    this.timeLeft = (res.data.time.minutes * 60) + res.data.time.seconds;
-                    if(!this.timeLeft){
-                        this.timeLeft = res.data.time * 60;
-                    }
-                    
-                }else{
-                    const time2 = localStorage.getItem('timeLeftingame');
-
-                    if(time2 != 0 && time2 != null){
-                    // console.log("time : "+time2);
-                        this.timeLeft = time2;
-                    }
-                }
-                
                 this.totalTime = (res.data.time.minutes * 60) + res.data.time.seconds;
+                if(!this.totalTime){
+                    this.totalTime = res.data.time * 60;
+                }
+                const time2 = localStorage.getItem('timeLeftingame');
+                if(time2 && !isNaN(parseInt(time2))){
+                    // console.log('Saved time found:', time2);
+                    this.timeLeft = parseInt(time2);
+                    localStorage.removeItem('timeLeftingame');
+                } else {
+                    if(this.timeLeft <=0){
+                        this.timeLeft = this.totalTime;
+                    }
+                    console.log('No saved time found, setting to totalTime:', this.totalTime);
+                }
                 this.table = data?.table;
                 this.tabletype = data?.tabletype;
                 this.typeOfTest = data?.type;
@@ -167,7 +167,6 @@ export default {
                 // console.log(data);
                 // alert(`time ${this.timeLeft} minutes ${this.timeLeft} sec per question`);
 
-                this.skipSwitch = false;
                 
                 
 
@@ -223,10 +222,23 @@ export default {
                 const res = await api.post('/set/mode/question/skip',
                     {id:this.id}
                 );
+                this.CountDownInSkip();
                 this.get1st();
             }catch(err){
                 console.log(err);
             }
+        },
+        CountDownInSkip(){
+            this.skipCountDown = 5;
+            const downloadTimer = setInterval(() => {
+                if(this.skipCountDown <= 0){
+                    clearInterval(downloadTimer);
+                    this.skipSwitch = false;
+
+                }else{
+                    this.skipCountDown -= 1;
+                }
+            }, 1000);
         }
     },
     mounted() {
@@ -278,7 +290,8 @@ export default {
                 <button class="setting" @click="settingf()"><font-awesome-icon icon="fa-solid fa-gear" size="2xl" /></button>
             </div>
             
-            <button class="skip-btn" @click="skipQuestion">Skip</button>
+            <button class="skip-btn" @click="skipQuestion" :style="{opacity: skipSwitch? '50%':'100%'}">Skip Question <span v-if="skipSwitch">({{ skipCountDown }})</span>
+            </button>
          </div>
         
         
