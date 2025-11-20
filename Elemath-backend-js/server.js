@@ -1419,11 +1419,12 @@ app.post('/set/mode/question/skip',auth, async(req,res)=>{
   let modeData = JSON.parse(mode);
   let player = modeData.players.find(p => p.lrn === req.user.username);
   let qIn = player.qIn;
+  let gameQuestions = player.questions[qIn];
   player.qIn += 1;
-  let gameQuestions = modeData.questions;
+  
 
   // store the index of the skipped question
-  player.questions.push(gameQuestions[qIn]);
+  player.questions.push(gameQuestions);
   setgameData(`mode:${req.user.classId}`, modeData);
   return res.json({message:'done'});
 });
