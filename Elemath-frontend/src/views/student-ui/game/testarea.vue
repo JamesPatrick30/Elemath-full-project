@@ -2,6 +2,7 @@
 import ApexChart from "vue3-apexcharts"
 import api from '@/axios';
 import greenbg from "../components/greenbg.vue";
+import socket from "@/socket";
 export default {
     name: "TestArea",
     components: { ApexChart,greenbg },
@@ -147,10 +148,15 @@ export default {
                 const res =await api.get('/get/mode/question/1st');
                 const data = res.data.question;
                 // this.id = res.data.id;
+                if(data?.message=="No active mode found"){
+                    this.$router.push('/');
+                    return;
+                }
                 if(data?.done){
                     this.$router.push('/rev');
 
                 }
+                socket.connect();
                 console.log(res.data);
                 this.quizMode = res.data.quizMode;
                 console.log('Quiz mode: '+this.quizMode);
@@ -272,6 +278,11 @@ export default {
         document.body.addEventListener("click", this.unlockAudio, { once: true });
         // document.body.addEventListener("click", this.unlockAudio, { once: true });
         window.addEventListener('beforeunload', this.handleBeforeUnload);
+
+        socket.on('terminate-mode', (data) => {
+            alert(data.message);
+            this.$router.push('/');
+        });
     },
     beforeUnmount() {
         window.removeEventListener('beforeunload', this.handleBeforeUnload);

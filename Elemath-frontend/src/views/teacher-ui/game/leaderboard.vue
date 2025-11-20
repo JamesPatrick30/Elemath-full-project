@@ -68,6 +68,19 @@ export default{
             }catch(err){
                 console.log(err);
             }
+        },
+        async terminatebtn(){
+            try{
+                const res = await api.post('/terminate/mode',{
+                    id:this.roomId
+                });
+                socket.emit('terminate-mode',{id:this.roomId});
+                this.$router.push('/');
+                // alert(res.data.message);
+
+            }catch(err){
+                console.log(err);
+            }
         }
     },
     mounted(){
@@ -150,7 +163,7 @@ export default{
             <p class="caution">This action cannot be undone. <br> The game will be terminated for all players and the session will never be recorded.</p>
             <div class="btn-termate">
                 <button class="btn-cancel" @click="terminate = false">Cancel</button>
-                <button class="btn-confirm">Confirm</button>
+                <button class="btn-confirm" @click="terminatebtn()">Confirm</button>
                 
             </div>
         </div>

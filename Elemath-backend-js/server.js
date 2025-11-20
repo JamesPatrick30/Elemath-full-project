@@ -1405,6 +1405,9 @@ app.get('/get/mode/data',auth, async (req, res) => {
 });
 app.get('/get/mode/question/1st',auth,async(req,res)=>{
   const mode =await redisClient.get(`mode:${req.user.classId}`);
+  if (!mode) {
+    return res.status(404).json({ message: 'No active mode found' });
+  }
   const modeData = JSON.parse(mode);
   let player = modeData.players.find(p => p.lrn === req.user.username);
   
@@ -1429,8 +1432,6 @@ app.post('/set/mode/question/skip',auth, async(req,res)=>{
   return res.json({message:'done'});
 });
 
-let questionsInGameGlobal = [];
-let playerquestionsInGameGlobal = [];
 app.post('/game/mode/timeup',auth,async(req,res)=>{
   // this is for time up
   const mode = await redisClient.get(`mode:${req.user.classId}`);
@@ -1445,8 +1446,6 @@ app.post('/game/mode/timeup',auth,async(req,res)=>{
   // }
   const originalPlayerRev = player.rev;
   let editedPlayerRev = [];
-  questionsInGameGlobal = modeData;
-  playerquestionsInGameGlobal = player.rev;
   /*
     Find the question that does not have a null answer
     compare it with the questions in modeData.questions
@@ -1492,8 +1491,19 @@ app.post('/game/mode/timeup',auth,async(req,res)=>{
   );
   res.json({message:'done'});
 });
-app.get('/get/mode/questions/all', (req, res) => {
-  res.json({player:playerquestionsInGameGlobal,questions: questionsInGameGlobal});
+app.post('/terminate/mode',auth,async(req,res)=>{
+  const { modeId } = req.body;
+  await redisClient.del(`mode:${modeId}`);
+
+  await pubClient.publish(
+    'action',
+    JSON.stringify({
+      id: modeId,
+      action: 'terminate-mode',
+      payload: { message: 'Mode terminated by teacher' }
+    })
+  );
+  res.json({message:'done'});
 });
 app.post('/get/mode/question', auth, async (req, res) => {
   const { answer } = req.body;
@@ -2050,6 +2060,10 @@ socket.on('game-start', async (data) => {
       }
       // Notify all clients in the room about the new player
       
+  });
+  socket.on('terminate-mode', async (data) => {
+      io.to(data.id).emit('terminate-mode', { message: 'Mode terminated by teacher' });
+      // await pubClient.publish('action',JSON.stringify({id:data.roomId,action:'terminate-mode',payload:{ message: 'Mode terminated by teacher' }}));
   });
   socket.on('mode-done', async (data) => {
     io.to(data.id).emit('mode-done', { doneMode: true });
