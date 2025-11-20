@@ -89,7 +89,6 @@
             height="307"
             :series="LowTopicBarChart?.series"
             :options="LowTopicBarChart?.options"
-            :ref="LowTopicBarChart?.series"
           />
           <div class="filler" v-else>
             <p>No quiz performance data yet</p>
