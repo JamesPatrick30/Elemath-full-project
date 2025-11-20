@@ -86,7 +86,7 @@
             v-if="LowTopicBarChart"
             type="bar"
             width="100%"
-            height="307"
+            height="357"
             :series="LowTopicBarChart?.series"
             :options="LowTopicBarChart?.options"
           />

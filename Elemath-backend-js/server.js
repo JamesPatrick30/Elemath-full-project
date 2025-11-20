@@ -1859,7 +1859,7 @@ app.post('/mode/finish',auth,async (req,res)=>{
       lowAnalysis: [], // could be derived: hardest Qs
       questions: modeData.questions.map((q, idx) => ({
         number: (idx + 1).toString(),
-        topic:q.topic,
+        topic:q.topic || 'Customized Question',
         question: JSON.stringify(q.question),
         answer: q.answer,
         choices: q.options,
