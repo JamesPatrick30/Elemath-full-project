@@ -1429,19 +1429,56 @@ app.post('/set/mode/question/skip',auth, async(req,res)=>{
   return res.json({message:'done'});
 });
 
-
+let questionsInGameGlobal = [];
+let playerquestionsInGameGlobal = [];
 app.post('/game/mode/timeup',auth,async(req,res)=>{
   // this is for time up
   const mode = await redisClient.get(`mode:${req.user.classId}`);
   let modeData = JSON.parse(mode);
   let player = modeData.players.find(p => p.lrn === req.user.username);
   player.done = true;
-  let playerInNumberOfQuestionsAnswered = player.qIn;
 
-  let gameQuestions = modeData.questions;
-  for(let i = playerInNumberOfQuestionsAnswered; i < gameQuestions.length; i++){
-    player.rev.push({ q: gameQuestions[i], playerAnswer: null, correct: false });
+
+  
+  // for(let i = playerInNumberOfQuestionsAnswered; i < gameQuestions.length; i++){
+  //   player.rev.push({ q: gameQuestions[i], playerAnswer: null, correct: false });
+  // }
+  const originalPlayerRev = player.rev;
+  let editedPlayerRev = [];
+  questionsInGameGlobal = modeData;
+  playerquestionsInGameGlobal = player.rev;
+  /*
+    Find the question that does not have a null answer
+    compare it with the questions in modeData.questions
+    if missing in originalPlayerRev, add it with null answer
+    but the player answer should be null and correct should be false
+  */
+  if(modeData.quizMode != 'WINDOWCARD MODE'){
+    for (let i = 0; i < modeData.questions.length; i++) {
+      const question = modeData.questions[i];
+      const found = originalPlayerRev.find(r => String(r.q.question) === String(question.question));
+      if (found) {
+        console.log('Found question in originalPlayerRev:', found);
+        editedPlayerRev.push(found[found.length - 1] || found); // in case of duplicates, take the last one
+      } else {
+        editedPlayerRev.push({ q: question, playerAnswer: null, correct: false });
+      }
+    }
+  }else{
+    for (let i = 0; i < modeData.questions.length; i++) {
+      const question = modeData.questions[i];
+      const found = originalPlayerRev.find(r => String(r.q.question.question) === String(question.question.question));
+      if (found) {
+        // console.log('Found question in originalPlayerRev:', found);
+        editedPlayerRev.push(found[found.length - 1] || found); // in case of duplicates, take the last one
+      } else {
+        editedPlayerRev.push({ q: question, playerAnswer: null, correct: false });
+      }
+    }
   }
+  
+
+  player.rev = editedPlayerRev;
   setgameData(`rev:${player.lrn}`, player.rev);
 
   setgameData(`mode:${req.user.classId}`, modeData);
@@ -1454,6 +1491,9 @@ app.post('/game/mode/timeup',auth,async(req,res)=>{
     })
   );
   res.json({message:'done'});
+});
+app.get('/get/mode/questions/all', (req, res) => {
+  res.json({player:playerquestionsInGameGlobal,questions: questionsInGameGlobal});
 });
 app.post('/get/mode/question', auth, async (req, res) => {
   const { answer } = req.body;

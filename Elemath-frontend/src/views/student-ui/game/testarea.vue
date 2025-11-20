@@ -14,7 +14,7 @@ export default {
             colors: ['#5bb450','#3b8132','#e8e337','#e69b00','#e70000','#820000'],
             color:'',
             timer: null,
-            timeLeft: 10, // Example: 60 seconds
+            timeLeft: 0, // Example: 60 seconds
             totaltime: 10,
             LineChart: {
                 series: [
@@ -109,6 +109,7 @@ export default {
                 const res =await api.post('/get/mode/question',
                     {answer:answer}
                 );
+                // localStorage.setItem('timeLeftingame', this.timeLeft);
                 console.log(res.data);
                 if(res.data.done){
                     this.$router.push('/rev');
@@ -143,26 +144,34 @@ export default {
                 this.question=data?.question;
                 this.options = data?.options;
                 this.story = data?.story;
-                this.timeLeft = (res.data.time.minutes * 60) + res.data.time.seconds;
-                if(!this.timeLeft){
-                    this.timeLeft = res.data.time * 60;
+                if(this.timeLeft == 0 || this.timeLeft == null){
+                    this.timeLeft = (res.data.time.minutes * 60) + res.data.time.seconds;
+                    if(!this.timeLeft){
+                        this.timeLeft = res.data.time * 60;
+                    }
+                    
+                }else{
+                    const time2 = localStorage.getItem('timeLeftingame');
+
+                    if(time2 != 0 && time2 != null){
+                    // console.log("time : "+time2);
+                        this.timeLeft = time2;
+                    }
                 }
-                this.totalTime = this.timeLeft;
+                
+                this.totalTime = (res.data.time.minutes * 60) + res.data.time.seconds;
                 this.table = data?.table;
                 this.tabletype = data?.tabletype;
                 this.typeOfTest = data?.type;
                 this.btnsubmit = false;
                 // console.log(data);
                 // alert(`time ${this.timeLeft} minutes ${this.timeLeft} sec per question`);
-                const time2 = localStorage.getItem('timeLeftingame');
-                // console.log(this.table);
-                // console.log("time : "+time2);
 
                 this.skipSwitch = false;
-                if(time2 != 0 && time2 != null){
-                    // console.log("time : "+time2);
-                    this.timeLeft = time2;
-                }
+                
+                
+
+                
                 // this.timeLeft = res.data.time * 60;
                 this.startTimer();
                 
