@@ -105,8 +105,8 @@
                 </div>
                 <div>
                     <label for="time" class="labelQ">Time per question :</label>
-                    <input type="number" name="time" placeholder="minutes" class="input-a" style="max-width: 100px; margin: 10px; text-align: center;" v-model="time.minutes">
-                    <input type="number" name="time" placeholder="seconds" class="input-a" style="max-width: 100px; margin: 10px; text-align: center;" v-model="time.seconds">
+                    <input type="number" @keydown="blockNonNumeric" name="time" placeholder="minutes" class="input-a" style="max-width: 100px; margin: 10px; text-align: center;" v-model="time.minutes">
+                    <input type="number" @keydown="blockNonNumeric" name="time" placeholder="seconds" class="input-a" style="max-width: 100px; margin: 10px; text-align: center;" v-model="time.seconds">
 
                 </div>
                 
@@ -153,7 +153,7 @@
                                 <h4>File Selected: {{ filetitle }}</h4>
                                 <div>
                                     <label for="numQuestions">Number of Questions</label>
-                                    <input class="num-in" type="number" id="numQuestions" placeholder="" v-model="uploadGenerate.num_questions">
+                                    <input class="num-in" type="number" id="numQuestions" placeholder="" v-model="uploadGenerate.num_questions" @keydown="blockNonNumeric">
                                 </div>
                                 
                                     <select class="t-o-q" v-model="uploadGenerate.type"  >
@@ -390,7 +390,12 @@
       </div>
       <button @click="startGame()" class="btn-start">start</button>
     </main>
-    
+    <div class="toast" v-show="messageInToastTime">
+        <p>{{ messageInToastTime }}</p>
+    </div>
+    <div class="toast" v-show="messageInToastgenerate">
+        <p>{{ messageInToastgenerate }}</p>
+    </div>
 </template>
 <script>
 import greenbg from '@/views/student-ui/components/greenbg.vue';
@@ -435,6 +440,8 @@ export default{
             editcluster:false,
             deleteIndex:null,
             uploadedLessons:[],
+            messageInToastTime:'',
+            messageInToastgenerate:'',
         }
     },
     methods:{
@@ -741,6 +748,17 @@ export default{
                 console.log(err);
             }
         },
+        blockNonNumeric(event) {
+            // Allow control keys
+            const allowed = ["Backspace", "Delete", "Tab", "Escape", "Enter", "ArrowLeft", "ArrowRight"];
+
+            if (allowed.includes(event.key)) return;
+
+            // Only allow digits
+            if (!/^\d$/.test(event.key)) {
+                event.preventDefault();
+            }
+        }
 
     },
     mounted(){
@@ -768,13 +786,69 @@ export default{
 
     },
     beforeUnmount() {
-    window.removeEventListener("dragover", this.onDragOver);
-    window.removeEventListener("dragleave", this.onDragLeave);
-    window.removeEventListener("drop", this.onDropAnywhere);
-  },
+        window.removeEventListener("dragover", this.onDragOver);
+        window.removeEventListener("dragleave", this.onDragLeave);
+        window.removeEventListener("drop", this.onDropAnywhere);
+    },
+    watch:{
+        uploadGenerate:{
+            handler(newVal){
+                if(newVal.num_questions > 50){
+                    newVal.num_questions = null;
+                    this.messageInToastgenerate = '⚠️ Maximum number of questions is 50.';
+                    setTimeout(() => {
+                        this.messageInToastgenerate = '';
+                    }, 3000);
+                }
+            },
+            deep:true
+        },
+        time:{
+            handler(newVal){
+                if(newVal.minutes > 60){
+                    this.time.minutes = null;
+                    this.messageInToastTime = '⏰ Maximum time limit is 60 minutes.';
+                    setTimeout(() => {
+                        this.messageInToastTime = '';
+                    }, 3000);
+                }
+                // if(newVal.seconds < 0){
+                //     this.time.seconds = 0;
+                // }
+                if(newVal.seconds > 60){
+                    this.time.seconds = 60;
+                }
+            },
+            deep:true
+        }
+    }
+
 }
 </script>
 <style scoped>
+.toast{
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #41b8d5;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    animation: toastFade 0.5s ease-in-out;
+}
+@keyframes toastFade {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
 .header-con p{
     color: white;
     font-weight: 600;

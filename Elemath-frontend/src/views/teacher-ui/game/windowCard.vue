@@ -15,7 +15,9 @@ export default {
             time: null,
             // questions: [],
             difficulty: 'easy',
-            operation: 'addition'
+            operation: 'addition',
+            messageInToast: '',
+            messageInToastTime: ''
         }
     },
     methods: {
@@ -81,6 +83,17 @@ export default {
                 console.log(err);
             }
             
+        },
+        blockNonNumeric(event) {
+            // Allow control keys
+            const allowed = ["Backspace", "Delete", "Tab", "Escape", "Enter", "ArrowLeft", "ArrowRight"];
+
+            if (allowed.includes(event.key)) return;
+
+            // Only allow digits
+            if (!/^\d$/.test(event.key)) {
+                event.preventDefault();
+            }
         }
     },
     created() {
@@ -101,11 +114,39 @@ export default {
             console.log('Player joined:', data);
             this.players.push({ player: data.player, lrn: data.lrn, profile: data.profile });
         });
+    },
+    watch: {
+        // Watchers can be added here if needed
+        time(newVal) {
+            if (newVal > 60) {
+                this.time = null;
+                this.messageInToast = '⏰ Maximum time limit is 60 minutes.';
+                setTimeout(() => {
+                    this.messageInToast = '';
+                }, 3000);
+            }
+        },
+        count(newVal) {
+            if (newVal > 100) {
+                this.count = null;
+                this.messageInToastTime = '❓ Maximum number of questions is 100.';
+                setTimeout(() => {
+                    this.messageInToastTime = '';
+                }, 3000);
+            }
+        }
     }
 }
 </script>
 <template>
     <greenbg/>
+    <div class="toast" v-show="messageInToast">
+        <p>{{ messageInToast }}</p>
+    </div>
+    <!-- toast for time -->
+    <div class="toast" v-show="messageInToastTime">
+        <p>{{ messageInToastTime }}</p>
+    </div>
     <body>
         <main>
             <button class="btn-back" v-on:click="backBtn()">Back</button>
@@ -114,9 +155,9 @@ export default {
                     <h1>Window Card</h1>
                     <div class="settings">
                         <label for="time">Time:</label>
-                        <input class="input-s" type="number" id="time" v-model="time" placeholder="Minutes"/>
+                        <input class="input-s" type="number" id="time" v-model="time" placeholder="Minutes" @keydown="blockNonNumeric"/>
                         <label for="questionNumber">Questions</label>
-                        <input class="input-s" type="number" id="questionNumber" v-model="count" placeholder="Number of Questions"/>
+                        <input class="input-s" type="number" id="questionNumber" v-model="count" placeholder="Number of Questions" @keydown="blockNonNumeric" />
                         <label for="difficulty">Difficulty:</label>
                         <select class="input-s" id="difficulty" v-model="difficulty">
                             <option value="easy">Easy</option>
@@ -142,6 +183,29 @@ export default {
     </body>
 </template>
 <style scoped>
+.toast{
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #41b8d5;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    animation: toastFade 0.5s ease-in-out;
+}
+@keyframes toastFade {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
 .btn-start{
     position: fixed;
     bottom: 20px;
