@@ -1,4 +1,7 @@
 <template>
+    <div class="toast-s" v-show="messageInToast">
+        <p>{{ messageInToast }}</p>
+    </div>
     <loading v-if="!user"></loading>
     <div class="create-con" v-if="classDeleteCluster">
         <div class="edit" >
@@ -352,10 +355,53 @@ export default {
     mounted(){
         this.getData();
         // this.refreshtoken();
+    },
+    watch:{
+        className(newVal){
+            if(newVal.length > 12){
+                this.messageInToast = "Class name cannot exceed 12 characters.";
+                this.className = '';
+                setTimeout(() =>{
+                    this.messageInToast = '';
+                },3000);
+            }
+        },
+        inputeditClass(newVal){
+            if(newVal.length > 12){
+                this.messageInToast = "Class name cannot exceed 12 characters.";
+                this.inputeditClass = '';
+                setTimeout(() =>{
+                    this.messageInToast = '';
+                },3000);
+            }
+        }
     }
 }
 </script>
 <style scoped>
+.toast-s{
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #41b8d5;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    animation: toastFade 0.5s ease-in-out;
+}
+@keyframes toastFade {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
 .createClass:hover{
     color: rgb(151, 244, 58);
     background-color: white;
