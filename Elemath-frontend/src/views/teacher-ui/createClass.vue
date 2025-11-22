@@ -129,7 +129,7 @@
                 <div class="form" v-else>
                     <h2 class="title">Add Student</h2>
                     <h4 class="classname">Class Name : {{ classname }}</h4>
-                    <input type="text" placeholder="LRN" v-model="inputlrn" :class="warning? 'not-warning' : 'warning'">
+                    <input type="text" placeholder="LRN" v-model="inputlrn" @keydown="blockNonNumeric" :class="warning? 'not-warning' : 'warning'">
                     <input type="text" class="input" placeholder="First Name" v-model="firstName">
                     <input type="text" class="input" placeholder="Middle Name" v-model="middleName">
                     <input type="text" class="input" placeholder="Last Name" v-model="lastName">
@@ -202,6 +202,18 @@
             
          </div>
     </body>
+    <div class="toast" v-show="messageInToast">
+        <p>{{ messageInToast }}</p>
+    </div>
+    <div class="toast" v-show="messageInToastmidname">
+        <p>{{ messageInToastmidname }}</p>
+    </div>
+    <div class="toast" v-show="messageInToastlastname">
+        <p>{{ messageInToastlastname }}</p>
+    </div>
+    <div class="toast" v-show="messageInToastlrn">
+        <p>{{ messageInToastlrn }}</p>
+    </div>
 </template>
 <script>
 import loading from './components/loading.vue';
@@ -215,6 +227,9 @@ export default{
     },
     data(){
         return{
+            messageInToastmidname:'',
+            messageInToastlastname:'',
+            messageInToastlrn: '',
             enrollStudentlist:[],
             failedlist:[],
             newEnrolled:[],
@@ -248,7 +263,8 @@ export default{
             uploadFile:true
 
             ,file:null,
-            progress:null
+            progress:null,
+            messageInToast:''
         }
     },
     methods:{
@@ -510,6 +526,17 @@ export default{
             } finally {
                 this.uploading = false;
             }
+        },
+        blockNonNumeric(event) {
+            // Allow control keys
+            const allowed = ["Backspace", "Delete", "Tab", "Escape", "Enter", "ArrowLeft", "ArrowRight"];
+
+            if (allowed.includes(event.key)) return;
+
+            // Only allow digits
+            if (!/^\d$/.test(event.key)) {
+                event.preventDefault();
+            }
         }
         
     },
@@ -517,11 +544,45 @@ export default{
     watch:{
         inputlrn(newVal) {
             if (newVal.trim().length === 12) {
-            console.log(newVal);
-            this.findStudent();
+            // console.log(newVal);
+            this.inputlrn = '';
+            // this.findStudent();
+            this.messageInToastlrn = "LRN cannot exceed 12 characters.";
+            setTimeout(() => {
+                    this.messageInToastlrn = '';
+                },3000);
             // You can call other functions here too
             }
+        },
+        firstName(newVal){
+            // console.log(newVal);
+            if(newVal.length > 20){
+                this.firstName = '';
+                this.messageInToast = "First name cannot exceed 20 characters.";
+                setTimeout(() => {
+                    this.messageInToast = '';
+                },3000);
+            }
+        },
+        middleName(newVal){
+            if(newVal.length > 20){
+                this.middleName = '';
+                this.messageInToastmidname = "Middle name cannot exceed 20 characters.";
+                setTimeout(() => {
+                    this.messageInToastmidname = '';
+                },3000);
+            }
+        },
+        lastName(newVal){
+            if(newVal.length > 20){
+                this.lastName = '';
+                this.messageInToastlastname = "Last name cannot exceed 20 characters.";
+                setTimeout(() => {
+                    this.messageInToastlastname = '';
+                },3000);
+            }
         }
+
     },
 
     mounted(){
@@ -534,6 +595,29 @@ export default{
 }
 </script>
 <style scoped>
+.toast{
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #41b8d5;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    animation: toastFade 0.5s ease-in-out;
+}
+@keyframes toastFade {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
 .header-list{
     display: flex;
     justify-content: space-between;
