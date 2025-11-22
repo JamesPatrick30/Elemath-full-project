@@ -11,7 +11,7 @@ export default {
             htmlLesson:'',
             audiosrc: "/musics/reviewmusic.mp3",
             volume:0.1,
-            setting:true
+            setting:false
         }
     },
     methods: {
