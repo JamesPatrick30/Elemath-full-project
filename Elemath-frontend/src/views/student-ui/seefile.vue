@@ -3,9 +3,15 @@ import api from '@/axios';
 import loading from '../teacher-ui/components/loading.vue';
 export default {
     name: 'seefile',
+    components:{
+        loading
+    },
     data(){
         return {
-            htmlLesson:''
+            htmlLesson:'',
+            audiosrc: "/musics/reviewmusic.mp3",
+            volume:0.1,
+            setting:true
         }
     },
     methods: {
@@ -30,19 +36,40 @@ export default {
         },
         back(){
             this.$router.go(-1);
-        }
+        },
+        updateVolume() {
+            this.$refs.player.volume = this.volume;
+        },
+        unlockAudio() {
+            const player = this.$refs.player;
+            player.muted = false;
+            player.volume = this.volume;
+            player.play().catch(err => console.warn("Still blocked:", err));
+        },
+        settingf(){
+            this.setting = !this.setting;
+        },
     },
     mounted(){
         this.lessonData();
+        document.body.addEventListener("click", this.unlockAudio, { once: true });
     }
 }
 </script>
 <template>
     
-    
+    <audio
+        ref="player"
+        :src="audiosrc"
+        autoplay
+        loop
+        muted
+        ></audio>
     <body>
         <header>
             <button @click="back">back</button>
+            <button @click="settingf">Settings</button>
+
         </header>
         <div class="bubbles">
             <img  src="/gif/bubbles.gif" alt="">
@@ -55,8 +82,71 @@ export default {
     </body>
     <div class="file" v-html="htmlLesson" v-if="htmlLesson"></div>
         <loading v-else></loading>
+
+    <div class="cluster-con" v-if="setting">
+        <div class="cluster">
+            <div class="header">
+                <button @click="settingf()"><font-awesome-icon :icon="['fas', 'xmark']" size="lg" color="red"/></button>
+            </div>
+            <div class="body">
+                <h3>MUSIC </h3>
+                <input
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    v-model="volume"
+                    @input="updateVolume"
+                    />
+                    <!-- <button @click="mutevol()"><font-awesome-icon icon="fa-solid fa-volume-high" size="xl" v-if="!mute"/> <font-awesome-icon icon="fa-solid fa-volume-xmark" size="xl" v-if="mute"/></button> -->
+            </div>
+        </div>
+            
+    </div>
 </template>
 <style scoped>
+.body button{
+    background-color: transparent;
+    border: none;
+}
+.cluster .header {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+.cluster .header button {
+    background-color: transparent;
+    border: none;
+    margin: 0;
+    align-self: flex-end;
+}
+.body{
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+}
+.cluster{
+    display: flex;
+        flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 300px;
+    height: 100px;
+    padding: 5px;
+    background-color: #c1ff72;
+    border-radius: 10px;
+}
+.cluster-con{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgb(0, 0, 0,0.1);
+}
 /* for desktop */
 @media screen and (min-width: 768px) {
     .coral1, .coral2{
@@ -144,6 +234,7 @@ header{
     width: 100%;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     margin: 5px;
     border-radius: 10px;
     border: black 2px solid;

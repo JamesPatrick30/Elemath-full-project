@@ -484,17 +484,17 @@ export default {
             </div>
             <div class="body">
                 <h3>MUSIC </h3>
-            <input
-                type="range"
-                min="0"
-                max="1"
-                step="0.01"
-                v-model="volume"
-                @input="updateVolume"
-                />
-                <button @click="mutevol()"><font-awesome-icon icon="fa-solid fa-volume-high" size="xl" v-if="!mute"/> <font-awesome-icon icon="fa-solid fa-volume-xmark" size="xl" v-if="mute"/></button>
-        </div>
+                <input
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    v-model="volume"
+                    @input="updateVolume"
+                    />
+                    <button @click="mutevol()"><font-awesome-icon icon="fa-solid fa-volume-high" size="xl" v-if="!mute"/> <font-awesome-icon icon="fa-solid fa-volume-xmark" size="xl" v-if="mute"/></button>
             </div>
+        </div>
             
     </div>
 </template>
