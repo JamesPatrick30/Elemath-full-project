@@ -138,17 +138,28 @@ export default {
     font-family: 'BubbleBody Neue','Poppins', sans-serif;
 }
 header{
-    background-color: #70cbff;
+    height: 30px;
+    padding: 5px;
+    background-color: #46bbff;
     width: 100%;
+    display: flex;
+    align-items: center;
+    margin: 5px;
+    border-radius: 10px;
+    border: black 2px solid;
+
     /* height: 20px; */
 }
 header button{
-    background: none;
-    border: none;
+    border: black 2px solid;
+
+    border-radius: 10px;
     font-size: 16px;
-    padding: 10px;
+    padding: 4px;
+    font-size: 15px;
     cursor: pointer;
     font-weight: bold;
+    background-color: #7ed957;
     color: white;
     position: relative;
     z-index: 2;
@@ -156,7 +167,6 @@ header button{
 body{
     position: fixed;
     background-color:#70cbff;
-
     /* padding: 20px; */
     /* background-color:#30b0fa; */
     display: flex;
