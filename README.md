@@ -8,13 +8,13 @@
 
 <hr/>
 
-<style>
+<!-- <style>
   .badge { display:inline-block; padding:4px 10px; border-radius:999px; background:#f1f5f9; margin:2px; font-size:12px }
   .section { margin-top:32px }
   .note { background:#f8fafc; border-left:4px solid #1e293b; padding:12px; margin:16px 0 }
   .grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px }
   code { background:#f1f5f9; padding:2px 6px; border-radius:4px }
-</style>
+</style> -->
 
 <div align="center">
   <span class="badge">Python</span>
